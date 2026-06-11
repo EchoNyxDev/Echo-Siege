@@ -1,0 +1,11 @@
+.env
+.git
+.agents
+.codex
+__pycache__/
+*/__pycache__/
+*.pyc
+players.db
+codes.db
+backup_*.db
+*.log

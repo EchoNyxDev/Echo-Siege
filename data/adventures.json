@@ -1,0 +1,216 @@
+{
+  "acampamento_goblin": {
+    "nome": "O Acampamento Goblin Oculto",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Você escuta grunhidos vindos de trás dos arbustos. É um acampamento Goblin! O que o esquadrão faz?", "opcoes": [{"label": "Atacar de Surpresa", "emoji": "⚔️", "next": "combate_surpresa"}, {"label": "Esgueirar e Roubar", "emoji": "🤫", "next": "stealth_check"}]},
+      "stealth_check": {"tipo": "historia", "texto": "O seu guerreiro pisa num galho seco. *CRACK*. Os goblins viram-se rugindo!", "opcoes": [{"label": "Lutar pela Vida!", "emoji": "🗡️", "next": "combate_alerta"}, {"label": "Fugir", "emoji": "🏃", "next": "fuga"}]},
+      "combate_surpresa": {"tipo": "combate", "texto": "Você avança com fúria!", "inimigos": ["goblin_guerreiro", "goblin_xama"], "win_next": "vitoria_total", "lose_next": "derrota"},
+      "combate_alerta": {"tipo": "combate", "texto": "Eles chamaram reforços!", "inimigos": ["goblin_veterano", "goblin_guerreiro", "goblin_arqueiro"], "win_next": "vitoria_total", "lose_next": "derrota"},
+      "vitoria_total": {"tipo": "recompensa", "texto": "Acampamento dizimado. O baú estava cheio!", "gold": 400, "xp": 250},
+      "derrota": {"tipo": "recompensa", "texto": "Massacrados. Vocês fogem largando moedas pelo caminho...", "gold": 20, "xp": 50},
+      "fuga": {"tipo": "recompensa", "texto": "Vocês correram tanto que perderam o fôlego. Nenhuma honra.", "gold": 0, "xp": 10}
+    }
+  },
+  "mercador_suspeito": {
+    "nome": "O Mercador da Encruzilhada",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Um homem encapuzado oferece uma 'Poção de Poder' baratíssima.", "opcoes": [{"label": "Beber", "emoji": "🍷", "next": "beber_pocao"}, {"label": "Ameaçar", "emoji": "😡", "next": "ameacar"}, {"label": "Ignorar", "emoji": "🚶", "next": "ignorar"}]},
+      "beber_pocao": {"tipo": "recompensa", "texto": "A poção queima... mas enche-te de vitalidade! Era real!", "gold": 0, "xp": 400},
+      "ignorar": {"tipo": "recompensa", "texto": "Melhor não arriscar. A jornada segue calma.", "gold": 50, "xp": 50},
+      "ameacar": {"tipo": "historia", "texto": "Você puxa a espada. A capa dele rasga, revelando ossos! É um Esqueleto Mago!", "opcoes": [{"label": "Lutar!", "emoji": "⚔️", "next": "combate"}]},
+      "combate": {"tipo": "combate", "texto": "A magia negra preenche o ar!", "inimigos": ["esqueleto", "esqueleto", "necromante"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "O monstro vira pó. Os anéis dele valem uma fortuna!", "gold": 1200, "xp": 600},
+      "derrota": {"tipo": "recompensa", "texto": "Magia forte demais. Fuga humilhante.", "gold": 0, "xp": 30}
+    }
+  },
+  "lobo_alfa_caverna": {
+    "nome": "O Uivo na Caverna",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "A guilda pagará bem se trouxerem a pele do Lobo Selvagem que aterroriza a fazenda.", "opcoes": [{"label": "Entrar na Caverna", "emoji": "🔦", "next": "combate"}, {"label": "Fazer Armadilha", "emoji": "🪤", "next": "armadilha"}]},
+      "armadilha": {"tipo": "historia", "texto": "A armadilha falhou e deixou a fera furiosa!", "opcoes": [{"label": "Enfrentar a fúria", "emoji": "⚔️", "next": "combate_dificil"}]},
+      "combate": {"tipo": "combate", "texto": "Lobos saltam das sombras!", "inimigos": ["lobo_selvagem", "lobo_selvagem"], "win_next": "vitoria", "lose_next": "derrota"},
+      "combate_dificil": {"tipo": "combate", "texto": "O Lobo Alfa veio junto!", "inimigos": ["lobo_alfa", "lobo_selvagem"], "win_next": "vitoria_epica", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Missão cumprida. As peles foram vendidas.", "gold": 300, "xp": 200},
+      "vitoria_epica": {"tipo": "recompensa", "texto": "Vocês mataram o Alfa! O fazendeiro pagou o triplo!", "gold": 900, "xp": 500},
+      "derrota": {"tipo": "recompensa", "texto": "Viraram comida de lobo. Sobreviveram por milagre.", "gold": 10, "xp": 40}
+    }
+  },
+  "ruinas_assombradas": {
+    "nome": "Ruínas do Rei Esquecido",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Ruínas antigas emanam um brilho azul. A lenda diz que um Rei foi enterrado aqui.", "opcoes": [{"label": "Saquear os Túmulos", "emoji": "⛏️", "next": "saque"}, {"label": "Procurar a Sala do Trono", "emoji": "👑", "next": "trono"}]},
+      "saque": {"tipo": "combate", "texto": "Os mortos não gostam de ladrões!", "inimigos": ["zumbi", "ghoul"], "win_next": "vitoria_saque", "lose_next": "derrota"},
+      "trono": {"tipo": "historia", "texto": "O Rei sem Cabeça levanta-se do trono!", "opcoes": [{"label": "Curvar-se", "emoji": "🙇", "next": "curvar"}, {"label": "Desafiar o Rei", "emoji": "⚔️", "next": "combate_boss"}]},
+      "curvar": {"tipo": "recompensa", "texto": "O Rei aceita o respeito e joga-lhes um saco de ouro antigo.", "gold": 500, "xp": 100},
+      "combate_boss": {"tipo": "combate", "texto": "A fúria do além!", "inimigos": ["rei_sem_cabeca", "esqueleto"], "win_next": "vitoria_boss", "lose_next": "derrota"},
+      "vitoria_saque": {"tipo": "recompensa", "texto": "As jóias dos zumbis fedem, mas valem ouro.", "gold": 450, "xp": 300},
+      "vitoria_boss": {"tipo": "recompensa", "texto": "O Rei caiu. O tesouro real é de vocês!", "gold": 1500, "xp": 800},
+      "derrota": {"tipo": "recompensa", "texto": "Amaldiçoados, vocês fogem de mãos abanando.", "gold": 0, "xp": 50}
+    }
+  },
+  "golem_descontrolado": {
+    "nome": "A Fúria de Pedra",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Um Golem de Gelo desceu das montanhas e está a esmagar as carroças locais.", "opcoes": [{"label": "Ataque Frontal", "emoji": "🔨", "next": "combate"}, {"label": "Atirar Fogo", "emoji": "🔥", "next": "fogo"}]},
+      "fogo": {"tipo": "recompensa", "texto": "O Golem derreteu! A poça d'água revelou um anel mágico que ele havia engolido.", "gold": 600, "xp": 400},
+      "combate": {"tipo": "combate", "texto": "Soca a pedra!", "inimigos": ["golem_de_gelo", "lobo_de_gelo"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "O monstro rachou. O núcleo de gelo vale bastante no mercado negro.", "gold": 700, "xp": 500},
+      "derrota": {"tipo": "recompensa", "texto": "Pedra ganha de cara. Acordaram no hospital.", "gold": 0, "xp": 100}
+    }
+  },
+  "ninho_aranhas": {
+    "nome": "A Caverna Sedosa",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Uma caverna coberta de teias abriga aranhas gigantes que roubaram suprimentos.", "opcoes": [{"label": "Queimar as Teias", "emoji": "🔥", "next": "queimar"}, {"label": "Andar com Cuidado", "emoji": "🕸️", "next": "combate"}]},
+      "queimar": {"tipo": "recompensa", "texto": "O fogo matou as aranhas, mas também queimou os suprimentos. Pagamento mínimo.", "gold": 100, "xp": 150},
+      "combate": {"tipo": "combate", "texto": "Aranhas caem do teto!", "inimigos": ["ghoul", "zumbi"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Resgataram as caixas intactas e ainda ordenharam o veneno!", "gold": 800, "xp": 600},
+      "derrota": {"tipo": "recompensa", "texto": "Ficaram presos nas teias. Foram salvos por outros aventureiros.", "gold": 0, "xp": 50}
+    }
+  },
+  "vampiro_castelo": {
+    "nome": "O Convite Sombrio",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Um convite de veludo chegou. O Lorde Vampiro exige a presença do seu esquadrão no castelo.", "opcoes": [{"label": "Ir para lutar", "emoji": "⚔️", "next": "combate"}, {"label": "Ir para negociar", "emoji": "🍷", "next": "negociar"}]},
+      "negociar": {"tipo": "historia", "texto": "Ele sorri, revela as presas e exige o sangue do seu clérigo como imposto.", "opcoes": [{"label": "Recusar e Lutar", "emoji": "🩸", "next": "combate_furioso"}, {"label": "Ceder um pouco", "emoji": "🩹", "next": "ceder"}]},
+      "ceder": {"tipo": "recompensa", "texto": "O clérigo desmaiou, mas o Vampiro ficou feliz e vos deu uma joia ancestral.", "gold": 1500, "xp": 200},
+      "combate": {"tipo": "combate", "texto": "O lorde não está sozinho!", "inimigos": ["vampiro", "demonio_menor"], "win_next": "vitoria", "lose_next": "derrota"},
+      "combate_furioso": {"tipo": "combate", "texto": "Ele avança furioso!", "inimigos": ["lorde_vampiro", "vampiro"], "win_next": "vitoria_epica", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "O castelo foi limpo. As riquezas profanas são vossas.", "gold": 1000, "xp": 700},
+      "vitoria_epica": {"tipo": "recompensa", "texto": "Mataram um lorde verdadeiro! A guilda vos trata como lendas vivas.", "gold": 3000, "xp": 1500},
+      "derrota": {"tipo": "recompensa", "texto": "Muitas mordidas. Estão anêmicos e sem dinheiro.", "gold": 0, "xp": 10}
+    }
+  },
+  "caravana_perdida": {
+    "nome": "Areias e Saques",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Uma caravana real foi atacada perto da floresta. Restam caixas fechadas.", "opcoes": [{"label": "Saquear as Caixas", "emoji": "💰", "next": "saque"}, {"label": "Procurar Sobreviventes", "emoji": "🔍", "next": "procurar"}]},
+      "saque": {"tipo": "recompensa", "texto": "As caixas estavam cheias de ouro! Mas a sua honra foi para o lixo.", "gold": 1000, "xp": 50},
+      "procurar": {"tipo": "historia", "texto": "Acham os mercadores a serem intimidados por Trolls!", "opcoes": [{"label": "Atacar os Trolls", "emoji": "⚔️", "next": "combate"}]},
+      "combate": {"tipo": "combate", "texto": "Monstros enormes na frente!", "inimigos": ["trol", "trol"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Mercadores salvos. Eles deram-vos metade da mercadoria como agradecimento.", "gold": 800, "xp": 500},
+      "derrota": {"tipo": "recompensa", "texto": "Os trolls usaram a vossa equipa como bolas de basebol.", "gold": 0, "xp": 50}
+    }
+  },
+  "misterio_lago": {
+    "nome": "O Reflexo Mortal",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "A aldeia vizinha diz que as águas do lago ganharam vida.", "opcoes": [{"label": "Investigar a Água", "emoji": "💧", "next": "agua"}, {"label": "Atacar o Lago (Mágica)", "emoji": "✨", "next": "magia"}]},
+      "agua": {"tipo": "combate", "texto": "Ecos de água erguem-se!", "inimigos": ["eco_corrompido", "eco_corrompido"], "win_next": "vitoria", "lose_next": "derrota"},
+      "magia": {"tipo": "recompensa", "texto": "A magia evaporou as assombrações. O lago revelou um tesouro submerso.", "gold": 600, "xp": 450},
+      "vitoria": {"tipo": "recompensa", "texto": "Derrotaram os clones aquáticos. A paz voltou ao vilarejo.", "gold": 500, "xp": 600},
+      "derrota": {"tipo": "recompensa", "texto": "Quase afogados.", "gold": 0, "xp": 20}
+    }
+  },
+  "bruxa_pantano": {
+    "nome": "Poções e Feitiços",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Uma cabana estranha no pântano cheira a sopa podre.", "opcoes": [{"label": "Bater à Porta", "emoji": "🚪", "next": "bater"}, {"label": "Invadir", "emoji": "🪓", "next": "combate"}]},
+      "bater": {"tipo": "historia", "texto": "Uma velha pede ajuda para mexer o caldeirão amaldiçoado.", "opcoes": [{"label": "Ajudar a Velha", "emoji": "🥄", "next": "ajudar"}, {"label": "Atacar a Bruxa!", "emoji": "⚔️", "next": "combate"}]},
+      "ajudar": {"tipo": "recompensa", "texto": "A sopa espirrou, doeu, mas ela pagou-vos com poções valiosas de XP.", "gold": 300, "xp": 800},
+      "combate": {"tipo": "combate", "texto": "Ela revela a sua verdadeira forma: Um Mago Espectral do Abismo!", "inimigos": ["mago_espectral"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "A cabana ruiu, mas o cofre dela sobreviveu.", "gold": 1200, "xp": 600},
+      "derrota": {"tipo": "recompensa", "texto": "Transformados em sapos por algumas horas. Que vergonha.", "gold": 0, "xp": 10}
+    }
+  },
+  "dragao_adormecido": {
+    "nome": "A Montanha Fumegante",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Encontraram uma criatura gigantesca a dormir sobre uma pilha de ouro.", "opcoes": [{"label": "Pegar 1 Moeda e Fugir", "emoji": "🪙", "next": "moeda"}, {"label": "Tentar pegar TUDO", "emoji": "💰", "next": "tudo"}, {"label": "Matar o Dragão", "emoji": "🐉", "next": "combate"}]},
+      "moeda": {"tipo": "recompensa", "texto": "Covarde, mas inteligente. Ganhou uma moeda rara.", "gold": 50, "xp": 100},
+      "tudo": {"tipo": "combate", "texto": "Fizeram barulho. O Dragão de Gelo acordou furioso!", "inimigos": ["dragao_de_gelo"], "win_next": "vitoria_dragao", "lose_next": "derrota_cinzas"},
+      "combate": {"tipo": "combate", "texto": "Que os deuses tenham piedade.", "inimigos": ["dragao_de_gelo"], "win_next": "vitoria_dragao", "lose_next": "derrota_cinzas"},
+      "vitoria_dragao": {"tipo": "recompensa", "texto": "Inacreditável. O Dragão tombou e a montanha de ouro é toda vossa!", "gold": 5000, "xp": 3000},
+      "derrota_cinzas": {"tipo": "recompensa", "texto": "Viraram churrasco. Sobreviveram por milagre divino.", "gold": 0, "xp": 0}
+    }
+  },
+  "culto_sombrio": {
+    "nome": "O Ritual da Lua Negra",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Magos com mantos negros cantam à volta de um altar.", "opcoes": [{"label": "Interromper Ritual", "emoji": "🛑", "next": "combate"}, {"label": "Assistir de Escondido", "emoji": "👀", "next": "assistir"}]},
+      "assistir": {"tipo": "recompensa", "texto": "Eles invocaram um lorde demónio e foram comidos. Sobrou o ouro do altar.", "gold": 800, "xp": 100},
+      "combate": {"tipo": "combate", "texto": "Hereges devem queimar!", "inimigos": ["mago_infernal", "demonio_menor"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Impediram a calamidade e ficaram com os grimórios raros.", "gold": 1000, "xp": 800},
+      "derrota": {"tipo": "recompensa", "texto": "O sacrifício quase foi você.", "gold": 0, "xp": 20}
+    }
+  },
+  "resgate_nobre": {
+    "nome": "A Filha do Prefeito",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "A filha do prefeito foi raptada por demónios de baixo nível.", "opcoes": [{"label": "Pagar o Resgate", "emoji": "💸", "next": "pagar"}, {"label": "Chutar a Porta", "emoji": "🚪", "next": "combate"}]},
+      "pagar": {"tipo": "recompensa", "texto": "O prefeito vos odeia por terem sido covardes e usado o dinheiro dele.", "gold": -100, "xp": 50},
+      "combate": {"tipo": "combate", "texto": "Sem negociações com terroristas!", "inimigos": ["demonio_medio", "demonio_menor"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Resgate heróico! O prefeito recompensou regiamente o esquadrão.", "gold": 1200, "xp": 750},
+      "derrota": {"tipo": "recompensa", "texto": "Apanharam feio. A guarda local teve que resolver o caso.", "gold": 0, "xp": 50}
+    }
+  },
+  "artefato_roubado": {
+    "nome": "O Cálice da Vida",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "O templo pede que recuperem o Cálice Sagrado roubado por Gárgulas (Harpias).", "opcoes": [{"label": "Escalar a Torre", "emoji": "🧗", "next": "combate"}]},
+      "combate": {"tipo": "combate", "texto": "Luta nos céus!", "inimigos": ["harpia", "harpia_rainha"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Cálice recuperado. Os deuses sorriem para vocês.", "gold": 800, "xp": 900},
+      "derrota": {"tipo": "recompensa", "texto": "Queda livre dói muito.", "gold": 0, "xp": 0}
+    }
+  },
+  "cemiterio_vivo": {
+    "nome": "A Noite dos Mortos",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "O cemitério da cidade está em pânico. Túmulos abrem-se sozinhos.", "opcoes": [{"label": "Purificar o Solo", "emoji": "✨", "next": "magia"}, {"label": "Quebrar Ossos", "emoji": "🦴", "next": "combate"}]},
+      "magia": {"tipo": "recompensa", "texto": "A benção exorcizou a área sem lutas. Paz alcançada.", "gold": 300, "xp": 500},
+      "combate": {"tipo": "combate", "texto": "Horda incessante!", "inimigos": ["esqueleto", "zumbi", "cavaleiro_esqueleto"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Ossos triturados. O coveiro agradeceu com as gorjetas escondidas.", "gold": 600, "xp": 700},
+      "derrota": {"tipo": "recompensa", "texto": "Quase se juntaram a eles na terra.", "gold": 0, "xp": 40}
+    }
+  },
+  "troll_ponte": {
+    "nome": "O Pedágio da Ponte",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Um Troll bloqueia a ponte comercial e exige 500 de Ouro.", "opcoes": [{"label": "Pagar Pedágio", "emoji": "🪙", "next": "pagar"}, {"label": "Recusar e Lutar", "emoji": "⚔️", "next": "combate"}]},
+      "pagar": {"tipo": "recompensa", "texto": "Perderam dinheiro, mas atravessaram em paz.", "gold": -500, "xp": 50},
+      "combate": {"tipo": "combate", "texto": "O Troll ergue uma árvore como porrete!", "inimigos": ["trol"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "A estrada está livre. Os mercadores deram-vos as moedas que o Troll tinha roubado.", "gold": 900, "xp": 600},
+      "derrota": {"tipo": "recompensa", "texto": "Lançados ao rio. Perderam a dignidade.", "gold": 0, "xp": 10}
+    }
+  },
+  "fuga_prisao": {
+    "nome": "A Fuga do Submundo",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "A aliança pede ajuda para tirar um aliado inocente da Prisão Infernal.", "opcoes": [{"label": "Subornar Guardas", "emoji": "💰", "next": "subornar"}, {"label": "Invasão Violenta", "emoji": "💥", "next": "combate"}]},
+      "subornar": {"tipo": "recompensa", "texto": "Os demónios aceitaram o ouro. Aliado livre e seguro.", "gold": -300, "xp": 600},
+      "combate": {"tipo": "combate", "texto": "Guardas das profundezas!", "inimigos": ["demonio_menor", "cerberus"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Limparam a prisão e libertaram todos. Um feito lendário!", "gold": 1500, "xp": 1000},
+      "derrota": {"tipo": "recompensa", "texto": "Presos junto com ele. A guilda teve de vos comprar de volta.", "gold": -200, "xp": 0}
+    }
+  },
+  "festival_fogo": {
+    "nome": "O Festival Interrompido",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "O Festival do Fogo foi invadido por Lobos controlados por Xamãs.", "opcoes": [{"label": "Proteger os Cidadãos", "emoji": "🛡️", "next": "combate_lobos"}, {"label": "Caçar o Xamã", "emoji": "🎯", "next": "combate_xama"}]},
+      "combate_lobos": {"tipo": "combate", "texto": "Os lobos avançam contra a praça!", "inimigos": ["lobo_selvagem", "lobo_selvagem"], "win_next": "vitoria_lobos", "lose_next": "derrota"},
+      "combate_xama": {"tipo": "combate", "texto": "O líder inimigo foi encurralado!", "inimigos": ["goblin_xama_anciao", "lobo_selvagem"], "win_next": "vitoria_xama", "lose_next": "derrota"},
+      "vitoria_lobos": {"tipo": "recompensa", "texto": "O povo está salvo e pagou-vos com comida e ouro.", "gold": 500, "xp": 400},
+      "vitoria_xama": {"tipo": "recompensa", "texto": "O Xamã caiu e a horda dispersou! O cajado dele é valioso.", "gold": 1000, "xp": 800},
+      "derrota": {"tipo": "recompensa", "texto": "O festival pegou fogo de vez. Falharam.", "gold": 0, "xp": 30}
+    }
+  },
+  "ladroes_estrada": {
+    "nome": "A Emboscada",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "A estrada está bloqueada por árvores derrubadas. Goblins veteranos saltam das copas!", "opcoes": [{"label": "Descer a porrada", "emoji": "⚔️", "next": "combate"}, {"label": "Fugir para a floresta", "emoji": "🌲", "next": "derrota"}]},
+      "combate": {"tipo": "combate", "texto": "Emboscada em andamento!", "inimigos": ["goblin_veterano", "goblin_arqueiro", "goblin_arqueiro"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Sobreviveram à emboscada e limparam os bolsos dos bandidos.", "gold": 650, "xp": 450},
+      "derrota": {"tipo": "recompensa", "texto": "Eles roubaram as vossas provisões.", "gold": -50, "xp": 50}
+    }
+  },
+  "misterio_taverna": {
+    "nome": "Tumulto na Taverna",
+    "nodos": {
+      "start": {"tipo": "historia", "texto": "Uma briga de bar saiu de controlo quando um vampiro disfarçado foi descoberto.", "opcoes": [{"label": "Entrar na Briga", "emoji": "🥊", "next": "combate"}, {"label": "Assistir de Longe", "emoji": "🍺", "next": "assistir"}]},
+      "assistir": {"tipo": "recompensa", "texto": "Beberam cerveja enquanto o vampiro apanhava dos locais. Sossegado.", "gold": 0, "xp": 100},
+      "combate": {"tipo": "combate", "texto": "O Vampiro mostra as garras e ataca!", "inimigos": ["vampiro_nobre"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "O taverneiro deu-vos bebidas grátis para sempre (e o ouro do vampiro).", "gold": 800, "xp": 700},
+      "derrota": {"tipo": "recompensa", "texto": "Atirados pela janela da taverna.", "gold": 0, "xp": 20}
+    }
+  }
+}
