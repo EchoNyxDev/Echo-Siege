@@ -5,4 +5,4 @@ players.db
 backup_*.db
 venv/
 .env.locals
-*.db-journal
+*.db
