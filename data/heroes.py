@@ -5898,7 +5898,7 @@ HEROES = {
         "emoji": "👊",
         "imagem": "",
         "classe": "atacante",
-        "raridade": 3,
+        "raridade": 4,
         "max_star": 7,
         "hp": 115,
         "atk": 58,
