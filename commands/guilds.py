@@ -13,7 +13,15 @@ root_dir = os.path.abspath(os.path.join(current_dir, ".."))
 if root_dir not in sys.path:
     sys.path.append(root_dir)
 
-from utils.rewards import scale_combat_rewards
+try:
+    from data.heroes import HEROES
+    from utils.gold_system import conceder_ouro_escalavel
+    from utils.xp_system import dar_xp_jogador, dar_xp_heroi
+except ModuleNotFoundError:
+    HEROES = {}
+    def conceder_ouro_escalavel(*args, **kwargs): return 0
+    def dar_xp_jogador(*args): return 0, 1
+    def dar_xp_heroi(*args): return 0, 1
 
 
 CREATE_GUILD_COST = 5000
@@ -29,6 +37,7 @@ GUILD_MISSIONS = {
         "reward_xp": 120,
         "reward_score": 500,
         "member_gold": 400,
+        "member_xp": 150,
         "member_gems": 0,
         "member_tickets": 0,
     },
@@ -42,6 +51,7 @@ GUILD_MISSIONS = {
         "reward_xp": 320,
         "reward_score": 1500,
         "member_gold": 900,
+        "member_xp": 350,
         "member_gems": 2,
         "member_tickets": 0,
     },
@@ -55,6 +65,7 @@ GUILD_MISSIONS = {
         "reward_xp": 700,
         "reward_score": 4000,
         "member_gold": 1800,
+        "member_xp": 800,
         "member_gems": 4,
         "member_tickets": 1,
     },
@@ -188,6 +199,35 @@ def init_guild_db(cursor):
     """)
 
 
+def get_equipped_party(cursor, user_id):
+    """Puxa a Party real do jogador que está equipada no momento"""
+    cursor.execute("SELECT main_hero FROM players WHERE user_id = ?", (str(user_id),))
+    p_data = cursor.fetchone()
+    if not p_data or not p_data[0]: return []
+    
+    cursor.execute("SELECT slot_2, slot_3, slot_4, slot_5 FROM teams WHERE user_id = ?", (str(user_id),))
+    team = cursor.fetchone()
+    return [p_data[0]] + [x for x in (team if team else []) if x is not None]
+
+def party_power_and_level(cursor, user_id):
+    """Calcula a força e o nível médio baseado na Party ativa do jogador"""
+    time_ids = get_equipped_party(cursor, user_id)
+    if not time_ids: return 80, 1
+    
+    power = 0
+    levels = []
+    for hid in time_ids:
+        cursor.execute("SELECT rarity, stars, level FROM heroes WHERE id = ?", (int(hid),))
+        hero = cursor.fetchone()
+        if hero:
+            rarity, stars, level = hero
+            power += (rarity or 1) * (stars or 1) * ((level or 1) + 16)
+            levels.append(level or 1)
+            
+    avg_level = sum(levels) // len(levels) if levels else 1
+    return int(power), avg_level
+
+
 def add_tickets(cursor, user_id, amount):
     if amount <= 0:
         return
@@ -281,19 +321,6 @@ class Guilds(commands.Cog):
             await ctx.send("Confirmação cancelada. Drama administrativo arquivado.")
             return False
 
-    def _party_power(self, cursor, user_id):
-        cursor.execute("""
-            SELECT rarity, stars, level
-            FROM heroes
-            WHERE user_id = ?
-            ORDER BY level DESC, rarity DESC
-            LIMIT 5
-        """, (str(user_id),))
-        rows = cursor.fetchall()
-        if not rows:
-            return 80
-        return sum((rarity or 1) * (stars or 1) * ((level or 1) + 8) for rarity, stars, level in rows)
-
     def _level_up_guild(self, cursor, guild_id):
         cursor.execute("SELECT level, xp FROM player_guilds WHERE id = ?", (guild_id,))
         row = cursor.fetchone()
@@ -322,8 +349,8 @@ class Guilds(commands.Cog):
         embed.add_field(name="Banco", value=f"{bank:,} Gold", inline=True)
         embed.add_field(name="Score", value=f"{score:,}", inline=True)
         embed.add_field(name="Sua função", value=role, inline=True)
-        embed.add_field(name="Sua contribuição", value=f"{contribution:,} Gold", inline=True)
-        embed.set_footer(text="TutoriUAU • guild membros, doar, missao, raid, ranking, foto, descricao, modo")
+        embed.add_field(name="Sua contribuição", value=f"{contribution or 0:,} Gold", inline=True)
+        embed.set_footer(text="TutoriUAU • guild membros, doar, missao, raid, caca, ranking, foto, descricao, modo")
         return embed
 
     @commands.group(name="guild", aliases=["g"], invoke_without_command=True)
@@ -621,7 +648,7 @@ class Guilds(commands.Cog):
         )
         rows = cursor.fetchall()
         conn.close()
-        text = "\n".join(f"<@{uid}> - **{role}** - {contrib:,} Gold" for uid, role, contrib in rows)
+        text = "\n".join(f"<@{uid}> - **{role}** - {contrib or 0:,} Gold" for uid, role, contrib in rows)
         await ctx.send(embed=discord.Embed(title=f"Membros de {guild[1]}", description=text or "Sem membros.", color=discord.Color.blue()))
 
     @guild_cmd.command(name="foto", aliases=["icone", "icon"])
@@ -692,14 +719,17 @@ class Guilds(commands.Cog):
         guild_xp = quantidade // 100
         cursor.execute("UPDATE players SET gold = gold - ? WHERE user_id = ?", (quantidade, str(ctx.author.id)))
         cursor.execute("UPDATE player_guilds SET gold_bank = gold_bank + ?, xp = xp + ? WHERE id = ?", (quantidade, guild_xp, guild[0]))
-        cursor.execute("UPDATE player_guild_members SET contribution = contribution + ? WHERE user_id = ?", (quantidade, str(ctx.author.id)))
+        cursor.execute("UPDATE player_guild_members SET contribution = COALESCE(contribution, 0) + ? WHERE user_id = ?", (quantidade, str(ctx.author.id)))
         level = self._level_up_guild(cursor, guild[0])
         conn.commit()
         conn.close()
         await ctx.send(f"Doação registrada: **{quantidade:,} Gold**. Guilda no nível **{level}**. O banco agradece. Eu também, mas só por educação.")
 
     @guild_cmd.group(name="missao", aliases=["missão", "missoes", "missões", "missions"], invoke_without_command=True)
-    async def missao(self, ctx):
+    async def missao(self, ctx, *args):
+        if args:
+            return await ctx.send("❌ Comando não reconhecido. Use `echo guild missao iniciar <nome>` ou `echo guild missao atacar`.")
+            
         conn = sqlite3.connect("players.db")
         cursor = conn.cursor()
         init_guild_db(cursor)
@@ -719,7 +749,7 @@ class Guilds(commands.Cog):
             mission = GUILD_MISSIONS.get(active[0], {})
             embed.description = f"Missão ativa: **{mission.get('name', active[0])}**\nProgresso: **{active[1]:,}/{active[2]:,}**\nTermina <t:{active[3]}:R>\nUse `echo guild missao atacar`."
         else:
-            embed.description = "Nenhuma missão ativa. Líder/oficial pode iniciar uma. Oportunidade de trabalho, que alegria."
+            embed.description = "Nenhuma missão ativa. Líder/oficial pode iniciar uma com `echo guild missao iniciar <id>`.\nOportunidade de trabalho, que alegria."
         lines = []
         for mid, mission in GUILD_MISSIONS.items():
             lines.append(f"`{mid}` - **{mission['name']}** | Custo {mission['cost']:,} | Alvo {mission['target']:,}\n{mission['desc']}")
@@ -730,7 +760,7 @@ class Guilds(commands.Cog):
     async def missao_iniciar(self, ctx, mission_id: str = None):
         mission_id = (mission_id or "").lower()
         if mission_id not in GUILD_MISSIONS:
-            return await ctx.send("Missão inválida. Use `echo guild missao` para ver a lista.")
+            return await ctx.send("Missão inválida. Use `echo guild missao` para ver a lista de IDs corretos.")
         mission = GUILD_MISSIONS[mission_id]
         conn = sqlite3.connect("players.db")
         cursor = conn.cursor()
@@ -781,20 +811,25 @@ class Guilds(commands.Cog):
         if not active:
             conn.close()
             return await ctx.send("Nenhuma missão ativa.")
+            
         cursor.execute("SELECT last_action FROM player_guild_mission_actions WHERE guild_id = ? AND user_id = ?", (guild[0], user_id))
         last = cursor.fetchone()
         if last and now - (last[0] or 0) < 900:
             conn.close()
             return await ctx.send("Aguarde um pouco antes de contribuir de novo. Até herói precisa beber água.")
-        power = self._party_power(cursor, user_id)
+            
+        power, avg_level = party_power_and_level(cursor, user_id)
         gain = max(150, int(power * (1 + guild[3] * 0.04)))
         progress = min(active[3], active[2] + gain)
+        
         cursor.execute("UPDATE player_guild_missions SET progress = ? WHERE id = ?", (progress, active[0]))
         cursor.execute(
             "INSERT OR REPLACE INTO player_guild_mission_actions (guild_id, user_id, last_action) VALUES (?, ?, ?)",
             (guild[0], user_id, now),
         )
+        
         msg = f"{ctx.author.mention} contribuiu com **{gain:,}** de progresso.\nMissão: **{progress:,}/{active[3]:,}**"
+        
         if progress >= active[3]:
             mission = GUILD_MISSIONS[active[1]]
             cursor.execute("UPDATE player_guild_missions SET completed = 1 WHERE id = ?", (active[0],))
@@ -804,20 +839,24 @@ class Guilds(commands.Cog):
             )
             cursor.execute("SELECT user_id FROM player_guild_members WHERE guild_id = ?", (guild[0],))
             members = [row[0] for row in cursor.fetchall()]
-            member_gold, _ = scale_combat_rewards(
-                mission["member_gold"],
-                0,
-                guild[3],
-                reference=20,
-            )
+            
             for uid in members:
-                cursor.execute("UPDATE players SET gold = gold + ?, gems = gems + ? WHERE user_id = ?", (member_gold, mission["member_gems"], uid))
-                add_tickets(cursor, uid, mission["member_tickets"])
+                conceder_ouro_escalavel(cursor, uid, mission["member_gold"], avg_level, guild_id=str(guild[0]), extra_mult=1.0)
+                dar_xp_jogador(cursor, uid, mission.get("member_xp", 100))
+                p_ids = get_equipped_party(cursor, uid)
+                for h in p_ids:
+                    dar_xp_heroi(cursor, int(h), mission.get("member_xp", 100))
+                
+                if mission.get("member_gems", 0) > 0:
+                    cursor.execute("UPDATE players SET gems = gems + ? WHERE user_id = ?", (mission["member_gems"], uid))
+                add_tickets(cursor, uid, mission.get("member_tickets", 0))
+                
             level = self._level_up_guild(cursor, guild[0])
             msg += (
-                f"\nMissão concluída! Banco +**{mission['reward_bank']:,} Gold**, XP +**{mission['reward_xp']}**, "
-                f"score +**{mission['reward_score']:,}**. Guilda agora nível **{level}**."
+                f"\n🎉 Missão concluída! Banco +**{mission['reward_bank']:,} Gold**, XP +**{mission['reward_xp']}**, "
+                f"score +**{mission['reward_score']:,}**.\nOs membros receberam o pagamento de Ouro, XP e Tickets. Guilda agora nível **{level}**."
             )
+            
         conn.commit()
         conn.close()
         await ctx.send(msg)
@@ -832,10 +871,12 @@ class Guilds(commands.Cog):
         if not guild:
             conn.close()
             return await ctx.send("Você não está em guilda.")
+            
         guild_id, name, _, level, _, bank, _, _, _, _, _, _ = guild
         now = int(time.time())
         cursor.execute("SELECT boss_name, hp, max_hp, ends_at FROM player_guild_raids WHERE guild_id = ?", (guild_id,))
         raid = cursor.fetchone()
+        
         if not raid or raid[3] < now or raid[1] <= 0:
             if not self._can_manage(guild):
                 conn.close()
@@ -867,38 +908,50 @@ class Guilds(commands.Cog):
         if last and now - (last[0] or 0) < 1800:
             conn.close()
             return await ctx.send("Você já atacou essa raid recentemente. O chefe pediu intervalo sindical.")
+            
         boss_name, hp, max_hp, _ = raid
-        power = self._party_power(cursor, user_id)
+        power, avg_level = party_power_and_level(cursor, user_id)
         crit = random.random() < min(0.35, 0.08 + level * 0.01)
         phase = boss_phase(hp, max_hp)
         phase_mult = 1.25 if phase == "Fúria Final" else 1.10 if phase == "Quebra de Guarda" else 1.0
         damage = max(250, int(power * random.uniform(0.85, 1.25) * (1 + level * 0.05) * phase_mult * (1.6 if crit else 1.0)))
         hp = max(0, hp - damage)
+        
         cursor.execute("UPDATE player_guild_raids SET hp = ? WHERE guild_id = ?", (hp, guild_id))
         cursor.execute("UPDATE player_guilds SET raid_score = raid_score + ? WHERE id = ?", (damage, guild_id))
         cursor.execute(
             "INSERT OR REPLACE INTO player_guild_raid_actions (guild_id, user_id, last_action) VALUES (?, ?, ?)",
             (guild_id, user_id, now),
         )
+        
         result_lines = [
             f"{ctx.author.mention} causou **{damage:,}** em **{boss_name}**{' com crítico' if crit else ''}.",
             f"Fase: **{phase}**",
         ]
         color = discord.Color.orange()
+        
         if hp <= 0:
             reward = 800 + level * 180
-            reward, _ = scale_combat_rewards(reward, 0, level, reference=20)
             cursor.execute("SELECT user_id FROM player_guild_members WHERE guild_id = ?", (guild_id,))
             members = [row[0] for row in cursor.fetchall()]
+            
             for uid in members:
-                cursor.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?", (reward, uid))
+                conceder_ouro_escalavel(cursor, uid, reward, avg_level, guild_id=str(guild_id), extra_mult=1.0)
+                xp_reward = 200 + level * 50
+                dar_xp_jogador(cursor, uid, xp_reward)
+                p_ids = get_equipped_party(cursor, uid)
+                for h in p_ids:
+                    dar_xp_heroi(cursor, int(h), xp_reward)
+                    
             cursor.execute("UPDATE player_guilds SET xp = xp + ?, raid_score = raid_score + ? WHERE id = ?", (level * 120, max_hp, guild_id))
             cursor.execute("DELETE FROM player_guild_raids WHERE guild_id = ?", (guild_id,))
             self._level_up_guild(cursor, guild_id)
-            result_lines.append(f"Chefe derrotado! Todos os membros receberam **{reward:,} Gold**.")
+            result_lines.append(f"Chefe derrotado! Todos os membros receberam sua parte da recompensa de XP e Ouro.")
             color = discord.Color.green()
+            
         conn.commit()
         conn.close()
+        
         embed = discord.Embed(title=f"Raid da Guilda - {boss_name}", description="\n".join(result_lines), color=color)
         embed.add_field(name="HP do Boss", value=f"{hp_bar(hp, max_hp)}\n**{hp:,}/{max_hp:,}**", inline=False)
         embed.add_field(name="Log", value=f"`Poder usado: {power:,}`\n`Dano final: {damage:,}`", inline=False)
@@ -932,12 +985,7 @@ class Guilds(commands.Cog):
                 return await ctx.send(f"A guilda precisa de **{cost:,} Gold** no banco para liderar essa caçada.")
             max_hp = int(boss["hp"] * (1 + level * 0.12))
             reward_member = int(boss["reward_member"] * (1 + level * 0.05))
-            reward_member, _ = scale_combat_rewards(
-                reward_member,
-                0,
-                level,
-                reference=20,
-            )
+            
             cursor.execute("UPDATE player_guilds SET gold_bank = gold_bank - ? WHERE id = ?", (cost, guild_id))
             cursor.execute(
                 """
@@ -955,7 +1003,7 @@ class Guilds(commands.Cog):
                 color=discord.Color.dark_gold(),
             )
             embed.add_field(name="Custo", value=f"{cost:,} Gold do banco", inline=True)
-            embed.add_field(name="Recompensa por membro", value=f"{reward_member:,} Gold + chance de Gems", inline=True)
+            embed.add_field(name="Recompensa por membro", value=f"{reward_member:,} Gold base + chance de Gems", inline=True)
             embed.add_field(name="Tempo limite", value=f"<t:{now + 18 * 3600}:R>", inline=True)
             embed.set_footer(text="TutoriUAU: use `echo guild caca` para atacar. Levar lanche é recomendado.")
             return await ctx.send(embed=embed)
@@ -967,11 +1015,12 @@ class Guilds(commands.Cog):
             return await ctx.send("Você já atacou essa caçada recentemente. O boss pediu 20 minutos de paz, abusado.")
 
         boss_name, hp, max_hp, reward_member, _ = hunt
-        power = self._party_power(cursor, user_id)
+        power, avg_level = party_power_and_level(cursor, user_id)
         crit = random.random() < min(0.40, 0.10 + level * 0.012)
         phase = boss_phase(hp, max_hp)
         damage = max(220, int(power * random.uniform(1.1, 1.7) * (1 + level * 0.035) * (1.5 if crit else 1.0)))
         hp = max(0, hp - damage)
+        
         cursor.execute("UPDATE player_guild_hunts SET hp = ? WHERE guild_id = ?", (hp, guild_id))
         cursor.execute("SELECT damage FROM player_guild_hunt_actions WHERE guild_id = ? AND user_id = ?", (guild_id, user_id))
         old_damage = (cursor.fetchone() or [0])[0] or 0
@@ -990,13 +1039,23 @@ class Guilds(commands.Cog):
             f"Fase atual: **{phase}**",
         ]
         color = discord.Color.dark_gold()
+        
         if hp <= 0:
             bank_reward = int(max_hp * 0.35)
             cursor.execute("SELECT user_id FROM player_guild_members WHERE guild_id = ?", (guild_id,))
             members = [row[0] for row in cursor.fetchall()]
             gem_bonus = 1 if random.random() < 0.18 else 0
+            
             for uid in members:
-                cursor.execute("UPDATE players SET gold = gold + ?, gems = gems + ? WHERE user_id = ?", (reward_member, gem_bonus, uid))
+                conceder_ouro_escalavel(cursor, uid, reward_member, avg_level, guild_id=str(guild_id), extra_mult=1.0)
+                if gem_bonus > 0:
+                    cursor.execute("UPDATE players SET gems = gems + ? WHERE user_id = ?", (gem_bonus, uid))
+                xp_reward = level * 20
+                dar_xp_jogador(cursor, uid, xp_reward)
+                p_ids = get_equipped_party(cursor, uid)
+                for h in p_ids:
+                    dar_xp_heroi(cursor, int(h), xp_reward)
+                    
             cursor.execute(
                 "UPDATE player_guilds SET gold_bank = gold_bank + ?, xp = xp + ?, raid_score = raid_score + ? WHERE id = ?",
                 (bank_reward, level * 160, max_hp, guild_id),
@@ -1004,8 +1063,9 @@ class Guilds(commands.Cog):
             cursor.execute("DELETE FROM player_guild_hunts WHERE guild_id = ?", (guild_id,))
             cursor.execute("DELETE FROM player_guild_hunt_actions WHERE guild_id = ?", (guild_id,))
             new_level = self._level_up_guild(cursor, guild_id)
+            
             result_lines.append(
-                f"Boss derrotado! Cada membro recebeu **{reward_member:,} Gold**{f' e **{gem_bonus} Gem rara**' if gem_bonus else ''}. "
+                f"Boss derrotado! Cada membro recebeu recompensas valiosas de XP e Ouro{f' e **{gem_bonus} Gem rara**' if gem_bonus else ''}. "
                 f"Banco +**{bank_reward:,} Gold**. Guilda nível **{new_level}**."
             )
             color = discord.Color.green()

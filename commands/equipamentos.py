@@ -13,15 +13,9 @@ if root_dir not in sys.path:
 try:
     from data.equipamentos import EQUIPAMENTOS
     from data.heroes import HEROES
-    from utils.equipment import init_equipment_db, get_equipment_progress, scale_equipment_stats, upgrade_cost, refine_cost
 except ModuleNotFoundError:
     EQUIPAMENTOS = {}
     HEROES = {}
-    def init_equipment_db(cursor): pass
-    def get_equipment_progress(cursor, user_id, item_name): return {"level": 0, "refine": 0, "xp": 0}
-    def scale_equipment_stats(base_item, progress): return {k: base_item.get(k, 0) for k in ["hp", "atk", "matk", "def", "spd", "crt"]}
-    def upgrade_cost(current_level): return 250 + current_level * 150
-    def refine_cost(current_refine): return 1200 + current_refine * 900
 
 class Equipamentos(commands.Cog):
     def __init__(self, bot):
@@ -39,7 +33,6 @@ class Equipamentos(commands.Cog):
         if "equip_atk" not in colunas: cursor.execute("ALTER TABLE heroes ADD COLUMN equip_atk TEXT")
         if "equip_def" not in colunas: cursor.execute("ALTER TABLE heroes ADD COLUMN equip_def TEXT")
         if "equip_livre" not in colunas: cursor.execute("ALTER TABLE heroes ADD COLUMN equip_livre TEXT")
-        init_equipment_db(cursor)
         
         conn.commit()
         conn.close()
@@ -93,6 +86,8 @@ class Equipamentos(commands.Cog):
         elif eq_data["tipo"] == "def":
             if not eq_def: slot_alvo = "equip_def"
             elif not eq_livre: slot_alvo = "equip_livre"
+        elif eq_data["tipo"] == "livre":
+            if not eq_livre: slot_alvo = "equip_livre"
 
         if not slot_alvo:
             conn.close()
@@ -201,150 +196,6 @@ class Equipamentos(commands.Cog):
         embed.set_footer(text="Use 'echo equipar <ID> <Item>' ou 'echo desequipar <ID> <Slot>'")
         
         await ctx.send(embed=embed)
-
-    def _normalizar_item(self, nome_item):
-        if not nome_item:
-            return None
-        nome_db = nome_item.strip().lower().replace(" ", "_")
-        if nome_db in EQUIPAMENTOS:
-            return nome_db
-        for key, val in EQUIPAMENTOS.items():
-            if val.get("nome", "").lower() == nome_item.lower():
-                return key
-        return nome_db
-
-    def _formatar_stats(self, stats):
-        partes = []
-        for stat in ["hp", "atk", "matk", "def", "spd", "crt"]:
-            valor = stats.get(stat, 0)
-            if valor:
-                sinal = "+" if valor > 0 else ""
-                partes.append(f"{sinal}{valor} {stat.upper()}")
-        return ", ".join(partes) if partes else "Sem bônus direto"
-
-    @commands.command(name="equipinfo", aliases=["eqinfo", "iteminfo"])
-    async def equipinfo_cmd(self, ctx, *, nome_item: str = None):
-        nome_db = self._normalizar_item(nome_item)
-        if not nome_db or nome_db not in EQUIPAMENTOS:
-            return await ctx.send("❌ Informe um equipamento válido. Ex: `echo equipinfo espada de ferro`")
-
-        conn = sqlite3.connect("players.db")
-        cursor = conn.cursor()
-        progress = get_equipment_progress(cursor, str(ctx.author.id), nome_db)
-        conn.close()
-
-        eq_data = EQUIPAMENTOS[nome_db]
-        stats_base = scale_equipment_stats(eq_data, {"level": 0, "refine": 0, "xp": 0})
-        stats_atual = scale_equipment_stats(eq_data, progress)
-
-        embed = discord.Embed(
-            title=f"{eq_data.get('emoji', '⚙️')} {eq_data.get('nome', nome_db)}",
-            description=f"Tipo: **{eq_data.get('tipo', 'livre').upper()}**\nNível: **+{progress['level']}** | Refino: **R{progress['refine']}**",
-            color=discord.Color.teal()
-        )
-        embed.add_field(name="Base", value=self._formatar_stats(stats_base), inline=False)
-        embed.add_field(name="Atual", value=self._formatar_stats(stats_atual), inline=False)
-        embed.add_field(name="Próximo Aprimoramento", value=f"{upgrade_cost(progress['level']):,} Gold", inline=True)
-        embed.add_field(name="Próximo Refino", value=f"{refine_cost(progress['refine']):,} Gold + 1 cópia", inline=True)
-        await ctx.send(embed=embed)
-
-    @commands.command(name="aprimorar", aliases=["upgrade"])
-    async def aprimorar_cmd(self, ctx, *, entrada: str = None):
-        if not entrada:
-            return await ctx.send("❌ Uso: `echo aprimorar <equipamento> [vezes]`")
-        partes = entrada.strip().rsplit(" ", 1)
-        if len(partes) == 2 and partes[1].isdigit():
-            nome_item, vezes = partes[0], int(partes[1])
-        else:
-            nome_item, vezes = entrada.strip(), 1
-        nome_db = self._normalizar_item(nome_item)
-        if not nome_db or nome_db not in EQUIPAMENTOS:
-            return await ctx.send("❌ Uso: `echo aprimorar <equipamento> [vezes]`")
-        vezes = max(1, min(10, vezes or 1))
-
-        conn = sqlite3.connect("players.db")
-        cursor = conn.cursor()
-        init_equipment_db(cursor)
-        cursor.execute("SELECT gold FROM players WHERE user_id = ?", (str(ctx.author.id),))
-        player = cursor.fetchone()
-        if not player:
-            conn.close()
-            return await ctx.send("❌ Use `echo iniciar` primeiro.")
-
-        cursor.execute(
-            "SELECT 1 FROM inventory WHERE user_id = ? AND item_name = ? UNION SELECT 1 FROM heroes WHERE user_id = ? AND (equip_atk = ? OR equip_def = ? OR equip_livre = ?) LIMIT 1",
-            (str(ctx.author.id), nome_db, str(ctx.author.id), nome_db, nome_db, nome_db)
-        )
-        if not cursor.fetchone():
-            conn.close()
-            return await ctx.send("❌ Você precisa possuir esse equipamento na mochila ou equipado em algum herói.")
-
-        progress = get_equipment_progress(cursor, str(ctx.author.id), nome_db)
-        gold = player[0] or 0
-        levels = 0
-        custo_total = 0
-        for _ in range(vezes):
-            if progress["level"] >= 20:
-                break
-            custo = upgrade_cost(progress["level"])
-            if gold < custo_total + custo:
-                break
-            custo_total += custo
-            progress["level"] += 1
-            levels += 1
-
-        if levels == 0:
-            conn.close()
-            return await ctx.send("❌ Ouro insuficiente ou equipamento já está no +20.")
-
-        cursor.execute("UPDATE players SET gold = gold - ? WHERE user_id = ?", (custo_total, str(ctx.author.id)))
-        cursor.execute(
-            "INSERT OR REPLACE INTO equipment_upgrades (user_id, item_name, level, refine, xp) VALUES (?, ?, ?, ?, ?)",
-            (str(ctx.author.id), nome_db, progress["level"], progress["refine"], progress["xp"])
-        )
-        conn.commit()
-        conn.close()
-        await ctx.send(f"✅ **{EQUIPAMENTOS[nome_db].get('nome', nome_db)}** aprimorado para **+{progress['level']}** por **{custo_total:,} Gold**.")
-
-    @commands.command(name="refinar", aliases=["refine"])
-    async def refinar_cmd(self, ctx, *, nome_item: str = None):
-        nome_db = self._normalizar_item(nome_item)
-        if not nome_db or nome_db not in EQUIPAMENTOS:
-            return await ctx.send("❌ Uso: `echo refinar <equipamento>`")
-
-        conn = sqlite3.connect("players.db")
-        cursor = conn.cursor()
-        init_equipment_db(cursor)
-        progress = get_equipment_progress(cursor, str(ctx.author.id), nome_db)
-        if progress["refine"] >= 5:
-            conn.close()
-            return await ctx.send("❌ Esse equipamento já está no refino máximo R5.")
-
-        cursor.execute("SELECT gold FROM players WHERE user_id = ?", (str(ctx.author.id),))
-        player = cursor.fetchone()
-        cursor.execute("SELECT id, quantity FROM inventory WHERE user_id = ? AND item_name = ? AND quantity > 0", (str(ctx.author.id), nome_db))
-        inv = cursor.fetchone()
-        custo = refine_cost(progress["refine"])
-        if not player or (player[0] or 0) < custo:
-            conn.close()
-            return await ctx.send(f"❌ Você precisa de **{custo:,} Gold** para refinar.")
-        if not inv:
-            conn.close()
-            return await ctx.send("❌ Você precisa de uma cópia solta do equipamento na mochila para refinar.")
-
-        if inv[1] <= 1:
-            cursor.execute("DELETE FROM inventory WHERE id = ?", (inv[0],))
-        else:
-            cursor.execute("UPDATE inventory SET quantity = quantity - 1 WHERE id = ?", (inv[0],))
-        cursor.execute("UPDATE players SET gold = gold - ? WHERE user_id = ?", (custo, str(ctx.author.id)))
-        progress["refine"] += 1
-        cursor.execute(
-            "INSERT OR REPLACE INTO equipment_upgrades (user_id, item_name, level, refine, xp) VALUES (?, ?, ?, ?, ?)",
-            (str(ctx.author.id), nome_db, progress["level"], progress["refine"], progress["xp"])
-        )
-        conn.commit()
-        conn.close()
-        await ctx.send(f"✅ **{EQUIPAMENTOS[nome_db].get('nome', nome_db)}** refinado para **R{progress['refine']}**.")
 
 async def setup(bot):
     await bot.add_cog(Equipamentos(bot))

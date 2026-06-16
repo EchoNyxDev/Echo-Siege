@@ -120,8 +120,8 @@ class Ajuda(commands.Cog):
             "TutoriUAU // Comandos Básicos",
             (
                 f"Olá, {user.mention}. Respira. O bot tem coisa pra caramba, mas eu organizei "
-                "tudo porque aparentemente sou o adulto responsável aqui.\n\n"
-                "Coloque `echo ` antes dos comandos de texto. Nos slash commands, reze para o Discord colaborar."
+                "tudo num resumo porque aparentemente sou o adulto responsável aqui.\n\n"
+                "Prefixo padrão: `echo `. Exemplo: `echo perfil`."
             ),
             1,
             total,
@@ -129,27 +129,26 @@ class Ajuda(commands.Cog):
         e1.add_field(
             name="Conta, Perfil e Bolsa",
             value=(
-                "`iniciar` - Cria sua conta e pega os presentes iniciais.\n"
-                "`perfil` - Mostra sua ficha; temas ativos trocam o fundo e títulos destacam seu nome.\n"
-                "`herói <ID>` - Mostra raridade base, evolução, status de combate, equipamentos e habilidades.\n"
-                "`heróis` - Lista sua coleção de heróis.\n"
-                "`main <ID>` - Define o herói principal.\n"
-                "`mochila` - Mostra seus itens, tickets e drops.\n"
-                "`pets` - Mostra seus pets atuais.\n"
-                "`equiparpet <ID>` - Define o pet que acompanha sua party."
+                "`iniciar` - Cria sua conta e pega os presentes.\n"
+                "`perfil` - Mostra sua ficha de jogador e progresso.\n"
+                "`herói <ID>` - Mostra os detalhes de um personagem.\n"
+                "`heróis` - Lista toda a sua coleção.\n"
+                "`main <ID>` - Define o líder da Party.\n"
+                "`mochila` - Mostra itens, tickets e drops guardados.\n"
+                "`pets` - Lista seus pets.\n"
+                "`equiparpet <ID>` - Equipa um companheiro na party."
             ),
             inline=False,
         )
         e1.add_field(
-            name="Rotina",
+            name="Rotina e Sistema",
             value=(
-                "`daily` - Recompensa diária expandida, com sequência, itens, gems, tickets e pet.\n"
-                "`cd` - Mostra seus tempos de espera.\n"
-                "`atualiza` - Mostra os 10 patches mais recentes.\n"
-                "`atualiza <número>` - Abre diretamente um patch antigo ou atual.\n"
-                "`codes [página]` - Lista codes, recompensas e seu status de resgate.\n"
-                "`tutorial` - A aula grande do TutoriUAU, com menos piedade e mais detalhes.\n"
-                "`bug <texto>` / `queixa <texto>` - Registra um problema para a administração."
+                "`daily` - Recompensa diária (mantém a ofensiva para bônus).\n"
+                "`cd` - Painel de tempos de espera dos modos de jogo.\n"
+                "`atualiza [número]` - Lê as notas de atualização (patches).\n"
+                "`codes [página]` - Consulta códigos e status de resgate.\n"
+                "`tutorial` - A aula detalhada do TutoriUAU para iniciantes.\n"
+                "`bug <texto>` / `queixa <texto>` - Manda ticket para a staff."
             ),
             inline=False,
         )
@@ -158,36 +157,28 @@ class Ajuda(commands.Cog):
         e2 = self._base_embed(
             user,
             "TutoriUAU // Heróis, Gacha e Catálogo",
-            "A seção onde você troca dinheiro imaginário por esperança. Às vezes funciona. Não espalha.",
+            "A seção onde você troca dinheiro imaginário por esperança. Às vezes funciona.",
             2,
             total,
         )
         e2.add_field(
-            name="Invocação",
+            name="Invocação e Consulta",
             value=(
-                "`summon <quantidade>` - Invoca no banner comum com todos os personagens.\n"
-                "`summon especial <quantidade>` - Invoca no banner especial ativo.\n"
-                "`banner` - Mostra o banner comum e o especial.\n"
-                "`banner especial` - Mostra os destaques atuais e a origem da seleção.\n"
-                "`catálogo [classe]` - Mostra personagens disponíveis por classe.\n"
-                "Taxas de raridade são iguais nos dois banners; o especial favorece apenas os personagens em destaque.\n"
-                "Seres divinos têm **0,01%** de chance, não entram em destaques e aparecem como `???` no catálogo.\n"
-                "Giros de 10 garantem pelo menos um personagem 3⭐ ou superior.\n"
-                "A etiqueta `[NEW]` marca a primeira cópia de um herói na sua coleção.\n"
-                "Os retratos são carregados do pacote local do bot. TutoriUAU confiscou os links que trocavam o rosto dos personagens."
+                "`summon <quantidade>` - Roda a roleta no banner comum.\n"
+                "`summon especial <quantidade>` - Gacha no banner de destaques.\n"
+                "`banner` / `banner especial` - Vê as taxas e os destaques atuais.\n"
+                "`catálogo [classe]` - Lista todos os personagens que existem (ou os que te faltam)."
             ),
             inline=False,
         )
         e2.add_field(
             name="Evolução e Party",
             value=(
-                "`evoluir <ID>` - Consome uma cópia livre do mesmo herói e aumenta seu estágio de evolução.\n"
-                "`party` - Monta sua equipe de combate.\n"
-                "`afinidade` não é comando: 2/3/4/5 heróis da mesma obra ganham 5%/10%/15%/20% nos status principais.\n"
-                "Com 5 da mesma obra, o líder também libera a habilidade coletiva **Ressonância da Obra**.\n"
-                "`pvp @usuário` - Desafia alguém do servidor para uma luta em turnos.\n"
-                "`pvp online` - Fila global; batalha, botões e log ficam inteiros no canal do comando.\n"
-                "`pvp online status|sair` - Consulta ou abandona a fila; bots equilibrados preenchem horários vazios."
+                "`evoluir <ID>` - Gasta uma cópia solta para dar +1 Estrela ao herói.\n"
+                "`party` - Menu interativo para arrumar seu esquadrão de 5 membros.\n"
+                "`pvp @usuário` - Desafia alguém do seu servidor para combate.\n"
+                "`pvp online` - Entra na fila de duelo global contra qualquer um.\n"
+                "`pvp online status|sair` - Verifica a fila ou desiste da procura."
             ),
             inline=False,
         )
@@ -196,40 +187,30 @@ class Ajuda(commands.Cog):
         e3 = self._base_embed(
             user,
             "TutoriUAU // Combate, Eventos e Rankings",
-            "Aqui é onde seus personagens descobrem que a vida não é só pose bonita em banner.",
+            "Aqui é onde seus personagens descobrem que a vida dói.",
             3,
             total,
         )
         e3.add_field(
             name="Modos de Jogo",
             value=(
-                "`hunt` - Caçada rápida para ouro, XP e drops vendáveis.\n"
-                "`dungeon <id> <área>` - Exploração com progressão.\n"
-                "`perfil` - Também mostra a Dungeon e a Área atualmente liberadas para você não se perder no mapa imaginário.\n"
-                "`adventure` - RPG de contrato com escolhas, moral, perigo, eventos e combate.\n"
-                "`arena` - Torre infinita com dificuldade e recompensas progressivas.\n"
-                "`arena auto` - Arena automática, se comprou o perk na loja de Gems.\n"
-                "`expedicao <2|4|8|12>` - Abre seleção de até 5 heróis para voltar depois com loot.\n"
-                "`labirinto` - Sala aleatória com CD: monstro, tesouro, mercador, armadilha, evento ou boss.\n"
-                "`labirinto sair` - Sai e salva o loot acumulado.\n"
-                "`campeoes` - Torre PvE com Prestígio próprio, separado do ELO do PvP.\n"
-                "`campeoes defesa` - Registra sua party defensiva na Torre dos Campeões.\n"
-                "`campeoes ranking` - Ranking semanal por pontos e Prestígio da Torre.\n"
-                "Status como congelamento, stun, fraqueza, queimadura, veneno e sangramento aparecem durante o combate.\n"
-                "`work` - Quadro de contratos com risco, pagamento e seleção diária.\n"
-                "Ouro e XP começam modestos e crescem com nível, andar, profundidade ou progresso do modo."
+                "`hunt` - Bate num monstro aleatório. Dá XP e Ouro. Rápido e prático.\n"
+                "`dungeon <id> <área>` - Explora a masmorra escolhida.\n"
+                "`adventure` - RPG imersivo com narrativa, escolhas e consequências.\n"
+                "`arena` / `arena auto` - Torre de sobrevivência sem fim.\n"
+                "`expedicao <2|4|8|12>` - Manda heróis AFK voltarem com loot.\n"
+                "`labirinto` / `labirinto sair` - Desce nas salas RNG infinitas.\n"
+                "`campeoes` / `campeoes defesa` / `campeoes ranking` - Duelos PvE Assíncronos.\n"
+                "`work` - Pega os contratos diários na guilda."
             ),
             inline=False,
         )
         e3.add_field(
             name="Eventos e Ranking",
             value=(
-                "`eventos` - Mostra eventos sazonais ativos e próximos.\n"
-                "`evento lutar` - Enfrenta monstro temático.\n"
-                "`evento boss` - Enfrenta chefe do evento.\n"
-                "`evento dungeon` - Faz dungeon temática.\n"
-                "`evento resgatar [qtd]` - Troca pontos por recompensa.\n"
-                "`rank [global]` - Ranking local ou global com várias categorias."
+                "`eventos` - Lista os eventos sazonais rolando no momento.\n"
+                "`evento lutar|boss|dungeon|resgatar` - Interage com as atividades da season.\n"
+                "`rank` / `rank global` - Mostra a nata dos jogadores e quem tem mais dinheiro/poder."
             ),
             inline=False,
         )
@@ -237,36 +218,33 @@ class Ajuda(commands.Cog):
 
         e4 = self._base_embed(
             user,
-            "TutoriUAU // Loja, Itens e Equipamentos",
-            "A parte econômica. Também conhecida como: por que você está pobre mesmo depois da caçada.",
+            "TutoriUAU // Loja, Forja e Equipamentos",
+            "O pilar econômico de Lugnica. Fique forte ou fique pobre tentando.",
             4,
             total,
         )
         e4.add_field(
-            name="Loja e Inventário",
+            name="Economia e Itens",
             value=(
-                "`cidade` - Mostra Lugnica e sua prosperidade.\n"
-                "`loja` - Mostra itens disponíveis.\n"
-                "`comprar <ID> <quantidade>` - Compra item.\n"
-                "`gemshop` / `gemcomprar <ID>` - Loja de Gems com bônus, temas, títulos e tickets.\n"
-                "`moldura` / `titulo` - Ativa temas de fundo ou títulos permanentes no perfil.\n"
-                "`ticket_herói` / `escolher_herói <id>` - Usa Ticket de Herói Raro ou Ticket de Escolha.\n"
-                "`consumir <item>` - Usa consumível, ticket de pet/herói ou registra token cosmético.\n"
-                "`vender <item> [quantidade|tudo]` - Vende drops de caçada.\n"
-                "`codes [página]` - Consulta os codes disponíveis e já resgatados.\n"
-                "`code <código>` - Resgata códigos. Um uso por jogador, sem malandragem."
+                "`cidade` - Vê se a capital de Lugnica está inteira ou em chamas.\n"
+                "`loja` / `comprar <ID> <qtd>` - Gasta Ouro no comércio local.\n"
+                "`gemshop` / `gemcomprar <ID>` - A loja VIP (comprada com Gemas).\n"
+                "`forja` - Onde você transforma o lixo dos monstros em armas, consumíveis e tickets mágicos.\n"
+                "`consumir <item>` - Bebe poções, rasga pergaminhos ou aciona tickets da sua mochila.\n"
+                "`vender <item> [qtd|tudo]` - Livra-se do peso extra e ganha um troco.\n"
+                "`code <código>` - Usa códigos promocionais secretos.\n"
+                "`moldura <nome>` / `titulo <nome>` - Veste seus cosméticos adquiridos."
             ),
             inline=False,
         )
         e4.add_field(
-            name="Equipamentos",
+            name="Gestão de Armamentos",
             value=(
-                "`equipar <ID herói> <item>` - Equipa arma/armadura.\n"
-                "`desequipar <ID herói> <atk/def/livre>` - Remove equipamento.\n"
-                "`equips <ID herói>` - Mostra equipamentos do herói.\n"
-                "`equipinfo <item>` - Mostra bônus, nível e refino.\n"
-                "`aprimorar <item> [vezes]` - Sobe o nível do equipamento.\n"
-                "`refinar <item>` - Refina usando uma cópia solta."
+                "`equipar <ID herói> <item>` - Veste seu personagem.\n"
+                "`desequipar <ID herói> <atk/def/livre>` - Tira o equipamento.\n"
+                "`equips <ID herói>` - Vê a build atual do personagem.\n"
+                "`equipinfo <item>` - Olha as stats de uma arma.\n"
+                "`aprimorar <item>` / `refinar <item>` - Sistemas de evolução de armas."
             ),
             inline=False,
         )
@@ -274,48 +252,31 @@ class Ajuda(commands.Cog):
 
         e5 = self._base_embed(
             user,
-            "TutoriUAU // Guildas, Conquistas e ADM",
+            "TutoriUAU // Guildas e Administração",
             "Sistema social. Porque aparentemente sofrer sozinho não era suficiente.",
             5,
             total,
         )
         e5.add_field(
-            name="Guildas",
+            name="A Guilda",
             value=(
-                "`guild` - Mostra sua guilda.\n"
-                "`guild criar <nome>` - Cria guilda por 5000 Gold.\n"
-                "`guild entrar <id|nome>` - Entra ou pede entrada.\n"
-                "`guild convite @usuário` - Líder envia convite.\n"
-                "`guild aceitar @usuário|id` - Aceita pedido ou convite.\n"
-                "`guild foto <url>` / `guild descrição <texto>` / `guild modo aberto|convite` - Configuração.\n"
-                "`guild doar <quantia>` - Doa ouro.\n"
-                "`guild sair` - Sai da guilda com confirmação digitando `sair`.\n"
-                "`guild líder @usuário` - Transfere liderança com confirmação.\n"
-                "`guild deletar` - Líder deleta a guilda com confirmação.\n"
-                "`guild missão` / `guild missão iniciar <id>` / `guild missão atacar` - Missões.\n"
-                "`guild raid` - Batalha contra chefe da guilda.\n"
-                "`guild caça` / `guild hunt` - Caçada de Guilda liderada contra boss.\n"
-                "`guild ranking` - Ranking de guildas."
+                "`guild` - Status geral da sua Guilda.\n"
+                "`guild criar|entrar|sair|deletar` - O básico da administração civil.\n"
+                "`guild convite|aceitar|pedidos` - Setor de RH.\n"
+                "`guild foto|descrição|modo` - Maquiagem institucional.\n"
+                "`guild doar` - Joga dinheiro no banco coletivo.\n"
+                "`guild líder @usuário` - Transfere a responsabilidade.\n"
+                "`guild missão` / `guild missão iniciar <id>` / `atacar` - Trabalho coletivo.\n"
+                "`guild raid` / `guild caça` - Chefões gigantescos pro grupo bater junto.\n"
+                "`guild ranking` - Medidor de ego entre facções."
             ),
             inline=False,
         )
         e5.add_field(
-            name="Conquistas e Administração",
+            name="Extras",
             value=(
-                "`conquistas` - Mostra metas concluídas e pendentes, com botão de resgate.\n"
-                "`conquistas resgatar` - Recebe recompensas disponíveis.\n"
-                "`adm stats` - Painel administrativo do jogo.\n"
-                "`adm gems @usuário <quantia>` - Dá Gems para um jogador.\n"
-                "`adm criarcode <code> <recompensas>` - Cria code permanente, inclusive com vários prêmios.\n"
-                "`adm criarcode temp <dias> <code> <recompensas>` - Cria code com vencimento.\n"
-                "`adm delete code <code>` - Invalida um code imediatamente.\n"
-                "`adm criar banner` - Abre o editor interativo de destaques por sete dias.\n"
-                "`adm delechar @usuário <nome>` - Apaga uma cópia do personagem e limpa vínculos quebrados.\n"
-                "`atualiza_thumb <url>` - Troca a imagem do mural de atualizações.\n"
-                "`adm logs [@usuário|abertos|resolvidos]` - Filtra registros de bugs/queixas.\n"
-                "`adm resolver <ID> <mensagem>` - Resolve e envia a resposta ao jogador por DM.\n"
-                "`adm reabrir <ID>` - Reabre uma solicitação resolvida.\n"
-                "`adm log @usuário <ação> | <valor>` - Cria registro manual."
+                "`conquistas` / `conquistas resgatar` - Um tapinha nas costas por jogar muito.\n"
+                "`adm ...` - Comandos restritos para o dono do bot. (Poder absoluto, etc)."
             ),
             inline=False,
         )
@@ -331,7 +292,7 @@ class Ajuda(commands.Cog):
         view = AjudaPaginator(ctx.author, embeds)
         await ctx.send(embed=embeds[0], view=view)
 
-    @app_commands.command(name="help", description="Mostra a lista de comandos do Echo Siege.")
+    @app_commands.command(name="help", description="Mostra a lista de comandos resumida do Echo Siege.")
     async def help_slash(self, interaction: discord.Interaction):
         embeds = self.criar_paginas_ajuda(interaction.user)
         view = AjudaPaginator(interaction.user, embeds)

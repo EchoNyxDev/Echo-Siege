@@ -7,7 +7,6 @@ import time
 import os
 import sys
 
-# Gambiarra para importar os arquivos da pasta data/
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, '..'))
 if root_dir not in sys.path:
@@ -18,8 +17,10 @@ try:
     from data.heroes import HEROES
     from data.equipamentos import EQUIPAMENTOS
     from utils.combat import simular_combate_tatico
-    # IMPORTANDO O NOVO MOTOR DE XP
+    # IMPORTANDO O NOVO MOTOR DE XP E OURO
     from utils.xp_system import dar_xp_jogador, dar_xp_heroi
+    from utils.gold_system import conceder_ouro_escalavel
+    
     from utils.skills import get_hero_skill_ids
     from utils.hero_stats import calculate_hero_stats, normalize_class
     from utils.rewards import average_party_level, scale_combat_rewards
@@ -28,25 +29,6 @@ try:
     from utils.player_bonuses import apply_reward_bonuses, apply_battle_hp_bonus
 except ModuleNotFoundError:
     HUNT_MONSTERS, HEROES, EQUIPAMENTOS = {}, {}, {}
-    def get_hero_skill_ids(hero_data, stars=1, rarity=None):
-        habilidade = hero_data.get("habilidade") if hero_data else None
-        return [habilidade] if habilidade else []
-    def get_equipment_bonus(cursor, user_id, item_name, equipamentos):
-        return equipamentos.get(item_name, {}) if item_name in equipamentos else {}
-    def apply_affinity_bonus(party_data, heroes):
-        return party_data
-    def apply_reward_bonuses(cursor, user_id, gold=0, xp=0):
-        return gold, xp
-    def apply_battle_hp_bonus(cursor, user_id, party_data):
-        return party_data
-    def calculate_hero_stats(hero_data, stars=1, level=1, equipment_bonuses=None):
-        return {"hp": 100, "atk": 10, "matk": 10, "def": 5, "spd": 10, "crt": 5, "level": level}
-    def normalize_class(value):
-        return str(value or "neutro").lower()
-    def average_party_level(party):
-        return 1
-    def scale_combat_rewards(gold=0, xp=0, progress=1, reference=50):
-        return gold, xp
 
 COOLDOWN_MINUTOS = 30
 TEMPO_RECUPERACAO_SEGUNDOS = COOLDOWN_MINUTOS * 60
@@ -130,11 +112,10 @@ class Hunt(commands.Cog):
                 
         party_data = apply_affinity_bonus(party_data, HEROES)
         party_data = apply_battle_hp_bonus(cursor, user_id, party_data)
-        conn.commit()
         conn.close()
         return party_data
 
-    async def processar_hunt(self, user: discord.User):
+    async def processar_hunt(self, user: discord.User, guild_id: str = None):
         conn = sqlite3.connect("players.db")
         cursor = conn.cursor()
 
@@ -195,20 +176,18 @@ class Hunt(commands.Cog):
             embed.add_field(name="📜 Log", value=log_batalha, inline=False)
             return embed
 
-        # Recompensas
-        gold_ganho = int(m_data["gold_base"] * random.uniform(0.8, 1.2))
-        xp_ganho = int(m_data["xp_base"] * random.uniform(0.8, 1.2))
-        gold_ganho, xp_ganho = scale_combat_rewards(
-            gold_ganho,
-            xp_ganho,
-            nivel_medio_party,
-        )
-        gold_ganho, xp_ganho = apply_reward_bonuses(cursor, user.id, gold_ganho, xp_ganho)
+        # Recompensas Escalonadas (Usando os novos motores + utils antigos)
+        gold_ganho = conceder_ouro_escalavel(cursor, user.id, m_data["gold_base"], nivel_medio_party, guild_id)
+        
+        xp_base = int((m_data["xp_base"] + (nivel_medio_party * 5)) * random.uniform(0.9, 1.15))
+        _, xp_ganho = scale_combat_rewards(0, xp_base, nivel_medio_party)
+        _, xp_ganho = apply_reward_bonuses(cursor, user.id, 0, xp_ganho)
         
         # GARANTIA DE DROP: 100% de chance de vir o item material do monstro!
         item_dropado = m_data["drop"] 
 
-        cursor.execute("UPDATE players SET gold = gold + ?, last_hunt = ?, total_hunts = total_hunts + 1 WHERE user_id = ?", (gold_ganho, tempo_atual, str(user.id)))
+        # O Ouro já foi debitado na função conceder_ouro_escalavel, atualiza apenas os stats de caça
+        cursor.execute("UPDATE players SET last_hunt = ?, total_hunts = total_hunts + 1 WHERE user_id = ?", (tempo_atual, str(user.id)))
 
         log_ups = ""
         
@@ -249,12 +228,14 @@ class Hunt(commands.Cog):
 
     @commands.command(name="hunt", aliases=["caçar", "cacar", "caçada"])
     async def hunt_prefix(self, ctx):
-        res = await self.processar_hunt(ctx.author)
+        guild_id = str(ctx.guild.id) if ctx.guild else None
+        res = await self.processar_hunt(ctx.author, guild_id)
         await ctx.send(embed=res) if isinstance(res, discord.Embed) else await ctx.send(res)
 
     @app_commands.command(name="hunt", description="Envia a sua party para caçar na floresta.")
     async def hunt_slash(self, interaction: discord.Interaction):
-        res = await self.processar_hunt(interaction.user)
+        guild_id = str(interaction.guild.id) if interaction.guild else None
+        res = await self.processar_hunt(interaction.user, guild_id)
         await interaction.response.send_message(embed=res) if isinstance(res, discord.Embed) else await interaction.response.send_message(res)
 
 async def setup(bot):

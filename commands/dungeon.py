@@ -239,7 +239,7 @@ class DungeonBattleView(discord.ui.View):
                 dano = (base + efeito.get("dano_atk_extra", 0) + efeito.get("dano_matk_extra", 0)) * efeito.get("multiplicador_hit", 1)
                 is_crit = random.randint(1, 100) <= actor.get_stat("crt") or efeito.get("critico_garantido", False)
                 if is_crit: dano *= 1.5
-                dano = actor.cap_outgoing_damage(dano, is_skill=True)
+                if hasattr(actor, "cap_outgoing_damage"): dano = actor.cap_outgoing_damage(dano, is_skill=True)
                 dealt = t.take_damage(dano, base, is_magic=("matk" in str(efeito)), ignore_def=efeito.get("ignora_def", False))
                 total_dmg += dealt
                 

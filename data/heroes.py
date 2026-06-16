@@ -7252,7 +7252,7 @@ HEROES = {
         "max_star": 7,
         "hp": 115,
         "atk": 25,
-        "matk": 88,
+        "matk": 100,
         "def": 28,
         "spd": 24,
         "crt": 12,
@@ -7312,12 +7312,12 @@ HEROES = {
         "crt": 15,
         "habilidade": {
             "nome": "Leigan: Disparo Espiritual",
-            "descricao": "Aponta o dedo indicador e dispara uma esfera de energia espiritual concentrada. Causa 250% de ATK e derruba as barreiras defensivas do alvo."
+            "descricao": "Aponta o dedo indicador e dispara uma esfera de energia espiritual concentrada. Causa 150% de ATK e derruba as barreiras defensivas do alvo."
         },
         "evolucoes": {
             7: {
                 "nome": "Despertar Mazoku: Sangue Demoníaco",
-                "descricao": "O sangue ancestral demoníaco desperta em suas veias. Recupera 100% de HP ao receber dano fatal e recebe +50% de ATK e velocidade de ação."
+                "descricao": "O sangue ancestral demoníaco desperta em suas veias. Recupera 50% de HP ao receber dano fatal e recebe +50% de ATK e velocidade de ação."
             }
         }
     },
@@ -7330,22 +7330,22 @@ HEROES = {
         "classe": "suporte",
         "raridade": 7,
         "max_star": 7,
-        "hp": 180,
+        "hp": 680,
         "atk": 30,
-        "matk": 95,
+        "matk": 295,
         "def": 45,
         "spd": 35,
         "crt": 15,
         "habilidade": {
             "nome": "Salvação Conceitual",
-            "descricao": "Madoka usa sua essência divina para curar a equipe inteira em 250% do seu MATK e limpar instantaneamente todos os debuffs ativos."
+            "descricao": "Madoka usa sua essência divina para curar a equipe inteira em 450% do seu MATK e limpar instantaneamente todos os debuffs ativos."
         },
         "evolucoes": {
             7: {
                 "nome": "Forma Suprema de Deusa",
                 "atk": 15,
                 "spd": 10,
-                "descricao": "Desperta a Deusa Madoka. Sempre que um aliado receber um golpe fatal, ela impede a sua morte e concede-lhe um escudo indestrutível por 1 turno (Uma vez por combate)."
+                "descricao": "Desperta a Deusa Madoka. Sempre que um aliado receber um golpe fatal, ela impede a sua morte e concede-lhe um escudo indestrutível por 2 turnos (Uma vez por combate)."
             }
         }
     },
@@ -7359,22 +7359,22 @@ HEROES = {
         "classe": "líder",
         "raridade": 7,
         "max_star": 7,
-        "hp": 175,
+        "hp": 675,
         "atk": 35,
-        "matk": 105,
+        "matk": 305,
         "def": 40,
         "spd": 32,
         "crt": 20,
         "habilidade": {
             "nome": "Reescrita do Roteiro",
-            "descricao": "Featherine manipula as páginas da existência. Causa 220% de MATK em um único alvo e atrasa o seu turno para o fim da fila de ação."
+            "descricao": "Featherine manipula as páginas da existência. Causa 520% de MATK em um único alvo e atrasa o seu turno para o fim da fila de ação."
         },
         "evolucoes": {
             7: {
                 "nome": "Autoridade Absoluta",
                 "atk": 25,
                 "spd": 5,
-                "descricao": "Nega a interferência do adversário. Remove todos os buffs do time inimigo e os impede de ganhar novos buffs ou escudos por 3 turnos inteiros."
+                "descricao": "Nega a interferência do adversário. Remove todos os buffs do time inimigo e os impede de ganhar novos buffs ou escudos por 6 turnos inteiros."
             }
         }
     },
@@ -7388,7 +7388,7 @@ HEROES = {
         "classe": "mago",
         "raridade": 7,
         "max_star": 7,
-        "hp": 190,
+        "hp": 590,
         "atk": 50,
         "matk": 98,
         "def": 50,
@@ -7396,12 +7396,12 @@ HEROES = {
         "crt": 15,
         "habilidade": {
             "nome": "Desespero do Infinito",
-            "descricao": "Lança uma onda de anti-matéria destrutiva. Causa 180% de MATK em área e reduz o ATK físico e mágico de todos os atingidos em 30% por 2 turnos."
+            "descricao": "Lança uma onda de anti-matéria destrutiva. Causa 480% de MATK em área e reduz o ATK físico e mágico de todos os atingidos em 50% por 2 turnos."
         },
         "evolucoes": {
             7: {
                 "nome": "Cárcere Multidimensional",
-                "descricao": "Prende a mente do alvo com maior SPD em um labirinto mental. O alvo fica atordoado (Stun) por 2 turnos e perde 25% de sua defesa máxima.",
+                "descricao": "Prende a mente do alvo com maior SPD em um labirinto mental. O alvo fica atordoado (Stun) por 3 turnos e perde 60% de sua defesa máxima.",
                 "atk": 20,
                 "spd": 8
             }
@@ -7417,7 +7417,7 @@ HEROES = {
         "classe": "líder",
         "raridade": 7,
         "max_star": 7,
-        "hp": 200,
+        "hp": 500,
         "atk": 80,
         "matk": 90,
         "def": 45,
@@ -7432,7 +7432,7 @@ HEROES = {
                 "nome": "Julgamento do Rei de Tudo",
                 "atk": 30,
                 "spd": 5,
-                "descricao": "Seu olhar de tédio assusta a arena. Atordoa o oponente principal por 1 turno e reduz o dano total que a sua equipe sofre em 40% por 2 rodadas."
+                "descricao": "Seu olhar de tédio assusta a arena. Atordoa o oponente principal por 3 turno e reduz o dano total que a sua equipe sofre em 60% por 2 rodadas."
             }
         }
     },
@@ -7446,22 +7446,22 @@ HEROES = {
         "classe": "atacante",
         "raridade": 7,
         "max_star": 7,
-        "hp": 165,
-        "atk": 105,
+        "hp": 565,
+        "atk": 305,
         "matk": 45,
         "def": 35,
         "spd": 40,
         "crt": 25,
         "habilidade": {
             "nome": "Selo Espiritual Solto",
-            "descricao": "Wang Ling trinca o seu selo de contenção para desferir um soco sísmico. Causa 250% de ATK que ignora escudos e armaduras."
+            "descricao": "Wang Ling trinca o seu selo de contenção para desferir um soco sísmico. Causa 450% de ATK que ignora escudos e armaduras."
         },
         "evolucoes": {
             7: {
                 "nome": "Espada Jingke Suprema",
                 "atk": 40,
                 "spd": 15,
-                "descricao": "Wang Ling invoca sua espada consciente. Causa dano crítico inevitável e executa instantaneamente alvos com menos de 45% de vida máxima."
+                "descricao": "Wang Ling invoca sua espada consciente. Causa dano crítico inevitável e executa instantaneamente alvos com menos de 50% de vida máxima."
             }
         }
     },
@@ -7475,15 +7475,15 @@ HEROES = {
         "classe": "assassino",
         "raridade": 7,
         "max_star": 7,
-        "hp": 160,
-        "atk": 110,
+        "hp": 560,
+        "atk": 300,
         "matk": 0,
         "def": 30,
         "spd": 45,
         "crt": 25,
         "habilidade": {
             "nome": "Morte Instantânea Conceitual",
-            "descricao": "Yogiri dita o fim do alvo. Desfere um golpe de 200% de ATK de acerto crítico garantido que possui 15% de chance de matar instantaneamente."
+            "descricao": "Yogiri dita o fim do alvo. Desfere um golpe de 400% de ATK de acerto crítico garantido que possui 40% de chance de matar instantaneamente."
         },
         "evolucoes": {
             7: {
@@ -7504,7 +7504,7 @@ HEROES = {
         "classe": "líder",
         "raridade": 7,
         "max_star": 7,
-        "hp": 170,
+        "hp": 470,
         "atk": 50,
         "matk": 85,
         "def": 35,
@@ -7519,7 +7519,7 @@ HEROES = {
                 "nome": "Reconstrução do Universo",
                 "atk": 20,
                 "spd": 10,
-                "descricao": "A deusa reconstrói as leis físicas locais. Concede de forma permanente +35% de ATK, MATK e SPD para todo o grupo de combate."
+                "descricao": "A deusa reconstrói as leis físicas locais. Concede de forma permanente +100% de ATK, MATK e SPD para todo o grupo de combate."
             }
         }
     },
@@ -7533,22 +7533,22 @@ HEROES = {
         "classe": "suporte",
         "raridade": 7,
         "max_star": 7,
-        "hp": 185,
+        "hp": 685,
         "atk": 25,
         "matk": 92,
-        "def": 48,
+        "def": 70,
         "spd": 38,
         "crt": 15,
         "habilidade": {
             "nome": "Cristal Cosmos Protetor",
-            "descricao": "Cria um campo de força cósmico brilhante. Todos os aliados ganham um escudo equivalente a 40% do HP máximo de Cosmos por 2 turnos."
+            "descricao": "Cria um campo de força cósmico brilhante. Todos os aliados ganham um escudo equivalente a 80% do HP máximo de Cosmos por 2 turnos."
         },
         "evolucoes": {
             7: {
                 "nome": "Luz Eterna da Esperança",
                 "atk": 15,
                 "spd": 12,
-                "descricao": "Sua luz purifica a maldade dimensional. Limpa todos os debuffs aliados e cura a equipe em 15% do HP máximo no início de cada ação."
+                "descricao": "Sua luz purifica a maldade dimensional. Limpa todos os debuffs aliados e cura a equipe em 50% do HP máximo no início de cada ação."
             }
         }
     },
@@ -7562,7 +7562,7 @@ HEROES = {
         "classe": "atacante",
         "raridade": 7,
         "max_star": 7,
-        "hp": 195,
+        "hp": 495,
         "atk": 108,
         "matk": 20,
         "def": 50,
@@ -7570,14 +7570,14 @@ HEROES = {
         "crt": 18,
         "habilidade": {
             "nome": "Grande Iluminação Esmagadora",
-            "descricao": "Um golpe carregado de puro ódio que quebra qualquer estrutura. Causa 220% de ATK e reduz a DEF física e mágica do alvo em 50% por 3 turnos."
+            "descricao": "Um golpe carregado de puro ódio que quebra qualquer estrutura. Causa 420% de ATK e reduz a DEF física e mágica do alvo em 50% por 3 turnos."
         },
         "evolucoes": {
             7: {
                 "nome": "Muzan: Lei do Egocentrismo",
                 "atk": 45,
                 "spd": 8,
-                "descricao": "Seu narcisismo distorce o universo. Ganha +15% de ATK adicional para cada oponente vivo presente no campo de batalha."
+                "descricao": "Seu narcisismo distorce o universo. Ganha +50% de ATK adicional para cada oponente vivo presente no campo de batalha."
             }
         }
     },
@@ -7591,22 +7591,22 @@ HEROES = {
         "classe": "tank",
         "raridade": 7,
         "max_star": 7,
-        "hp": 180,
-        "atk": 60,
-        "matk": 60,
+        "hp": 680,
+        "atk": 90,
+        "matk": 90,
         "def": 58,
         "spd": 32,
         "crt": 15,
         "habilidade": {
             "nome": "Escudo Vetorial Absoluto",
-            "descricao": "Calcula e desvia o fluxo físico e mágico. Reflete 40% de todo o dano físico e mágico recebido de volta para quem o atacou."
+            "descricao": "Calcula e desvia o fluxo físico e mágico. Reflete 60% de todo o dano físico e mágico recebido de volta para quem o atacou."
         },
         "evolucoes": {
             7: {
                 "nome": "Asas Brancas Divinas",
-                "atk": 30,
+                "atk": 300,
                 "spd": 20,
-                "descricao": "Desperta as asas de energia pura. Fica completamente intocável (imunidade a tudo) por 2 turnos e aumenta seu MATK em 40%."
+                "descricao": "Desperta as asas de energia pura. Fica completamente intocável (imunidade a tudo) por 4 turnos e aumenta seu MATK em 200%."
             }
         }
     },
@@ -7620,22 +7620,22 @@ HEROES = {
         "classe": "atacante",
         "raridade": 7,
         "max_star": 7,
-        "hp": 155,
-        "atk": 100,
+        "hp": 555,
+        "atk": 200,
         "matk": 30,
-        "def": 32,
+        "def": 50,
         "spd": 42,
-        "crt": 22,
+        "crt": 50,
         "habilidade": {
             "nome": "Chute Triplo do Dragão Azul",
-            "descricao": "Desfere três chutes sequenciais velocíssimos com fúria. Cada chute ignora 30% da defesa e reduz a velocidade (SPD) do alvo em 15%."
+            "descricao": "Desfere três chutes sequenciais velocíssimos com fúria. Cada chute ignora 50% da defesa e reduz a velocidade (SPD) do alvo em 30%."
         },
         "evolucoes": {
             7: {
                 "nome": "Jecheondaeseong: O Rei Macaco",
-                "atk": 45,
+                "atk": 500,
                 "spd": 20,
-                "descricao": "Assume sua forma divina de herdeiro dos céus. Invoca seu báculo Yeoui causando 250% de ATK em área de acerto crítico garantido."
+                "descricao": "Assume sua forma divina de herdeiro dos céus. Invoca seu báculo Yeoui causando 350% de ATK em área de acerto crítico garantido."
             }
         }
     },
@@ -7649,12 +7649,12 @@ HEROES = {
         "classe": "assassino",
         "raridade": 7,
         "max_star": 7,
-        "hp": 150,
-        "atk": 95,
+        "hp": 450,
+        "atk": 195,
         "matk": 20,
         "def": 28,
         "spd": 46,
-        "crt": 25,
+        "crt": 50,
         "habilidade": {
             "nome": "Percepção de Morte Linear",
             "descricao": "Shiki enxerga as linhas de morte no corpo do oponente. Desfere um corte inevitável que ignora 100% de defesa e reduz a cura recebida pelo alvo à metade."
@@ -7664,7 +7664,7 @@ HEROES = {
                 "nome": "Vazio: Lâmina de Contradição",
                 "atk": 40,
                 "spd": 25,
-                "descricao": "Sua conexão com o vazio a torna mortal. Seus ataques normais passam a ter 15% de chance de executar inimigos normais instantaneamente."
+                "descricao": "Sua conexão com o vazio a torna mortal. Seus ataques normais passam a ter 30% de chance de executar inimigos normais instantaneamente."
             }
         }
     },
@@ -7678,9 +7678,9 @@ HEROES = {
         "classe": "mago",
         "raridade": 7,
         "max_star": 7,
-        "hp": 165,
+        "hp": 365,
         "atk": 30,
-        "matk": 96,
+        "matk": 140,
         "def": 32,
         "spd": 34,
         "crt": 18,
@@ -7691,7 +7691,7 @@ HEROES = {
         "evolucoes": {
             7: {
                 "nome": "Doce Labirinto Sem Fim",
-                "atk": 35,
+                "atk": 300,
                 "spd": 15,
                 "descricao": "Prende o oponente em um redemoinho açucarado. Deixa o alvo preso (Stun) por 1 turno e aplica o debuff de fraqueza e lentidão severa por 3 turnos."
             }

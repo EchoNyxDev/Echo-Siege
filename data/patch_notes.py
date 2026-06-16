@@ -2,9 +2,29 @@
 # Pelo Discord, tambem da para trocar com: echo atualiza_thumb <url>
 UPDATE_THUMB_URL = ""
 
-
-# Adicione novos patches no topo ou no fim da lista, mantendo title/subtitle/rows.
 PATCH_NOTES = [
+    {
+        "id": "patch_18",
+        "title": "Patch 18: A Era de Ouro, Forja & Aventuras Imersivas",
+        "subtitle": "A maior expansão do Echo Siege! O bot deixou de ser um simples 'apertador de botão' para se tornar um RPG de peso.",
+        "rows": [
+            ("Aventuras Vivas (`echo adventure`)", 
+             "Adicionado 40 novas campanhas textuais não-lineares! Agora você faz escolhas que exigem Testes de Sorte (RNG), lida com falhas críticas e gerencia a 'Moral' e o 'Perigo' do grupo para ditar o tamanho do Loot."),
+            
+            ("A Forja Arcana (`echo forja`)", 
+             "O lixo da sua mochila ganhou um propósito. O novo sistema de Crafting permite fundir restos de monstros e drops de aventuras em Poções, Tickets de Gacha e Equipamentos Míticos (como a Espada Dimensional)."),
+            
+            ("Sistema de Consumíveis (`echo consumir`)", 
+             "Inventário dinâmico ativado! Beba Poções de Energia para zerar tempos de espera, leia Pergaminhos para ganhar bônus de Ouro/XP ou rasgue Bilhetes Dourados para sumonar personagens raros direto da bolsa."),
+            
+            ("Motor Financeiro Escalonável", 
+             "A economia foi reconstruída. O ganho de Ouro e XP nas Caçadas, Expedições, Masmorras e Arena agora escala junto com o Nível Médio da sua Party e os buffs da sua Guilda. O Late Game agora é justo e lucrativo!"),
+            
+            ("O Grande Rebalanceamento", 
+             "A poeira abaixou e os heróis foram para o ginásio. Todos os status base (HP, ATK, SPD) de heróis antigos e chefes foram revisados manualmente para que o novo Motor Tático brilhe em sua glória máxima.")
+        ],
+        "footer": "TutoriUAU: 'O Dev finalmente justificou o salário invisível dele. Aproveitem antes do Patch 19 quebrar tudo.'"
+    },
     {
         "id": "patch_17",
         "title": "Patch 17 - Reforço em Massa e Freio nos Status",

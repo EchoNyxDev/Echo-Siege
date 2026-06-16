@@ -2,22 +2,30 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+# Lista de Administradores (Substitua pelos IDs reais da sua equipe)
+ADM_USERS = [
+    768671545790693437,
+    657990219689099264
+]
 
+# ==========================================
+# IMAGENS E TEXTOS DA APOSTILA
+# ==========================================
 THUMB_TUTORI = "https://cdn.discordapp.com/attachments/1493317042760056987/1511161459168514058/TutoriUAU.png"
 IMG_AULA_1 = "https://cdn.discordapp.com/attachments/927749834155384853/1511854803574198486/Gemini_Generated_Image_6.jpg"
 IMG_AULA_2 = "https://cdn.discordapp.com/attachments/927749834155384853/1511854803267878982/Gemini_Generated_Image_5.jpg"
 IMG_AULA_3 = "https://cdn.discordapp.com/attachments/927749834155384853/1511854802936795267/Gemini_Generated_Image_2.jpg"
+
 TUTORIAL_COMMENTS = [
     "Primeira aula: onde eu finjo que isso tudo é simples.",
-    "Dinheiro, mochila e perfil. O trio que revela suas prioridades.",
-    "Banner é uma palavra bonita para ansiedade estatística.",
-    "Combate: agora com menos mistério e mais consequência.",
-    "Equipamento e pet: porque até acessório quer planilha.",
-    "Guilda é amizade com contrato, banco e opção de deletar tudo. Saudável.",
-    "Ranking existe para motivar. E para humilhar com números.",
-    "Parabéns, você leu. Isso já te coloca acima de uma parcela preocupante.",
+    "Mochila e Forja: porque reciclar lixo é a alma do RPG.",
+    "Gacha e Equipamentos: a matemática te odeia, aceite.",
+    "Combate: vá trabalhar, seus bonecos não vão se upar sozinhos.",
+    "Guilda: amizade com contrato, banco e cobranças.",
+    "Ranking: onde o seu ego vai para ser amassado.",
+    "Bugs: reclamar é um direito, eu resolver é outra história.",
+    "Setor VIP: Só não aperte o botão vermelho sem ler."
 ]
-
 
 class TutorialPaginator(discord.ui.View):
     def __init__(self, user: discord.User, embeds: list):
@@ -34,19 +42,19 @@ class TutorialPaginator(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user.id:
             await interaction.response.send_message(
-                "Essa aula é particular. Eu já trabalho de graça, não vou dar plantão extra aqui.",
+                "❌ Essa aula é particular. Eu já trabalho de graça, não vou dar plantão extra aqui. Use `echo tutorial` você mesmo.",
                 ephemeral=True,
             )
             return False
         return True
 
-    @discord.ui.button(label="Anterior", style=discord.ButtonStyle.primary, custom_id="tutorial_prev")
+    @discord.ui.button(label="Anterior", style=discord.ButtonStyle.primary, emoji="◀️", custom_id="tutorial_prev")
     async def btn_prev(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page -= 1
         self.update_buttons()
         await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
 
-    @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary, custom_id="tutorial_next")
+    @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary, emoji="▶️", custom_id="tutorial_next")
     async def btn_next(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page += 1
         self.update_buttons()
@@ -62,238 +70,167 @@ class Tutorial(commands.Cog):
         embed.set_thumbnail(url=THUMB_TUTORI)
         if image:
             embed.set_image(url=image)
-        comentario = TUTORIAL_COMMENTS[page - 1] if page - 1 < len(TUTORIAL_COMMENTS) else "Sim, isso cai na prova chamada 'não passar vergonha'."
+        comentario = TUTORIAL_COMMENTS[page - 1] if page - 1 < len(TUTORIAL_COMMENTS) else "Sim, isso cai na prova."
         embed.set_footer(text=f"TutoriUAU • Aula {page}/{total} • {comentario}")
         return embed
 
     def criar_paginas(self, user):
-        total = 8
+        is_admin = user.id in ADM_USERS
+        total = 8 if is_admin else 7
         pages = []
 
+        # ========================================================
+        # AULA 1
+        # ========================================================
         e1 = self._page(
             "Aula 1 // O que é Echo Siege?",
             (
                 f"Senta aí, {user.mention}. Eu sou o **TutoriUAU**, seu NPC tutorial, fiscal de escolhas ruins "
                 "e último fio de sanidade entre você e apertar botão sem ler.\n\n"
-                "**Echo Siege** é um RPG de Discord: você invoca heróis, monta party, farma recursos, enfrenta "
-                "monstros, sobe arena, entra em guilda, participa de eventos e tenta fingir que entende gacha.\n\n"
-                "O fluxo básico é: `echo iniciar` -> `echo summon 5` -> `echo main <ID>` -> `echo party` -> começar a apanhar com propósito."
+                "**Echo Siege** é um RPG de Discord: você invoca heróis, monta party, forja itens, "
+                "enfrenta monstros colossais e tenta fingir que entende de economia.\n\n"
+                "O fluxo básico para não passar vergonha é: `echo iniciar` -> `echo summon 5` -> `echo main <ID>` -> `echo party` -> começar a apanhar com propósito."
             ),
-            1,
-            total,
-            discord.Color.dark_green(),
-            IMG_AULA_1,
+            1, total, discord.Color.dark_green(), IMG_AULA_1
         )
-        e1.add_field(name="Começo Rápido", value="Use `echo iniciar`, depois `echo summon 5`, depois `echo heróis`.", inline=False)
-        e1.add_field(name="Quando se perder", value="Use `echo ajuda`. É o mapa. Você ainda vai ignorar, mas eu tentei.", inline=False)
+        e1.add_field(name="Começo Rápido", value="Crie a conta, puxe o gacha e organize seu time com `echo party`.", inline=False)
+        e1.add_field(name="Quando se perder", value="Use `echo ajuda`. É o resumo rápido de tudo. Você vai ignorar, mas eu tentei.", inline=False)
         pages.append(e1)
 
+        # ========================================================
+        # AULA 2
+        # ========================================================
         e2 = self._page(
-            "Aula 2 // Perfil, Economia e Mochila",
+            "Aula 2 // Economia, Mochila e Forja",
             (
-                "`echo perfil` mostra sua ficha. Os temas Cidade Noturna, Minecraft, Árvore Glacial e Flores de Cerejeira cobrem o fundo do card; avatar, dados e a imagem do herói principal são desenhados por cima.\n"
-                "`echo mochila` mostra itens, drops e tickets. É onde ficam as coisas que você jura que vai usar depois.\n"
-                "`echo daily` dá recompensa diária expandida; sequência alta rende itens, gems, tickets e até pet.\n"
-                "`echo cd` mostra seus tempos de espera.\n\n"
-                "`echo atualiza` abre somente os 10 patches mais recentes. Para arqueologia controlada, use `echo atualiza <número>`.\n"
-                "`echo codes` mostra os codes disponíveis, recompensas e quais você já resgatou; `echo code <código>` faz o resgate.\n\n"
-                "Ouro compra itens, paga sistemas e some misteriosamente quando você vê um banner bonito. "
-                "Gems e tickets aparecem em eventos, conquistas e recompensas especiais."
+                "Sua vida financeira e de itens em Lugnica. Lixo vira luxo se você tiver paciência.\n\n"
+                "`echo perfil` - Mostra quem você é, quanto tem e se seus cosméticos estão equipados.\n"
+                "`echo mochila` - Seu inventário. Onde os pedaços de monstros e tickets mágicos ficam guardados.\n"
+                "`echo forja` - A mágica acontece aqui! Transforme restos de monstros e fragmentos de aventura em **Poções, Armas Lendárias e Tickets de Gacha**.\n"
+                "`echo consumir <item>` - Bebe poções, ativa buffs de pergaminhos ou rasga tickets da mochila para usar.\n"
+                "`echo vender <item>` - Joga fora o que a forja não aceitou e ganha uns trocados.\n"
+                "`echo daily` - Seu salário diário. Pegue todo dia para ganhar tickets bônus.\n"
+                "`echo cd` - O seu relógio de ponto. Mostra a estamina e pausas."
             ),
-            2,
-            total,
-            discord.Color.gold(),
+            2, total, discord.Color.gold()
         )
-        e2.add_field(name="Venda de Drops", value="Drops de `hunt` podem ser vendidos com `echo vender <item> [quantidade|tudo]`.", inline=False)
-        e2.add_field(name="Problemas", value="Se algo sumiu, use `echo bug <texto>`. Exemplo: `echo bug meu ticket desapareceu`.", inline=False)
         pages.append(e2)
 
+        # ========================================================
+        # AULA 3
+        # ========================================================
         e3 = self._page(
-            "Aula 3 // Heróis, Catálogo e Banners",
+            "Aula 3 // Heróis, Gacha e Equipamentos",
             (
-                "`echo catálogo [classe]` mostra os personagens disponíveis. Útil para descobrir quem falta na sua coleção, "
-                "também conhecida como poço sem fundo.\n\n"
-                "`echo summon <quantidade>` usa o **banner comum**, com todos os personagens.\n"
-                "`echo summon especial <quantidade>` usa o **banner especial semanal**, que muda todo sábado 00:00 e destaca "
-                "3 heróis 5 estrelas e 5 heróis 4 estrelas dentro das respectivas raridades.\n"
-                "Os dois banners usam a mesma chance de raridade: 3⭐ em 19%, 4⭐ em 5% e 5⭐ em 1%. O especial não fabrica raridade; "
-                "ele só empurra o sorteio para os destaques depois que a raridade já foi definida.\n"
-                "Dez giros garantem pelo menos um personagem 3⭐ ou superior. Soft pity começa em 15 giros para 4⭐ e 30 para 5⭐; "
-                "as garantias máximas ficam em 30 e 100. A etiqueta `[NEW]` aparece na primeira cópia de cada herói.\n"
-                "`echo banner` mostra os banners ativos. TutoriUAU: probabilidades pequenas, decisões financeiras enormes."
+                "Onde você torra seu dinheiro em troca de esperança.\n\n"
+                "`echo catálogo` - Mostra todos os heróis que existem (e esfrega na sua cara os que você não tem).\n"
+                "`echo summon <qtd>` - Roleta no banner comum.\n"
+                "`echo summon especial <qtd>` - Roleta nos destaques da semana.\n"
+                "*Nota do TutoriUAU: A cada 10 giros vem pelo menos um 3★ ou superior. A matemática te odeia, não reclame comigo.*\n\n"
+                "**Fortalecendo seus bonecos:**\n"
+                "`echo evoluir <ID>` - Sacrifica uma cópia solta para fortalecer o herói em 1 Estrela (★).\n"
+                "`echo herói <ID>` - Ficha de combate completa dele.\n"
+                "`echo equipar <ID> <Item>` - Dá armas e relíquias para ele não ir pra rinha pelado.\n"
+                "`echo pets` / `echo equiparpet <ID>` - Animais de estimação que dão buffs cabulosos na party."
             ),
-            3,
-            total,
-            discord.Color.orange(),
-            IMG_AULA_2,
-        )
-        e3.add_field(
-            name="Evolução",
-            value=(
-                "Use `echo evoluir <ID>` para consumir uma cópia livre do mesmo personagem e aumentar seu estágio. "
-                "A cópia sacrificada não pode estar na party, expedição, defesa dos Campeões nem carregar equipamentos. "
-                "A raridade base não muda; atributos e possíveis despertares melhoram. Cruel? Sim. Documentado? Agora também."
-            ),
-            inline=False,
-        )
-        e3.add_field(
-            name="Ficha Completa",
-            value=(
-                "Use `echo herói <ID>` para ver raridade base, evolução, atributos reais de combate, equipamentos, "
-                "habilidade base e despertares. Agora a ficha tem informações; conceito ousado, eu sei."
-            ),
-            inline=False,
+            3, total, discord.Color.orange(), IMG_AULA_2
         )
         pages.append(e3)
 
+        # ========================================================
+        # AULA 4
+        # ========================================================
         e4 = self._page(
-            "Aula 4 // Party, Afinidade e Combate",
+            "Aula 4 // Sangue, Suor e Lágrimas",
             (
-                "`echo main <ID>` define o líder. `echo party` monta os outros slots.\n\n"
-                "A **afinidade** é automática: personagens do mesmo anime na mesma party recebem bônus de status. "
-                "Com 2/3/4/5 integrantes da mesma obra, o bônus é de 5%/10%/15%/20% em HP, ATK, MATK e DEF. "
-                "Com cinco, o líder desbloqueia **Ressonância da Obra**, uma habilidade coletiva com buff e escudo. "
-                "É basicamente trabalho em equipe, só que finalmente com números.\n\n"
-                "As habilidades agora são resolvidas pelo motor de combate: base, evolução, cura, buff, debuff, dano em área, "
-                "reviver, congelamento, stun, medo, confusão, maldição, fraqueza, queimadura, veneno, sangramento, silêncio e outras graças que me fizeram revisar matemática em horário comercial.\n\n"
-                "Quando um herói desbloqueia várias habilidades, ele escolhe entre todas as disponíveis. Cura e reviver olham a situação; o restante alterna para o Levi não esquecer dois terços do próprio currículo.\n"
-                "Ao subir de nível, ganha 10 HP, 3 nos atributos restantes e completa 5 no atributo principal. SPD e CRT naturais param em 50%, e DEF nunca apaga todo o dano.\n\n"
-                "Cada técnica base e evolução pertence ao ID exato do herói, mesmo quando dois personagens usam nomes parecidos. Os retratos também vêm de arquivos locais pelo ID. Sim, eu etiquetei 291 rostos; não, não quero conversar sobre meu fim de semana."
+                "Seus bonecos não vão se upar sozinhos. Bote eles para trabalhar:\n\n"
+                "`echo hunt` - Farm rápido. Vai ali, bate no bicho, pega ouro e volta.\n"
+                "`echo dungeon` - Progressão clássica por andares.\n"
+                "`echo work` - Pegue contratos na Guilda de Aventureiros.\n"
+                "`echo adventure` - Execute o contrato. Histórias interativas, moral, risco e escolhas que podem matar a equipe ou te enriquecer.\n"
+                "`echo expedicao` - Farm AFK. Mande eles explorarem enquanto você dorme.\n"
+                "`echo arena` e `echo labirinto` - Torres de sobrevivência infinitas e RNG.\n\n"
+                "**PvP e Duelos:**\n"
+                "`echo campeoes` - Duelos contra a defesa dos outros. Use `campeoes defesa` para não passar vergonha.\n"
+                "`echo pvp online` - Fila global de pancadaria. Se cair com um bot maluco, reze."
             ),
-            4,
-            total,
-            discord.Color.red(),
+            4, total, discord.Color.red()
         )
-        e4.add_field(
-            name="Modos",
-            value=(
-                "`hunt`, `dungeon`, `adventure`, `arena`, `pvp` e invasões usam a party preparada.\n"
-                "`echo work` mostra contratos com risco, pagamento e resumo. `echo adventure` executa o contrato com moral, perigo, passos, eventos e escolhas.\n"
-                "`echo expedicao 2/4/8/12` abre uma seleção de até 5 heróis para voltar depois com loot.\n"
-                "`echo labirinto` abre salas aleatórias com cooldown: monstro, tesouro, mercador, armadilha, evento ou boss.\n"
-                "`echo campeoes defesa` registra sua defesa, e `echo campeoes` enfrenta jogadores ou bots com donos identificados no log. A Torre usa Prestígio próprio, não o ELO do PvP."
-            ),
-            inline=False,
-        )
-        e4.add_field(
-            name="Perfil e Dungeon",
-            value=(
-                "`echo perfil` mostra o maior ponto liberado da Dungeon no formato `D<número> - Área <número>`. "
-                "Agora você pode esquecer onde parou por motivos pessoais, não por falta de interface."
-            ),
-            inline=False,
-        )
-        e4.add_field(
-            name="Economia de Combate",
-            value=(
-                "Ouro e XP agora seguem uma curva de progresso: são menores no início e crescem conforme nível médio da party, "
-                "andar, profundidade ou avanço do modo. Dez mil Gold continua possível; só deixou de cair do bolso do primeiro monstro."
-            ),
-            inline=False,
-        )
-        e4.add_field(
-            name="PvP Online",
-            value=(
-                "`echo pvp online` entra numa fila global e procura alguém de ELO próximo, priorizando outro servidor. "
-                "A batalha inteira, os botões e o log ficam no canal onde cada jogador entrou na fila. Se a dimensão estiver vazia, um bot de força compatível entra.\n"
-                "Use `echo pvp online status` ou `echo pvp online sair`. TutoriUAU: finalmente uma luta que não invade sua caixa de mensagens."
-            ),
-            inline=False,
-        )
-        e4.add_field(name="Balanceamento", value="Herói nível 1 não deve apagar o universo com uma habilidade 3x. Se apagar, use `echo bug` antes que vire religião.", inline=False)
+        e4.add_field(name="Afinidade (Sinergia)", value="Coloque heróis do mesmo universo no time! 2/3/4/5 heróis da mesma obra ganham buffs absurdos. Com 5, eles ganham Ressonância.", inline=False)
         pages.append(e4)
 
+        # ========================================================
+        # AULA 5
+        # ========================================================
         e5 = self._page(
-            "Aula 5 // Equipamentos e Pets",
+            "Aula 5 // Guildas (Capitalismo Social)",
             (
-                "Equipamentos não são mais só '+10 ATK e seja feliz'. Agora têm raridade, conjunto, HP, ATK, MATK, DEF, SPD, CRT, "
-                "nível e refino.\n\n"
-                "`echo equipar <ID herói> <item>` equipa.\n"
-                "`echo equipinfo <item>` mostra detalhes.\n"
-                "`echo aprimorar <item> [vezes]` aumenta nível.\n"
-                "`echo refinar <item>` usa uma cópia solta para melhorar refino.\n\n"
-                "Pets vêm do Ticket de Pet na loja: compre, use `echo consumir ticket_pet`, veja com `echo pets` "
-                "e equipe com `echo equiparpet <ID>` ou pelo `echo party`. Sim, até pet tem crachá."
+                "Apoio em grupo, cobranças em dobro.\n\n"
+                "`echo guild criar <nome>` - Custa 5k. Ser líder é caro.\n"
+                "`echo guild entrar <nome>` - Para os reles mortais.\n"
+                "`echo guild doar` - Encha o cofre da guilda para pagar coisas legais.\n"
+                "`echo guild missao` - O líder gasta ouro do banco e todo mundo trabalha junto batendo no alvo para ganhar recompensas massivas.\n"
+                "`echo guild raid` ou `guild caça` - Chefões colossais! O grupo inteiro espanca a mesma criatura até ela dropar coisas lendárias.\n"
+                "`echo guild foto|desc|modo` - Maquiagem corporativa.\n"
+                "`echo guild sair` - Para fugir das obrigações da sua família disfuncional."
             ),
-            5,
-            total,
-            discord.Color.teal(),
-        )
-        e5.add_field(name="Dica do NPC", value="Refino pede cópia solta. Não adianta gritar comigo. Eu só narro o sofrimento.", inline=False)
-        e5.add_field(
-            name="Loja de Gems",
-            value=(
-                "`echo gemshop` abre a loja de Gems. Tem bônus permanentes de XP/Gold, modo automático da arena, "
-                "tickets de herói/pet, Ticket de Escolha de Herói, temas de perfil e títulos.\n"
-                "Cosméticos viram tokens permanentes na mochila. Use `echo moldura` e `echo titulo` para ativar."
-                " Quando ativos, eles deixam o `echo perfil` com estética real. Finalmente moda com função."
-            ),
-            inline=False,
+            5, total, discord.Color.dark_gold()
         )
         pages.append(e5)
 
+        # ========================================================
+        # AULA 6
+        # ========================================================
         e6 = self._page(
-            "Aula 6 // Guildas",
+            "Aula 6 // Ego e Recompensas",
             (
-                "Guildas são grupos de jogadores. Você pode criar uma por 5000 Gold com `echo guild criar <nome>`. "
-                "Quem cria vira líder, porque foi quem pagou a conta. Capitalismo de fantasia, parabéns.\n\n"
-                "Comandos principais: `guild entrar`, `guild convite`, `guild aceitar`, `guild membros`, `guild doar`, "
-                "`guild foto`, `guild descrição`, `guild modo`, `guild missão`, `guild raid`, `guild caça` e `guild ranking`."
+                "`echo rank local` ou `global` - Para medir ego. Veja quem tem mais ELO no PvP, andares na Torre ou quem roubou mais Ouro.\n\n"
+                "`echo eventos` - Quando é feriado, eu solto eventos sazonais. Use `evento lutar` e `evento resgatar` para farmar cosméticos e itens que nunca mais voltam.\n\n"
+                "`echo conquistas` - Um tapinha nas costas por jogar demais. Tem botão de resgate que dá Gems e Ouro.\n\n"
+                "`echo codes` - Lista os códigos promocionais que o Dev soltou. Se achar um ativo, digite `echo code <código>` e corra para o abraço."
             ),
-            6,
-            total,
-            discord.Color.dark_gold(),
+            6, total, discord.Color.purple(), IMG_AULA_3
         )
-        e6.add_field(name="Missões de Guilda", value="O líder pode iniciar missões pagas que a guilda completa atacando/progredindo. Recompensas variam por missão.", inline=False)
-        e6.add_field(name="Caçada de Guilda", value="Com `echo guild caça` ou `echo guild hunt`, líder/oficial abre uma expedição contra boss usando o banco. Membros atacam e todos ganham se o boss cair.", inline=False)
-        e6.add_field(name="Entrada", value="Guilda aberta aceita direto. Guilda por convite exige pedido aceito ou convite do líder.", inline=False)
-        e6.add_field(name="Saída e Liderança", value="`echo guild sair`, `echo guild líder @usuário` e `echo guild deletar` pedem confirmação digitando `sair`. Sim, até o caos precisa de recibo.", inline=False)
         pages.append(e6)
 
+        # ========================================================
+        # AULA 7
+        # ========================================================
         e7 = self._page(
-            "Aula 7 // Eventos, Arena, Rankings e Conquistas",
+            "Aula 7 // Bugs e Sobrevivência",
             (
-                "`echo eventos` mostra feriados e eventos ativos: Natal, Ano Novo, Páscoa, Dia das Mães, Dia dos Pais, "
-                "Dia das Crianças e outros surtos comemorativos.\n\n"
-                "`echo evento lutar`, `boss`, `dungeon` e `resgatar` fazem você ganhar pontos, itens temáticos e recompensas.\n\n"
-                "`echo arena` é infinita, com dificuldade e recompensa progressivas. `echo rank global` mostra quem está brilhando "
-                "e quem claramente dorme pouco. No PvP, todo mundo começa com **0 ELO**; após a primeira luta entra na base **100** e passa a subir ou descer de verdade."
+                "Seu herói nível 1 deletou o universo com uma habilidade quebrada? O gacha comeu o seu ouro e não te deu os bonecos? Caiu num buraco negro no meio do labirinto?\n\n"
+                "🛡️ **Use `echo bug <descrição detalhada do problema>`** ou `echo queixa <texto>`.\n\n"
+                "A denúncia vai direto para a base secreta da staff. Eles podem te responder diretamente na sua DM para resolver a sua vida, ou apenas consertar tudo nas sombras.\n\n"
+                "*TutoriUAU avisa:* Se você usar o sistema de bugs para fazer piadinha, eu garanto que a próxima calamidade vai focar no seu perfil com precisão cirúrgica."
             ),
-            7,
-            total,
-            discord.Color.purple(),
-            IMG_AULA_3,
-        )
-        e7.add_field(
-            name="Conquistas",
-            value=(
-                "Use `echo conquistas`. Agora tem página, botão de resgate e conquistas específicas demais, "
-                "incluindo errar comando. TutoriUAU chama isso de QA comunitário involuntário."
-            ),
-            inline=False,
+            7, total, discord.Color.teal()
         )
         pages.append(e7)
 
-        e8 = self._page(
-            "Aula 8 // Administração, Bugs e Sobrevivência",
-            (
-                "Administradores têm comandos como `echo adm stats`, `echo adm logs abertos|resolvidos`, `echo adm resolver <ID> <mensagem>`, `echo adm gems @user quantidade`, `echo adm iniciar raid/boss/calamidade`, "
-                "`echo adm iniciar raid/boss/calamidade time-skip`, `echo atualiza_thumb <url>`, `echo adm criarcode`, "
-                "`echo adm criarcode temp <dias> <code> <recompensas>`, `echo adm delete code <code>`, `echo adm pay`, "
-                "`echo adm delechar @user <nome-do-personagem>`, `echo adm tickets` e outros botões nucleares.\n\n"
-                "`delechar` remove uma única cópia, devolve os equipamentos e limpa main, party e defesa dos Campeões quando necessário. "
-                "TutoriUAU recomenda conferir o nome antes de brincar de apagador cósmico.\n\n"
-                "Codes aceitam pacotes como `G1000 T3`: Gold e Tickets no mesmo resgate. Os temporários expiram sozinhos, porque até prêmio grátis precisa respeitar agenda.\n\n"
-                "Jogadores podem registrar problemas com `echo bug <texto>` ou `echo queixa <texto>`. Isso salva user_id, ação, valor e data. "
-                "Quando o administrador resolver, a resposta fica registrada e o jogador recebe uma mensagem direta. Burocracia, agora com final feliz opcional.\n\n"
-                "Pronto. Você agora sabe o suficiente para jogar. Não necessariamente bem, mas isso nunca foi promessa contratual."
-            ),
-            8,
-            total,
-            discord.Color.dark_theme(),
-        )
-        e8.add_field(name="Resumo Final", value="Monte party, use afinidade, equipe itens, entre em guilda, participe de evento e pare de gastar tudo no primeiro banner. Ou gaste. Eu não sou seu contador.", inline=False)
-        pages.append(e8)
+        # ========================================================
+        # AULA 8 (SÓ PARA ADMINS)
+        # ========================================================
+        if is_admin:
+            e8 = self._page(
+                "Aula 8 // Área VIP (Administração)",
+                (
+                    "Ah, você tem a chave do servidor. Tente não explodir nada.\n\n"
+                    "**Comandos Nucleares:**\n"
+                    "`echo adm stats` - Painel geral do bot.\n"
+                    "`echo adm logs abertos` - Verifica as queixas dos plebeus.\n"
+                    "`echo adm resolver <ID> <msg>` - Avisa o jogador na DM e fecha o ticket.\n"
+                    "`echo adm criarcode <nome> <recompensa>` - Cria promoções (Ex: G1000 T5).\n"
+                    "`echo adm iniciar raid/boss/calamidade` - Começa a confusão no servidor.\n"
+                    "`echo adm hack @user <ID>` - Sobe o herói para nível 100 e 7 Estrelas.\n"
+                    "`echo adm delechar @user <nome>` - Apaga clones bugados e limpa defesas quebradas.\n"
+                    "`echo adm pay` ou `adm tickets` - Fraudes financeiras legais.\n"
+                    "`echo adm hakai @user` - Manda alguém para o além permanentemente.\n\n"
+                    "Parabéns. O poder absoluto corrompe absolutamente. Divirta-se."
+                ),
+                8, total, discord.Color.dark_theme()
+            )
+            pages.append(e8)
 
         return pages
 
@@ -303,7 +240,7 @@ class Tutorial(commands.Cog):
         view = TutorialPaginator(ctx.author, embeds)
         await ctx.send(embed=embeds[0], view=view)
 
-    @app_commands.command(name="tutorial", description="A aula completa do TutoriUAU sobre o Echo Siege.")
+    @app_commands.command(name="tutorial", description="A aula completa (e direta ao ponto) do TutoriUAU.")
     async def tutorial_slash(self, interaction: discord.Interaction):
         embeds = self.criar_paginas(interaction.user)
         view = TutorialPaginator(interaction.user, embeds)

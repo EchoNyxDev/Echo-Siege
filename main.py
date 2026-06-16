@@ -60,6 +60,7 @@ async def load_commands():
     await bot.load_extension("commands.work")
     await bot.load_extension("commands.catalogo")
     await bot.load_extension("commands.codes")
+    await bot.load_extension("commands.forja")
 
 @bot.event
 async def setup_hook():

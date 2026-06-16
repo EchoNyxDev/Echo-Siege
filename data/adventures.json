@@ -2,60 +2,165 @@
   "acampamento_goblin": {
     "nome": "O Acampamento Goblin Oculto",
     "nodos": {
-      "start": {"tipo": "historia", "texto": "Você escuta grunhidos vindos de trás dos arbustos. É um acampamento Goblin! O que o esquadrão faz?", "opcoes": [{"label": "Atacar de Surpresa", "emoji": "⚔️", "next": "combate_surpresa"}, {"label": "Esgueirar e Roubar", "emoji": "🤫", "next": "stealth_check"}]},
-      "stealth_check": {"tipo": "historia", "texto": "O seu guerreiro pisa num galho seco. *CRACK*. Os goblins viram-se rugindo!", "opcoes": [{"label": "Lutar pela Vida!", "emoji": "🗡️", "next": "combate_alerta"}, {"label": "Fugir", "emoji": "🏃", "next": "fuga"}]},
-      "combate_surpresa": {"tipo": "combate", "texto": "Você avança com fúria!", "inimigos": ["goblin_guerreiro", "goblin_xama"], "win_next": "vitoria_total", "lose_next": "derrota"},
-      "combate_alerta": {"tipo": "combate", "texto": "Eles chamaram reforços!", "inimigos": ["goblin_veterano", "goblin_guerreiro", "goblin_arqueiro"], "win_next": "vitoria_total", "lose_next": "derrota"},
-      "vitoria_total": {"tipo": "recompensa", "texto": "Acampamento dizimado. O baú estava cheio!", "gold": 400, "xp": 250},
-      "derrota": {"tipo": "recompensa", "texto": "Massacrados. Vocês fogem largando moedas pelo caminho...", "gold": 20, "xp": 50},
-      "fuga": {"tipo": "recompensa", "texto": "Vocês correram tanto que perderam o fôlego. Nenhuma honra.", "gold": 0, "xp": 10}
+      "start": {
+        "tipo": "historia", 
+        "texto": "Durante semanas, caravanas desapareceram na Estrada de Verdan. Ao seguirem os rastros, vocês encontram um acampamento goblin oculto nas ruínas. Eles transportam fragmentos de cristais negros para uma tenda central. O que o esquadrão faz?",
+        "opcoes": [
+          {"label": "Atacar de Surpresa", "emoji": "⚔️", "next": "combate_surpresa"},
+          {"label": "Esgueirar para Investigar", "emoji": "🤫", "next": "stealth_check", "chance_sucesso": 0.6, "next_falha": "stealth_fail"}
+        ]
+      },
+      "stealth_check": {
+        "tipo": "historia",
+        "texto": "Vocês se esgueiram perfeitamente e descobrem o Xamã canalizando o artefato sombrio. Ele está distraído!",
+        "opcoes": [{"label": "Assassinar o Xamã", "emoji": "🗡️", "next": "combate_xama_distraido"}]
+      },
+      "stealth_fail": {
+        "tipo": "historia",
+        "texto": "Um dos guerreiros pisa em um galho seco. *CRACK*. Os goblins viram-se rugindo, energizados pelos cristais!",
+        "opcoes": [{"label": "Lutar pela Vida!", "emoji": "🛡️", "next": "combate_alerta"}, {"label": "Fugir", "emoji": "🏃", "next": "fuga"}]
+      },
+      "combate_surpresa": {
+        "tipo": "combate", "texto": "Vocês avançam com fúria contra a linha de frente!", "inimigos": ["goblin_guerreiro", "goblin_veterano"], "win_next": "vitoria_comum", "lose_next": "derrota"
+      },
+      "combate_xama_distraido": {
+        "tipo": "combate", "texto": "O Xamã é pego de surpresa, mas revida com magia negra!", "inimigos": ["goblin_xama_anciao"], "win_next": "vitoria_epica", "lose_next": "derrota"
+      },
+      "combate_alerta": {
+        "tipo": "combate", "texto": "A horda fortalecida ataca!", "inimigos": ["goblin_veterano", "goblin_guerreiro", "goblin_xama"], "win_next": "vitoria_epica", "lose_next": "derrota"
+      },
+      "vitoria_comum": {"tipo": "recompensa", "texto": "O acampamento foi dizimado, mas o Xamã fugiu com parte do tesouro.", "gold": 300, "xp": 150, "moral_change": 10},
+      "vitoria_epica": {"tipo": "recompensa", "texto": "Vocês destruíram o artefato e purgaram o acampamento. As caravanas estão a salvo!", "gold": 400, "xp": 250, "moral_change": 20, "drops": {"fragmento_cristal_sombrio": 0.4}},
+      "derrota": {"tipo": "recompensa", "texto": "Vocês foram subjugados e fugiram largando moedas pelo caminho.", "gold": -50, "xp": 50, "moral_change": -15},
+      "fuga": {"tipo": "recompensa", "texto": "Dias depois, os ataques tornam-se ainda mais frequentes. A guilda os repreendeu.", "gold": 0, "xp": 10, "moral_change": -10}
     }
   },
   "mercador_suspeito": {
     "nome": "O Mercador da Encruzilhada",
     "nodos": {
-      "start": {"tipo": "historia", "texto": "Um homem encapuzado oferece uma 'Poção de Poder' baratíssima.", "opcoes": [{"label": "Beber", "emoji": "🍷", "next": "beber_pocao"}, {"label": "Ameaçar", "emoji": "😡", "next": "ameacar"}, {"label": "Ignorar", "emoji": "🚶", "next": "ignorar"}]},
-      "beber_pocao": {"tipo": "recompensa", "texto": "A poção queima... mas enche-te de vitalidade! Era real!", "gold": 0, "xp": 400},
-      "ignorar": {"tipo": "recompensa", "texto": "Melhor não arriscar. A jornada segue calma.", "gold": 50, "xp": 50},
-      "ameacar": {"tipo": "historia", "texto": "Você puxa a espada. A capa dele rasga, revelando ossos! É um Esqueleto Mago!", "opcoes": [{"label": "Lutar!", "emoji": "⚔️", "next": "combate"}]},
-      "combate": {"tipo": "combate", "texto": "A magia negra preenche o ar!", "inimigos": ["esqueleto", "esqueleto", "necromante"], "win_next": "vitoria", "lose_next": "derrota"},
-      "vitoria": {"tipo": "recompensa", "texto": "O monstro vira pó. Os anéis dele valem uma fortuna!", "gold": 1200, "xp": 600},
-      "derrota": {"tipo": "recompensa", "texto": "Magia forte demais. Fuga humilhante.", "gold": 0, "xp": 30}
+      "start": {
+        "tipo": "historia",
+        "texto": "Uma carroça negra está parada no cruzamento. O homem encapuzado sorri: 'Tenho exatamente o que procuram.' Frascos sem rótulo repousam na mesa, emanando uma aura estranha.",
+        "opcoes": [
+          {"label": "Beber a Poção", "emoji": "🍷", "next": "beber_sucesso", "chance_sucesso": 0.4, "next_falha": "beber_falha"},
+          {"label": "Ameaçar o Mercador", "emoji": "😡", "next": "ameacar"},
+          {"label": "Ignorá-lo", "emoji": "🚶", "next": "ignorar"}
+        ]
+      },
+      "beber_sucesso": {
+        "tipo": "recompensa", "texto": "O líquido queima, mas preenche seus músculos com vigor. O poder é real!", "gold": 0, "xp": 600, "moral_change": -10
+      },
+      "beber_falha": {
+        "tipo": "recompensa", "texto": "A poção tem um gosto terrível. Você ganha poder, mas passa a ouvir vozes sussurrando seu nome à noite.", "gold": 0, "xp": 400, "moral_change": -30, "perigo_change": 20
+      },
+      "ignorar": {
+        "tipo": "recompensa", "texto": "Vocês seguem viagem. Nada acontece... por enquanto.", "gold": 50, "xp": 50
+      },
+      "ameacar": {
+        "tipo": "historia", "texto": "O mercador ri, sua pele caindo para revelar ossos e escuridão. 'Tolos...', sussurra o Necromante.",
+        "opcoes": [{"label": "Lutar!", "emoji": "⚔️", "next": "combate"}]
+      },
+      "combate": {
+        "tipo": "combate", "texto": "A magia da morte preenche o ar!", "inimigos": ["necromante", "ghoul", "ghoul"], "win_next": "vitoria", "lose_next": "derrota"
+      },
+      "vitoria": {
+        "tipo": "recompensa", "texto": "O necromante vira pó. A maldição da encruzilhada foi quebrada e sua carroça saqueada.", "gold": 1200, "xp": 600, "moral_change": 25, "drops": {"anel_vitalidade_sombria": 0.25}
+      },
+      "derrota": {
+        "tipo": "recompensa", "texto": "A magia das trevas foi forte demais. Fuga humilhante e dolorosa.", "gold": 0, "xp": 30, "moral_change": -20
+      }
     }
   },
   "lobo_alfa_caverna": {
     "nome": "O Uivo na Caverna",
     "nodos": {
-      "start": {"tipo": "historia", "texto": "A guilda pagará bem se trouxerem a pele do Lobo Selvagem que aterroriza a fazenda.", "opcoes": [{"label": "Entrar na Caverna", "emoji": "🔦", "next": "combate"}, {"label": "Fazer Armadilha", "emoji": "🪤", "next": "armadilha"}]},
-      "armadilha": {"tipo": "historia", "texto": "A armadilha falhou e deixou a fera furiosa!", "opcoes": [{"label": "Enfrentar a fúria", "emoji": "⚔️", "next": "combate_dificil"}]},
-      "combate": {"tipo": "combate", "texto": "Lobos saltam das sombras!", "inimigos": ["lobo_selvagem", "lobo_selvagem"], "win_next": "vitoria", "lose_next": "derrota"},
-      "combate_dificil": {"tipo": "combate", "texto": "O Lobo Alfa veio junto!", "inimigos": ["lobo_alfa", "lobo_selvagem"], "win_next": "vitoria_epica", "lose_next": "derrota"},
-      "vitoria": {"tipo": "recompensa", "texto": "Missão cumprida. As peles foram vendidas.", "gold": 300, "xp": 200},
-      "vitoria_epica": {"tipo": "recompensa", "texto": "Vocês mataram o Alfa! O fazendeiro pagou o triplo!", "gold": 900, "xp": 500},
-      "derrota": {"tipo": "recompensa", "texto": "Viraram comida de lobo. Sobreviveram por milagre.", "gold": 10, "xp": 40}
+      "start": {
+        "tipo": "historia", "texto": "O cheiro de sangue paira no ar de Valemor. Os animais da fazenda estão aterrorizados. Pegadas imensas levam à caverna escura.",
+        "opcoes": [
+          {"label": "Entrar na Caverna", "emoji": "🔦", "next": "explorar_caverna"},
+          {"label": "Preparar Armadilha na Entrada", "emoji": "🪤", "next": "armadilha_sucesso", "chance_sucesso": 0.5, "next_falha": "armadilha_falha"}
+        ]
+      },
+      "explorar_caverna": {
+        "tipo": "historia", "texto": "No interior, acham ossadas humanas e coleiras. O Lobo Alfa não é selvagem, foi corrompido por magia! Ele ruge e ataca com sua matilha.",
+        "opcoes": [{"label": "Batalha Sangrenta", "emoji": "⚔️", "next": "combate_alfa"}]
+      },
+      "armadilha_sucesso": {
+        "tipo": "historia", "texto": "A armadilha funcionou perfeitamente! Os lobos menores foram presos, deixando o Alfa sozinho e furioso.",
+        "opcoes": [{"label": "Abater o Alfa", "emoji": "🐺", "next": "combate_alfa_sozinho"}]
+      },
+      "armadilha_falha": {
+        "tipo": "historia", "texto": "O Alfa é inteligente demais. Ele farejou a armadilha e emboscou vocês por trás!",
+        "opcoes": [{"label": "Defender a Retaguarda!", "emoji": "🛡️", "next": "combate_alfa"}]
+      },
+      "combate_alfa": {"tipo": "combate", "texto": "A matilha sedenta avança!", "inimigos": ["lobo_alfa", "lobo_selvagem", "lobo_selvagem"], "win_next": "vitoria_epica", "lose_next": "derrota"},
+      "combate_alfa_sozinho": {"tipo": "combate", "texto": "O Alfa luta desesperadamente!", "inimigos": ["lobo_alfa"], "win_next": "vitoria_comum", "lose_next": "derrota"},
+      "vitoria_comum": {"tipo": "recompensa", "texto": "O Alfa caiu e os outros fugiram. A fazenda está segura, mas a origem da corrupção é um mistério.", "gold": 300, "xp": 200, "moral_change": 15},
+      "vitoria_epica": {"tipo": "recompensa", "texto": "A maldição foi dizimada junto com a matilha. Vocês extraíram presas valiosas da besta corrompida.", "gold": 900, "xp": 500, "moral_change": 25, "drops": {"presa_lobo_alfa": 0.35}},
+      "derrota": {"tipo": "recompensa", "texto": "Quase viraram ração de lobo. A guilda teve que mandar outra equipe.", "gold": 10, "xp": 40, "moral_change": -20}
     }
   },
   "ruinas_assombradas": {
     "nome": "Ruínas do Rei Esquecido",
     "nodos": {
-      "start": {"tipo": "historia", "texto": "Ruínas antigas emanam um brilho azul. A lenda diz que um Rei foi enterrado aqui.", "opcoes": [{"label": "Saquear os Túmulos", "emoji": "⛏️", "next": "saque"}, {"label": "Procurar a Sala do Trono", "emoji": "👑", "next": "trono"}]},
-      "saque": {"tipo": "combate", "texto": "Os mortos não gostam de ladrões!", "inimigos": ["zumbi", "ghoul"], "win_next": "vitoria_saque", "lose_next": "derrota"},
-      "trono": {"tipo": "historia", "texto": "O Rei sem Cabeça levanta-se do trono!", "opcoes": [{"label": "Curvar-se", "emoji": "🙇", "next": "curvar"}, {"label": "Desafiar o Rei", "emoji": "⚔️", "next": "combate_boss"}]},
-      "curvar": {"tipo": "recompensa", "texto": "O Rei aceita o respeito e joga-lhes um saco de ouro antigo.", "gold": 500, "xp": 100},
-      "combate_boss": {"tipo": "combate", "texto": "A fúria do além!", "inimigos": ["rei_sem_cabeca", "esqueleto"], "win_next": "vitoria_boss", "lose_next": "derrota"},
-      "vitoria_saque": {"tipo": "recompensa", "texto": "As jóias dos zumbis fedem, mas valem ouro.", "gold": 450, "xp": 300},
-      "vitoria_boss": {"tipo": "recompensa", "texto": "O Rei caiu. O tesouro real é de vocês!", "gold": 1500, "xp": 800},
-      "derrota": {"tipo": "recompensa", "texto": "Amaldiçoados, vocês fogem de mãos abanando.", "gold": 0, "xp": 50}
+      "start": {
+        "tipo": "historia", "texto": "A luz azul ilumina os corredores de Arkenor. Estátuas decapitadas vigiam a passagem. A ganância os atrai para as tumbas, mas o trono também brilha.",
+        "opcoes": [
+          {"label": "Saquear os Túmulos", "emoji": "⛏️", "next": "saque_sucesso", "chance_sucesso": 0.5, "next_falha": "saque_maldicao"},
+          {"label": "Procurar a Sala do Trono", "emoji": "👑", "next": "trono"}
+        ]
+      },
+      "saque_sucesso": {
+        "tipo": "historia", "texto": "Acharam ouro esquecido! Mas os guardas mortos-vivos despertaram.",
+        "opcoes": [{"label": "Lutar com os bolsos cheios", "emoji": "💰", "next": "combate_saque"}]
+      },
+      "saque_maldicao": {
+        "tipo": "historia", "texto": "Uma maldição profana ativa ao tocarem no ouro. Os mortos se levantam mais rápidos e furiosos!",
+        "opcoes": [{"label": "Sobreviver!", "emoji": "💀", "next": "combate_saque_dificil"}]
+      },
+      "combate_saque": {"tipo": "combate", "texto": "Zumbis bloqueiam a saída!", "inimigos": ["zumbi", "esqueleto", "esqueleto"], "win_next": "vitoria_saque", "lose_next": "derrota"},
+      "combate_saque_dificil": {"tipo": "combate", "texto": "Mortos buffados avançam!", "inimigos": ["cavaleiro_esqueleto", "zumbi", "zumbi"], "win_next": "vitoria_saque_epica", "lose_next": "derrota"},
+      "trono": {
+        "tipo": "historia", "texto": "No trono de pedra repousa o Rei Sem Cabeça. Uma voz telepática ecoa: 'Dizei-me... viestes honrar meu povo ou roubar meus mortos?'",
+        "opcoes": [
+          {"label": "Curvar-se em respeito", "emoji": "🙇", "next": "curvar"},
+          {"label": "Desafiá-lo pela coroa", "emoji": "⚔️", "next": "combate_boss"}
+        ]
+      },
+      "curvar": {
+        "tipo": "recompensa", "texto": "O Rei aceita o respeito. Ele entrega uma bolsa de ouro antigo e permite a saída. Algumas coisas devem permanecer esquecidas.", "gold": 500, "xp": 100, "moral_change": 15, "drops": {"moeda_arkenor": 0.5}
+      },
+      "combate_boss": {"tipo": "combate", "texto": "A fúria do Rei abala as ruínas!", "inimigos": ["rei_sem_cabeca", "cavaleiro_esqueleto"], "win_next": "vitoria_boss", "lose_next": "derrota"},
+      "vitoria_saque": {"tipo": "recompensa", "texto": "Fugiram com as joias fétidas. Valeu o risco.", "gold": 450, "xp": 300, "moral_change": -5},
+      "vitoria_saque_epica": {"tipo": "recompensa", "texto": "Sobreviveram à maldição e limparam o túmulo de um lorde. O loot foi massivo!", "gold": 800, "xp": 500, "moral_change": -10},
+      "vitoria_boss": {"tipo": "recompensa", "texto": "O Rei caiu e a magia das ruínas se dissipou. A glória e o tesouro real são de vocês!", "gold": 1500, "xp": 800, "moral_change": 20, "drops": {"moeda_arkenor": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "Amaldiçoados, fugiram sem nada e ainda pegaram tétano.", "gold": 0, "xp": 50, "moral_change": -15}
     }
   },
   "golem_descontrolado": {
     "nome": "A Fúria de Pedra",
     "nodos": {
-      "start": {"tipo": "historia", "texto": "Um Golem de Gelo desceu das montanhas e está a esmagar as carroças locais.", "opcoes": [{"label": "Ataque Frontal", "emoji": "🔨", "next": "combate"}, {"label": "Atirar Fogo", "emoji": "🔥", "next": "fogo"}]},
-      "fogo": {"tipo": "recompensa", "texto": "O Golem derreteu! A poça d'água revelou um anel mágico que ele havia engolido.", "gold": 600, "xp": 400},
-      "combate": {"tipo": "combate", "texto": "Soca a pedra!", "inimigos": ["golem_de_gelo", "lobo_de_gelo"], "win_next": "vitoria", "lose_next": "derrota"},
-      "vitoria": {"tipo": "recompensa", "texto": "O monstro rachou. O núcleo de gelo vale bastante no mercado negro.", "gold": 700, "xp": 500},
-      "derrota": {"tipo": "recompensa", "texto": "Pedra ganha de cara. Acordaram no hospital.", "gold": 0, "xp": 100}
+      "start": {
+        "tipo": "historia", "texto": "O Golem de Gelo deixa uma trilha de árvores congeladas. Ele ignora vocês e marcha em direção a uma torre em ruínas, parecendo buscar algo roubado.",
+        "opcoes": [
+          {"label": "Ataque Frontal no Golem", "emoji": "🔨", "next": "combate_golem"},
+          {"label": "Seguir até a Torre (Investigar)", "emoji": "🔍", "next": "investigar_sucesso", "chance_sucesso": 0.6, "next_falha": "investigar_falha"}
+        ]
+      },
+      "investigar_sucesso": {
+        "tipo": "historia", "texto": "Na torre, vocês encontram contrabandistas com o núcleo mágico do Golem! Eles tentam fugir.",
+        "opcoes": [{"label": "Bater nos Bandidos", "emoji": "⚔️", "next": "combate_bandidos"}]
+      },
+      "investigar_falha": {
+        "tipo": "historia", "texto": "Os contrabandistas na torre os viram chegando! Eles armaram uma emboscada pesada na entrada.",
+        "opcoes": [{"label": "Lutar pela vida", "emoji": "🛡️", "next": "combate_bandidos_dificil"}]
+      },
+      "combate_golem": {"tipo": "combate", "texto": "O Golem defende-se brutalmente!", "inimigos": ["golem_de_gelo", "lobo_de_gelo"], "win_next": "vitoria_golem", "lose_next": "derrota"},
+      "combate_bandidos": {"tipo": "combate", "texto": "Ladrões amadores acham que podem com heróis.", "inimigos": ["goblin_veterano", "goblin_arqueiro"], "win_next": "vitoria_bandidos", "lose_next": "derrota"},
+      "combate_bandidos_dificil": {"tipo": "combate", "texto": "Eles estavam bem armados!", "inimigos": ["goblin_veterano", "goblin_veterano", "goblin_xama"], "win_next": "vitoria_bandidos", "lose_next": "derrota"},
+      "vitoria_golem": {"tipo": "recompensa", "texto": "Vocês despedaçaram o golem e protegeram a região. O núcleo já havia sido roubado, mas a guilda pagou pelo abate.", "gold": 600, "xp": 400, "moral_change": 10},
+      "vitoria_bandidos": {"tipo": "recompensa", "texto": "Contrabandistas presos! O núcleo foi devolvido ao Golem, que se curvou em gratidão antes de partir. Heróis de verdade!", "gold": 800, "xp": 600, "moral_change": 30, "drops": {"nucleo_gelo_puro": 0.3}},
+      "derrota": {"tipo": "recompensa", "texto": "Pedra (ou flecha) na cara dói. Acordaram no hospital.", "gold": 0, "xp": 100, "moral_change": -10}
     }
   },
   "ninho_aranhas": {
@@ -211,6 +316,855 @@
       "combate": {"tipo": "combate", "texto": "O Vampiro mostra as garras e ataca!", "inimigos": ["vampiro_nobre"], "win_next": "vitoria", "lose_next": "derrota"},
       "vitoria": {"tipo": "recompensa", "texto": "O taverneiro deu-vos bebidas grátis para sempre (e o ouro do vampiro).", "gold": 800, "xp": 700},
       "derrota": {"tipo": "recompensa", "texto": "Atirados pela janela da taverna.", "gold": 0, "xp": 20}
+    }
+  },
+  "poco_seco": {
+    "nome": "O Mistério do Poço Seco",
+    "nodos": {
+      "start": {
+        "tipo": "historia",
+        "texto": "A pequena Vila de Elden nunca enfrentou problemas com água, até o poço secar. Sussurros ecoam das profundezas, com o som de garras arranhando a pedra. Há marcas na borda e um leve brilho azul.",
+        "opcoes": [
+          {"label": "Examinar as marcas", "emoji": "🔍", "next": "examinar", "chance_sucesso": 0.7, "next_falha": "examinar_falha"},
+          {"label": "Descer imediatamente", "emoji": "🪢", "next": "revelacao"},
+          {"label": "Falar com aldeões", "emoji": "🗣️", "next": "conversar"}
+        ]
+      },
+      "examinar": {"tipo": "historia", "texto": "As marcas são recentes. Vocês encontram escamas cristalinas impregnadas de mana, o que os prepara para o que vem a seguir. Perigo diminuiu.", "opcoes": [{"label": "Descer", "emoji": "🪢", "next": "revelacao"}]},
+      "examinar_falha": {"tipo": "historia", "texto": "Vocês escorregam na borda molhada e quase caem no buraco! Perigo aumentou.", "opcoes": [{"label": "Cair com estilo", "emoji": "🪢", "next": "revelacao"}]},
+      "conversar": {"tipo": "historia", "texto": "Uma idosa revela que crianças jogavam cristais de mana no poço para ver a água brilhar.", "opcoes": [{"label": "Descer", "emoji": "🪢", "next": "revelacao"}]},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "No fundo, descobrem uma galeria inundada. Uma criatura reptiliana protege um ninho de ovos brilhantes, sugando a água. Ela não parece agressiva, apenas desesperada.",
+        "opcoes": [
+          {"label": "Eliminar a criatura", "emoji": "⚔️", "next": "combate"},
+          {"label": "Curá-la", "emoji": "🩹", "next": "curar"},
+          {"label": "Destruir os ovos", "emoji": "⛏️", "next": "destruir"}
+        ]
+      },
+      "combate": {"tipo": "combate", "texto": "A mãe ergue-se rugindo para proteger a ninhada!", "inimigos": ["lagarto_gigante"], "win_next": "vitoria_combate", "lose_next": "derrota"},
+      "destruir": {"tipo": "recompensa", "texto": "Vocês esmagam os ovos. A criatura foge aos prantos. A água volta, mas a sua moral despenca.", "gold": 300, "xp": 200, "moral_change": -30},
+      "curar": {"tipo": "recompensa", "texto": "A criatura lambe suas feridas e leva os ovos para um rio distante. A água volta à vila de forma pacífica.", "gold": 500, "xp": 250, "moral_change": 20, "drops": {"cristal_de_mana_bruta": 0.5}},
+      "vitoria_combate": {"tipo": "recompensa", "texto": "O monstro cai. Vocês vendem as escamas e restauram a água.", "gold": 400, "xp": 200, "drops": {"cristal_de_mana_bruta": 0.3}},
+      "derrota": {"tipo": "recompensa", "texto": "Levou uma surra de uma lagartixa super-crescida.", "gold": 0, "xp": 50, "moral_change": -10}
+    }
+  },
+  "ferreiro_rabugento": {
+    "nome": "A Escolta do Ferreiro Rabugento",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Borin Marteloferro contratou o grupo para escoltar uma carga até Hargan. A viagem começa sob chuva e o anão reclama da estrada, do clima e de vocês.",
+        "opcoes": [
+          {"label": "Aceitar o atalho", "emoji": "🌲", "next": "atalho", "chance_sucesso": 0.5, "next_falha": "atalho_falha"},
+          {"label": "Seguir pela estrada", "emoji": "🛣️", "next": "revelacao"}
+        ]
+      },
+      "atalho": {"tipo": "historia", "texto": "O atalho poupou horas preciosas de chuva. Borin resmunga menos.", "opcoes": [{"label": "Seguir", "emoji": "➡️", "next": "revelacao"}]},
+      "atalho_falha": {"tipo": "historia", "texto": "A carroça atolou na lama do atalho. Vocês perderam horas empurrando. Borin xinga três gerações da família de vocês.", "opcoes": [{"label": "Seguir cansados", "emoji": "➡️", "next": "revelacao"}]},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Escondido sob as caixas está um protótipo de arma rúnica capaz de furar armaduras mágicas. Alguém vazou a informação e arqueiros surgem entre as árvores!",
+        "opcoes": [
+          {"label": "Defender a carroça", "emoji": "🛡️", "next": "combate_defesa"},
+          {"label": "Perseguir bandidos", "emoji": "⚔️", "next": "combate_ataque"},
+          {"label": "Negociar", "emoji": "🤝", "next": "negociar"}
+        ]
+      },
+      "combate_defesa": {"tipo": "combate", "texto": "Flechas chovem enquanto Borin abraça sua criação!", "inimigos": ["goblin_arqueiro", "goblin_arqueiro"], "win_next": "vitoria", "lose_next": "derrota"},
+      "combate_ataque": {"tipo": "combate", "texto": "Vocês avançam para a floresta, caindo na emboscada deles!", "inimigos": ["goblin_veterano", "goblin_arqueiro"], "win_next": "vitoria", "lose_next": "derrota"},
+      "negociar": {"tipo": "recompensa", "texto": "Vocês vendem o protótipo por uma fortuna. Borin jura vingança, mas o ouro fala mais alto.", "gold": 1000, "xp": 100, "moral_change": -40},
+      "vitoria": {"tipo": "recompensa", "texto": "Os bandidos fugiram! Borin finalmente sorri e promete um desconto nas próximas forjas.", "gold": 600, "xp": 250, "moral_change": 15, "drops": {"token_de_borin": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "Bandidos roubaram a arma. Borin foi à falência e vocês também.", "gold": 0, "xp": 50}
+    }
+  },
+  "pragas_mana": {
+    "nome": "Pragas na Plantação de Mana",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Os campos de Lunaris estão apodrecendo. Criaturas brilhantes devoram as plantas cobertas por um lodo púrpura. Os agricultores estão em pânico.",
+        "opcoes": [
+          {"label": "Examinar plantações", "emoji": "🌱", "next": "examinar"},
+          {"label": "Investigar irrigação", "emoji": "💧", "next": "irrigacao"},
+          {"label": "Falar com trabalhadores", "emoji": "🧙", "next": "falar"}
+        ]
+      },
+      "examinar": {"tipo": "historia", "texto": "Pequenos insetos mágicos escapam. Vocês acham resíduos suspeitos.", "opcoes": [{"label": "Avançar", "emoji": "➡️", "next": "revelacao"}]},
+      "irrigacao": {"tipo": "historia", "texto": "O canal está brilhando. Alguém despejou lixo alquímico rio acima.", "opcoes": [{"label": "Avançar", "emoji": "➡️", "next": "revelacao"}]},
+      "falar": {"tipo": "historia", "texto": "Eles viram um mago misterioso jogando frascos no rio à noite.", "opcoes": [{"label": "Avançar", "emoji": "➡️", "next": "revelacao"}]},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Resíduos mágicos contaminaram a água, mutando os insetos. O rio está um caos de criaturas hostis.",
+        "opcoes": [
+          {"label": "Queimar tudo", "emoji": "🔥", "next": "queimar"},
+          {"label": "Fazer um antídoto", "emoji": "🧪", "next": "antidoto", "chance_sucesso": 0.6, "next_falha": "antidoto_falha"},
+          {"label": "Caçar o culpado", "emoji": "🕵️", "next": "combate"}
+        ]
+      },
+      "queimar": {"tipo": "recompensa", "texto": "O fogo matou as pragas, mas metade da colheita virou cinzas. O pagamento foi reduzido.", "gold": 300, "xp": 200, "moral_change": -10},
+      "antidoto": {"tipo": "recompensa", "texto": "O antídoto funcionou! A plantação se recuperou em instantes e os fazendeiros pagaram bem.", "gold": 600, "xp": 300, "moral_change": 20, "drops": {"essencia_de_mana": 0.5}},
+      "antidoto_falha": {"tipo": "combate", "texto": "O antídoto falhou e irritou os insetos gigantes!", "inimigos": ["slime_toxico", "slime_toxico"], "win_next": "queimar", "lose_next": "derrota"},
+      "combate": {"tipo": "combate", "texto": "Acharam o mago alquimista! Ele lança frascos em vocês!", "inimigos": ["mago_aprendiz"], "win_next": "vitoria_mago", "lose_next": "derrota"},
+      "vitoria_mago": {"tipo": "recompensa", "texto": "Mago capturado e entregue à guarda. Ele tinha estoques de mana bruta.", "gold": 700, "xp": 350, "moral_change": 15, "drops": {"essencia_de_mana": 0.8}},
+      "derrota": {"tipo": "recompensa", "texto": "Os insetos mutantes expulsaram o grupo do campo.", "gold": 0, "xp": 40}
+    }
+  },
+  "sumico_gatos": {
+    "nome": "O Sumiço dos Gatos da Capital",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "A capital está lotada de ratos após o desaparecimento misterioso de todos os gatos. Mercadores e crianças estão desesperados.",
+        "opcoes": [
+          {"label": "Seguir pegadas", "emoji": "🐾", "next": "revelacao"},
+          {"label": "Ir aos esgotos", "emoji": "🧀", "next": "esgoto_falha"},
+          {"label": "Falar com moradores", "emoji": "🏘️", "next": "revelacao"}
+        ]
+      },
+      "esgoto_falha": {"tipo": "historia", "texto": "Não há gatos nos esgotos, apenas ratos gigantes querendo jantar heróis!", "opcoes": [{"label": "Correr de volta", "emoji": "🏃", "next": "revelacao"}]},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Uma alquimista excêntrica reuniu os gatos em seu laboratório para localizar uma relíquia felina sob a cidade. Os gatos estão presos, mas bem cuidados.",
+        "opcoes": [
+          {"label": "Denunciar à Guarda", "emoji": "⚖️", "next": "denunciar"},
+          {"label": "Ajudá-la", "emoji": "🤝", "next": "ajudar"},
+          {"label": "Libertar os Gatos (Caos)", "emoji": "🐈", "next": "caos"}
+        ]
+      },
+      "denunciar": {"tipo": "recompensa", "texto": "A alquimista foi presa. A capital recuperou seus gatos e você ganhou a recompensa oficial.", "gold": 400, "xp": 200, "moral_change": 10},
+      "ajudar": {"tipo": "recompensa", "texto": "Acharam a relíquia! Ela devolveu os gatos e dividiu os lucros ocultos.", "gold": 600, "xp": 300, "drops": {"familiar_felino": 0.3}},
+      "caos": {"tipo": "recompensa", "texto": "Centenas de gatos destruíram o laboratório da mulher enquanto fugiam. Hilário e lucrativo.", "gold": 250, "xp": 250, "moral_change": -5},
+      "derrota": {"tipo": "recompensa", "texto": "Apanhou de ratos.", "gold": 0, "xp": 10}
+    }
+  },
+  "invasao_slimes": {
+    "nome": "Invasão de Slimes no Esgoto",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Trabalhadores desapareceram e poças viscosas surgem pelas casas. Ao descer, paredes brilham com slimes que parecem estar aprendendo a agir em grupo.",
+        "opcoes": [
+          {"label": "Eliminar os Slimes", "emoji": "⚔️", "next": "combate_infinito"},
+          {"label": "Procurar a Origem", "emoji": "🔍", "next": "revelacao"},
+          {"label": "Proteger Trabalhadores", "emoji": "🚧", "next": "proteger"}
+        ]
+      },
+      "combate_infinito": {"tipo": "combate", "texto": "Quanto mais cortam, mais slimes aparecem!", "inimigos": ["slime", "slime", "slime"], "win_next": "revelacao", "lose_next": "derrota"},
+      "proteger": {"tipo": "historia", "texto": "Vocês salvaram os operários e eles apontaram para o centro do esgoto.", "opcoes": [{"label": "Avançar", "emoji": "➡️", "next": "revelacao"}]},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "No centro, um núcleo mágico rachado libera energia continuamente. Os slimes absorvem isso para evoluir em tempo real.",
+        "opcoes": [
+          {"label": "Destruir o Núcleo", "emoji": "💥", "next": "destruir"},
+          {"label": "Coletar Amostras", "emoji": "🔬", "next": "combate_boss"},
+          {"label": "Selar a Área", "emoji": "🛡️", "next": "selar"}
+        ]
+      },
+      "destruir": {"tipo": "recompensa", "texto": "O núcleo explodiu e os slimes derreteram. O esgoto está limpo, mas não houve saque extra.", "gold": 400, "xp": 250},
+      "selar": {"tipo": "recompensa", "texto": "Vocês fecharam as portas de chumbo. Solução temporária e preguiçosa.", "gold": 200, "xp": 150, "moral_change": -15},
+      "combate_boss": {"tipo": "combate", "texto": "Um Slime Gigante Mutante emerge do núcleo para defender as amostras!", "inimigos": ["slime_gigante"], "win_next": "vitoria_boss", "lose_next": "derrota"},
+      "vitoria_boss": {"tipo": "recompensa", "texto": "O slime rei derreteu. O núcleo intacto vale muito para os magos da capital.", "gold": 650, "xp": 300, "drops": {"nucleo_de_slime": 0.5}},
+      "derrota": {"tipo": "recompensa", "texto": "Quase foram digeridos vivos.", "gold": 0, "xp": 30}
+    }
+  },
+  "bebado_artefato": {
+    "nome": "O Bêbado que Roubou um Artefato",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "O Velho Tomas roubou um artefato sagrado da guilda e fugiu chorando pelas ruas. O que vocês fazem?",
+        "opcoes": [
+          {"label": "Vasculhar becos", "emoji": "🏚️", "next": "revelacao"},
+          {"label": "Falar com mendigos", "emoji": "🗣️", "next": "revelacao", "chance_sucesso": 0.8, "next_falha": "mendigos_mentem"}
+        ]
+      },
+      "mendigos_mentem": {"tipo": "historia", "texto": "Os mendigos mentiram para proteger Tomas. Vocês perdem horas procurando.", "opcoes": [{"label": "Procurar sozinhos", "emoji": "🔍", "next": "revelacao"}]},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Encontram Tomas nos escombros. O artefato projeta memórias perdidas. Ele chora vendo a imagem da falecida esposa pela última vez.",
+        "opcoes": [
+          {"label": "Prender à força", "emoji": "😠", "next": "prender"},
+          {"label": "Deixar ele se despedir", "emoji": "💔", "next": "despedir"},
+          {"label": "Roubar dele dormindo", "emoji": "📦", "next": "roubar"}
+        ]
+      },
+      "prender": {"tipo": "recompensa", "texto": "Trabalho feito. Tomas foi preso gritando, a guilda pagou bem, mas vocês sentem-se um lixo.", "gold": 500, "xp": 250, "moral_change": -30},
+      "despedir": {"tipo": "recompensa", "texto": "Vocês sentaram ao lado dele. Após o fim da projeção, ele agradeceu e entregou o artefato pacificamente.", "gold": 350, "xp": 300, "moral_change": 30, "drops": {"amuleto_da_serenidade": 0.4}},
+      "roubar": {"tipo": "recompensa", "texto": "Tomas acordará achando que foi tudo um sonho. Zero conflito.", "gold": 250, "xp": 200, "moral_change": -10}
+    }
+  },
+  "carroca_atolada": {
+    "nome": "A Carroça Atolada na Fronteira",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Chuvas transformaram a estrada em um mar de lama. Uma carroça de remédios está atolada e os mercadores estão suando frio de nervosismo.",
+        "opcoes": [
+          {"label": "Ajudar a empurrar", "emoji": "💪", "next": "revelacao"},
+          {"label": "Investigar arredores", "emoji": "🔎", "next": "revelacao"}
+        ]
+      },
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "A carroça transporta remédios extremamente caros. As pegadas frescas ao redor indicam que bandidos locais estão só esperando o cansaço de vocês para atacar.",
+        "opcoes": [
+          {"label": "Defender os mercadores", "emoji": "🛡️", "next": "combate"},
+          {"label": "Fazer uma emboscada", "emoji": "🎯", "next": "emboscada"},
+          {"label": "Roubar a carga", "emoji": "💰", "next": "roubar"}
+        ]
+      },
+      "emboscada": {"tipo": "combate", "texto": "Vocês se esconderam na lama e pegaram os bandidos de surpresa!", "inimigos": ["goblin_veterano"], "win_next": "vitoria", "lose_next": "derrota"},
+      "combate": {"tipo": "combate", "texto": "Os bandidos saltam das árvores atirando!", "inimigos": ["goblin_arqueiro", "goblin_veterano"], "win_next": "vitoria", "lose_next": "derrota"},
+      "roubar": {"tipo": "recompensa", "texto": "Vocês aproveitaram o caos, empurraram os mercadores na lama e fugiram com tudo. Lucro sujo.", "gold": 800, "xp": 100, "moral_change": -50},
+      "vitoria": {"tipo": "recompensa", "texto": "Bandidos abatidos e carroça desatolada. Os vilarejos receberão a medicina a tempo.", "gold": 600, "xp": 300, "moral_change": 25},
+      "derrota": {"tipo": "recompensa", "texto": "Os bandidos amarraram vocês nas rodas da carroça.", "gold": 0, "xp": 20}
+    }
+  },
+  "limpeza_cemiterio": {
+    "nome": "Limpeza de Primavera no Cemitério",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Flores desaparecem do cemitério de Valem. O coveiro jura ter visto um pequeno morto-vivo correndo entre as lápides.",
+        "opcoes": [
+          {"label": "Vigiar à noite", "emoji": "🌙", "next": "revelacao"},
+          {"label": "Investigar a capela", "emoji": "⛪", "next": "revelacao"}
+        ]
+      },
+      "revelacao": {
+        "tipo": "historia", "texto": "Uma criança fantasma recolhe as flores para homenagear o túmulo esquecido da mãe. Seu nome foi apagado da cidade por uma injustiça de um nobre.",
+        "opcoes": [
+          {"label": "Ajudar a criança", "emoji": "✨", "next": "ajudar"},
+          {"label": "Exorcizar", "emoji": "⚔️", "next": "exorcizar"},
+          {"label": "Investigar a Injustiça", "emoji": "🔍", "next": "combate_nobre"}
+        ]
+      },
+      "ajudar": {"tipo": "recompensa", "texto": "O espírito sorri e desaparece em luz. Um botão de flor mágica ficou para trás.", "gold": 300, "xp": 400, "moral_change": 30, "drops": {"flor_eterna": 0.5}},
+      "exorcizar": {"tipo": "recompensa", "texto": "O fantasma infantil não ofereceu resistência e sumiu chorando. Dinheiro fácil, consciência pesada.", "gold": 250, "xp": 200, "moral_change": -30},
+      "combate_nobre": {"tipo": "combate", "texto": "Vocês desenterraram os podres do nobre e os guardas dele atacam para silenciar vocês!", "inimigos": ["cavaleiro", "cavaleiro"], "win_next": "vitoria_nobre", "lose_next": "derrota"},
+      "vitoria_nobre": {"tipo": "recompensa", "texto": "Derrotaram os corruptos! O jazigo foi restaurado com honra.", "gold": 700, "xp": 500, "moral_change": 40, "drops": {"flor_eterna": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "Fugiram assustados dos guardas.", "gold": 0, "xp": 10}
+    }
+  },
+  "guarda_ladrao": {
+    "nome": "O Guarda Dorminhoco e o Ladrão",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Roubos acontecem sempre no turno do guarda Arlen, que jura que não estava dormindo, mas que 'apenas apagou' da memória.",
+        "opcoes": [
+          {"label": "Espionar o guarda", "emoji": "🕵️", "next": "revelacao"},
+          {"label": "Acordá-lo aos tapas", "emoji": "😴", "next": "revelacao"}
+        ]
+      },
+      "revelacao": {
+        "tipo": "historia", "texto": "Um ladrão especialista em ilusões usa magia de transe no guarda! Ele tenta fugir pelos telhados.",
+        "opcoes": [
+          {"label": "Capturar Ladrão", "emoji": "⚔️", "next": "combate"},
+          {"label": "Quebrar o Feitiço", "emoji": "🔮", "next": "feitiço"},
+          {"label": "Encobrir e extorquir o Ladrão", "emoji": "🤫", "next": "extorquir"}
+        ]
+      },
+      "combate": {"tipo": "combate", "texto": "O Ladrão Ilusionista cria clones!", "inimigos": ["mago_aprendiz"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "Ladrão preso! O guarda Arlen agradeceu chorando e entregou uma medalha valiosa.", "gold": 500, "xp": 350, "moral_change": 20, "drops": {"medalha_da_guarda": 0.4}},
+      "feitiço": {"tipo": "recompensa", "texto": "O guarda acorda furioso e prende o ladrão sozinho. Trabalho limpo.", "gold": 300, "xp": 250},
+      "extorquir": {"tipo": "recompensa", "texto": "O ladrão pagou o dobro da recompensa para vocês fingirem cegueira. A guarda continuou culpando o pobre Arlen.", "gold": 800, "xp": 100, "moral_change": -40},
+      "derrota": {"tipo": "recompensa", "texto": "O ladrão ilusionista fez vocês atacarem uns aos outros.", "gold": 0, "xp": 50}
+    }
+  },
+  "cogumelos_alucinogenos": {
+    "nome": "Caça aos Cogumelos Alucinógenos",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Coletores sumiram na Floresta Nebulosa. O ar cheira a podridão doce e os poucos que voltam falam com árvores e riem sozinhos.",
+        "opcoes": [
+          {"label": "Seguir os rastros", "emoji": "🍄", "next": "revelacao"},
+          {"label": "Queimar esporos", "emoji": "🔥", "next": "revelacao"}
+        ]
+      },
+      "revelacao": {
+        "tipo": "historia", "texto": "A colônia de cogumelos tem uma mente coletiva! Ela cria ilusões dos seus piores medos para proteger os esporos raros.",
+        "opcoes": [
+          {"label": "Destruir a colônia", "emoji": "🔥", "next": "destruir"},
+          {"label": "Lutar contra os medos", "emoji": "⚔️", "next": "combate"},
+          {"label": "Negociar telepaticamente", "emoji": "🧠", "next": "negociar"}
+        ]
+      },
+      "destruir": {"tipo": "recompensa", "texto": "Fogo limpa tudo. A colônia gritou antes de virar pó. Sem esporos raros, mas a floresta está salva.", "gold": 400, "xp": 200, "moral_change": 10},
+      "negociar": {"tipo": "recompensa", "texto": "A mente fungo aceita poupar os viajantes se deixarem a área em paz. Eles entregaram esporos livremente.", "gold": 700, "xp": 400, "drops": {"esporos_luminescentes": 0.6}},
+      "combate": {"tipo": "combate", "texto": "Os próprios cogumelos ganham braços e pernas de fungo!", "inimigos": ["homem_arvore", "slime_toxico"], "win_next": "vitoria", "lose_next": "derrota"},
+      "vitoria": {"tipo": "recompensa", "texto": "O fungo gigante tombou, deixando os almejados esporos brilhantes.", "gold": 800, "xp": 450, "drops": {"esporos_luminescentes": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "Ficaram chapados na floresta e acordaram três dias depois sem as botas.", "gold": 0, "xp": 10, "moral_change": -10}
+    }
+  },
+  "navio_fantasma": {
+    "nome": "O Navio Fantasma do Lago de Prata",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "O Navio Fantasma surge em silêncio. Nenhuma vela se move, nenhum remo bate, mas ele corta o nevoeiro exalando energia congelante.",
+        "opcoes": [
+          {"label": "Aproximar de barco", "emoji": "🚣", "next": "aproximar", "chance_sucesso": 0.6, "next_falha": "aproximar_falha"},
+          {"label": "Usar magia de atração", "emoji": "✨", "next": "revelacao"}
+        ]
+      },
+      "aproximar": {"tipo": "historia", "texto": "Subiram a bordo em segurança pelas redes rompidas.", "opcoes": [{"label": "Avançar para o convés", "emoji": "➡️", "next": "revelacao"}]},
+      "aproximar_falha": {"tipo": "historia", "texto": "Almas em agonia viraram o vosso barco pequeno!", "opcoes": [{"label": "Lutar na água", "emoji": "⚔️", "next": "combate_agua"}]},
+      "combate_agua": {"tipo": "combate", "texto": "Os afogados vos puxam para o fundo!", "inimigos": ["zumbi_aquatico", "zumbi_aquatico"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "O capitão espectral aparece. Ele afundou o próprio navio de refugiados para evitar que um artefato amaldiçoado caísse em mãos inimigas na guerra passada.",
+        "opcoes": [
+          {"label": "Destruir o artefato", "emoji": "⚔️", "next": "combate_boss"},
+          {"label": "Saquear os refugiados", "emoji": "💰", "next": "saquear"},
+          {"label": "Ajudar o capitão", "emoji": "⚓", "next": "ajudar"}
+        ]
+      },
+      "combate_boss": {"tipo": "combate", "texto": "O artefato invoca a guarda negra de ossos para se defender!", "inimigos": ["cavaleiro_esqueleto", "espectro"], "win_next": "vitoria_boss", "lose_next": "derrota"},
+      "saquear": {"tipo": "recompensa", "texto": "Roubar mortos assustados rendeu ouro, mas uma maldição gelada grudou nas vossas almas.", "gold": 1200, "xp": 100, "moral_change": -50, "perigo_change": 30},
+      "ajudar": {"tipo": "recompensa", "texto": "Omitiram o artefato na guilda e o afundaram no abismo. O capitão deu a bússola mágica em gratidão antes de sumir na luz.", "gold": 800, "xp": 700, "moral_change": 40, "drops": {"bussola_espectral": 0.8}},
+      "vitoria_boss": {"tipo": "recompensa", "texto": "A maldição foi desfeita! O navio finalmente descansou no leito.", "gold": 1100, "xp": 600, "drops": {"bussola_espectral": 0.4}},
+      "derrota": {"tipo": "recompensa", "texto": "Foram jogados nas águas gélidas. Sobrevivência por um triz.", "gold": 0, "xp": 50}
+    }
+  },
+  "santuario_lobos": {
+    "nome": "O Santuário dos Lobos Uivantes",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Nas montanhas de Arvendor, ruínas escondem um altar guardado por uma alcateia gigante que nunca ataca, apenas protege e uiva de forma ensurdecedora.",
+        "opcoes": [
+          {"label": "Seguir a alcateia pacifica", "emoji": "🐾", "next": "revelacao"},
+          {"label": "Afugentar com Fogo", "emoji": "🔥", "next": "combate_lobos"}
+        ]
+      },
+      "combate_lobos": {"tipo": "combate", "texto": "Os lobos defendem o altar com a vida!", "inimigos": ["lobo_alfa", "lobo_selvagem"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Uma sacerdotisa espectral surge. A alcateia guarda o selo de um demônio ancestral que está se rompendo sob as montanhas.",
+        "opcoes": [
+          {"label": "Restaurar o Santuário", "emoji": "✨", "next": "restaurar"},
+          {"label": "Romper o Selo para lutar", "emoji": "⚔️", "next": "combate_demonio"}
+        ]
+      },
+      "restaurar": {"tipo": "recompensa", "texto": "O selo brilhou intensamente. Os lobos curvaram-se em agradecimento.", "gold": 900, "xp": 750, "moral_change": 30, "drops": {"amuleto_lobo": 0.5}},
+      "combate_demonio": {"tipo": "combate", "texto": "O demônio quebra as pedras sedento de sangue!", "inimigos": ["demonio_medio"], "win_next": "vitoria_demonio", "lose_next": "derrota"},
+      "vitoria_demonio": {"tipo": "recompensa", "texto": "Vocês esmagaram a criatura de vez. O perigo sumiu das montanhas.", "gold": 1500, "xp": 800, "drops": {"amuleto_lobo": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "O demônio escapou e vocês apanharam feio.", "gold": 0, "xp": 80}
+    }
+  },
+  "mercado_negro": {
+    "nome": "O Mercado Negro dos Goblins",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Escondido sob uma fortaleza abandonada, goblins iluminados por cogumelos vendem artefatos roubados e perigosos. A guarda patrulha cada centímetro.",
+        "opcoes": [
+          {"label": "Infiltrar como Compradores", "emoji": "🎭", "next": "revelacao", "chance_sucesso": 0.7, "next_falha": "infiltracao_falha"},
+          {"label": "Invadir atirando", "emoji": "⚔️", "next": "combate_caos"}
+        ]
+      },
+      "infiltracao_falha": {"tipo": "combate", "texto": "Seu sotaque denunciou vocês. Os guardas avançam!", "inimigos": ["goblin_veterano", "goblin_veterano"], "win_next": "revelacao", "lose_next": "derrota"},
+      "combate_caos": {"tipo": "combate", "texto": "O alarme disparou! Toda a segurança ataca de uma vez!", "inimigos": ["goblin_xama_anciao", "goblin_veterano", "goblin_arqueiro"], "win_next": "vitoria_caos", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Vocês descobrem que o mercado não é dos goblins. Nobres influentes da capital usam as criaturas como fachada para lavagem de ouro!",
+        "opcoes": [
+          {"label": "Reunir Provas", "emoji": "📜", "next": "provas"},
+          {"label": "Fazer Negócios Ilícitos", "emoji": "💰", "next": "negociar"},
+          {"label": "Matar o Chefe Goblin", "emoji": "⚔️", "next": "combate_boss"}
+        ]
+      },
+      "provas": {"tipo": "recompensa", "texto": "O rei baniu os nobres envolvidos. A guilda pagou uma fortuna pelos documentos.", "gold": 1500, "xp": 900, "moral_change": 40},
+      "negociar": {"tipo": "recompensa", "texto": "Vocês compraram artefatos banidos a preço de banana e fingiram amnésia moral.", "gold": 2500, "xp": 400, "moral_change": -40, "drops": {"passe_contrabandista": 0.8}},
+      "combate_boss": {"tipo": "combate", "texto": "O Don Corleone dos Goblins puxa suas facas envenenadas!", "inimigos": ["goblin_assassino", "goblin_veterano"], "win_next": "vitoria_boss", "lose_next": "derrota"},
+      "vitoria_boss": {"tipo": "recompensa", "texto": "Mercado desfeito e limparam o cofre central.", "gold": 2000, "xp": 800, "drops": {"passe_contrabandista": 0.4}},
+      "vitoria_caos": {"tipo": "recompensa", "texto": "Mercado transformado em açougue. Sem provas, mas ricos.", "gold": 1800, "xp": 700},
+      "derrota": {"tipo": "recompensa", "texto": "Expulsos e proibidos de entrar na área vip do submundo.", "gold": 0, "xp": 50}
+    }
+  },
+  "mina_anoes": {
+    "nome": "A Mina Abandonada dos Anões",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Inscrições sangrentas avisam 'Não escutem as vozes' na entrada de Martelo Profundo. Ferramentas enferrujadas jazem no chão.",
+        "opcoes": [
+          {"label": "Seguir os trilhos", "emoji": "⛏️", "next": "revelacao"},
+          {"label": "Explorar túneis laterais", "emoji": "🔦", "next": "combate_aranhas"}
+        ]
+      },
+      "combate_aranhas": {"tipo": "combate", "texto": "Aranhas cegas de caverna montaram armadilhas!", "inimigos": ["aranha_gigante", "aranha_gigante"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "No fundo da mina, um Cristal Vivo pulsa intensamente. Ele amplifica pensamentos e a ganância. Ele enlouqueceu os antigos mineiros anões.",
+        "opcoes": [
+          {"label": "Destruir o Cristal", "emoji": "💥", "next": "destruir"},
+          {"label": "Selar a Câmara", "emoji": "🔒", "next": "selar"},
+          {"label": "Extrair Fragmentos", "emoji": "🔬", "next": "combate_cristal"}
+        ]
+      },
+      "destruir": {"tipo": "recompensa", "texto": "A caverna implodiu parcialmente, mas as vozes pararam.", "gold": 900, "xp": 800, "moral_change": 20},
+      "selar": {"tipo": "recompensa", "texto": "Um conserto temporário, a ganância de outros exploradores um dia fará a porta ceder.", "gold": 600, "xp": 600},
+      "combate_cristal": {"tipo": "combate", "texto": "O Cristal cria golens minerais para se proteger dos picaretas!", "inimigos": ["golem_pedra"], "win_next": "vitoria_cristal", "lose_next": "derrota"},
+      "vitoria_cristal": {"tipo": "recompensa", "texto": "O minério extraído é perigoso, mas purificado renderá muito poder.", "gold": 1600, "xp": 900, "drops": {"cristal_ressonante": 0.6}},
+      "derrota": {"tipo": "recompensa", "texto": "Correram chorando de tanto ouvir sussurros cruéis.", "gold": 0, "xp": 60}
+    }
+  },
+  "sereia_corrompida": {
+    "nome": "O Canto da Sereia Corrompida",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Uma melodia irresistível soa no mar da vila costeira. Barcos destruídos e conchas negras sujam a areia. O canto seduz as mentes do grupo.",
+        "opcoes": [
+          {"label": "Navegar até a Sereia", "emoji": "🚤", "next": "combate_mar", "chance_sucesso": 0.5, "next_falha": "hipnose"},
+          {"label": "Tampar os ouvidos", "emoji": "🧏", "next": "revelacao"}
+        ]
+      },
+      "hipnose": {"tipo": "historia", "texto": "Dois membros quase se jogam no mar seduzidos! Perigo máximo!", "opcoes": [{"label": "Amarrá-los ao mastro", "emoji": "🪢", "next": "revelacao"}]},
+      "combate_mar": {"tipo": "combate", "texto": "Tentáculos de corrupção agarram o barco!", "inimigos": ["kraken_jovem"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "A sereia chora enquanto canta. Ela foi corrompida por uma Pérola Negra Amaldiçoada cravada no seu peito.",
+        "opcoes": [
+          {"label": "Matar a Sereia", "emoji": "⚔️", "next": "matar"},
+          {"label": "Purificar a Pérola", "emoji": "✨", "next": "purificar"},
+          {"label": "Arrancar à força", "emoji": "💎", "next": "combate_final"}
+        ]
+      },
+      "matar": {"tipo": "recompensa", "texto": "O mar ficou furioso. O serviço está feito, mas a culpa os seguirá.", "gold": 1000, "xp": 700, "moral_change": -30},
+      "purificar": {"tipo": "recompensa", "texto": "A criatura libertada beijou as testas dos heróis e encheu o barco de tesouros do fundo do mar.", "gold": 1600, "xp": 1000, "moral_change": 40, "drops": {"perola_das_mares": 0.8}},
+      "combate_final": {"tipo": "combate", "texto": "A pérola cria espectros d'água para protegê-la!", "inimigos": ["espectro_agua", "espectro_agua"], "win_next": "vitoria_bruta", "lose_next": "derrota"},
+      "vitoria_bruta": {"tipo": "recompensa", "texto": "O artefato sombrio foi extraído, mas a sereia afundou exausta.", "gold": 1800, "xp": 800, "drops": {"perola_das_mares": 0.5}},
+      "derrota": {"tipo": "recompensa", "texto": "O barco virou. Nadaram até a praia engolindo muito sal.", "gold": 0, "xp": 50}
+    }
+  },
+  "torre_vigia": {
+    "nome": "A Torre de Vigia Desmoronada",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Sinais luminosos bizarros acendem na torre da fronteira destruída, alertando perigo onde não deveria haver vivalma.",
+        "opcoes": [
+          {"label": "Escalar a torre instável", "emoji": "🪜", "next": "escalar_sucesso", "chance_sucesso": 0.5, "next_falha": "escalar_falha"},
+          {"label": "Explorar ruínas de baixo", "emoji": "🔍", "next": "combate_ratos"}
+        ]
+      },
+      "escalar_falha": {"tipo": "historia", "texto": "Um degrau cedeu e todos caíram nas masmorras da base!", "opcoes": [{"label": "Levantar machucados", "emoji": "🛡️", "next": "revelacao"}]},
+      "escalar_sucesso": {"tipo": "historia", "texto": "Subida perfeita. Chegaram ao farol da torre intactos.", "opcoes": [{"label": "Observar as luzes", "emoji": "👀", "next": "revelacao"}]},
+      "combate_ratos": {"tipo": "combate", "texto": "O esgoto da torre esconde pragas aberrantes!", "inimigos": ["rato_mutante", "rato_mutante"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "O fantasma de um antigo soldado continua tentando acender o sinal, eternamente apegado ao juramento militar. A mensagem de luz avisa de uma invasão que nunca ocorreu... ou que ainda está por vir.",
+        "opcoes": [
+          {"label": "Ajudar o Vigia a descansar", "emoji": "👻", "next": "ajudar"},
+          {"label": "Decifrar a Mensagem", "emoji": "📡", "next": "decifrar"},
+          {"label": "Exorcizar sem paciência", "emoji": "⚔️", "next": "exorcizar"}
+        ]
+      },
+      "ajudar": {"tipo": "recompensa", "texto": "O soldado desfaz-se em estrelas douradas, entregando a sua antiga lanterna encantada.", "gold": 800, "xp": 700, "moral_change": 30, "drops": {"lanterna_vigia": 0.7}},
+      "decifrar": {"tipo": "recompensa", "texto": "A mensagem revela a localização de um tesouro militar perdido há séculos!", "gold": 1600, "xp": 800, "drops": {"lanterna_vigia": 0.3}},
+      "exorcizar": {"tipo": "recompensa", "texto": "A espada atravessou a luz e apagou o aviso. Frio, calculista e rápido.", "gold": 500, "xp": 400, "moral_change": -20},
+      "derrota": {"tipo": "recompensa", "texto": "Fugiram a mancar.", "gold": 0, "xp": 40}
+    }
+  },
+  "sequestro_aprendiz": {
+    "nome": "O Sequestro do Mago Aprendiz",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "O arquimago de Lugnica oferece riqueza brutal a quem resgatar o seu pupilo Eryon das figuras encapuzadas da floresta. O desespero dele parece exagerado.",
+        "opcoes": [
+          {"label": "Interrogar o Arquimago", "emoji": "🗣️", "next": "revelacao"},
+          {"label": "Seguir os rastros", "emoji": "🐾", "next": "combate_capuz"}
+        ]
+      },
+      "combate_capuz": {"tipo": "combate", "texto": "Mercenários arcanos tentam cobrir a fuga!", "inimigos": ["mercenario", "mercenario_mago"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Encontram Eryon numa cabana. Ele não foi sequestrado, fugiu! O Mestre pretendia usá-lo como sacrifício para magia proibida da imortalidade.",
+        "opcoes": [
+          {"label": "Proteger o Aprendiz", "emoji": "🛡️", "next": "proteger"},
+          {"label": "Entregar o Rapaz (Traidor)", "emoji": "⚖️", "next": "trair"},
+          {"label": "Invadir o laboratório do Mestre", "emoji": "🔍", "next": "combate_mestre"}
+        ]
+      },
+      "proteger": {"tipo": "recompensa", "texto": "A guilda acobertou o garoto em outra cidade. A consciência limpa vale mais que os bolsos cheios.", "gold": 500, "xp": 900, "moral_change": 50},
+      "trair": {"tipo": "recompensa", "texto": "O Mestre pagou o triplo e fechou a porta sorrindo maleficamente. Nunca mais viram Eryon.", "gold": 3500, "xp": 200, "moral_change": -80},
+      "combate_mestre": {"tipo": "combate", "texto": "O Arquimago pego no flagra!", "inimigos": ["arquimago_corrupto"], "win_next": "vitoria_mestre", "lose_next": "derrota"},
+      "vitoria_mestre": {"tipo": "recompensa", "texto": "Arquimago preso e o laboratório saqueado! O menino deu-vos um dos grimórios.", "gold": 1500, "xp": 1000, "moral_change": 40, "drops": {"grimorio_aprendiz": 0.8}},
+      "derrota": {"tipo": "recompensa", "texto": "Magia avançada demais. Voltaram sem sobrancelhas.", "gold": 0, "xp": 60}
+    }
+  },
+  "fera_nevoa": {
+    "nome": "A Fera que Espreita na Névoa",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Durn está coberta de névoa e sons medonhos. Viajantes desaparecem na sombra. Olhos amarelos piscam no denso vapor branco.",
+        "opcoes": [
+          {"label": "Acender tochas largas", "emoji": "🔥", "next": "revelacao"},
+          {"label": "Usar iscas para emboscada", "emoji": "📯", "next": "combate_fera"}
+        ]
+      },
+      "combate_fera": {"tipo": "combate", "texto": "A isca funcionou, a besta cai sobre vocês!", "inimigos": ["besta_nevoa"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "A criatura está crivada de arpões metálicos. Ela era a pacífica Guardiã da Névoa até caçadores ilegais a mutilarem, o que a deixou furiosa e cega de dor.",
+        "opcoes": [
+          {"label": "Caçar para acabar o sofrimento", "emoji": "⚔️", "next": "matar"},
+          {"label": "Tentar Curar a Besta", "emoji": "🩹", "next": "curar", "chance_sucesso": 0.4, "next_falha": "curar_falha"},
+          {"label": "Caçar os verdadeiros Culpados", "emoji": "🏹", "next": "combate_cacadores"}
+        ]
+      },
+      "curar_falha": {"tipo": "combate", "texto": "A criatura achou que iam agredi-la mais e desferiu o último golpe!", "inimigos": ["besta_nevoa_furiosa"], "win_next": "matar", "lose_next": "derrota"},
+      "matar": {"tipo": "recompensa", "texto": "Um golpe limpo e doloroso no coração. A névoa dissipa revelando paz macabra.", "gold": 1000, "xp": 800, "moral_change": -10},
+      "curar": {"tipo": "recompensa", "texto": "Retiraram o ferro com cuidado mágico. O animal reverenciou o grupo e soprou névoa curativa nas feridas.", "gold": 1200, "xp": 1100, "moral_change": 40, "drops": {"presa_da_nevoa": 0.6}},
+      "combate_cacadores": {"tipo": "combate", "texto": "Acham os caçadores ilegais sorrindo no seu esconderijo!", "inimigos": ["mercenario", "mercenario", "mercenario"], "win_next": "vitoria_cacadores", "lose_next": "derrota"},
+      "vitoria_cacadores": {"tipo": "recompensa", "texto": "Os lixos foram abatidos. O Ouro deles agora é vosso e a floresta está livre de ameaças.", "gold": 1600, "xp": 900, "moral_change": 25},
+      "derrota": {"tipo": "recompensa", "texto": "Perderam-se na neblina.", "gold": 0, "xp": 50}
+    }
+  },
+  "espelho_quebrado": {
+    "nome": "O Enigma do Espelho Quebrado",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Na mansão abandonada, um espelho massivo cria distorções. Os reflexos movem-se com 2 segundos de atraso e encaram o vosso pescoço.",
+        "opcoes": [
+          {"label": "Tocar a superfície", "emoji": "🪞", "next": "tocar", "chance_sucesso": 0.4, "next_falha": "sugado"},
+          {"label": "Estudar a origem arcana", "emoji": "📚", "next": "revelacao"}
+        ]
+      },
+      "tocar": {"tipo": "historia", "texto": "Ondas percorrem o vidro e ele pulsa aversão, empurrando a mão.", "opcoes": [{"label": "Analisar", "emoji": "➡️", "next": "revelacao"}]},
+      "sugado": {"tipo": "combate", "texto": "Garras geladas saem do espelho puxando o esquadrão!", "inimigos": ["reflexo_sombrio", "reflexo_sombrio"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "O espelho é uma porta incompleta para o lado Invertido criado por um mago lunático. Ele liberta clones maléficos imperfeitos a cada 3 horas.",
+        "opcoes": [
+          {"label": "Entrar na Dimensão", "emoji": "🚪", "next": "combate_espelho"},
+          {"label": "Quebrar o Vidro", "emoji": "⚒️", "next": "quebrar"},
+          {"label": "Selar magicamente", "emoji": "✨", "next": "selar"}
+        ]
+      },
+      "combate_espelho": {"tipo": "combate", "texto": "Os vossos clones saltam para fora sorrindo de orelha a orelha!", "inimigos": ["clone_assassino", "clone_sombrio"], "win_next": "vitoria_clones", "lose_next": "derrota"},
+      "quebrar": {"tipo": "recompensa", "texto": "Um martelo gigante fez o vidro virar areia brilhante. Acabou o problema brutalmente.", "gold": 800, "xp": 600, "moral_change": -5},
+      "selar": {"tipo": "recompensa", "texto": "Um ritual delicado encerrou a porta dimensional permanentemente. Artefato seguro para estudos reais.", "gold": 1400, "xp": 1000, "drops": {"espelho_invertido": 0.4}},
+      "vitoria_clones": {"tipo": "recompensa", "texto": "Bateram em si próprios (literalmente). O espelho desligou-se, mas o saque do lado escuro foi fenomenal.", "gold": 1800, "xp": 1200, "drops": {"espelho_invertido": 0.7}},
+      "derrota": {"tipo": "recompensa", "texto": "Os clones ganharam e os prenderam do outro lado por uma semana.", "gold": 0, "xp": 60}
+    }
+  },
+  "troll_ponte_gelo": {
+    "nome": "A Ponte do Troll de Gelo",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Um Monstro Gigante bloqueia a única ponte das Montanhas Brancas. Mas ele não quer ouro... ele recusa-se a sair até ouvir algo que não seja um grito.",
+        "opcoes": [
+          {"label": "Conversar (Contar as missões)", "emoji": "🗣️", "next": "revelacao"},
+          {"label": "Atacar", "emoji": "⚔️", "next": "combate_troll"}
+        ]
+      },
+      "combate_troll": {"tipo": "combate", "texto": "O gigante ergue um pinheiro inteiro como tacape!", "inimigos": ["troll_das_neves"], "win_next": "vitoria_troll", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "O Troll é um soldado antigo amaldiçoado por deuses da neve. A sua mente derrete e ele precisa de uma história heroica e genuína para lembrar a si mesmo que um dia foi humano.",
+        "opcoes": [
+          {"label": "Contar A Verdade Bruta", "emoji": "📖", "next": "contar"},
+          {"label": "Quebrar as Runas de Gelo", "emoji": "✨", "next": "combate_runas"}
+        ]
+      },
+      "combate_runas": {"tipo": "combate", "texto": "As runas mágicas disparam fragmentos de gelo mortal!", "inimigos": ["espirito_glacial", "espirito_glacial"], "win_next": "vitoria_runas", "lose_next": "derrota"},
+      "contar": {"tipo": "recompensa", "texto": "As aventuras e fracassos de vocês tocaram a alma congelada dele. O monstro dissolveu-se num pó luminoso sorridente.", "gold": 1500, "xp": 1000, "moral_change": 30, "drops": {"runa_glacial": 0.8}},
+      "vitoria_troll": {"tipo": "recompensa", "texto": "A força bruta nunca falha, a carcaça de gelo foi jogada no abismo. Bárbaro e eficaz.", "gold": 1000, "xp": 700},
+      "vitoria_runas": {"tipo": "recompensa", "texto": "Desativaram a magia ambiente. O Troll voltou à forma de velho desorientado e foi salvo.", "gold": 1200, "xp": 900, "drops": {"runa_glacial": 0.5}},
+      "derrota": {"tipo": "recompensa", "texto": "Voo livre montanha abaixo.", "gold": 0, "xp": 50}
+    }
+  },
+  "wyvern_tempestade": {
+    "nome": "O Ninho do Wyvern Tempestuoso",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "A Cordilheira de Aeris sangra relâmpagos púrpuras. A enorme criatura queima os rebanhos do topo. O clima está letal.",
+        "opcoes": [
+          {"label": "Escalar pela face da rocha", "emoji": "⛰️", "next": "escalar_falha", "chance_sucesso": 0.3, "next_falha": "escalar_falha"},
+          {"label": "Túneis Subterrâneos", "emoji": "🕳️", "next": "revelacao"}
+        ]
+      },
+      "escalar_falha": {"tipo": "combate", "texto": "O vento arremessou Harpias da tempestade contra vocês!", "inimigos": ["harpia_rainha", "harpia"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "No topo, destroços revelam a verdade: o Wyvern não quer território, mercenários roubaram um dos ovos brilhantes dele! É pânico materno com escamas.",
+        "opcoes": [
+          {"label": "Abater a Besta sem pena", "emoji": "⚔️", "next": "combate_wyvern"},
+          {"label": "Caçar e recuperar o Ovo", "emoji": "🥚", "next": "combate_mercenarios"},
+          {"label": "Tentar domar a criatura", "emoji": "🤝", "next": "domar"}
+        ]
+      },
+      "combate_wyvern": {"tipo": "combate", "texto": "A fera de escamas elétricas mergulha em rasante mortal!", "inimigos": ["wyvern_tempestuoso"], "win_next": "vitoria_wyvern", "lose_next": "derrota"},
+      "combate_mercenarios": {"tipo": "combate", "texto": "Os bandidos estão no acampamento vizinho!", "inimigos": ["lider_bandido", "mago_mercenario", "mercenario"], "win_next": "vitoria_ovo", "lose_next": "derrota"},
+      "domar": {"tipo": "recompensa", "texto": "Tentou abraçar um réptil furioso que cospe raios. Ótima ideia. Acabaram tostados.", "gold": 0, "xp": 100, "moral_change": -10},
+      "vitoria_wyvern": {"tipo": "recompensa", "texto": "Ficaram com as escamas caríssimas, mas a tempestade triste no topo nunca vai passar.", "gold": 2500, "xp": 1500, "moral_change": -20, "drops": {"escama_tempestuosa": 1.0}},
+      "vitoria_ovo": {"tipo": "recompensa", "texto": "Devolveram a cria recém-chocada e ganharam os despojos dos bandidos. O dragão menor rugiu de gratidão e voou para as nuvens.", "gold": 3000, "xp": 2000, "moral_change": 50, "drops": {"escama_tempestuosa": 0.4}},
+      "derrota": {"tipo": "recompensa", "texto": "Arremessados montanha abaixo. Tétano e paraquedas rasgado.", "gold": 0, "xp": 150}
+    }
+  },
+  "golens_cristal": {
+    "nome": "A Rebelião dos Golens de Cristal",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Golens de extração enlouqueceram em Lysar. Oficinas desabaram, e pedaços minerais afiados cravam nas paredes, mas eles apenas vasculham papéis e mapas nas mesas, ignorando o saque.",
+        "opcoes": [
+          {"label": "Destruir à vista", "emoji": "⚔️", "next": "combate_golens"},
+          {"label": "Investigar Registos de Mina", "emoji": "🔍", "next": "revelacao"}
+        ]
+      },
+      "combate_golens": {"tipo": "combate", "texto": "Cristal Cortante!", "inimigos": ["golem_cristal", "golem_cristal"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Ligaram o núcleo central com um artefato cognitivo ilegal. Eles ganharam senciência! Os Golens só queriam achar a chave da saída da cidade de escravidão.",
+        "opcoes": [
+          {"label": "Negociar Libertação", "emoji": "🤝", "next": "negociar"},
+          {"label": "Desligar o Núcleo (Morte Cerebral)", "emoji": "⚡", "next": "desligar"},
+          {"label": "Aniquilar as pedras", "emoji": "⚔️", "next": "combate_boss"}
+        ]
+      },
+      "negociar": {"tipo": "recompensa", "texto": "O esquadrão escoltou-os até a fronteira neutra. O nobre local ficou farto, mas as criaturas pouparam milhares.", "gold": 2200, "xp": 1800, "moral_change": 40},
+      "desligar": {"tipo": "recompensa", "texto": "Remover a fonte apagou as memórias recém-formadas. Eles caíram secos. Lucrativo, frio, cruel.", "gold": 2800, "xp": 1400, "moral_change": -30, "drops": {"nucleo_cristal_vivo": 0.7}},
+      "combate_boss": {"tipo": "combate", "texto": "A Fusão de Golens forma o Golem Rei!", "inimigos": ["rei_cristal", "golem_cristal"], "win_next": "vitoria_boss", "lose_next": "derrota"},
+      "vitoria_boss": {"tipo": "recompensa", "texto": "Limparam o setor industrial. O Rei de Diamantes é um troféu absurdo.", "gold": 3200, "xp": 2000, "drops": {"nucleo_cristal_vivo": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "Soterrados sob rubis.", "gold": 0, "xp": 200}
+    }
+  },
+  "olho_escarlate": {
+    "nome": "O Culto do Olho Escarlate",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Centenas de olhos avermelhados observam o esquadrão nas catacumbas do sul. Cultistas entoam cânticos sombrios numa cerimônia de conversão massiva.",
+        "opcoes": [
+          {"label": "Infiltrar como Novato", "emoji": "🕵️", "next": "revelacao", "chance_sucesso": 0.5, "next_falha": "infiltrar_falha"},
+          {"label": "Invadir gritando punição", "emoji": "⚔️", "next": "combate_culto"}
+        ]
+      },
+      "infiltrar_falha": {"tipo": "combate", "texto": "Aura heróica reconhecida pelo oráculo. Eles atacam!", "inimigos": ["cultista_fanatico", "cultista_fanatico"], "win_next": "revelacao", "lose_next": "derrota"},
+      "combate_culto": {"tipo": "combate", "texto": "Fanáticos suicidas!", "inimigos": ["cultista_fanatico", "cultista_fanatico", "mago_sombrio"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "O 'Deus' deles é um devorador de realidades adormecido. Cada vida cortada aqui no porão é uma trava a menos que prende a besta de 31 metros que espreita além do altar.",
+        "opcoes": [
+          {"label": "Selar e Purificar", "emoji": "✨", "next": "selar"},
+          {"label": "Matar o Líder Supremo", "emoji": "⚔️", "next": "combate_lider"},
+          {"label": "Aceitar o pacto Negro", "emoji": "👁️", "next": "aceitar"}
+        ]
+      },
+      "aceitar": {"tipo": "recompensa", "texto": "Oculto, obscuro e bilionário. O grupo corrompeu o corpo com a mácula arcana. Custo muito alto de sanidade.", "gold": 6000, "xp": 500, "moral_change": -80, "perigo_change": 50},
+      "selar": {"tipo": "recompensa", "texto": "Anjos louvariam tal clérigo. A anomalia encolheu até estourar em poeira inofensiva.", "gold": 3000, "xp": 2000, "moral_change": 40},
+      "combate_lider": {"tipo": "combate", "texto": "O Mestre do Olho vira um minotauro profano de pura carne mutada!", "inimigos": ["sumo_sacerdote_olho", "cultista_fanatico"], "win_next": "vitoria_lider", "lose_next": "derrota"},
+      "vitoria_lider": {"tipo": "recompensa", "texto": "Culto apagado. Os artefatos amaldiçoados renderão uma fortuna segura no mercado da guilda.", "gold": 3500, "xp": 2200, "drops": {"relicario_olho": 0.8}},
+      "derrota": {"tipo": "recompensa", "texto": "Almas roubadas pelo Olho.", "gold": 0, "xp": 100}
+    }
+  },
+  "prisao_magos": {
+    "nome": "A Prisão Flutuante de Magos",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Uma estrutura colossal de obsidiana paira acima de Lugnica, abduzindo magos locais em feixes trator.",
+        "opcoes": [
+          {"label": "Teletransportar a força", "emoji": "🪄", "next": "combate_defesas"},
+          {"label": "Acessar via túnel de Arquivos", "emoji": "📖", "next": "revelacao"}
+        ]
+      },
+      "combate_defesas": {"tipo": "combate", "texto": "Canhões antimagia atiram e sentinelas de ferro saltam do céu!", "inimigos": ["golem_ferro", "golem_pedra"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "O código arcaico despertou a prisão que agora acha que TODOS os conjuradores do reino são perigos soltos. Se deixarem correr, toda a mágica da terra sumirá no cárcere.",
+        "opcoes": [
+          {"label": "Desativar Núcleo Principal", "emoji": "⚙️", "next": "desativar"},
+          {"label": "Libertar TODOS", "emoji": "🔓", "next": "libertar"},
+          {"label": "Assumir Comandos", "emoji": "👑", "next": "combate_ia"}
+        ]
+      },
+      "desativar": {"tipo": "recompensa", "texto": "A prisão caiu inofensiva no mar. Alguns prisioneiros originais morreram no embate, mas o reino está livre.", "gold": 3500, "xp": 2500, "moral_change": 10},
+      "libertar": {"tipo": "recompensa", "texto": "Mago do mal milenar, bruxo lunático... O botão 'abrir celas' soltou todos de volta. Vai dar problema colossal logo logo.", "gold": 2800, "xp": 1800, "moral_change": -30},
+      "combate_ia": {"tipo": "combate", "texto": "O Mestre-Cérebro da torre bloqueia a alteração de senhas com laser orbital!", "inimigos": ["cerebro_arcano", "golem_ferro"], "win_next": "vitoria_ia", "lose_next": "derrota"},
+      "vitoria_ia": {"tipo": "recompensa", "texto": "Senhas trocadas! O sistema reconhece o esquadrão como administradores. Encontraram a chave mestra original no console central.", "gold": 4000, "xp": 3000, "moral_change": 30, "drops": {"chave_arcana_prisao": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "Foram sentenciados à prisão perpétua. O TutoriUAU pagou a fiança humilhante.", "gold": -500, "xp": 200}
+    }
+  },
+  "labirinto_espelhos": {
+    "nome": "O Guardião do Labirinto de Espelhos",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Nas planícies de Alther, labirintos refletem realidades falsas. Exploradores saem enlouquecidos ou mudados, alguns juram ter 90 anos mentais.",
+        "opcoes": [
+          {"label": "Seguir Intuição", "emoji": "🪞", "next": "revelacao"},
+          {"label": "Estudar Símbolos da Borda", "emoji": "📚", "next": "revelacao"}
+        ]
+      },
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "O labirinto é apenas a caixa. O interior abriga o Guardião das Realidades Possíveis, que controla o portal e esmaga futuros nefastos ativamente.",
+        "opcoes": [
+          {"label": "Matar o Guardião Cego", "emoji": "⚔️", "next": "combate_guardiao"},
+          {"label": "Fazer uma pergunta do Destino", "emoji": "❓", "next": "pergunta"},
+          {"label": "Esmagar o Núcleo Dimensional", "emoji": "✨", "next": "esmagar"}
+        ]
+      },
+      "pergunta": {"tipo": "recompensa", "texto": "A entidade roubou as vossas emoções por um mês como pagamento, mas viram uma verdade impagável. Valioso.", "gold": 2000, "xp": 3000, "moral_change": -10},
+      "esmagar": {"tipo": "recompensa", "texto": "Com o cristal primário estilhaçado, as cópias ilusórias derreteram na terra devolvendo a sanidade da planície.", "gold": 3200, "xp": 2400, "moral_change": 20},
+      "combate_guardiao": {"tipo": "combate", "texto": "Ele evoca a pior versão possível de vocês do multiverso para lutar!", "inimigos": ["eco_corrompido", "eco_corrompido", "guardiao_realidade"], "win_next": "vitoria_guardiao", "lose_next": "derrota"},
+      "vitoria_guardiao": {"tipo": "recompensa", "texto": "O tecido do multiverso balançou. Recolheram vidro negro intacto do próprio deus-falso.", "gold": 3800, "xp": 2800, "drops": {"espelho_primordial": 0.8}},
+      "derrota": {"tipo": "recompensa", "texto": "Foram perdidos em ilusões que nem percebem se acordaram.", "gold": 0, "xp": 150}
+    }
+  },
+  "cavaleiros_sem_alma": {
+    "nome": "A Invasão dos Cavaleiros Sem Alma",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "A fronteira oriental caiu sem gritos. Armaduras imortais marcham na noite pegando aldeões em vez de tesouros.",
+        "opcoes": [
+          {"label": "Linha de frente (Defender)", "emoji": "🛡️", "next": "combate_legiao"},
+          {"label": "Seguir para o QG Fantasma", "emoji": "🕵️", "next": "revelacao"}
+        ]
+      },
+      "combate_legiao": {"tipo": "combate", "texto": "A cada passo quebram ferro enferrujado que não para de vir!", "inimigos": ["cavaleiro_fantasma", "cavaleiro_fantasma", "cavaleiro_fantasma"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Um Artefato Necrôntico gigantesco enterra as almas de heróis antigos, forçando-os a carregar aldeões para abastecer os fornos do feitiço. Sem almas, a fornalha desliga e os soldados tombam.",
+        "opcoes": [
+          {"label": "Libertar as Almas", "emoji": "✨", "next": "libertar"},
+          {"label": "Aniquilar as Cascas e Pilhar", "emoji": "⚔️", "next": "combate_boss"},
+          {"label": "Tomar as Chaves de Controle", "emoji": "👑", "next": "controlar"}
+        ]
+      },
+      "libertar": {"tipo": "recompensa", "texto": "Luz pura consumiu o pátio. Cavaleiros velhos curvaram-se em despedida silenciosa.", "gold": 3500, "xp": 3000, "moral_change": 50},
+      "controlar": {"tipo": "recompensa", "texto": "Tem o exército morto inteiro no seu porão agora. Tirano e psicopata, mas imbatível.", "gold": 4500, "xp": 1000, "moral_change": -60},
+      "combate_boss": {"tipo": "combate", "texto": "O General de Ferro Negro se impõe colossal!", "inimigos": ["lorde_cavaleiro_negro", "espectro"], "win_next": "vitoria_boss", "lose_next": "derrota"},
+      "vitoria_boss": {"tipo": "recompensa", "texto": "As peças de chumbo trituradas valem ouro. Nenhuma honra devolvida aos espíritos.", "gold": 4200, "xp": 2500, "moral_change": -10, "drops": {"lamina_eterna": 0.5}},
+      "derrota": {"tipo": "recompensa", "texto": "Foram empalados.", "gold": 0, "xp": 150}
+    }
+  },
+  "vulcao_adormecido": {
+    "nome": "O Despertar do Vulcão Adormecido",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Ignis arrota cinzas e criaturas de larva andam pelas ladeiras ardentes. Cidades vizinhas sufocam.",
+        "opcoes": [
+          {"label": "Puxar evacuação local", "emoji": "🏘️", "next": "revelacao"},
+          {"label": "Pular direto pro núcleo da montanha", "emoji": "🌋", "next": "combate_fogo"}
+        ]
+      },
+      "combate_fogo": {"tipo": "combate", "texto": "Basiliscos cuspindo pedras a 800º graus!", "inimigos": ["lagarto_fogo", "lagarto_fogo"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Não é desastre geológico natural: mineradores capitalistas de rubis cavaram até o selo mágico do Titã Ígneo. O deus do magma rasga a gaiola da rocha pelas dores.",
+        "opcoes": [
+          {"label": "Restaurar Selo Elemental", "emoji": "✨", "next": "selar"},
+          {"label": "Cortar Fora a Cabeça Quente", "emoji": "⚔️", "next": "combate_titan"},
+          {"label": "Dinamitar cristais problemáticos", "emoji": "⛏️", "next": "dinamitar"}
+        ]
+      },
+      "selar": {"tipo": "recompensa", "texto": "Sacrifício arcano severo, o grupo desmaiou de estresse mágico. A lava arrefeceu e Lugnica está segura.", "gold": 3500, "xp": 2800, "moral_change": 30},
+      "dinamitar": {"tipo": "recompensa", "texto": "Bomba nas pedras mágicas. O Titã ressonou e voltou a dormir de exaustão de mana. Serviço bruto.", "gold": 4000, "xp": 1500, "moral_change": -5},
+      "combate_titan": {"tipo": "combate", "texto": "Titã de trezentas toneladas de enxofre emerge punhos em punho!", "inimigos": ["tita_magma"], "win_next": "vitoria_titan", "lose_next": "derrota"},
+      "vitoria_titan": {"tipo": "recompensa", "texto": "A besta resfriou numa casca oca imensa, deixando no peito uma fornalha portátil pura.", "gold": 4500, "xp": 3500, "moral_change": 10, "drops": {"coracao_de_magma": 0.8}},
+      "derrota": {"tipo": "recompensa", "texto": "Vocês têm queimaduras de 3º grau em 90% do corpo.", "gold": 0, "xp": 200}
+    }
+  },
+  "cacador_recompensas": {
+    "nome": "A Caçada ao Caçador de Recompensas",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Corvo Negro fatiou esquadrões inteiros deixando uma pena como cartão postal. Vocês foram chamados por sobreviventes paranoicos.",
+        "opcoes": [
+          {"label": "Preparar Isca Mortal", "emoji": "🪤", "next": "combate_isca", "chance_sucesso": 0.5, "next_falha": "isca_falha"},
+          {"label": "Vasculhar Informante Sujo", "emoji": "🗣️", "next": "revelacao"}
+        ]
+      },
+      "isca_falha": {"tipo": "combate", "texto": "Ele previu a isca e jogou explosivos venenosos primeiro!", "inimigos": ["mercenario", "assassino_elite"], "win_next": "revelacao", "lose_next": "derrota"},
+      "combate_isca": {"tipo": "combate", "texto": "Ele cai na cilada arremessando adagas na garganta!", "inimigos": ["assassino_elite"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Corvo foi curralado. Farto e manchado de sangue, ele prova que a guilda inteira que ele matou estava com as mãos na corrupção de sua família assassinada anos antes.",
+        "opcoes": [
+          {"label": "Terminar o serviço de caça (Ouro Rápido)", "emoji": "⚔️", "next": "combate_final"},
+          {"label": "Deixar partir, ele tem razão", "emoji": "🤝", "next": "partir"},
+          {"label": "Caminho do Caçador Justo (Desvendar Culpado)", "emoji": "🕵️", "next": "combate_verdadeiro"}
+        ]
+      },
+      "partir": {"tipo": "recompensa", "texto": "Ele partiu. A guilda penalizou vocês pesadamente pelo sumiço do alvo.", "gold": 0, "xp": 1000, "moral_change": 40},
+      "combate_final": {"tipo": "combate", "texto": "Ele lutará por honra até o último respiro!", "inimigos": ["lider_assassino_corvo"], "win_next": "vitoria_corvo", "lose_next": "derrota"},
+      "vitoria_corvo": {"tipo": "recompensa", "texto": "O herói injustiçado morreu a vossos pés. Os pagadores riram, dinheiro sem alma garantido.", "gold": 4000, "xp": 2000, "moral_change": -60},
+      "combate_verdadeiro": {"tipo": "combate", "texto": "Derrubam as portas da mansão corrupta da elite na capital de mãos dadas com ele!", "inimigos": ["nobre_corrupto", "guarda_elite", "guarda_elite"], "win_next": "vitoria_nobre", "lose_next": "derrota"},
+      "vitoria_nobre": {"tipo": "recompensa", "texto": "Corrupção varrida do mapa. Corvo entregou sua máscara simbólica antes de sumir nas nuvens como poeira e lenda.", "gold": 3700, "xp": 3000, "moral_change": 50, "drops": {"mascara_corvo": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "Dormiram no formol do veneno.", "gold": 0, "xp": 200}
+    }
+  },
+  "fenda_dimensional": {
+    "nome": "A Fenda Dimensional de Lugnica",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "O céu de Lugnica rasgou-se num corte purpura massivo. Pedaços de universos com ilhas de magma e neve invadem os telhados. Todos os arquimagos estão nocauteados.",
+        "opcoes": [
+          {"label": "Mergulhar Direto no Núcleo do Ceu", "emoji": "🌀", "next": "combate_vazio"},
+          {"label": "Proteger Portões Principais primeiro", "emoji": "🛡️", "next": "combate_horda"}
+        ]
+      },
+      "combate_vazio": {"tipo": "combate", "texto": "Aberracoes flutuantes interceptam o portal!", "inimigos": ["demonio_abissal", "demonio_abissal"], "win_next": "revelacao", "lose_next": "derrota"},
+      "combate_horda": {"tipo": "combate", "texto": "Horda cósmica suja varrendo cidadãos!", "inimigos": ["gargula_ferro", "trol_sombrio", "espectro"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "No centro do cataclisma jaz o responsável. É uma CÓPIA exata do seu próprio Herói Principal, chorando de raiva tentando unir todas as fendas após o mundo dele implodir. Um multiverso colapsando.",
+        "opcoes": [
+          {"label": "Eliminar sem pensar!", "emoji": "⚔️", "next": "combate_clone_deus"},
+          {"label": "Selar a fenda (Apaga bilhões de vidas)", "emoji": "✨", "next": "selar"},
+          {"label": "Fusão Total (Loucura)", "emoji": "🤝", "next": "fusao"}
+        ]
+      },
+      "selar": {"tipo": "recompensa", "texto": "Sacríficio bruto de estabilidade. O rasgo sumiu, o impostor explodiu. Realidades infinitas morreram.", "gold": 12000, "xp": 8000, "moral_change": -40},
+      "fusao": {"tipo": "recompensa", "texto": "A mente da vossa party derreteu um pouco. Mundos se encaixaram de forma bizarra e agora chove de cima para baixo às vezes. Louco, poderoso, imprevisível.", "gold": 15000, "xp": 10000, "moral_change": 10, "perigo_change": 50},
+      "combate_clone_deus": {"tipo": "combate", "texto": "Seu clone distorcido de anomalia levanta a lâmina estelar!", "inimigos": ["heroi_corrompido_deus"], "win_next": "vitoria_clone", "lose_next": "derrota"},
+      "vitoria_clone": {"tipo": "recompensa", "texto": "Vocês esmagaram a aberração e o céu curou instantaneamente, chovendo estilhaços valiosos de realidades partidas.", "gold": 15000, "xp": 10000, "drops": {"nexus_dimensional": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "O esquadrão foi jogado numa dimensão onde só existe queijo ralado e desespero por eons.", "gold": 0, "xp": 0}
+    }
+  },
+  "falso_deus": {
+    "nome": "O Julgamento do Falso Deus",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "Um Serafim Dourado desceu no centro, curando cegos e florescendo colheitas da noite pro dia. Quem questiona sua divindade, porém, é estripado na surdina.",
+        "opcoes": [
+          {"label": "Sequestrar Sacerdotes (Invadir)", "emoji": "🕵️", "next": "combate_fanaticos"},
+          {"label": "Acusar no altar Maior", "emoji": "⚔️", "next": "acusar"}
+        ]
+      },
+      "combate_fanaticos": {"tipo": "combate", "texto": "Os curados enlouquecem com facas e foices!", "inimigos": ["cultista_fanatico", "cultista_fanatico", "cultista_fanatico"], "win_next": "revelacao", "lose_next": "derrota"},
+      "acusar": {"tipo": "historia", "texto": "Vocês são jogados aos cães na câmara baixa e presos por 12 horas.", "opcoes": [{"label": "Quebrar cela e agir", "emoji": "⛓️", "next": "revelacao"}]},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "Sangrando abaixo do altar, a verdade emerge. Não há deuses misericordiosos, ele é um Parasita Abissal Cefalópode que projeta luz com a poeira das almas dos infiéis mastigadas e roubadas.",
+        "opcoes": [
+          {"label": "Mostrar o corpo nojento ao público", "emoji": "📢", "next": "mostrar"},
+          {"label": "Tomar o Trono Manipulador", "emoji": "👑", "next": "tomar"},
+          {"label": "Evocar Armageddon e Aniquilar", "emoji": "⚔️", "next": "combate_deus"}
+        ]
+      },
+      "mostrar": {"tipo": "recompensa", "texto": "A entidade derreteu na luz do dia com a descrença total do povo decepcionado, zero Ouro, mas 100% honra heróica sem glória mítica de poder.", "gold": 1000, "xp": 6000, "moral_change": 50},
+      "tomar": {"tipo": "recompensa", "texto": "Fingiram que eram deuses emissários. Sentam banhados em Ouro sujo de ignorantes.", "gold": 18000, "xp": 5000, "moral_change": -80},
+      "combate_deus": {"tipo": "combate", "texto": "As falsas asas brancas rasgam dando lugar a tentáculos de energia bruta e bocas famintas!", "inimigos": ["falso_deus_parasita", "espectro"], "win_next": "vitoria_deus", "lose_next": "derrota"},
+      "vitoria_deus": {"tipo": "recompensa", "texto": "Mil pedaços divinos asquerosos explodiram. O falso halo caiu direto nas vossas sacolas de gado abatido.", "gold": 18000, "xp": 10000, "drops": {"coroa_julgamento": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "Engolidos pela luz.", "gold": 0, "xp": 0}
+    }
+  },
+  "guerra_multiversal": {
+    "nome": "A Guerra dos Ecos Multiversais",
+    "nodos": {
+      "start": {
+        "tipo": "historia", "texto": "O apocalipse chegou. Vilões do passado saltam de portões no meio das praças. A gravidade falhou em 3 distritos. Tudo desaba.",
+        "opcoes": [
+          {"label": "Cortar o Fio do Caos via força bruta", "emoji": "⚔️", "next": "combate_elite"},
+          {"label": "Correr para o Nexus Dimensional", "emoji": "🌌", "next": "revelacao"}
+        ]
+      },
+      "combate_elite": {"tipo": "combate", "texto": "Generais das antigas frentes esmagam vocês antes da entrada!", "inimigos": ["rei_demonio", "lorde_cavaleiro_negro"], "win_next": "revelacao", "lose_next": "derrota"},
+      "revelacao": {
+        "tipo": "historia",
+        "texto": "No coração da bagunça universal dita O Arquivista, guardião do tempo. Ele afirma: 'Destruo Lugnica para impedir o fim de 9 milhões de outros reinos felizes'. Matemática fria da imortalidade.",
+        "opcoes": [
+          {"label": "Aceitar o Sacrifício, matar o Arquivista (Condenar os outros mundos)", "emoji": "⚔️", "next": "combate_arquivista"},
+          {"label": "Reescrever Código e virar poeira cósmica juntos", "emoji": "📖", "next": "reescrever"},
+          {"label": "Aliar ao Arquivista (Lugnica Desaba, vós virais Deuses)", "emoji": "🤝", "next": "aliar"}
+        ]
+      },
+      "reescrever": {"tipo": "recompensa", "texto": "Tiveram os ossos reduzidos a nada arcano, mas equilibraram as realidades, viraram um mito apagado, um conto inominável sem recompensas brutas. Glória etérea.", "gold": 0, "xp": 50000, "moral_change": 100},
+      "aliar": {"tipo": "recompensa", "texto": "Assistiram o próprio mundo virar um borrão azul por bilhões em Ouro alienígena nos bolsos sem remorso.", "gold": 50000, "xp": 10000, "moral_change": -100, "perigo_change": -100},
+      "combate_arquivista": {"tipo": "combate", "texto": "Desafiando a lógica e salvando APENAS a própria aldeia!", "inimigos": ["arquivista_supremo", "eco_corrompido", "eco_corrompido"], "win_next": "vitoria_arquivista", "lose_next": "derrota"},
+      "vitoria_arquivista": {"tipo": "recompensa", "texto": "Egoístas e absolutos, vocês esmigalharam a biblioteca do tempo. O coração universal pinga na sua mão.", "gold": 40000, "xp": 25000, "drops": {"ecos_eternos": 1.0}},
+      "derrota": {"tipo": "recompensa", "texto": "A vossa linha do tempo foi apagada por completo.", "gold": 0, "xp": 0}
     }
   }
 }

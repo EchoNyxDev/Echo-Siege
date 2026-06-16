@@ -41,7 +41,7 @@ ENEMIES = {
     },
     "lobo_alfa": {
         "nome": "Lobo Alfa", "tipo": "mini_boss",
-        "hp": 600, "atk":70, "def": 40, "matk": 0, "spd": 25, "crt": 20, "imagem": ""
+        "hp": 600, "atk": 70, "def": 40, "matk": 0, "spd": 25, "crt": 20, "imagem": ""
     },
     # Boss Final D1
     "rei_goblin": {
@@ -247,5 +247,72 @@ ENEMIES = {
         "nome": "A Testemunha", "tipo": "boss",
         "hp": 20000, "atk": 1500, "def": 1000, "matk": 1000, "spd": 50, "crt": 25,
         "habilidade": "aetherion", "imagem": ""
-    }
+    },
+
+    # ==========================================
+    # INIMIGOS DE AVENTURAS E EVENTOS
+    # ==========================================
+    # Bestas e Monstros Comuns
+    "slime": {"nome": "Slime", "tipo": "comum", "hp": 120, "atk": 25, "def": 10, "matk": 0, "spd": 10, "crt": 5},
+    "slime_toxico": {"nome": "Slime Tóxico", "tipo": "comum", "hp": 250, "atk": 35, "def": 15, "matk": 0, "spd": 12, "crt": 5},
+    "rato_mutante": {"nome": "Rato Mutante", "tipo": "comum", "hp": 180, "atk": 45, "def": 15, "matk": 0, "spd": 25, "crt": 10},
+    "aranha_gigante": {"nome": "Aranha Gigante", "tipo": "comum", "hp": 350, "atk": 55, "def": 25, "matk": 0, "spd": 20, "crt": 15},
+    "lagarto_gigante": {"nome": "Lagarto Gigante", "tipo": "comum", "hp": 600, "atk": 70, "def": 40, "matk": 0, "spd": 18, "crt": 10},
+    "lagarto_fogo": {"nome": "Lagarto de Fogo", "tipo": "comum", "hp": 700, "atk": 85, "def": 45, "matk": 50, "spd": 22, "crt": 12},
+    "homem_arvore": {"nome": "Homem Árvore", "tipo": "comum", "hp": 800, "atk": 60, "def": 60, "matk": 0, "spd": 8, "crt": 5},
+    "troll_das_neves": {"nome": "Troll das Neves", "tipo": "comum", "hp": 1200, "atk": 90, "def": 60, "matk": 0, "spd": 10, "crt": 5},
+    
+    # Construtos e Golems
+    "golem_pedra": {"nome": "Golem de Pedra", "tipo": "comum", "hp": 1500, "atk": 80, "def": 100, "matk": 0, "spd": 5, "crt": 5, "habilidade": "imune_atk_fisico"},
+    "golem_cristal": {"nome": "Golem de Cristal", "tipo": "comum", "hp": 1800, "atk": 110, "def": 80, "matk": 0, "spd": 15, "crt": 15},
+    "golem_ferro": {"nome": "Golem de Ferro", "tipo": "comum", "hp": 2200, "atk": 140, "def": 150, "matk": 0, "spd": 8, "crt": 5},
+    "gargula_ferro": {"nome": "Gárgula de Ferro", "tipo": "comum", "hp": 1600, "atk": 120, "def": 90, "matk": 0, "spd": 25, "crt": 10},
+    
+    # Criaturas do Mar
+    "zumbi_aquatico": {"nome": "Zumbi Aquático", "tipo": "comum", "hp": 450, "atk": 45, "def": 20, "matk": 0, "spd": 10, "crt": 5},
+    "kraken_jovem": {"nome": "Kraken Jovem", "tipo": "mini_boss", "hp": 2500, "atk": 130, "def": 80, "matk": 50, "spd": 20, "crt": 10},
+    "espectro_agua": {"nome": "Espectro D'água", "tipo": "comum", "hp": 900, "atk": 0, "def": 40, "matk": 100, "spd": 25, "crt": 5, "habilidade": "imune_atk_fisico"},
+    
+    # Cultistas, Bandidos e Mercenários
+    "cavaleiro": {"nome": "Cavaleiro Corrupto", "tipo": "comum", "hp": 550, "atk": 65, "def": 50, "matk": 0, "spd": 12, "crt": 5},
+    "mercenario": {"nome": "Mercenário", "tipo": "comum", "hp": 400, "atk": 75, "def": 30, "matk": 0, "spd": 20, "crt": 15},
+    "mercenario_mago": {"nome": "Mercenário Mago", "tipo": "comum", "hp": 300, "atk": 15, "def": 20, "matk": 85, "spd": 15, "crt": 5},
+    "lider_bandido": {"nome": "Líder Bandido", "tipo": "mini_boss", "hp": 1200, "atk": 110, "def": 60, "matk": 0, "spd": 22, "crt": 20},
+    "cultista_fanatico": {"nome": "Cultista Fanático", "tipo": "comum", "hp": 350, "atk": 80, "def": 20, "matk": 40, "spd": 18, "crt": 15},
+    "mago_sombrio": {"nome": "Mago Sombrio", "tipo": "comum", "hp": 500, "atk": 10, "def": 25, "matk": 110, "spd": 16, "crt": 10},
+    "assassino_elite": {"nome": "Assassino de Elite", "tipo": "mini_boss", "hp": 1800, "atk": 180, "def": 50, "matk": 0, "spd": 45, "crt": 35},
+    "nobre_corrupto": {"nome": "Nobre Corrupto", "tipo": "mini_boss", "hp": 800, "atk": 40, "def": 80, "matk": 0, "spd": 10, "crt": 5},
+    "guarda_elite": {"nome": "Guarda de Elite", "tipo": "comum", "hp": 1500, "atk": 90, "def": 120, "matk": 0, "spd": 15, "crt": 10},
+    "goblin_assassino": {"nome": "Goblin Assassino", "tipo": "comum", "hp": 350, "atk": 85, "def": 15, "matk": 0, "spd": 35, "crt": 25},
+    
+    # Magos Específicos
+    "mago_aprendiz": {"nome": "Mago Aprendiz", "tipo": "comum", "hp": 250, "atk": 10, "def": 15, "matk": 60, "spd": 14, "crt": 5},
+    "arquimago_corrupto": {"nome": "Arquimago Corrupto", "tipo": "boss", "hp": 4500, "atk": 30, "def": 80, "matk": 250, "spd": 22, "crt": 15, "habilidade": "magia_em_massa"},
+    "sumo_sacerdote_olho": {"nome": "Sumo Sacerdote do Olho", "tipo": "boss", "hp": 6000, "atk": 50, "def": 100, "matk": 300, "spd": 24, "crt": 10, "habilidade": "sacrificio_de_sangue"},
+    
+    # Espirítos, Sombras e Ecos Específicos
+    "espectro": {"nome": "Espectro", "tipo": "comum", "hp": 1100, "atk": 0, "def": 50, "matk": 120, "spd": 28, "crt": 10, "habilidade": "imune_atk_fisico"},
+    "espirito_glacial": {"nome": "Espírito Glacial", "tipo": "comum", "hp": 850, "atk": 0, "def": 40, "matk": 110, "spd": 25, "crt": 10},
+    "reflexo_sombrio": {"nome": "Reflexo Sombrio", "tipo": "comum", "hp": 1400, "atk": 120, "def": 60, "matk": 120, "spd": 30, "crt": 20},
+    "clone_assassino": {"nome": "Clone Assassino", "tipo": "mini_boss", "hp": 2200, "atk": 200, "def": 70, "matk": 0, "spd": 50, "crt": 30},
+    "clone_sombrio": {"nome": "Clone Sombrio", "tipo": "mini_boss", "hp": 2500, "atk": 150, "def": 100, "matk": 150, "spd": 35, "crt": 15},
+    "trol_sombrio": {"nome": "Trol Sombrio", "tipo": "comum", "hp": 3000, "atk": 160, "def": 120, "matk": 0, "spd": 15, "crt": 5},
+    "demonio_abissal": {"nome": "Demônio Abissal", "tipo": "mini_boss", "hp": 6000, "atk": 250, "def": 180, "matk": 200, "spd": 30, "crt": 15},
+    
+    # Chefes Épicos das Aventuras
+    "besta_nevoa": {"nome": "Besta da Névoa", "tipo": "mini_boss", "hp": 3500, "atk": 180, "def": 100, "matk": 0, "spd": 35, "crt": 20},
+    "besta_nevoa_furiosa": {"nome": "Besta da Névoa (Furiosa)", "tipo": "boss", "hp": 5000, "atk": 280, "def": 120, "matk": 0, "spd": 45, "crt": 30, "habilidade": "contrato_berserk"},
+    "wyvern_tempestuoso": {"nome": "Wyvern Tempestuoso", "tipo": "boss", "hp": 8000, "atk": 350, "def": 150, "matk": 200, "spd": 50, "crt": 25, "habilidade": "tornado_de_fogo"},
+    "rei_cristal": {"nome": "Rei de Cristal", "tipo": "boss", "hp": 12000, "atk": 400, "def": 400, "matk": 0, "spd": 20, "crt": 10, "habilidade": "reduz_defesa_geral"},
+    "cerebro_arcano": {"nome": "Cérebro Arcano", "tipo": "boss", "hp": 9000, "atk": 0, "def": 250, "matk": 450, "spd": 35, "crt": 15, "habilidade": "aetherion"},
+    "guardiao_realidade": {"nome": "Guardião da Realidade", "tipo": "boss", "hp": 15000, "atk": 450, "def": 300, "matk": 450, "spd": 40, "crt": 20, "habilidade": "paralisia_em_massa"},
+    "lorde_cavaleiro_negro": {"nome": "General de Ferro Negro", "tipo": "boss", "hp": 14000, "atk": 500, "def": 600, "matk": 0, "spd": 25, "crt": 15, "habilidade": "esmagar_muralha"},
+    "tita_magma": {"nome": "Titã de Magma", "tipo": "boss", "hp": 20000, "atk": 600, "def": 500, "matk": 300, "spd": 15, "crt": 10, "habilidade": "terremoto_glacial"}, # Usa a logica de terremoto
+    "lider_assassino_corvo": {"nome": "Corvo Negro", "tipo": "boss", "hp": 8500, "atk": 550, "def": 180, "matk": 0, "spd": 65, "crt": 45, "habilidade": "investida_mortal"},
+    
+    # Divindades e Entidades Cósmicas
+    "heroi_corrompido_deus": {"nome": "Cópia Distorcida do Herói", "tipo": "boss", "hp": 25000, "atk": 800, "def": 400, "matk": 800, "spd": 55, "crt": 30, "habilidade": "desintegracao"},
+    "falso_deus_parasita": {"nome": "Falso Deus Parasita", "tipo": "boss", "hp": 30000, "atk": 700, "def": 500, "matk": 1000, "spd": 45, "crt": 20, "habilidade": "sopro_do_caos"},
+    "rei_demonio": {"nome": "Rei Demônio Ancestral", "tipo": "boss", "hp": 40000, "atk": 1200, "def": 800, "matk": 1000, "spd": 50, "crt": 25, "habilidade": "fim_dos_tempos"},
+    "arquivista_supremo": {"nome": "O Arquivista do Tempo", "tipo": "boss", "hp": 50000, "atk": 1000, "def": 1000, "matk": 1500, "spd": 60, "crt": 20, "habilidade": "aetherion"}
 }
