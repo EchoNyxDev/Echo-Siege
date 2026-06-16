@@ -91,7 +91,7 @@ class Tutorial(commands.Cog):
         e2 = self._page(
             "Aula 2 // Perfil, Economia e Mochila",
             (
-                "`echo perfil` mostra sua ficha. Os temas Cidade Noturna, Minecraft, Árvore Glacial e Flores de Cerejeira cobrem o fundo do card 16:9; avatar, dados e a imagem do herói principal são desenhados por cima.\n"
+                "`echo perfil` mostra sua ficha. Os temas Cidade Noturna, Minecraft, Árvore Glacial e Flores de Cerejeira cobrem o fundo do card; avatar, dados e a imagem do herói principal são desenhados por cima.\n"
                 "`echo mochila` mostra itens, drops e tickets. É onde ficam as coisas que você jura que vai usar depois.\n"
                 "`echo daily` dá recompensa diária expandida; sequência alta rende itens, gems, tickets e até pet.\n"
                 "`echo cd` mostra seus tempos de espera.\n\n"
@@ -116,9 +116,10 @@ class Tutorial(commands.Cog):
                 "`echo summon <quantidade>` usa o **banner comum**, com todos os personagens.\n"
                 "`echo summon especial <quantidade>` usa o **banner especial semanal**, que muda todo sábado 00:00 e destaca "
                 "3 heróis 5 estrelas e 5 heróis 4 estrelas dentro das respectivas raridades.\n"
-                "Os dois banners usam a mesma chance de raridade: 4⭐ em 2,5% e 5⭐ em 0,3%. O especial não fabrica raridade; "
+                "Os dois banners usam a mesma chance de raridade: 3⭐ em 19%, 4⭐ em 5% e 5⭐ em 1%. O especial não fabrica raridade; "
                 "ele só empurra o sorteio para os destaques depois que a raridade já foi definida.\n"
-                "Soft pity começa em 15 giros para 4⭐ e 30 para 5⭐. A etiqueta `[NEW]` aparece na primeira cópia de cada herói.\n"
+                "Dez giros garantem pelo menos um personagem 3⭐ ou superior. Soft pity começa em 15 giros para 4⭐ e 30 para 5⭐; "
+                "as garantias máximas ficam em 30 e 100. A etiqueta `[NEW]` aparece na primeira cópia de cada herói.\n"
                 "`echo banner` mostra os banners ativos. TutoriUAU: probabilidades pequenas, decisões financeiras enormes."
             ),
             3,
@@ -126,8 +127,23 @@ class Tutorial(commands.Cog):
             discord.Color.orange(),
             IMG_AULA_2,
         )
-        e3.add_field(name="Evolução", value="Use `echo evoluir <ID>` para sacrificar uma cópia e aumentar estrelas. Cruel? Sim. Eficiente? Também.", inline=False)
-        e3.add_field(name="Habilidades", value="Use `echo herói <ID>` para ver habilidade base e despertares.", inline=False)
+        e3.add_field(
+            name="Evolução",
+            value=(
+                "Use `echo evoluir <ID>` para consumir uma cópia livre do mesmo personagem e aumentar seu estágio. "
+                "A cópia sacrificada não pode estar na party, expedição, defesa dos Campeões nem carregar equipamentos. "
+                "A raridade base não muda; atributos e possíveis despertares melhoram. Cruel? Sim. Documentado? Agora também."
+            ),
+            inline=False,
+        )
+        e3.add_field(
+            name="Ficha Completa",
+            value=(
+                "Use `echo herói <ID>` para ver raridade base, evolução, atributos reais de combate, equipamentos, "
+                "habilidade base e despertares. Agora a ficha tem informações; conceito ousado, eu sei."
+            ),
+            inline=False,
+        )
         pages.append(e3)
 
         e4 = self._page(
@@ -135,11 +151,14 @@ class Tutorial(commands.Cog):
             (
                 "`echo main <ID>` define o líder. `echo party` monta os outros slots.\n\n"
                 "A **afinidade** é automática: personagens do mesmo anime na mesma party recebem bônus de status. "
-                "Dois já ajudam, três começam a incomodar, cinco viram reunião de condomínio interdimensional.\n\n"
+                "Com 2/3/4/5 integrantes da mesma obra, o bônus é de 5%/10%/15%/20% em HP, ATK, MATK e DEF. "
+                "Com cinco, o líder desbloqueia **Ressonância da Obra**, uma habilidade coletiva com buff e escudo. "
+                "É basicamente trabalho em equipe, só que finalmente com números.\n\n"
                 "As habilidades agora são resolvidas pelo motor de combate: base, evolução, cura, buff, debuff, dano em área, "
                 "reviver, congelamento, stun, medo, confusão, maldição, fraqueza, queimadura, veneno, sangramento, silêncio e outras graças que me fizeram revisar matemática em horário comercial.\n\n"
                 "Quando um herói desbloqueia várias habilidades, ele escolhe entre todas as disponíveis. Cura e reviver olham a situação; o restante alterna para o Levi não esquecer dois terços do próprio currículo.\n"
-                "Ao subir de nível, ganha 10 HP, 3 nos atributos restantes e completa 5 no atributo principal. SPD e CRT naturais param em 50%, e DEF nunca apaga todo o dano."
+                "Ao subir de nível, ganha 10 HP, 3 nos atributos restantes e completa 5 no atributo principal. SPD e CRT naturais param em 50%, e DEF nunca apaga todo o dano.\n\n"
+                "Cada técnica base e evolução pertence ao ID exato do herói, mesmo quando dois personagens usam nomes parecidos. Os retratos também vêm de arquivos locais pelo ID. Sim, eu etiquetei 291 rostos; não, não quero conversar sobre meu fim de semana."
             ),
             4,
             total,
@@ -153,6 +172,14 @@ class Tutorial(commands.Cog):
                 "`echo expedicao 2/4/8/12` abre uma seleção de até 5 heróis para voltar depois com loot.\n"
                 "`echo labirinto` abre salas aleatórias com cooldown: monstro, tesouro, mercador, armadilha, evento ou boss.\n"
                 "`echo campeoes defesa` registra sua defesa, e `echo campeoes` enfrenta jogadores ou bots com donos identificados no log. A Torre usa Prestígio próprio, não o ELO do PvP."
+            ),
+            inline=False,
+        )
+        e4.add_field(
+            name="Perfil e Dungeon",
+            value=(
+                "`echo perfil` mostra o maior ponto liberado da Dungeon no formato `D<número> - Área <número>`. "
+                "Agora você pode esquecer onde parou por motivos pessoais, não por falta de interface."
             ),
             inline=False,
         )
@@ -253,7 +280,9 @@ class Tutorial(commands.Cog):
                 "Administradores têm comandos como `echo adm stats`, `echo adm logs abertos|resolvidos`, `echo adm resolver <ID> <mensagem>`, `echo adm gems @user quantidade`, `echo adm iniciar raid/boss/calamidade`, "
                 "`echo adm iniciar raid/boss/calamidade time-skip`, `echo atualiza_thumb <url>`, `echo adm criarcode`, "
                 "`echo adm criarcode temp <dias> <code> <recompensas>`, `echo adm delete code <code>`, `echo adm pay`, "
-                "`echo adm tickets` e outros botões nucleares.\n\n"
+                "`echo adm delechar @user <nome-do-personagem>`, `echo adm tickets` e outros botões nucleares.\n\n"
+                "`delechar` remove uma única cópia, devolve os equipamentos e limpa main, party e defesa dos Campeões quando necessário. "
+                "TutoriUAU recomenda conferir o nome antes de brincar de apagador cósmico.\n\n"
                 "Codes aceitam pacotes como `G1000 T3`: Gold e Tickets no mesmo resgate. Os temporários expiram sozinhos, porque até prêmio grátis precisa respeitar agenda.\n\n"
                 "Jogadores podem registrar problemas com `echo bug <texto>` ou `echo queixa <texto>`. Isso salva user_id, ação, valor e data. "
                 "Quando o administrador resolver, a resposta fica registrada e o jogador recebe uma mensagem direta. Burocracia, agora com final feliz opcional.\n\n"

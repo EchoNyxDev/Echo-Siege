@@ -1,10 +1,12 @@
 import discord
 from discord.ext import commands
+import json
 import sqlite3
 import re
 import os
 import sys
 import time
+import unicodedata
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, '..'))
@@ -20,11 +22,22 @@ except ModuleNotFoundError:
     EQUIPAMENTOS = {}
     PETS = {}
 
+try:
+    from data.banners import save_manual_banner
+except ModuleNotFoundError:
+    save_manual_banner = None
+
 # Lista de IDs dos Administradores
 ADM_USERS = [
     657990219689099264,
     768671545790693437
 ]
+
+
+def normalize_hero_name(value):
+    text = unicodedata.normalize("NFKD", str(value or ""))
+    text = "".join(char for char in text if not unicodedata.combining(char))
+    return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
 
 
 def ensure_admin_logs_schema(cursor):
@@ -54,12 +67,402 @@ def ensure_admin_logs_schema(cursor):
             cursor.execute(f"ALTER TABLE administrative_logs ADD COLUMN {column} {ddl}")
 
 
+class BannerHeroSelect(discord.ui.Select):
+    def __init__(self, builder, rarity, row):
+        self.builder = builder
+        self.rarity = rarity
+        pool = builder.pools[rarity]
+        page = builder.pages[rarity]
+        start = page * builder.PAGE_SIZE
+        page_ids = pool[start:start + builder.PAGE_SIZE]
+        selected = set(builder.selected[rarity])
+        options = []
+        for hero_id in page_ids:
+            hero = HEROES[hero_id]
+            description = (
+                f"{str(hero.get('classe', 'sem classe')).title()} • "
+                f"{hero.get('origem', 'Origem desconhecida')}"
+            )[:100]
+            options.append(
+                discord.SelectOption(
+                    label=str(hero.get("nome", hero_id))[:100],
+                    value=hero_id,
+                    description=description,
+                    default=hero_id in selected,
+                )
+            )
+
+        total_pages = builder.page_count(rarity)
+        placeholder = (
+            f"{rarity}⭐ • página {page + 1}/{total_pages} • "
+            f"{len(selected)}/{builder.LIMITS[rarity]} escolhidos"
+        )
+        super().__init__(
+            placeholder=placeholder,
+            min_values=0,
+            max_values=min(builder.LIMITS[rarity], len(options)),
+            options=options,
+            row=row,
+        )
+
+    async def callback(self, interaction):
+        await self.builder.apply_page_selection(
+            interaction,
+            self.rarity,
+            list(self.values),
+        )
+
+
+class BannerHeroSearchModal(discord.ui.Modal, title="Buscar herói para o banner"):
+    rarity = discord.ui.TextInput(
+        label="Raridade",
+        placeholder="Digite 4 ou 5",
+        min_length=1,
+        max_length=1,
+    )
+    hero_name = discord.ui.TextInput(
+        label="Nome ou ID do herói",
+        placeholder="Ex.: Levi ou levi_ackerman",
+        min_length=2,
+        max_length=100,
+    )
+
+    def __init__(self, builder):
+        super().__init__()
+        self.builder = builder
+
+    async def on_submit(self, interaction):
+        try:
+            rarity = int(str(self.rarity.value).strip())
+        except ValueError:
+            rarity = 0
+        if rarity not in self.builder.LIMITS:
+            return await interaction.response.send_message(
+                "A raridade precisa ser `4` ou `5`.",
+                ephemeral=True,
+            )
+
+        query = normalize_hero_name(self.hero_name.value)
+        pool = self.builder.pools[rarity]
+        exact = [
+            hero_id
+            for hero_id in pool
+            if query in {
+                normalize_hero_name(hero_id),
+                normalize_hero_name(HEROES[hero_id].get("nome")),
+            }
+        ]
+        matches = exact or [
+            hero_id
+            for hero_id in pool
+            if query in normalize_hero_name(hero_id)
+            or query in normalize_hero_name(HEROES[hero_id].get("nome"))
+        ]
+        if not matches:
+            return await interaction.response.send_message(
+                f"Não encontrei um herói {rarity}⭐ com esse nome.",
+                ephemeral=True,
+            )
+        if len(matches) > 1:
+            names = ", ".join(HEROES[hero_id].get("nome", hero_id) for hero_id in matches[:10])
+            return await interaction.response.send_message(
+                f"Encontrei mais de um resultado: **{names}**. Pesquise pelo nome completo ou ID.",
+                ephemeral=True,
+            )
+
+        hero_id = matches[0]
+        added, message = self.builder.toggle_hero(rarity, hero_id)
+        if added:
+            self.builder.pages[rarity] = pool.index(hero_id) // self.builder.PAGE_SIZE
+        self.builder.rebuild_selects()
+        await interaction.response.send_message(message, ephemeral=True)
+        if self.builder.message:
+            await self.builder.message.edit(
+                embed=self.builder.build_embed(),
+                view=self.builder,
+            )
+
+
+class BannerBuilderView(discord.ui.View):
+    PAGE_SIZE = 25
+    LIMITS = {5: 3, 4: 5}
+
+    def __init__(self, author_id):
+        super().__init__(timeout=900)
+        self.author_id = int(author_id)
+        self.message = None
+        self.pools = {
+            rarity: sorted(
+                (
+                    hero_id
+                    for hero_id, hero in HEROES.items()
+                    if hero_id != "id-nome"
+                    and int(hero.get("raridade", 0) or 0) == rarity
+                    and not hero.get("divino")
+                    and not hero.get("secreto")
+                ),
+                key=lambda hero_id: HEROES[hero_id].get("nome", hero_id).casefold(),
+            )
+            for rarity in self.LIMITS
+        }
+        self.selected = {5: [], 4: []}
+        self.pages = {5: 0, 4: 0}
+        self.rebuild_selects()
+
+    async def interaction_check(self, interaction):
+        if interaction.user.id != self.author_id:
+            await interaction.response.send_message(
+                "Este painel pertence ao administrador que o abriu.",
+                ephemeral=True,
+            )
+            return False
+        return True
+
+    def page_count(self, rarity):
+        return max(1, (len(self.pools[rarity]) + self.PAGE_SIZE - 1) // self.PAGE_SIZE)
+
+    def current_page_ids(self, rarity):
+        start = self.pages[rarity] * self.PAGE_SIZE
+        return self.pools[rarity][start:start + self.PAGE_SIZE]
+
+    def _featured_text(self, rarity):
+        chosen = self.selected[rarity]
+        lines = []
+        for index in range(self.LIMITS[rarity]):
+            if index < len(chosen):
+                hero_id = chosen[index]
+                hero = HEROES[hero_id]
+                lines.append(
+                    f"`{index + 1}.` {hero.get('emoji', '')} "
+                    f"**{hero.get('nome', hero_id)}** • {hero.get('classe', 'sem classe')}"
+                )
+            else:
+                lines.append(f"`{index + 1}.` Vaga livre")
+        return "\n".join(lines)
+
+    def build_embed(self):
+        embed = discord.Embed(
+            title="Criador de Banner Especial",
+            description=(
+                "Selecione **3 heróis 5⭐** e **5 heróis 4⭐**. "
+                "O banner publicado dura sete dias exatos e substitui o especial atual.\n\n"
+                "Os menus mostram 25 heróis por página. A busca também adiciona ou remove "
+                "um personagem pelo nome ou ID."
+            ),
+            color=discord.Color.magenta(),
+        )
+        embed.add_field(
+            name=f"Destaques 5⭐ • {len(self.selected[5])}/3",
+            value=self._featured_text(5),
+            inline=False,
+        )
+        embed.add_field(
+            name=f"Destaques 4⭐ • {len(self.selected[4])}/5",
+            value=self._featured_text(4),
+            inline=False,
+        )
+        ready = all(
+            len(self.selected[rarity]) == limit
+            for rarity, limit in self.LIMITS.items()
+        )
+        embed.add_field(
+            name="Publicação",
+            value=(
+                "Tudo pronto. O botão **Publicar por 7 dias** está liberado."
+                if ready
+                else "Preencha todas as vagas para liberar a publicação."
+            ),
+            inline=False,
+        )
+        embed.set_footer(
+            text=(
+                "TutoriUAU: curadoria é o nome elegante para escolher "
+                "quem vai destruir a economia emocional dos jogadores."
+            )
+        )
+        return embed
+
+    def rebuild_selects(self):
+        for child in list(self.children):
+            if isinstance(child, BannerHeroSelect):
+                self.remove_item(child)
+
+        if self.pools[5]:
+            self.add_item(BannerHeroSelect(self, 5, row=0))
+        if self.pools[4]:
+            self.add_item(BannerHeroSelect(self, 4, row=1))
+
+        self.previous_5.disabled = self.pages[5] <= 0
+        self.next_5.disabled = self.pages[5] >= self.page_count(5) - 1
+        self.previous_4.disabled = self.pages[4] <= 0
+        self.next_4.disabled = self.pages[4] >= self.page_count(4) - 1
+        self.publish.disabled = not all(
+            len(self.selected[rarity]) == limit
+            for rarity, limit in self.LIMITS.items()
+        )
+
+    def toggle_hero(self, rarity, hero_id):
+        selected = self.selected[rarity]
+        hero_name = HEROES[hero_id].get("nome", hero_id)
+        if hero_id in selected:
+            selected.remove(hero_id)
+            return False, f"**{hero_name}** foi removido dos destaques {rarity}⭐."
+        if len(selected) >= self.LIMITS[rarity]:
+            return False, (
+                f"As {self.LIMITS[rarity]} vagas {rarity}⭐ já estão preenchidas. "
+                "Remova alguém antes de adicionar outro herói."
+            )
+        selected.append(hero_id)
+        return True, f"**{hero_name}** foi adicionado aos destaques {rarity}⭐."
+
+    async def apply_page_selection(self, interaction, rarity, values):
+        page_ids = set(self.current_page_ids(rarity))
+        preserved = [
+            hero_id
+            for hero_id in self.selected[rarity]
+            if hero_id not in page_ids
+        ]
+        candidate = preserved + [
+            hero_id
+            for hero_id in self.current_page_ids(rarity)
+            if hero_id in values
+        ]
+        if len(candidate) > self.LIMITS[rarity]:
+            await interaction.response.send_message(
+                f"Você pode escolher somente {self.LIMITS[rarity]} heróis {rarity}⭐.",
+                ephemeral=True,
+            )
+            return
+
+        self.selected[rarity] = candidate
+        self.rebuild_selects()
+        await interaction.response.edit_message(
+            embed=self.build_embed(),
+            view=self,
+        )
+
+    async def change_page(self, interaction, rarity, direction):
+        self.pages[rarity] = max(
+            0,
+            min(
+                self.page_count(rarity) - 1,
+                self.pages[rarity] + direction,
+            ),
+        )
+        self.rebuild_selects()
+        await interaction.response.edit_message(
+            embed=self.build_embed(),
+            view=self,
+        )
+
+    @discord.ui.button(label="5⭐ Anterior", style=discord.ButtonStyle.secondary, row=2)
+    async def previous_5(self, interaction, button):
+        await self.change_page(interaction, 5, -1)
+
+    @discord.ui.button(label="5⭐ Próxima", style=discord.ButtonStyle.secondary, row=2)
+    async def next_5(self, interaction, button):
+        await self.change_page(interaction, 5, 1)
+
+    @discord.ui.button(label="4⭐ Anterior", style=discord.ButtonStyle.secondary, row=3)
+    async def previous_4(self, interaction, button):
+        await self.change_page(interaction, 4, -1)
+
+    @discord.ui.button(label="4⭐ Próxima", style=discord.ButtonStyle.secondary, row=3)
+    async def next_4(self, interaction, button):
+        await self.change_page(interaction, 4, 1)
+
+    @discord.ui.button(label="Buscar", emoji="🔎", style=discord.ButtonStyle.primary, row=4)
+    async def search(self, interaction, button):
+        await interaction.response.send_modal(BannerHeroSearchModal(self))
+
+    @discord.ui.button(label="Limpar", emoji="🧹", style=discord.ButtonStyle.secondary, row=4)
+    async def clear(self, interaction, button):
+        self.selected = {5: [], 4: []}
+        self.rebuild_selects()
+        await interaction.response.edit_message(
+            embed=self.build_embed(),
+            view=self,
+        )
+
+    @discord.ui.button(label="Cancelar", style=discord.ButtonStyle.danger, row=4)
+    async def cancel(self, interaction, button):
+        for child in self.children:
+            child.disabled = True
+        embed = self.build_embed()
+        embed.title = "Criação de banner cancelada"
+        embed.description = (
+            "Nenhuma alteração foi publicada. TutoriUAU picotou o rascunho "
+            "com uma solenidade completamente desnecessária."
+        )
+        await interaction.response.edit_message(embed=embed, view=self)
+        self.stop()
+
+    @discord.ui.button(
+        label="Publicar por 7 dias",
+        emoji="✅",
+        style=discord.ButtonStyle.success,
+        row=4,
+        disabled=True,
+    )
+    async def publish(self, interaction, button):
+        if save_manual_banner is None:
+            return await interaction.response.send_message(
+                "O módulo de banners não está disponível.",
+                ephemeral=True,
+            )
+        try:
+            banner = save_manual_banner(
+                HEROES,
+                self.selected[5],
+                self.selected[4],
+                created_by=interaction.user.id,
+            )
+        except (ValueError, sqlite3.Error) as exc:
+            return await interaction.response.send_message(
+                f"Não consegui publicar o banner: `{exc}`",
+                ephemeral=True,
+            )
+
+        for child in self.children:
+            child.disabled = True
+        embed = self.build_embed()
+        embed.title = "Banner especial publicado"
+        embed.description = (
+            f"**{banner['name']}** está ativo por sete dias.\n"
+            f"Período: {banner['period_label']}\n\n"
+            "Depois da expiração, o banner automático volta sozinho caso "
+            "nenhum outro seja criado."
+        )
+        embed.color = discord.Color.green()
+        await interaction.response.edit_message(embed=embed, view=self)
+        self.stop()
+
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        if self.message:
+            try:
+                await self.message.edit(view=self)
+            except discord.HTTPException:
+                pass
+
+
 class Adm(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._init_db()
         self._init_codes_db()
         self.bot.add_check(self.verificar_exilados)
+
+    async def _open_banner_builder(self, ctx):
+        view = BannerBuilderView(ctx.author.id)
+        if len(view.pools[5]) < view.LIMITS[5] or len(view.pools[4]) < view.LIMITS[4]:
+            return await ctx.send(
+                "O catálogo não possui heróis elegíveis suficientes para montar o banner. "
+                "São necessários 3 heróis 5⭐ e 5 heróis 4⭐."
+            )
+        message = await ctx.send(embed=view.build_embed(), view=view)
+        view.message = message
 
     def cog_unload(self):
         self.bot.remove_check(self.verificar_exilados)
@@ -206,6 +609,182 @@ class Adm(commands.Cog):
         if not deleted:
             return await ctx.send(f"❌ O code **{codigo}** não existe ou já foi invalidado.")
         await ctx.send(f"🗑️ Code **{codigo}** invalidado. TutoriUAU carimbou: não vale mais nem com jeitinho.")
+
+    async def _delete_character(self, ctx, target_id, raw_name):
+        if not target_id or not raw_name:
+            return await ctx.send("⚠ Uso: `echo adm delechar @usuário <nome-do-personagem>`")
+
+        requested_name = normalize_hero_name(raw_name)
+        catalog_matches = {
+            hero_id
+            for hero_id, hero_data in HEROES.items()
+            if hero_id != "id-nome"
+            and requested_name in {
+                normalize_hero_name(hero_id),
+                normalize_hero_name(hero_data.get("nome", hero_id)),
+            }
+        }
+        if not catalog_matches:
+            return await ctx.send(
+                f"❌ Não encontrei **{raw_name.strip()}** no catálogo. "
+                "TutoriUAU conferiu duas vezes e culpou a ortografia na terceira."
+            )
+
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("PRAGMA table_info(heroes)")
+            hero_columns = {row[1] for row in cursor.fetchall()}
+            equipment_columns = [
+                column
+                for column in ("equip_atk", "equip_def", "equip_livre")
+                if column in hero_columns
+            ]
+            selected_columns = ["id", "hero_id", "rarity", "stars", "level"] + equipment_columns
+            placeholders = ",".join("?" for _ in catalog_matches)
+            cursor.execute(
+                f"""
+                SELECT {', '.join(selected_columns)}
+                FROM heroes
+                WHERE user_id = ? AND hero_id IN ({placeholders})
+                """,
+                (str(target_id), *sorted(catalog_matches)),
+            )
+            owned_rows = cursor.fetchall()
+            if not owned_rows:
+                return await ctx.send(
+                    f"❌ <@{target_id}> não possui **{raw_name.strip()}**. "
+                    "Não dá para apagar o que já não está lá; o vazio venceu."
+                )
+
+            owned_hero_ids = {row[1] for row in owned_rows}
+            if len(owned_hero_ids) > 1:
+                choices = ", ".join(
+                    HEROES.get(hero_id, {}).get("nome", hero_id)
+                    for hero_id in sorted(owned_hero_ids)
+                )
+                return await ctx.send(f"❌ O nome ficou ambíguo entre: **{choices}**. Use o nome completo.")
+
+            def deletion_priority(row):
+                canonical = int(HEROES.get(row[1], {}).get("raridade", row[2] or 1) or 1)
+                rarity_is_wrong = int(row[2] or 0) != canonical
+                return (0 if rarity_is_wrong else 1, int(row[3] or 1), int(row[4] or 1), -int(row[0]))
+
+            selected = min(owned_rows, key=deletion_priority)
+            hero_db_id, hero_id, stored_rarity, hero_stars, hero_level = selected[:5]
+            equipped_items = [item for item in selected[5:] if item]
+            hero_data = HEROES.get(hero_id, {})
+            hero_name = hero_data.get("nome", hero_id)
+            canonical_rarity = int(hero_data.get("raridade", stored_rarity or 1) or 1)
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS inventory(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id TEXT,
+                    item_name TEXT,
+                    quantity INTEGER DEFAULT 1
+                )
+            """)
+            for item_name in equipped_items:
+                cursor.execute(
+                    "SELECT id FROM inventory WHERE user_id = ? AND item_name = ? ORDER BY id LIMIT 1",
+                    (str(target_id), item_name),
+                )
+                inventory_row = cursor.fetchone()
+                if inventory_row:
+                    cursor.execute("UPDATE inventory SET quantity = quantity + 1 WHERE id = ?", (inventory_row[0],))
+                else:
+                    cursor.execute(
+                        "INSERT INTO inventory (user_id, item_name, quantity) VALUES (?, ?, 1)",
+                        (str(target_id), item_name),
+                    )
+
+            cursor.execute(
+                "UPDATE players SET main_hero = NULL WHERE user_id = ? AND CAST(main_hero AS TEXT) = ?",
+                (str(target_id), str(hero_db_id)),
+            )
+            removed_from_main = cursor.rowcount > 0
+
+            cursor.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'teams'")
+            removed_from_party = False
+            if cursor.fetchone():
+                for slot in ("slot_2", "slot_3", "slot_4", "slot_5"):
+                    cursor.execute(
+                        f"UPDATE teams SET {slot} = NULL WHERE user_id = ? AND CAST({slot} AS TEXT) = ?",
+                        (str(target_id), str(hero_db_id)),
+                    )
+                    removed_from_party = removed_from_party or cursor.rowcount > 0
+
+            cursor.execute(
+                "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'champion_defense_teams'"
+            )
+            defense_reset = False
+            if cursor.fetchone():
+                cursor.execute(
+                    "SELECT hero_ids FROM champion_defense_teams WHERE user_id = ?",
+                    (str(target_id),),
+                )
+                defense_row = cursor.fetchone()
+                try:
+                    defense_ids = [str(value) for value in json.loads(defense_row[0] or "[]")] if defense_row else []
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    defense_ids = []
+                if str(hero_db_id) in defense_ids:
+                    cursor.execute("DELETE FROM champion_defense_teams WHERE user_id = ?", (str(target_id),))
+                    defense_reset = True
+
+            cursor.execute(
+                "DELETE FROM heroes WHERE id = ? AND user_id = ?",
+                (hero_db_id, str(target_id)),
+            )
+            if cursor.rowcount != 1:
+                raise sqlite3.DatabaseError("o personagem mudou antes da exclusão")
+
+            ensure_admin_logs_schema(cursor)
+            now = int(time.time())
+            cursor.execute(
+                """
+                INSERT INTO administrative_logs
+                (user_id, action, value, admin_id, timestamp, status, resolution, resolved_by, resolved_at)
+                VALUES (?, 'delete_character', ?, ?, ?, 'resolved', ?, ?, ?)
+                """,
+                (
+                    str(target_id),
+                    f"{hero_name} | hero_db_id={hero_db_id}",
+                    str(ctx.author.id),
+                    now,
+                    f"Personagem removido por {ctx.author} via echo adm delechar.",
+                    str(ctx.author.id),
+                    now,
+                ),
+            )
+            conn.commit()
+        except sqlite3.Error as exc:
+            conn.rollback()
+            return await ctx.send(f"❌ Não consegui apagar o personagem: `{exc}`")
+        finally:
+            conn.close()
+
+        cleanup = []
+        if removed_from_main:
+            cleanup.append("herói principal limpo")
+        if removed_from_party:
+            cleanup.append("slots da party limpos")
+        if defense_reset:
+            cleanup.append("defesa dos Campeões removida")
+        if equipped_items:
+            cleanup.append(f"{len(equipped_items)} equipamento(s) devolvido(s)")
+        cleanup_text = f"\nAjustes: {', '.join(cleanup)}." if cleanup else ""
+        copies_text = (
+            "\nHavia mais de uma cópia; removi a de raridade incorreta ou, na ausência disso, a menos evoluída."
+            if len(owned_rows) > 1
+            else ""
+        )
+        await ctx.send(
+            f"🗑️ **{hero_name}** (`ID {hero_db_id}`, {'⭐' * canonical_rarity}, Lv {hero_level}) "
+            f"foi removido de <@{target_id}>.{copies_text}{cleanup_text}\n"
+            "TutoriUAU registrou a intervenção antes que alguém dissesse que foi magia."
+        )
 
     def _nivel_loja_por_prosperidade(self, prosperidade):
         if prosperidade >= 100: return 4
@@ -549,10 +1128,12 @@ class Adm(commands.Cog):
                            "`echo adm criarcode <code> <G1000 T3 heroi item>`\n"
                            "`echo adm criarcode temp <dias> <code> <recompensas>`\n"
                            "`echo adm delete code <code>`\n"
+                           "`echo adm criar banner` (Editor do banner especial por 7 dias)\n"
                            "`echo adm melhorar loja` (Sobe a loja em 1 nível para testes)\n"
                            "`echo adm reset cidade` (Reseta Lugnica)\n"
                            "`echo adm hack @usuário <id_do_heroi>` (Nível Max + 7 Estrelas)\n"
                            "`echo adm give @usuário <id_heroi_ou_item>` (Dá um herói ou item)\n"
+                           "`echo adm delechar @usuário <nome-do-personagem>` (Apaga uma cópia específica)\n"
                            "`echo adm stats` (Painel geral do jogo)\n"
                            "`echo adm logs [@usuário]` | `echo adm log @usuário <ação> | <valor>`\n"
                            "`echo adm resolver <ID> <mensagem>` | `echo adm reabrir <ID>`\n"
@@ -563,6 +1144,15 @@ class Adm(commands.Cog):
 
         action = action.lower()
         target_id = re.sub(r'\D', '', arg1) if arg1 else None
+
+        if (
+            action in ["criarbanner", "bannercriar"]
+            or (
+                action in ["criar", "create"]
+                and (arg1 or "").lower() in ["banner", "especial"]
+            )
+        ):
+            return await self._open_banner_builder(ctx)
 
         if action == "stats":
             return await ctx.send(embed=await self._stats_embed(ctx))
@@ -586,6 +1176,9 @@ class Adm(commands.Cog):
 
         if action in ["reabrir", "reopen"]:
             return await self._reopen_admin_log(ctx, arg1)
+
+        if action in ["delechar", "deletechar", "delchar", "apagarheroi"]:
+            return await self._delete_character(ctx, target_id, arg2)
 
         # ================== RAIDS POR SERVIDOR ==================
         if action in ["set_iniciar", "set_invasao", "setcanal"]:

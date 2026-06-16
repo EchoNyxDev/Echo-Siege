@@ -30,6 +30,20 @@ except ModuleNotFoundError:
     pass
 
 
+def _as_ratio(value, default_when_true=0.0):
+    if value is True:
+        return float(default_when_true)
+    if value in (None, False):
+        return 0.0
+    try:
+        ratio = float(value)
+    except (TypeError, ValueError):
+        return 0.0
+    if ratio > 1:
+        ratio /= 100
+    return max(0.0, ratio)
+
+
 def choose_combat_skill(actor, skills=None, allies=None, enemies=None):
     """Escolhe entre todas as habilidades disponíveis, priorizando urgências."""
     skills = skills or SKILLS
@@ -37,6 +51,10 @@ def choose_combat_skill(actor, skills=None, allies=None, enemies=None):
         skill_id
         for skill_id in getattr(actor, "habilidades", [])
         if skill_id in skills and skill_id not in getattr(actor, "cooldowns", {})
+        and (
+            not skills[skill_id].get("uso_maximo")
+            or getattr(actor, "skill_uses", {}).get(skill_id, 0) < skills[skill_id]["uso_maximo"]
+        )
     ]
     if not candidates:
         return None
@@ -117,7 +135,9 @@ class CombatEntity:
         self.buffs = []
         self.debuffs = []
         self.cooldowns = {}
+        self.skill_uses = {}
         self.is_dead = (self.hp <= 0)
+        self.cannot_revive = False
         
         # Sistema de Aggro (Provocação)
         if self.classe == "tank": self.base_aggro = 300
@@ -138,7 +158,7 @@ class CombatEntity:
         return min(amount, soft_cap)
 
     def get_stat(self, stat_name):
-        base = getattr(self, f"base_{stat_name}", 0)
+        base = getattr(self, f"base_{stat_name}", 100 if stat_name == "acc" else 0)
         mult = 1.0
         flat = 0
         
@@ -174,7 +194,11 @@ class CombatEntity:
                 return 0
 
         # Cálculo de Defesa
-        current_def = self.get_stat("def") if not ignore_def else 0
+        current_def = self.get_stat("def")
+        if ignore_def is True:
+            current_def = 0
+        elif isinstance(ignore_def, (int, float)) and ignore_def > 0:
+            current_def *= max(0, 1 - min(100, float(ignore_def)) / 100)
         mitigation = max(0.15, 100 / (100 + current_def))
         
         # Cálculo de Fraqueza (Recebe mais dano)
@@ -182,7 +206,13 @@ class CombatEntity:
         for d in self.debuffs:
             if d.get("stat") == "fraqueza": fraqueza_mult += d.get("mult", 0.25)
             
-        final_damage = max(1, int(amount * mitigation * fraqueza_mult))
+        damage_reduction = 0.0
+        for buff in self.buffs:
+            damage_reduction = max(
+                damage_reduction,
+                min(0.90, float(buff.get("reduz_dano_recebido", 0)) / 100),
+            )
+        final_damage = max(1, int(amount * mitigation * fraqueza_mult * (1 - damage_reduction)))
         
         # Absorção por Escudo Verdadeiro
         if self.shield > 0:
@@ -199,8 +229,36 @@ class CombatEntity:
             if imortal:
                 self.hp = 1
             else:
-                self.hp = 0
-                self.is_dead = True
+                revive_buff = next(
+                    (
+                        buff
+                        for buff in self.buffs
+                        if (buff.get("revive_hp") or buff.get("revive_hp_max"))
+                        and not buff.get("_revive_used")
+                    ),
+                    None,
+                )
+                if revive_buff and not self.cannot_revive:
+                    revive_buff["_revive_used"] = True
+                    revive_percent = float(
+                        revive_buff.get("revive_hp", revive_buff.get("revive_hp_max", 0.20))
+                    )
+                    self.hp = max(1, int(self.max_hp * revive_percent))
+                    self.is_dead = False
+                else:
+                    self.hp = 0
+                    self.is_dead = True
+
+        if not self.is_dead:
+            heal_percent = max(
+                (
+                    float(buff.get("heal_damage_received", 0))
+                    for buff in self.buffs
+                ),
+                default=0,
+            )
+            if heal_percent > 0:
+                self.heal(int(final_damage * heal_percent))
                 
         return final_damage
 
@@ -476,9 +534,13 @@ def apply_status_effects(actor, target, effect, damage_dealt=0, critical=False):
         add("root", effect["root_turnos"], ignore_immunity=ignore_cc)
     if effect.get("silence_turnos"):
         add("silence", effect["silence_turnos"])
+    if effect.get("fear_turnos") or effect.get("medo_turnos"):
+        add("fear", effect.get("fear_turnos") or effect.get("medo_turnos"))
     if effect.get("confusao"):
         add("confusion", effect.get("turnos", 1))
 
+    if effect.get("dano_recebido_extra") is not None:
+        add("weakness", default_turns, min(0.90, float(effect.get("dano_recebido_extra") or 25) / 100))
     if effect.get("aplica_fraqueza") is not None:
         add("weakness", default_turns, float(effect.get("aplica_fraqueza") or 25) / 100)
     if effect.get("debuff_fraqueza") is not None:
@@ -581,6 +643,32 @@ def apply_status_effects(actor, target, effect, damage_dealt=0, critical=False):
             if status.get("stat") in {"stun", "freeze", "root"} or status.get("stun"):
                 status["turnos"] = status.get("turnos", 1) + int(effect["prolonga_stun_inimigo"])
                 applied.append("stun")
+    if effect.get("remove_todos_buffs"):
+        target.buffs = []
+        applied.append("buffs_removidos")
+    if effect.get("bloqueia_buffs"):
+        target.debuffs.append({"stat": "bloqueia_buffs", "turnos": default_turns})
+        applied.append("bloqueia_buffs")
+
+    for effect_key, stat_name in [
+        ("debuff_atk", "atk"),
+        ("debuff_matk", "matk"),
+        ("debuff_def", "def"),
+        ("debuff_acc", "acc"),
+    ]:
+        value = effect.get(effect_key)
+        if value:
+            target.debuffs.append({
+                "stat": stat_name,
+                "mult": min(0.90, float(value) / 100),
+                "turnos": default_turns,
+            })
+            applied.append(f"{stat_name}_down")
+    if effect.get("debuff_geral"):
+        value = min(0.90, float(effect["debuff_geral"]) / 100)
+        for stat_name in ["atk", "matk", "def", "spd"]:
+            target.debuffs.append({"stat": stat_name, "mult": value, "turnos": default_turns})
+        applied.append("geral_down")
 
     return applied
 
@@ -630,6 +718,9 @@ def apply_status_protection(target, effect, turns=3):
     for key in immunity_keys:
         if effect.get(key):
             immunity[key] = True
+    for key, value in effect.items():
+        if value and str(key).startswith("imune_"):
+            immunity[key] = True
     if len(immunity) > 2:
         existing_immunity = next(
             (buff for buff in target.buffs if buff.get("stat") == "status_immunity"),
@@ -661,6 +752,10 @@ def apply_status_protection(target, effect, turns=3):
             "ataques_fogo",
             "chance_medo_inimigos",
             "ataque_aplica_maldicao",
+            "criticos_removem_buff",
+            "chance_insta_kill_on_hit",
+            "bloqueia_reviver_ao_matar",
+            "ignora_def_on_hit",
         ]
         if effect.get(key) is not None
     }
@@ -682,6 +777,40 @@ def apply_status_protection(target, effect, turns=3):
                 **on_hit_keys,
             })
         changes.append("efeito ao atacar")
+
+    persistent_keys = {
+        key: effect[key]
+        for key in [
+            "revive_hp",
+            "revive_hp_max",
+            "heal_damage_received",
+            "protege_aliados_fatal",
+            "reflete_dano",
+            "lifesteal_on_hit",
+            "counter_atk_percent",
+            "barreira_dano_recebido",
+            "stun_atacante_on_hit",
+        ]
+        if effect.get(key) is not None
+    }
+    if persistent_keys:
+        existing_special = next(
+            (buff for buff in target.buffs if buff.get("stat") == "combat_special"),
+            None,
+        )
+        if existing_special:
+            existing_special.update(persistent_keys)
+            existing_special["turnos"] = max(
+                existing_special.get("turnos", 0),
+                max(1, int(turns or 3)),
+            )
+        else:
+            target.buffs.append({
+                "stat": "combat_special",
+                "turnos": max(1, int(turns or 3)),
+                **persistent_keys,
+            })
+        changes.append("efeito persistente")
 
     if effect.get("dot_self"):
         self_dot = {
@@ -764,6 +893,10 @@ def apply_on_hit_statuses(actor, target, critical=False):
         if critical and buff.get("criticos_aplicam_paralisia"):
             if target.add_status("stun", int(buff["criticos_aplicam_paralisia"])):
                 applied.append("stun")
+        if critical and buff.get("criticos_removem_buff") and target.buffs:
+            remove_count = max(1, int(buff.get("criticos_removem_buff") or 1))
+            del target.buffs[:remove_count]
+            applied.append("buff_removido")
         if buff.get("ataques_fogo"):
             if target.add_status("burn", 2, max(5, actor.get_stat("matk") * 0.30)):
                 applied.append("burn")
@@ -782,6 +915,17 @@ def apply_on_hit_statuses(actor, target, critical=False):
                 max(5, actor.get_stat("matk") * 0.30),
             ):
                 applied.append("curse")
+        execute_chance = buff.get("chance_insta_kill_on_hit")
+        if execute_chance is not None:
+            execute_chance = float(execute_chance)
+            if execute_chance > 1:
+                execute_chance /= 100
+            if random.random() <= execute_chance:
+                target.hp = 0
+                target.is_dead = True
+                if buff.get("bloqueia_reviver_ao_matar"):
+                    target.cannot_revive = True
+                applied.append("insta_kill")
     return applied
 
 
@@ -798,18 +942,116 @@ class CombatEngine:
     def _get_alive(self, team):
         return [e for e in team if not e.is_dead]
 
-    def _get_target(self, actor, target_type):
+    def _get_team(self, entity):
+        return self.team_b if entity.is_enemy else self.team_a
+
+    def _deal_damage(self, actor, target, amount, source_atk, is_magic=False, ignore_def=False):
+        previous_hp = target.hp
+        dodge = target.get_stat("dodge")
+        acc = actor.get_stat("acc")
+        if (dodge > 0 or acc < 100) and not ignore_def:
+            accuracy_gap = max(0, 100 - acc) - max(0, acc - 100)
+            dodge_chance = min(0.85, max(0.0, (dodge + accuracy_gap) / 100))
+            if dodge_chance > 0 and random.random() < dodge_chance:
+                counter_percent = max(
+                    (
+                        _as_ratio(buff.get("counter_atk_percent"))
+                        for buff in target.buffs
+                    ),
+                    default=0,
+                )
+                if counter_percent > 0 and not actor.is_dead:
+                    actor.take_damage(
+                        max(1, int(target.get_stat("atk") * counter_percent)),
+                        target.get_stat("atk"),
+                        False,
+                        True,
+                    )
+                return 0
+
+        damage = target.take_damage(amount, source_atk, is_magic, ignore_def)
+        if damage > 0:
+            reflect_percent = max(
+                (
+                    _as_ratio(buff.get("reflete_dano"))
+                    for buff in target.buffs
+                ),
+                default=0,
+            )
+            if reflect_percent > 0 and not actor.is_dead:
+                actor.take_damage(max(1, int(damage * reflect_percent)), source_atk, is_magic, True)
+
+            lifesteal_percent = max(
+                (
+                    _as_ratio(buff.get("lifesteal_on_hit"), 0.40)
+                    for buff in actor.buffs
+                ),
+                default=0,
+            )
+            if lifesteal_percent > 0 and not actor.is_dead:
+                actor.heal(int(damage * lifesteal_percent))
+
+            barrier_percent = max(
+                (
+                    _as_ratio(buff.get("barreira_dano_recebido"))
+                    for buff in target.buffs
+                ),
+                default=0,
+            )
+            if barrier_percent > 0 and not target.is_dead:
+                target.shield += max(1, int(damage * barrier_percent))
+
+            stun_turns = max(
+                (
+                    int(buff.get("stun_atacante_on_hit", 0) or 0)
+                    for buff in target.buffs
+                ),
+                default=0,
+            )
+            if stun_turns > 0 and not actor.is_dead:
+                actor.add_status("stun", stun_turns)
+
+        if not target.is_dead:
+            return damage
+
+        protector = next(
+            (
+                ally
+                for ally in self._get_alive(self._get_team(target))
+                if ally is not target
+                and any(buff.get("protege_aliados_fatal") for buff in ally.buffs)
+            ),
+            None,
+        )
+        if not protector:
+            return damage
+
+        target.is_dead = False
+        target.hp = max(1, previous_hp)
+        protector.take_damage(max(1, damage), source_atk, is_magic, True)
+        return 0
+
+    def _get_target(self, actor, target_type, quantity=1, skill_type=None):
         enemy_team = self.team_b if not actor.is_enemy else self.team_a
         ally_team = self.team_a if not actor.is_enemy else self.team_b
         enemies = self._get_alive(enemy_team)
         allies = self._get_alive(ally_team)
         dead_allies = [e for e in ally_team if e.is_dead]
+        quantity = max(1, int(quantity or 1))
         
-        if target_type == "self":
+        if target_type in {"self", "item_contra_si", "adaptativo", "aleatorio"}:
             return [actor]
         if target_type in ["aliado_morto", "aliados_mortos"]:
             return dead_allies[:1] if target_type == "aliado_morto" else dead_allies
-        if ("inimigo" in target_type or target_type == "campo") and not enemies:
+        if target_type == "campo":
+            if skill_type in {"debuff", "insta_kill"}:
+                return enemies
+            if skill_type == "dano":
+                if quantity > 1:
+                    return random.sample(enemies, min(quantity, len(enemies))) if enemies else []
+                return enemies
+            return allies
+        if "inimigo" in target_type and not enemies:
             return []
         if ("aliado" in target_type or target_type == "self") and not allies:
             return []
@@ -826,21 +1068,43 @@ class CombatEngine:
                 if roll <= acumulado: return [e]
             return [random.choice(enemies)]
             
-        elif target_type == "todos_inimigos": return enemies
-        elif target_type in ["campo", "inimigos_aleatorios", "inimigos_maior_dano"]:
+        elif target_type == "todos_inimigos":
             return enemies
+        elif target_type == "inimigos_aleatorios":
+            return random.sample(enemies, min(quantity, len(enemies)))
+        elif target_type == "inimigos_maior_dano":
+            return sorted(
+                enemies,
+                key=lambda entity: entity.get_stat("atk") + entity.get_stat("matk"),
+                reverse=True,
+            )[:quantity]
+        elif target_type == "inimigos_travados":
+            return random.sample(enemies, min(quantity, len(enemies)))
         elif target_type in ["unico_aliado", "aliado_escolhido"]:
             return [random.choice(allies)]
         elif target_type == "aliado_menor_hp":
             allies.sort(key=lambda x: x.hp / x.max_hp)
             return [allies[0]]
-        elif target_type == "todos_aliados": return allies
-        elif target_type in ["dps_aliado", "dps_aliados", "magos_aliados", "lider_aliado"]:
-            allies.sort(key=lambda x: x.get_stat("atk") + x.get_stat("matk"), reverse=True)
+        elif target_type == "todos_aliados":
+            return allies
+        elif target_type == "lider_aliado":
             return [allies[0]]
-        elif target_type == "dps_inimigo":
+        elif target_type in ["dps_aliado", "dps_aliados"]:
+            allies.sort(key=lambda x: x.get_stat("atk") + x.get_stat("matk"), reverse=True)
+            return allies[:quantity] if target_type == "dps_aliados" else [allies[0]]
+        elif target_type == "magos_aliados":
+            magos = [ally for ally in allies if ally.classe == "mago"]
+            selected = magos or sorted(allies, key=lambda x: x.get_stat("matk"), reverse=True)
+            return selected[:quantity]
+        elif target_type in {"dps_inimigo", "inimigo_maior_dano"}:
             enemies.sort(key=lambda x: x.get_stat("atk") + x.get_stat("matk"), reverse=True)
             return [enemies[0]]
+        elif target_type == "inimigo_maior_spd":
+            return [max(enemies, key=lambda x: x.get_stat("spd"))]
+        elif target_type == "inimigo_menor_def":
+            return [min(enemies, key=lambda x: x.get_stat("def"))]
+        elif target_type == "inimigo_menor_hp":
+            return [min(enemies, key=lambda x: x.hp / x.max_hp)]
         elif "aleatorio" in target_type:
             if "aliado" in target_type: return [random.choice(allies)]
             return [random.choice(enemies)]
@@ -857,17 +1121,17 @@ class CombatEngine:
         if not skill_data: return self._execute_basic_attack(actor)
         
         if "cooldown" in skill_data: actor.cooldowns[skill_id] = skill_data["cooldown"]
+        actor.skill_uses[skill_id] = actor.skill_uses.get(skill_id, 0) + 1
 
         # Busca Quantidade Customizada de Alvos
         qtd_alvos = skill_data.get("quantidade", 1)
-        targets = []
-        for _ in range(qtd_alvos):
-            alvos_encontrados = self._get_target(actor, skill_data.get("alvo", "unico_inimigo"))
-            if alvos_encontrados: targets.extend(alvos_encontrados)
-
-        # Remove Duplicados (A menos que seja hit sequencial no mesmo alvo)
-        if skill_data.get("alvo") in ["todos_inimigos", "todos_aliados"]:
-            targets = list(dict.fromkeys(targets)) # Filtra sem perder a ordem
+        targets = self._get_target(
+            actor,
+            skill_data.get("alvo", "unico_inimigo"),
+            qtd_alvos,
+            skill_data.get("tipo"),
+        )
+        targets = list(dict.fromkeys(targets))
             
         if not targets: return f"❓ **{actor.clean_name}** olhou em volta confuso(a)."
 
@@ -922,7 +1186,38 @@ class CombatEngine:
                     dano_final += int(target.hp * efeito["dano_hp_atual"])
                 dano_final = actor.cap_outgoing_damage(dano_final, is_skill=True)
                 
-                dmg_dealt = target.take_damage(dano_final, base_dmg, is_magic, efeito.get("ignora_def", False) or efeito.get("ignora_def_escudos", False))
+                persistent_ignore = max(
+                    (
+                        float(buff.get("ignora_def_on_hit", 0))
+                        for buff in actor.buffs
+                    ),
+                    default=0,
+                )
+                ignore_def = efeito.get("ignora_def_escudos", False)
+                if not ignore_def:
+                    ignore_def = efeito.get("ignora_def", False)
+                if ignore_def is not True:
+                    ignore_def = max(float(ignore_def or 0), persistent_ignore)
+                if any(
+                    efeito.get(key)
+                    for key in [
+                        "ignora_def_escudos",
+                        "ignora_escudos",
+                        "ignora_def_e_shield",
+                        "remove_escudos",
+                        "destroi_escudos",
+                        "quebra_escudos",
+                    ]
+                ):
+                    target.shield = 0
+                dmg_dealt = self._deal_damage(
+                    actor,
+                    target,
+                    dano_final,
+                    base_dmg,
+                    is_magic,
+                    ignore_def,
+                )
                 total_dmg += dmg_dealt
                 
                 t_name = target.clean_name
@@ -937,12 +1232,18 @@ class CombatEngine:
                 if "chance_insta_kill" in efeito and random.random() <= efeito["chance_insta_kill"]: trigger_kill = True
                 elif "executa_abaixo_50" in efeito and target.hp <= target.max_hp * 0.50: trigger_kill = True
                 elif efeito.get("insta_kill_on_hit_garantido"): trigger_kill = True
+                elif efeito.get("executa_abaixo_percent") and target.hp <= target.max_hp * (efeito["executa_abaixo_percent"] / 100):
+                    trigger_kill = True
                 
                 if trigger_kill and not target.is_dead:
                     target.hp = 0
                     target.is_dead = True
+                    if any(buff.get("bloqueia_reviver_ao_matar") for buff in actor.buffs):
+                        target.cannot_revive = True
                     if t_name not in mortos: mortos.append(f"{t_name} (Insta-Kill)")
                 elif target.is_dead:
+                    if any(buff.get("bloqueia_reviver_ao_matar") for buff in actor.buffs):
+                        target.cannot_revive = True
                     if t_name not in mortos: mortos.append(t_name)
 
             avg_dmg = int(total_dmg / len(targets)) if targets else 0
@@ -964,7 +1265,7 @@ class CombatEngine:
         elif skill_data["tipo"] in ["cura", "reviver"]:
             total_healed = 0
             for target in targets:
-                if target.is_dead and (skill_data["tipo"] == "reviver" or "reviver" in str(efeito)):
+                if target.is_dead and not target.cannot_revive and (skill_data["tipo"] == "reviver" or "reviver" in str(efeito)):
                     target.is_dead = False
                     target.hp = int(target.max_hp * efeito.get("hp_percent", 0.5))
                     total_healed += target.hp
@@ -979,24 +1280,63 @@ class CombatEngine:
                 if "remove_debuffs" in efeito or "remove_todos_debuffs" in efeito:
                     target.debuffs = []
                 apply_status_protection(target, efeito, efeito.get("turnos", 3))
+                turnos = efeito.get("turnos", 3)
+                buffs_blocked = any(debuff.get("stat") == "bloqueia_buffs" for debuff in target.debuffs)
+                if not buffs_blocked:
+                    if "buff_atk" in efeito:
+                        target.buffs.append({"stat": "atk", "mult": efeito["buff_atk"] / 100.0, "turnos": turnos})
+                    if "buff_matk" in efeito:
+                        target.buffs.append({"stat": "matk", "mult": efeito["buff_matk"] / 100.0, "turnos": turnos})
+                    if "buff_def" in efeito:
+                        target.buffs.append({"stat": "def", "mult": efeito["buff_def"] / 100.0, "turnos": turnos})
+                    if "buff_spd" in efeito:
+                        target.buffs.append({"stat": "spd", "mult": efeito["buff_spd"] / 100.0, "turnos": turnos})
+                    if "buff_acc" in efeito:
+                        target.buffs.append({"stat": "acc", "flat": efeito["buff_acc"], "turnos": turnos})
+                    if "buff_crt" in efeito:
+                        target.buffs.append({"stat": "crt", "flat": efeito["buff_crt"], "turnos": turnos})
+                if "reduz_cooldown" in efeito:
+                    amount = max(1, int(efeito["reduz_cooldown"]))
+                    for skill_id in list(target.cooldowns.keys()):
+                        target.cooldowns[skill_id] -= amount
+                        if target.cooldowns[skill_id] <= 0:
+                            del target.cooldowns[skill_id]
             
             avg_heal = int(total_healed / len(targets)) if targets else 0
             log_line += f"\n💚 Restaurou **{targets_str}** em aprox. **{avg_heal} HP**."
 
-        elif skill_data["tipo"] in ["buff", "debuff", "escudo", "especial", "passiva"]:
+        elif skill_data["tipo"] in ["buff", "debuff", "escudo", "especial", "passiva", "invocacao"]:
+            if efeito.get("efeito_aleatorio_divino"):
+                roll = random.choice(["cura", "escudo", "poder"])
+                if roll == "cura":
+                    for ally in targets:
+                        ally.heal(ally.max_hp)
+                    log_line += "\n✨ A realidade escolheu restaurar completamente o grupo."
+                elif roll == "escudo":
+                    for ally in targets:
+                        ally.buffs.append({"stat": "imune", "imune_all": True, "turnos": 1})
+                    log_line += "\n🛡️ A realidade tornou o grupo intocável nesta rodada."
+                else:
+                    for ally in targets:
+                        for stat_name in ["atk", "matk", "def", "spd"]:
+                            ally.buffs.append({"stat": stat_name, "mult": 0.40, "turnos": 3})
+                    log_line += "\n🌌 A realidade fortaleceu violentamente todo o grupo."
+                return log_line
+
             for target in targets:
                 turnos = efeito.get("turnos", 3)
                 if efeito.get("duracao") == "combate_inteiro" or turnos == -1: turnos = 99
+                buffs_blocked = any(debuff.get("stat") == "bloqueia_buffs" for debuff in target.debuffs)
                 
                 # Buffs Ofensivos/Defensivos
-                if "buff_atk" in efeito: target.buffs.append({"stat": "atk", "mult": efeito["buff_atk"]/100.0, "turnos": turnos})
-                if "buff_matk" in efeito: target.buffs.append({"stat": "matk", "mult": efeito["buff_matk"]/100.0, "turnos": turnos})
-                if "buff_def" in efeito: target.buffs.append({"stat": "def", "mult": efeito["buff_def"]/100.0, "turnos": turnos})
-                if "buff_spd" in efeito: target.buffs.append({"stat": "spd", "mult": efeito["buff_spd"]/100.0, "turnos": turnos})
-                if "buff_crt" in efeito: target.buffs.append({"stat": "crt", "flat": efeito["buff_crt"], "turnos": turnos})
-                if "buff_acc" in efeito: target.buffs.append({"stat": "acc", "flat": efeito["buff_acc"], "turnos": turnos})
-                if "buff_dodge" in efeito: target.buffs.append({"stat": "dodge", "flat": efeito["buff_dodge"], "turnos": turnos})
-                if "buff_geral" in efeito:
+                if "buff_atk" in efeito and not buffs_blocked: target.buffs.append({"stat": "atk", "mult": efeito["buff_atk"]/100.0, "turnos": turnos})
+                if "buff_matk" in efeito and not buffs_blocked: target.buffs.append({"stat": "matk", "mult": efeito["buff_matk"]/100.0, "turnos": turnos})
+                if "buff_def" in efeito and not buffs_blocked: target.buffs.append({"stat": "def", "mult": efeito["buff_def"]/100.0, "turnos": turnos})
+                if "buff_spd" in efeito and not buffs_blocked: target.buffs.append({"stat": "spd", "mult": efeito["buff_spd"]/100.0, "turnos": turnos})
+                if "buff_crt" in efeito and not buffs_blocked: target.buffs.append({"stat": "crt", "flat": efeito["buff_crt"], "turnos": turnos})
+                if "buff_acc" in efeito and not buffs_blocked: target.buffs.append({"stat": "acc", "flat": efeito["buff_acc"], "turnos": turnos})
+                if "buff_dodge" in efeito and not buffs_blocked: target.buffs.append({"stat": "dodge", "flat": efeito["buff_dodge"], "turnos": turnos})
+                if "buff_geral" in efeito and not buffs_blocked:
                     for st in ["atk", "def", "spd", "matk"]: target.buffs.append({"stat": st, "mult": efeito["buff_geral"]/100.0, "turnos": turnos})
                 if "buff_hp" in efeito:
                     ganho_hp = int(target.max_hp * (efeito["buff_hp"] / 100.0))
@@ -1016,6 +1356,22 @@ class CombatEngine:
                     target.buffs.append({"stat": "spd", "mult": efeito["multiplica_spd"] - 1, "turnos": turnos})
                 if "cura_turnos" in efeito:
                     target.buffs.append({"stat": "regen", "regen": efeito["cura_turnos"], "turnos": turnos})
+                if "reduz_dano_recebido" in efeito:
+                    target.buffs.append({
+                        "stat": "damage_reduction",
+                        "reduz_dano_recebido": efeito["reduz_dano_recebido"],
+                        "turnos": turnos,
+                    })
+                if "buff_atk_por_inimigo_vivo" in efeito and not buffs_blocked:
+                    enemy_team = self.team_b if not actor.is_enemy else self.team_a
+                    bonus = efeito["buff_atk_por_inimigo_vivo"] * len(self._get_alive(enemy_team))
+                    target.buffs.append({"stat": "atk", "mult": bonus / 100.0, "turnos": turnos})
+                if "reduz_cooldown" in efeito:
+                    amount = max(1, int(efeito["reduz_cooldown"]))
+                    for skill_id in list(target.cooldowns.keys()):
+                        target.cooldowns[skill_id] -= amount
+                        if target.cooldowns[skill_id] <= 0:
+                            del target.cooldowns[skill_id]
                 
                 # Imunidades e Escudos Reais
                 if "imortalidade_turnos" in efeito: target.buffs.append({"stat": "imortal", "imortal": True, "turnos": efeito["imortalidade_turnos"]})
@@ -1024,7 +1380,8 @@ class CombatEngine:
                 if "ignora_dano_magico" in efeito: target.buffs.append({"stat": "imune", "imune_magico": True, "turnos": turnos})
                 
                 if "escudo_hp_max" in efeito:
-                    target.shield += int(target.max_hp * efeito["escudo_hp_max"])
+                    if not buffs_blocked:
+                        target.shield += int(target.max_hp * efeito["escudo_hp_max"])
                 if "aggro_max" in efeito or "taunt" in str(efeito):
                     target.buffs.append({"stat": "taunt", "turnos": turnos})
                 
@@ -1034,12 +1391,35 @@ class CombatEngine:
                 if "debuff_def" in efeito: target.debuffs.append({"stat": "def", "mult": efeito["debuff_def"]/100.0, "turnos": turnos})
                 if "debuff_geral" in efeito:
                     for st in ["atk", "def", "spd", "matk"]: target.debuffs.append({"stat": st, "mult": efeito["debuff_geral"]/100.0, "turnos": turnos})
+                if efeito.get("remove_todos_buffs"):
+                    target.buffs = []
+                if efeito.get("bloqueia_buffs"):
+                    target.debuffs.append({"stat": "bloqueia_buffs", "turnos": turnos})
                 
                 if "reduz_aggro" in efeito: target.debuffs.append({"stat": "reduz_aggro", "turnos": turnos})
                 if target.is_enemy != actor.is_enemy:
                     apply_status_effects(actor, target, efeito)
                 else:
                     apply_status_protection(target, efeito, turnos)
+
+            if efeito.get("stun_inimigo_principal"):
+                enemy_team = self.team_b if not actor.is_enemy else self.team_a
+                enemies = self._get_alive(enemy_team)
+                if enemies:
+                    max(enemies, key=lambda enemy: enemy.get_stat("atk") + enemy.get_stat("matk")).add_status(
+                        "stun",
+                        efeito["stun_inimigo_principal"],
+                    )
+            if efeito.get("silence_todos_inimigos"):
+                enemy_team = self.team_b if not actor.is_enemy else self.team_a
+                for enemy in self._get_alive(enemy_team):
+                    enemy.add_status("silence", efeito["silence_todos_inimigos"])
+            if efeito.get("stun_curador_inimigo"):
+                enemy_team = self.team_b if not actor.is_enemy else self.team_a
+                enemies = self._get_alive(enemy_team)
+                healers = [enemy for enemy in enemies if enemy.classe in {"suporte", "curandeiro"}]
+                if healers:
+                    random.choice(healers).add_status("stun", efeito["stun_curador_inimigo"])
 
             # Logs Dinâmicos de Controle
             if "escudo_hp_max" in efeito: log_line += f"\n🛡️ Bastião impenetrável concedido a **{targets_str}**!"
@@ -1059,7 +1439,21 @@ class CombatEngine:
         is_crit = random.randint(1, 100) <= actor.get_stat("crt")
         dmg = actor.get_stat("atk") * (1.5 if is_crit else 1.0)
         
-        dmg_dealt = target.take_damage(dmg, actor.get_stat("atk"))
+        ignore_def = max(
+            (
+                float(buff.get("ignora_def_on_hit", 0))
+                for buff in actor.buffs
+            ),
+            default=0,
+        )
+        dmg_dealt = self._deal_damage(
+            actor,
+            target,
+            dmg,
+            actor.get_stat("atk"),
+            False,
+            ignore_def,
+        )
         apply_on_hit_statuses(actor, target, is_crit)
         crit_str = " (💥)" if is_crit else ""
         

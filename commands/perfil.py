@@ -1,5 +1,6 @@
 import asyncio
 import io
+import json
 import os
 import sqlite3
 import sys
@@ -22,13 +23,57 @@ if root_dir not in sys.path:
 
 try:
     from data.heroes import HEROES
+    from utils.hero_images import get_hero_attachment, get_hero_image_path
 except ModuleNotFoundError:
     HEROES = {}
+
+    def get_hero_attachment(hero_id, prefix="hero"):
+        return None, None
+
+    def get_hero_image_path(hero_id):
+        return None
 
 try:
     from data.pets import PETS
 except ModuleNotFoundError:
     PETS = {}
+
+try:
+    from data.equipamentos import EQUIPAMENTOS
+    from utils.equipment import get_equipment_bonus
+    from utils.hero_stats import calculate_hero_stats
+    from utils.skills import get_hero_skill_descriptions
+except ModuleNotFoundError:
+    EQUIPAMENTOS = {}
+
+    def get_equipment_bonus(cursor, user_id, item_name, equipamentos):
+        return equipamentos.get(item_name, {}) if item_name in equipamentos else {}
+
+    def calculate_hero_stats(hero_data, stars=1, level=1, equipment_bonuses=None):
+        stats = {
+            stat: int(hero_data.get(stat, default))
+            for stat, default in {
+                "hp": 100,
+                "atk": 10,
+                "matk": 10,
+                "def": 5,
+                "spd": 10,
+                "crt": 5,
+            }.items()
+        }
+        stats["level"] = int(level or 1)
+        return stats
+
+    def get_hero_skill_descriptions(hero_data, stars=1, rarity=None):
+        habilidade = hero_data.get("habilidade") if hero_data else None
+        if not habilidade:
+            return []
+        return [{
+            "tipo": "Base",
+            "nome": habilidade.get("nome", "Habilidade") if isinstance(habilidade, dict) else str(habilidade),
+            "descricao": habilidade.get("descricao", "") if isinstance(habilidade, dict) else "",
+            "ativa": True,
+        }]
 
 # ===================================================
 # SISTEMA DE CACHE DO AVATAR (Única coisa da internet)
@@ -240,6 +285,32 @@ class HeroisPaginator(discord.ui.View):
 class Perfil(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self._sync_catalog_rarities()
+
+    def _sync_catalog_rarities(self):
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'heroes'")
+            if not cursor.fetchone():
+                return
+            for hero_id, hero_data in HEROES.items():
+                if hero_id == "id-nome":
+                    continue
+                canonical_rarity = max(1, int(hero_data.get("raridade", 1) or 1))
+                cursor.execute(
+                    """
+                    UPDATE heroes
+                    SET rarity = ?
+                    WHERE hero_id = ? AND COALESCE(rarity, 0) != ?
+                    """,
+                    (canonical_rarity, hero_id, canonical_rarity),
+                )
+            conn.commit()
+        except sqlite3.Error:
+            conn.rollback()
+        finally:
+            conn.close()
 
     def _rank_position(self, cursor, user_id, column):
         try:
@@ -273,16 +344,15 @@ class Perfil(commands.Cog):
     def _get_local_image(self, category, filename):
         """Lê imagens da máquina instantaneamente."""
         if not filename: return None
-        
-        # Testar .jpg e .png
-        for ext in [".jpg", ".png", ".jpeg"]:
-            clean_name = filename.replace(".png", "").replace(".jpg", "")
-            path = os.path.join(root_dir, "assets", category, f"{clean_name}{ext}")
-            if os.path.isfile(path):
+
+        if category == "herois_img":
+            path = get_hero_image_path(filename)
+            if path:
                 try:
-                    with open(path, "rb") as f:
-                        return f.read()
-                except OSError: pass
+                    with open(path, "rb") as image_file:
+                        return image_file.read()
+                except OSError:
+                    pass
         return None
 
     async def _profile_card(self, user, data):
@@ -359,7 +429,11 @@ class Perfil(commands.Cog):
             stat_boxes = [
                 ((40, 190, 390, 310), "CARTEIRA", f"{data['gold']:,} Gold\n{data['gems']:,} Gems"),
                 ((410, 190, 750, 310), "RANKING", f"Ouro #{data['gold_rank']}\nNivel #{data['level_rank']}"),
-                ((40, 330, 390, 450), "ARENA DA TORRE", f"Andar {data['arena_record']}\nRank #{data['arena_rank']}"),
+                (
+                    (40, 330, 390, 450),
+                    "PROGRESSO PVE",
+                    f"Arena: Andar {data['arena_record']}\nDungeon: D{data['dungeon_id']} - Área {data['dungeon_area']}",
+                ),
                 ((410, 330, 750, 450), "GUILDA", _trim(data["guild_text_clean"], 60)),
                 (
                     (40, 470, 750, 590),
@@ -438,6 +512,16 @@ class Perfil(commands.Cog):
         gold_rank = self._rank_position(cursor, ctx.author.id, "gold")
         level_rank = self._rank_position(cursor, ctx.author.id, "level")
         arena_rank = self._rank_position(cursor, ctx.author.id, "arena_record")
+
+        try:
+            cursor.execute(
+                "SELECT highest_dungeon, highest_area FROM dungeon_progress WHERE user_id = ?",
+                (str(ctx.author.id),),
+            )
+            dungeon_progress = cursor.fetchone()
+        except sqlite3.Error:
+            dungeon_progress = None
+        dungeon_id, dungeon_area = dungeon_progress or (1, 1)
         
         active_title = get_active_cosmetic(cursor, ctx.author.id, "title")
         active_frame = get_active_cosmetic(cursor, ctx.author.id, "frame")
@@ -494,6 +578,7 @@ class Perfil(commands.Cog):
         card_data = {
             "gold": gold or 0, "gems": gems or 0, "level": level or 1, "xp": xp or 0,
             "arena_record": arena_record or 0, "pvp_rating": pvp_rating or 0,
+            "dungeon_id": dungeon_id or 1, "dungeon_area": dungeon_area or 1,
             "gold_rank": gold_rank, "level_rank": level_rank, "arena_rank": arena_rank,
             "title": active_title, "frame": active_frame,
             "guild_text_clean": guild_text_clean, "pet_text_clean": pet_text_clean,
@@ -516,6 +601,7 @@ class Perfil(commands.Cog):
             embed = discord.Embed(title=f"Perfil de {ctx.author.display_name}", description="[ERRO] Imagem falhou. Mostrando texto.", color=discord.Color.red())
             embed.add_field(name="Carteira", value=f"Ouro: {gold:,} | Gemas: {gems:,}")
             embed.add_field(name="Herói", value=hero_name_clean, inline=False)
+            embed.add_field(name="Dungeon", value=f"D{dungeon_id} - Área {dungeon_area}", inline=False)
             await ctx.send(embed=embed)
 
 
@@ -596,37 +682,361 @@ class Perfil(commands.Cog):
         data = HEROES.get(hero[0], {})
         await ctx.send(f"👑 **{data.get('nome', 'Herói')}** agora é seu herói principal.")
 
+    @commands.command(name="evoluir", aliases=["evolucao", "evolução"])
+    async def evoluir_prefix(self, ctx, hero_db_id: int = None):
+        if not hero_db_id:
+            return await ctx.send("Informe o ID do herói principal da evolução. Exemplo: `echo evoluir 15`.")
+
+        user_id = str(ctx.author.id)
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("BEGIN IMMEDIATE")
+            cursor.execute("PRAGMA table_info(heroes)")
+            hero_columns = {row[1] for row in cursor.fetchall()}
+            equipment_columns = [
+                column
+                for column in ("equip_atk", "equip_def", "equip_livre")
+                if column in hero_columns
+            ]
+            selected_columns = ["id", "hero_id", "rarity", "stars", "level"] + equipment_columns
+            cursor.execute(
+                f"SELECT {', '.join(selected_columns)} FROM heroes WHERE id = ? AND user_id = ?",
+                (hero_db_id, user_id),
+            )
+            target = cursor.fetchone()
+            if not target:
+                conn.rollback()
+                return await ctx.send("Esse ID não pertence a nenhum herói da sua conta.")
+
+            _, hero_id, stored_rarity, current_stage, hero_level = target[:5]
+            target_equipment = [item for item in target[5:] if item]
+            hero_data = HEROES.get(hero_id, {})
+            hero_name = hero_data.get("nome", hero_id)
+            canonical_rarity = max(1, int(hero_data.get("raridade", stored_rarity or 1) or 1))
+            current_stage = max(1, int(current_stage or 1))
+            max_stage = max(1, int(hero_data.get("max_star", 7) or 7))
+
+            if current_stage >= max_stage:
+                conn.rollback()
+                return await ctx.send(
+                    f"**{hero_name}** já está no estágio máximo **{current_stage}/{max_stage}**. "
+                    "TutoriUAU tentou colocar mais brilho, mas o universo recusou."
+                )
+
+            cursor.execute(
+                f"""
+                SELECT {', '.join(selected_columns)}
+                FROM heroes
+                WHERE user_id = ? AND hero_id = ? AND id != ?
+                """,
+                (user_id, hero_id, hero_db_id),
+            )
+            duplicates = cursor.fetchall()
+            if not duplicates:
+                conn.rollback()
+                return await ctx.send(
+                    f"Você precisa de outra cópia de **{hero_name}** para evoluir o `ID {hero_db_id}`. "
+                    "A amizade ajuda, mas o sistema exige papelada duplicada."
+                )
+
+            busy_reasons = {}
+
+            def mark_busy(raw_id, reason):
+                if raw_id is None:
+                    return
+                key = str(raw_id)
+                busy_reasons.setdefault(key, []).append(reason)
+
+            cursor.execute("SELECT main_hero FROM players WHERE user_id = ?", (user_id,))
+            main_row = cursor.fetchone()
+            if main_row:
+                mark_busy(main_row[0], "herói principal")
+
+            cursor.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'teams'")
+            if cursor.fetchone():
+                cursor.execute("SELECT slot_2, slot_3, slot_4, slot_5 FROM teams WHERE user_id = ?", (user_id,))
+                team_row = cursor.fetchone()
+                for slot_id in team_row or []:
+                    mark_busy(slot_id, "party")
+
+            for table_name, id_column, reason in (
+                ("champion_defense_teams", "hero_ids", "defesa dos Campeões"),
+                ("player_expeditions", "party_ids", "expedição"),
+            ):
+                cursor.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?",
+                    (table_name,),
+                )
+                if not cursor.fetchone():
+                    continue
+                cursor.execute(f"SELECT {id_column} FROM {table_name} WHERE user_id = ?", (user_id,))
+                row = cursor.fetchone()
+                try:
+                    stored_ids = json.loads(row[0] or "[]") if row else []
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    stored_ids = []
+                for stored_id in stored_ids:
+                    mark_busy(stored_id, reason)
+
+            safe_duplicates = []
+            blocked_details = []
+            for duplicate in duplicates:
+                duplicate_id = duplicate[0]
+                duplicate_equipment = [item for item in duplicate[5:] if item]
+                reasons = list(busy_reasons.get(str(duplicate_id), []))
+                if duplicate_equipment:
+                    reasons.append("equipamentos")
+                if reasons:
+                    blocked_details.append(f"`ID {duplicate_id}`: {', '.join(dict.fromkeys(reasons))}")
+                    continue
+                safe_duplicates.append(duplicate)
+
+            if not safe_duplicates:
+                conn.rollback()
+                details = "\n".join(blocked_details[:8])
+                return await ctx.send(
+                    f"Você possui cópia de **{hero_name}**, mas nenhuma está livre para sacrifício.\n"
+                    f"{details}\n"
+                    "Retire a cópia da party/defesa, espere a expedição ou desequipe os itens. "
+                    "TutoriUAU se recusa a triturar patrimônio sem aviso."
+                )
+
+            donor = min(
+                safe_duplicates,
+                key=lambda row: (int(row[3] or 1), int(row[4] or 1), -int(row[0])),
+            )
+            donor_id = int(donor[0])
+            donor_stage = max(1, int(donor[3] or 1))
+            donor_level = max(1, int(donor[4] or 1))
+            new_stage = current_stage + 1
+
+            target_bonuses = [
+                get_equipment_bonus(cursor, user_id, item_name, EQUIPAMENTOS)
+                for item_name in target_equipment
+            ]
+            old_stats = calculate_hero_stats(
+                hero_data,
+                stars=current_stage,
+                level=hero_level,
+                equipment_bonuses=target_bonuses,
+            )
+            new_stats = calculate_hero_stats(
+                hero_data,
+                stars=new_stage,
+                level=hero_level,
+                equipment_bonuses=target_bonuses,
+            )
+            old_skills = get_hero_skill_descriptions(
+                hero_data,
+                stars=current_stage,
+                rarity=canonical_rarity,
+            )
+            new_skills = get_hero_skill_descriptions(
+                hero_data,
+                stars=new_stage,
+                rarity=canonical_rarity,
+            )
+            active_before = {
+                (skill.get("tipo"), skill.get("nome"))
+                for skill in old_skills
+                if skill.get("ativa")
+            }
+            unlocked = [
+                skill
+                for skill in new_skills
+                if skill.get("ativa") and (skill.get("tipo"), skill.get("nome")) not in active_before
+            ]
+
+            cursor.execute(
+                "UPDATE heroes SET rarity = ?, stars = ? WHERE id = ? AND user_id = ?",
+                (canonical_rarity, new_stage, hero_db_id, user_id),
+            )
+            if cursor.rowcount != 1:
+                raise sqlite3.DatabaseError("o herói principal mudou durante a evolução")
+
+            cursor.execute(
+                "DELETE FROM heroes WHERE id = ? AND user_id = ?",
+                (donor_id, user_id),
+            )
+            if cursor.rowcount != 1:
+                raise sqlite3.DatabaseError("a cópia de evolução não pôde ser consumida")
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS player_stats(
+                    user_id TEXT NOT NULL,
+                    stat TEXT NOT NULL,
+                    value INTEGER DEFAULT 0,
+                    PRIMARY KEY (user_id, stat)
+                )
+            """)
+            cursor.execute(
+                "INSERT OR IGNORE INTO player_stats (user_id, stat, value) VALUES (?, 'hero_evolutions', 0)",
+                (user_id,),
+            )
+            cursor.execute(
+                "UPDATE player_stats SET value = value + 1 WHERE user_id = ? AND stat = 'hero_evolutions'",
+                (user_id,),
+            )
+            conn.commit()
+        except sqlite3.Error as exc:
+            conn.rollback()
+            return await ctx.send(f"Não consegui concluir a evolução: `{exc}`")
+        finally:
+            conn.close()
+
+        embed = discord.Embed(
+            title=f"✨ Evolução concluída — {hero_name}",
+            description=(
+                f"O `ID {hero_db_id}` avançou do estágio **{current_stage}/{max_stage}** "
+                f"para **{new_stage}/{max_stage}**.\n"
+                f"A cópia `ID {donor_id}` (estágio {donor_stage}, nível {donor_level}) foi consumida."
+            ),
+            color=discord.Color.gold(),
+        )
+        embed.add_field(
+            name="Raridade Base",
+            value=f"{'⭐' * canonical_rarity} — a raridade original não muda com a evolução.",
+            inline=False,
+        )
+        embed.add_field(
+            name="Atributos",
+            value=(
+                f"HP: **{old_stats.get('hp', 0):,} → {new_stats.get('hp', 0):,}** | "
+                f"ATK: **{old_stats.get('atk', 0):,} → {new_stats.get('atk', 0):,}**\n"
+                f"MATK: **{old_stats.get('matk', 0):,} → {new_stats.get('matk', 0):,}** | "
+                f"DEF: **{old_stats.get('def', 0):,} → {new_stats.get('def', 0):,}**"
+            ),
+            inline=False,
+        )
+        if unlocked:
+            embed.add_field(
+                name="Nova Habilidade Despertada",
+                value="\n".join(
+                    f"✅ **{skill.get('nome', 'Habilidade')}** — "
+                    f"{_trim(skill.get('descricao') or 'Sem descrição.', 700)}"
+                    for skill in unlocked
+                )[:1024],
+                inline=False,
+            )
+        else:
+            embed.add_field(
+                name="Despertar",
+                value="Nenhuma habilidade nova neste estágio, mas os atributos foram fortalecidos.",
+                inline=False,
+            )
+        embed.set_footer(text="TutoriUAU: uma cópia entrou, números maiores saíram. Alquimia de planilha.")
+        await ctx.send(embed=embed)
+
     @commands.command(name="heroi", aliases=["herói"])
     async def heroi_prefix(self, ctx, hero_db_id: int = None):
         if not hero_db_id: return await ctx.send("Faltou o ID. Exemplo: `echo heroi 15`.")
 
         conn = sqlite3.connect("players.db")
         cursor = conn.cursor()
-        cursor.execute("SELECT hero_id, rarity, stars, level, xp FROM heroes WHERE id = ? AND user_id = ?", (hero_db_id, str(ctx.author.id)))
+        cursor.execute("PRAGMA table_info(heroes)")
+        hero_columns = {row[1] for row in cursor.fetchall()}
+        equipment_columns = [
+            column
+            for column in ("equip_atk", "equip_def", "equip_livre")
+            if column in hero_columns
+        ]
+        selected_columns = ["hero_id", "rarity", "stars", "level", "xp"] + equipment_columns
+        cursor.execute(
+            f"SELECT {', '.join(selected_columns)} FROM heroes WHERE id = ? AND user_id = ?",
+            (hero_db_id, str(ctx.author.id)),
+        )
         hero_db = cursor.fetchone()
         if not hero_db:
             conn.close()
             return await ctx.send("Herói não encontrado na sua conta.")
 
-        hero_id, rarity, hero_stars, hero_level, hero_xp = hero_db
+        hero_id, stored_rarity, hero_stars, hero_level, hero_xp = hero_db[:5]
+        equipped_items = [item for item in hero_db[5:] if item]
         hero = HEROES.get(hero_id, {})
+        rarity = max(1, int(hero.get("raridade", stored_rarity or 1) or 1))
+        hero_stars = max(1, int(hero_stars or 1))
+        hero_level = max(1, int(hero_level or 1))
+        hero_xp = max(0, int(hero_xp or 0))
+
+        if rarity != int(stored_rarity or 0):
+            cursor.execute("UPDATE heroes SET rarity = ? WHERE id = ?", (rarity, hero_db_id))
+
+        equipment_bonuses = [
+            get_equipment_bonus(cursor, ctx.author.id, item_name, EQUIPAMENTOS)
+            for item_name in equipped_items
+        ]
+        stats = calculate_hero_stats(
+            hero,
+            stars=hero_stars,
+            level=hero_level,
+            equipment_bonuses=equipment_bonuses,
+        )
+        skills = get_hero_skill_descriptions(hero, stars=hero_stars, rarity=rarity)
+        conn.commit()
         conn.close()
 
         embed = discord.Embed(
             title=f"{hero.get('emoji', '❔')} {hero.get('nome', hero_id)}",
-            description=f"`ID {hero_db_id}` | Classe: **{hero.get('classe', 'Sem classe')}** | XP: **{hero_xp:,}**",
+            description=(
+                f"`ID {hero_db_id}` | Classe: **{hero.get('classe', 'Sem classe')}** | "
+                f"Origem: **{hero.get('origem', 'Desconhecida')}**\n"
+                f"Nível: **{hero_level}** | XP atual: **{hero_xp:,}**"
+            ),
             color=discord.Color.gold(),
         )
         
-        # Puxa a imagem LOCAL do herói
-        local_path = os.path.join(root_dir, "assets", "herois_img", f"{hero_id}.jpg")
-        hero_file = None
-        if os.path.isfile(local_path):
-            hero_file = discord.File(local_path, filename=f"{hero_id}.jpg")
-            embed.set_image(url=f"attachment://{hero_id}.jpg")
+        local_path, filename = get_hero_attachment(hero_id, prefix="ficha")
+        hero_file = discord.File(local_path, filename=filename) if local_path else None
+        if hero_file:
+            embed.set_image(url=f"attachment://{filename}")
 
-        embed.add_field(name="Raridade", value=estrelas(rarity, hero_stars), inline=False)
-        embed.set_footer(text="TutoriUAU: Colecionando bonecos, hein?")
+        max_evolution = max(hero_stars, int(hero.get("max_star", 7) or 7))
+        evolution_marks = f" {'✦' * (hero_stars - 1)}" if hero_stars > 1 else ""
+        embed.add_field(
+            name="Raridade e Evolução",
+            value=(
+                f"Raridade base: **{'⭐' * rarity}**\n"
+                f"Evolução: **estágio {hero_stars}/{max_evolution}{evolution_marks}**"
+            ),
+            inline=False,
+        )
+        embed.add_field(
+            name="Status de Combate",
+            value=(
+                f"❤️ HP: **{stats.get('hp', 0):,}** | ⚔️ ATK: **{stats.get('atk', 0):,}**\n"
+                f"🔮 MATK: **{stats.get('matk', 0):,}** | 🛡️ DEF: **{stats.get('def', 0):,}**\n"
+                f"💨 SPD: **{stats.get('spd', 0):,}** | 🎯 CRT: **{stats.get('crt', 0):,}%**"
+            ),
+            inline=False,
+        )
+
+        if equipped_items:
+            equipment_labels = [
+                EQUIPAMENTOS.get(item_name, {}).get("nome", item_name.replace("_", " ").title())
+                for item_name in equipped_items
+            ]
+            embed.add_field(name="Equipamentos", value="\n".join(f"• {name}" for name in equipment_labels), inline=False)
+
+        skill_lines = []
+        for skill in skills:
+            status = "✅" if skill.get("ativa") else "🔒"
+            label = skill.get("tipo", "Habilidade")
+            description = _trim(skill.get("descricao") or "Descrição ainda não cadastrada.", 850)
+            skill_lines.append(f"{status} **{label} — {skill.get('nome', 'Habilidade')}**\n{description}")
+
+        if skill_lines:
+            for index, chunk in enumerate(chunk_lines(skill_lines, limit=1000)):
+                field_name = "Habilidades" if index == 0 else "Habilidades (continuação)"
+                embed.add_field(name=field_name, value=chunk, inline=False)
+        else:
+            embed.add_field(
+                name="Habilidades",
+                value="Nenhuma habilidade cadastrada. O TutoriUAU encontrou um currículo em branco e ficou pessoalmente ofendido.",
+                inline=False,
+            )
+
+        embed.set_footer(text="TutoriUAU: agora a ficha mostra números e habilidades. Tecnologia avançadíssima.")
         
         if hero_file: await ctx.send(embed=embed, file=hero_file)
         else: await ctx.send(embed=embed)

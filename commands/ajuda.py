@@ -13,6 +13,54 @@ HELP_COMMENTS = [
 ]
 
 
+def _split_field_value(value, limit=1024):
+    value = str(value or "")
+    if len(value) <= limit:
+        return [value or "\u200b"]
+
+    chunks = []
+    current = ""
+    for line in value.splitlines(keepends=True):
+        while len(line) > limit:
+            if current:
+                chunks.append(current.rstrip())
+                current = ""
+            split_at = line.rfind(" ", 0, limit + 1)
+            if split_at <= 0:
+                split_at = limit
+            chunks.append(line[:split_at].rstrip())
+            line = line[split_at:].lstrip()
+
+        if len(current) + len(line) > limit:
+            chunks.append(current.rstrip())
+            current = line
+        else:
+            current += line
+
+    if current:
+        chunks.append(current.rstrip())
+    return [chunk or "\u200b" for chunk in chunks]
+
+
+def _normalize_embed_fields(embed):
+    original_fields = [
+        (field.name, field.value, field.inline)
+        for field in embed.fields
+    ]
+    embed.clear_fields()
+
+    for name, value, inline in original_fields:
+        chunks = _split_field_value(value)
+        for index, chunk in enumerate(chunks):
+            field_name = name if index == 0 else f"{name} (continuação {index + 1})"
+            embed.add_field(
+                name=field_name[:256],
+                value=chunk,
+                inline=inline,
+            )
+    return embed
+
+
 class AjudaPaginator(discord.ui.View):
     def __init__(self, user: discord.User, embeds: list):
         super().__init__(timeout=180)
@@ -83,7 +131,7 @@ class Ajuda(commands.Cog):
             value=(
                 "`iniciar` - Cria sua conta e pega os presentes iniciais.\n"
                 "`perfil` - Mostra sua ficha; temas ativos trocam o fundo e títulos destacam seu nome.\n"
-                "`herói <ID>` - Mostra o herói, status e habilidades.\n"
+                "`herói <ID>` - Mostra raridade base, evolução, status de combate, equipamentos e habilidades.\n"
                 "`heróis` - Lista sua coleção de heróis.\n"
                 "`main <ID>` - Define o herói principal.\n"
                 "`mochila` - Mostra seus itens, tickets e drops.\n"
@@ -118,21 +166,25 @@ class Ajuda(commands.Cog):
             name="Invocação",
             value=(
                 "`summon <quantidade>` - Invoca no banner comum com todos os personagens.\n"
-                "`summon especial <quantidade>` - Invoca no banner especial semanal.\n"
+                "`summon especial <quantidade>` - Invoca no banner especial ativo.\n"
                 "`banner` - Mostra o banner comum e o especial.\n"
-                "`banner especial` - Mostra só os destaques semanais.\n"
+                "`banner especial` - Mostra os destaques atuais e a origem da seleção.\n"
                 "`catálogo [classe]` - Mostra personagens disponíveis por classe.\n"
                 "Taxas de raridade são iguais nos dois banners; o especial favorece apenas os personagens em destaque.\n"
-                "A etiqueta `[NEW]` marca a primeira cópia de um herói na sua coleção."
+                "Seres divinos têm **0,01%** de chance, não entram em destaques e aparecem como `???` no catálogo.\n"
+                "Giros de 10 garantem pelo menos um personagem 3⭐ ou superior.\n"
+                "A etiqueta `[NEW]` marca a primeira cópia de um herói na sua coleção.\n"
+                "Os retratos são carregados do pacote local do bot. TutoriUAU confiscou os links que trocavam o rosto dos personagens."
             ),
             inline=False,
         )
         e2.add_field(
             name="Evolução e Party",
             value=(
-                "`evoluir <ID>` - Usa cópia extra para evoluir um herói.\n"
+                "`evoluir <ID>` - Consome uma cópia livre do mesmo herói e aumenta seu estágio de evolução.\n"
                 "`party` - Monta sua equipe de combate.\n"
-                "`afinidade` não é comando: é bônus automático. Heróis do mesmo anime juntos ganham status.\n"
+                "`afinidade` não é comando: 2/3/4/5 heróis da mesma obra ganham 5%/10%/15%/20% nos status principais.\n"
+                "Com 5 da mesma obra, o líder também libera a habilidade coletiva **Ressonância da Obra**.\n"
                 "`pvp @usuário` - Desafia alguém do servidor para uma luta em turnos.\n"
                 "`pvp online` - Fila global; batalha, botões e log ficam inteiros no canal do comando.\n"
                 "`pvp online status|sair` - Consulta ou abandona a fila; bots equilibrados preenchem horários vazios."
@@ -153,6 +205,7 @@ class Ajuda(commands.Cog):
             value=(
                 "`hunt` - Caçada rápida para ouro, XP e drops vendáveis.\n"
                 "`dungeon <id> <área>` - Exploração com progressão.\n"
+                "`perfil` - Também mostra a Dungeon e a Área atualmente liberadas para você não se perder no mapa imaginário.\n"
                 "`adventure` - RPG de contrato com escolhas, moral, perigo, eventos e combate.\n"
                 "`arena` - Torre infinita com dificuldade e recompensas progressivas.\n"
                 "`arena auto` - Arena automática, se comprou o perk na loja de Gems.\n"
@@ -256,6 +309,8 @@ class Ajuda(commands.Cog):
                 "`adm criarcode <code> <recompensas>` - Cria code permanente, inclusive com vários prêmios.\n"
                 "`adm criarcode temp <dias> <code> <recompensas>` - Cria code com vencimento.\n"
                 "`adm delete code <code>` - Invalida um code imediatamente.\n"
+                "`adm criar banner` - Abre o editor interativo de destaques por sete dias.\n"
+                "`adm delechar @usuário <nome>` - Apaga uma cópia do personagem e limpa vínculos quebrados.\n"
                 "`atualiza_thumb <url>` - Troca a imagem do mural de atualizações.\n"
                 "`adm logs [@usuário|abertos|resolvidos]` - Filtra registros de bugs/queixas.\n"
                 "`adm resolver <ID> <mensagem>` - Resolve e envia a resposta ao jogador por DM.\n"
@@ -266,6 +321,8 @@ class Ajuda(commands.Cog):
         )
         pages.append(e5)
 
+        for embed in pages:
+            _normalize_embed_fields(embed)
         return pages
 
     @commands.command(name="help", aliases=["ajuda", "comandos"])

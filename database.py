@@ -142,6 +142,7 @@ CREATE TABLE IF NOT EXISTS summon_data(
     total_5_star INTEGER DEFAULT 0
 )
 """)
+add_column(cursor, "summon_data", "total_divine", "INTEGER DEFAULT 0")
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS equipment_upgrades(
