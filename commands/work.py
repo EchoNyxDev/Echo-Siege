@@ -23,11 +23,19 @@ def carregar_chaves_aventuras():
     except FileNotFoundError:
         return [], {}
 
-
 def cortar(texto, limite=180):
     texto = str(texto or "").replace("\n", " ").strip()
     return texto if len(texto) <= limite else texto[: limite - 1] + "..."
 
+def obter_tier_aventura(adv):
+    nodos = adv.get("nodos", {})
+    recompensas = [n for n in nodos.values() if n.get("tipo") == "recompensa"]
+    ouro = max([n.get("gold", 0) for n in recompensas] or [0])
+    
+    if ouro < 600: return 1      # Comum
+    elif ouro < 1500: return 2   # Rara
+    elif ouro < 5000: return 3   # Épica
+    else: return 4               # Lendária
 
 def resumo_aventura(adv_id, adv):
     nodos = adv.get("nodos", {})
@@ -37,13 +45,20 @@ def resumo_aventura(adv_id, adv):
     inimigos = sum(len(n.get("inimigos", [])) for n in combates)
     ouro = max([n.get("gold", 0) for n in recompensas] or [0])
     xp = max([n.get("xp", 0) for n in recompensas] or [0])
-    risco = "Baixo"
-    if inimigos >= 3 or ouro >= 1000:
-        risco = "Alto"
-    elif inimigos >= 1 or ouro >= 500:
-        risco = "Médio"
+    
+    if ouro >= 5000:
+        risco = "Calamidade 🟣 (Lendário)"
+    elif ouro >= 1500:
+        risco = "Extremo 🔴 (Épico)"
+    elif ouro >= 600 or inimigos >= 3:
+        risco = "Alto 🟠 (Raro)"
+    elif ouro >= 300 or inimigos >= 1:
+        risco = "Médio 🟡 (Incomum)"
+    else:
+        risco = "Baixo 🟢 (Comum)"
+        
     gancho = cortar(start.get("texto", adv.get("nome", adv_id)), 150)
-    return f"Risco: **{risco}** | Melhor pagamento: **{ouro:,} Gold / {xp:,} XP**\n{gancho}"
+    return f"Risco: **{risco}** | Pagamento Base: **{ouro:,} Gold / {xp:,} XP**\n{gancho}"
 
 class GuildBoardView(discord.ui.View):
     def __init__(self, ctx, m1, m2, m3, m1_st, m2_st, m3_st, adv_data):
@@ -126,9 +141,36 @@ class Work(commands.Cog):
         cursor.execute("SELECT date_str, m1_id, m1_status, m2_id, m2_status, m3_id, m3_status, active_mission FROM daily_quests WHERE user_id = ?", (uid,))
         dados = cursor.fetchone()
 
+        cursor.execute("SELECT level FROM players WHERE user_id = ?", (uid,))
+        p_lvl_data = cursor.fetchone()
+        player_level = p_lvl_data[0] if p_lvl_data else 1
+
         # Roda os contratos diários se for um dia novo ou não tiver registo
         if not dados or dados[0] != hoje_str:
-            sorteadas = random.sample(keys, 3)
+            
+            # Filtro inteligente de Tiers Baseado no Nível da Conta
+            if player_level <= 10:
+                allowed_tiers = [1]
+            elif player_level <= 25:
+                allowed_tiers = [1, 2]
+            elif player_level <= 45:
+                allowed_tiers = [2, 3]
+            else:
+                allowed_tiers = [3, 4]
+                
+            pool = [k for k in keys if obter_tier_aventura(all_advs[k]) in allowed_tiers]
+            
+            # Se por acaso a pool não tiver 3 missões por falta de escrita, expande o range
+            if len(pool) < 3:
+                if player_level > 25:
+                    pool = [k for k in keys if obter_tier_aventura(all_advs[k]) >= 2]
+                else:
+                    pool = [k for k in keys if obter_tier_aventura(all_advs[k]) <= 2]
+                    
+            if len(pool) < 3:
+                pool = keys # Fallback absoluto para não quebrar o jogo
+                
+            sorteadas = random.sample(pool, 3)
             cursor.execute("""
                 INSERT INTO daily_quests (user_id, date_str, m1_id, m1_status, m2_id, m2_status, m3_id, m3_status, active_mission)
                 VALUES (?, ?, ?, 0, ?, 0, ?, 0, NULL)
@@ -149,13 +191,13 @@ class Work(commands.Cog):
         embed = discord.Embed(
             title="📋 Quadro de Contratos de Lugnica",
             description=(
-                "**TutoriUAU:** \"Escolha um contrato, leia pelo menos duas linhas e depois finja que foi estratégia.\"\n"
+                f"**TutoriUAU:** \"Aqui estão os trabalhos disponíveis pro teu nível ({player_level}). Leia pelo menos duas linhas e depois finja que foi estratégia.\"\n"
                 f"Contratos concluídos hoje: **{concluidas}/3**"
             ),
             color=discord.Color.orange()
         )
         
-        # Adicionando a nova miniatura da Tutori-chan
+        # Adicionando a miniatura da Tutori-chan
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1493317042760056987/1513198454300606674/Tutori-chan.png?ex=6a26db61&is=6a2589e1&hm=d1fc19e4ac97c020cc6be2b440f928ae3e1b186c0d5afe7e46609f6d89146df1&")
 
         def status_str(st, mid):
