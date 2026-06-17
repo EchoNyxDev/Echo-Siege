@@ -1182,8 +1182,12 @@ class CombatEngine:
                 
                 # Dano Baseado em HP
                 dano_final = base_dmg * mult
+                if "dano_fixo" in efeito:
+                    dano_final += int(efeito["dano_fixo"])
                 if "dano_hp_atual" in efeito:
                     dano_final += int(target.hp * efeito["dano_hp_atual"])
+                if "dano_hp_max" in efeito:
+                    dano_final += int(target.max_hp * _as_ratio(efeito["dano_hp_max"]))
                 dano_final = actor.cap_outgoing_damage(dano_final, is_skill=True)
                 
                 persistent_ignore = max(

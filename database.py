@@ -180,14 +180,27 @@ add_column(cursor, "server_config", "raid_channel_id", "TEXT")
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS raid_registrations(
-    user_id TEXT,
-    raid_type TEXT,
-    guild_id TEXT,
+    user_id TEXT NOT NULL,
+    raid_type TEXT NOT NULL DEFAULT 'raid',
+    guild_id TEXT NOT NULL DEFAULT 'global',
+    registered_at INTEGER DEFAULT 0,
     PRIMARY KEY (user_id, guild_id)
 )
 """)
-add_column(cursor, "raid_registrations", "raid_type", "TEXT DEFAULT 'diaria'")
+add_column(cursor, "raid_registrations", "raid_type", "TEXT DEFAULT 'raid'")
 add_column(cursor, "raid_registrations", "guild_id", "TEXT DEFAULT 'global'")
+add_column(cursor, "raid_registrations", "registered_at", "INTEGER DEFAULT 0")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS invasion_schedule_runs(
+    guild_id TEXT NOT NULL,
+    raid_type TEXT NOT NULL,
+    scheduled_key TEXT NOT NULL,
+    channel_id TEXT,
+    created_at INTEGER DEFAULT 0,
+    PRIMARY KEY (guild_id, raid_type, scheduled_key)
+)
+""")
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS city_stats(

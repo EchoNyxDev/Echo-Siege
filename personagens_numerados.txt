@@ -1,0 +1,385 @@
+1. Levi Ackerman
+2. Rock Lee
+3. Roronoa Zoro
+4. Jotaro Joestar
+5. Kirito
+6. Mereoleona
+7. Natsu
+8. Megumin
+9. Frieren
+10. Satoru Gojo
+11. Ainz Ooal Gown
+12. Tony Tony Chopper
+13. Tsunade
+14. Wendy Marvell
+15. Elizabeth Liones
+16. Orihime Inoue
+17. Alphonse Elric
+18. Annie Leonhart
+19. Kaidou
+20. Kokushibo
+21. Maple
+22. Erwin Smith
+23. Shiroe
+24. Lelouch Lamperouge
+25. Sousuke Aizen
+26. Rimuru Tempest
+27. Death the Kid
+28. Sinon
+29. Mine
+30. Uryu Ishida
+31. Vash
+32. Yuno Gasai
+33. Yor Forger
+34. Stain
+35. Zabuza Momochi
+36. Akame
+37. Killua Zoldyck
+38. Mob
+39. Rudo Surebrac
+40. Itadori Yuji
+41. Natsuki Subaru
+42. Makima
+43. Maki Zenin
+44. Mirko
+45. Emilia
+46. Denji
+47. Asta
+48. Arthur Boyle
+49. Baki Hanma
+50. Meliodas
+51. Thorfinn
+52. Escanor
+53. Guts
+54. Yami Sukehiro
+55. Ichigo Kurosaki
+56. Saitama
+57. Himiko Toga
+58. Ayano Tateyama
+59. Revy
+60. Kanao Tsuyuri
+61. Hyakkimaru
+62. Toji Fushiguro
+63. Esdeath
+64. Cid Kagenou (Shadow)
+65. Sung Jin Woo
+66. Lucy Heartfilia
+67. Roxy Migurdia
+68. Shuna
+69. Julius Novachrono
+70. Merlin
+71. Anos Voldigoad
+72. Gilgamesh
+73. Hange Zoe
+74. Nezuko
+75. Raphtalia
+76. Shoko Ieiri
+77. Aqua
+78. Kisuke Urahara
+79. Maomao
+80. Bojji
+81. Mash Burnedead
+82. Eijiro Kirishima
+83. Naofumi Iwatani
+84. Broly
+85. Garou
+86. Benimaru Shinmou
+87. All Might
+88. Edward Newgate (Barba Branca)
+89. Alladin
+90. Senku Ishigami
+91. Roy Mustang
+92. Light Yagami
+93. Johan Liebert
+94. Chrollo Lucilfer
+95. Kamina
+96. Joseph Joestar
+97. Shikamaru Nara
+98. Usopp
+99. Kobeni
+100. Riza Hawkeye
+101. Lady Nagant
+102. Spike Spiegel
+103. Sakamoto
+104. Genya Shinazugawa
+105. Alucard
+106. Simo Hayha
+107. Reinhard Van Astrea
+108. Qifrey
+109. Dark Magician Girl
+110. Hatsune Miku
+111. Tokisaki Kurumi
+112. Dante
+113. Kyojuro Rengoku
+114. Shinra Kusakabe
+115. Ban
+116. Inosuke Hashibira
+117. Luck Voltia
+118. Manjiro Sano (Mikey)
+119. Artoria Pendragon (Saber)
+120. Bell Cranel
+121. Ragna
+122. Tatsumi
+123. Yato
+124. Alibaba Saluja
+125. Kurapika
+126. Shinobu Kocho
+127. Ninym Ralei
+128. Hei
+129. Izayoi Sakamaki
+130. C.C.
+131. Rika Furude
+132. Nobara Kugisaki
+133. Karma Akabane
+134. Satou
+135. Tanjirou Kamado
+136. Jellal Fernandes
+137. Echidna
+138. Wiz
+139. Yunyun
+140. Altair
+141. Mare Bello Fiore
+142. Beatrice
+143. Patchouli Knowledge
+144. Sucy Manbavaran
+145. Vanir
+146. Furude Hanyuu
+147. Noelle Silva
+148. Fern
+149. Miko Yotsuya
+150. Rem
+151. Ai Hoshino
+152. Chise Hatori
+153. Miku Nakano
+154. Tohru Honda
+155. Nanachi
+156. Yui Yuigahama
+157. Kobayashi
+158. Albedo
+159. Takemichi Hanagaki
+160. Alexander Anderson
+161. Tengen Uzui
+162. Iron Tager
+163. Aoi Todo
+164. Alex Louis Armstrong
+165. Kenshiro
+166. Diane
+167. Might Guy
+168. Isaac Netero
+169. Kazuma Kuwabara
+170. Zero Two
+171. Izaya Orihara
+172. Norman
+173. Sora
+174. Shiro
+175. Reinhard von Lohengramm
+176. Makishima Shogo
+177. William James Moriarty
+178. Osamu Dazai
+179. Houtarou Oreki
+180. King
+181. Ayanokoji Kiyotaka
+182. Mami Tomoe
+183. Chelsea
+184. Train Heartnet
+185. The End
+186. Sinbad
+187. Guido Mista
+188. Tanya Degurechaff
+189. Najenda
+190. Yoko Littner
+191. Toph
+192. Goblin Slayer
+193. Yugi Muto
+194. Joker
+195. Gabimaru
+196. Mumen Rider
+197. Sokka
+198. Leorio
+199. Magna Swing
+200. Sein
+201. Power
+202. Lotte Yanson
+203. Lubbock
+204. Schele
+205. Katara
+206. Beta
+207. Gamma
+208. Sayaka Miki
+209. Sakura Haruno
+210. Ram
+211. Bulat
+212. Leone
+213. Shura Kirigakure
+214. Rukia Kuchiki
+215. Aki Hayakawa
+216. Delta
+217. Stark
+218. Edward Elric
+219. Gon Freecss
+220. Megumi Fushiguro
+221. Kazuma Satou
+222. Shiny Chariot
+223. Akko Kagari
+224. Morgiana
+225. Izuku Midoriya
+226. Ray
+227. Rin Okumura
+228. Arthur A. Angel
+229. Zuko
+230. Yuno Grinberryall
+231. Kenpachi Zaraki
+232. Alpha
+233. Grey Fullbuster
+234. Erza Scarlet
+235. Siegfried
+236. Tamaki Kotatsu
+237. Diana Cavendish
+238. Medaka Kurokami
+239. Katsuki Bakugou
+240. Shouto Todoroki
+241. Kakashi Hatake
+242. Aura Bella Fiore
+243. Yu Narukami
+244. Makoto Yuki
+245. Kyoko Sakura
+246. Okita Souji
+247. Kurama
+248. Emma
+249. Mephisto Pheles
+250. Aang
+251. Son Goku
+252. Vegeta
+253. Epsilon
+254. Merlin (Fate)
+255. Medusa (Rider)
+256. Astolfo
+257. Maki Oze
+258. Giorno Giovanna
+259. Johnny Joestar
+260. Josuke Higashikata
+261. Kumagawa Misogi
+262. Naruto Uzumaki
+263. Sasuke Uchiha
+264. Shalltear Bloodfallen
+265. Homura Akemi
+266. Adão
+267. Qin Shi Huang
+268. Jack o Estripador
+269. Saiki Kusuo
+270. Asuna Yuuki
+271. Alice Zuberg
+272. Shion
+273. Milim Nava
+274. Hiei
+275. Yusuke Urameshi
+276. Madoka Kaname
+277. Featherine Augustus Aurora
+278. Anti-Espiral
+279. Zenoh
+280. Wang Ling
+281. Yogiri Takatou
+282. Haruhi Suzumiya
+283. Sailor Cosmos
+284. Hajun
+285. Accelerator
+286. Jin Mori
+287. Ryougi Shiki
+288. Lambdadelta
+289. Benimaru
+290. Darkness
+291. Dio Brando
+292. Barba Negra
+293. Madara Uchiha
+294. Griffith
+295. Donquixote Doflamingo
+296. All For One
+297. Ryomen Sukuna
+298. Mahito
+299. Petelgeuse Romanee-Conti
+300. Orochimaru
+301. Naraku
+302. Kaguya Otsutsuki
+303. Dabi
+304. Crocodile
+305. Father
+306. Yhwach
+307. Muzan Kibutsuji
+308. Meruem
+309. Hidan
+310. Zeldris
+311. Ulquiorra Cifer
+312. Regulus Corneas
+313. Pain (Tendo)
+314. Bondrewd
+315. Tomura Shigaraki
+316. Freeza
+317. Coyote Starrk
+318. Envy
+319. Elsa Granhiert
+320. Twice
+321. Buggy, o Palhaço
+322. Equipe Rocket
+323. Isabella (Mama)
+324. Zeref Dragneel
+325. Toguro Ototo (100%)
+326. Kars (Forma Suprema)
+327. Nnoitra Gilga
+328. Muscular
+329. Overgrown Rover
+330. Hisoka Morow
+331. Illumi Zoldyck
+332. Speed-o'-Sound Sonic
+333. Kurome
+334. Deidara
+335. Enel
+336. Lille Barro
+337. Hol Horse
+338. Bambietta Basterbine
+339. Kyubey
+340. Kabuto Yakushi (Eremita)
+341. Overhaul (Kai Chisaki)
+342. Shaiapouf
+343. Szayelaporro Granz
+344. Mash Kyrielight
+345. Jeanne d'Arc
+346. King Hassan
+347. Obito Uchiha
+348. Soifon
+349. Suzuya Juuzou
+350. Feitan Portor
+351. Souei
+352. Archer (EMIYA)
+353. Ishtar
+354. Van Augur
+355. Yasopp
+356. Sasha Blouse
+357. Mey-Rin
+358. Yoichi Saotome
+359. Shinya Hiiragi
+360. Foo Fighters
+361. Lugh Tuatha Dé
+362. Franklin Bordeau
+363. Pokkle
+364. Kamo Noritoshi
+365. Mai Zen'in
+366. Yuri Nakamura
+367. Tigrevurmud Vorn
+368. Pip Bernadotte
+369. Beyond the Grave
+370. Heero Yuy
+371. Zwei
+372. Waver Velvet
+373. Tamamo no Mae
+374. Eri
+375. Reigen Arataka
+376. Morgana (Mona)
+377. Mimosa Vermillion
+378. Charmy Pappitson
+379. Sherria Blendy
+380. Asia Argento
+381. Dende
+382. Yosuke Hanamura
+383. Shizuka Marikawa
+384. Nanao Ise
+385. # TEMPLATE

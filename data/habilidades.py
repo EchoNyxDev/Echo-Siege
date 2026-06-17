@@ -1255,6 +1255,8 @@ def _catalog_skill_definition(skill_data, rarity=1):
 
     if skill_type == "dano":
         base_multiplier = 1.15 + min(0.85, max(0, int(rarity or 1) - 1) * 0.17)
+        if any(token in text for token in ["dano_massivo", "golpe_massivo", "grande_dano", "dano_pesado", "devastador"]):
+            base_multiplier += 0.55
         if _has_word(text, "matk") or any(token in text for token in ["magia", "mana", "fogo", "gelo", "raio"]):
             effect["multiplicador_matk"] = (percent / 100) if percent and percent >= 100 else base_multiplier
         else:
@@ -1371,6 +1373,19 @@ def _ensure_runtime_effect(skill):
         effect.setdefault("reduz_dano_recebido", effect["reducao_dano_recebido"])
     if "contra_ataque_dodge" in effect:
         effect.setdefault("counter_atk_percent", effect["contra_ataque_dodge"])
+    if effect.get("dano_massivo") and not any(
+        key in effect
+        for key in {
+            "multiplicador_atk", "multiplicador_matk", "dano_atk_extra",
+            "dano_matk_extra", "dano_hp_atual", "dano_hp_max",
+        }
+    ):
+        effect.setdefault("multiplicador_atk", 2.5)
+    if effect.get("dano_massivo_hp_max"):
+        effect.setdefault("multiplicador_atk", 1.5)
+        effect.setdefault("dano_hp_max", 0.18)
+    if effect.get("chance_insta_kill_hp_baixo"):
+        effect.setdefault("executa_abaixo_percent", 30)
 
     supported_buff_keys = {
         "buff_atk", "buff_matk", "buff_def", "buff_spd", "buff_crt",

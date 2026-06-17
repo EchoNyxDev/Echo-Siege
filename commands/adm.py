@@ -1204,7 +1204,10 @@ class Adm(commands.Cog):
                 cursor.execute("ALTER TABLE server_config ADD COLUMN raid_channel_id TEXT")
             
             cursor.execute("DELETE FROM server_config WHERE guild_id = ?", (str(ctx.guild.id),))
-            cursor.execute("INSERT INTO server_config (guild_id, raid_channel_id) VALUES (?, ?)", (str(ctx.guild.id), str(canal.id)))
+            cursor.execute(
+                "INSERT OR REPLACE INTO server_config (guild_id, raid_channel_id) VALUES (?, ?)",
+                (str(ctx.guild.id), str(canal.id)),
+            )
             conn.commit()
             conn.close()
             
@@ -1256,12 +1259,14 @@ class Adm(commands.Cog):
                 return await ctx.send("❌ Use este comando dentro de um servidor.")
 
             tipo_map = {
-                "raid": "diaria",
-                "boss": "semanal",
-                "calamidade": "mensal",
-                "diaria": "diaria",
-                "semanal": "semanal",
-                "mensal": "mensal",
+                "raid": "raid",
+                "boss": "boss",
+                "calamidade": "calamidade",
+                "diaria": "raid",
+                "diária": "raid",
+                "semanal": "boss",
+                "mensal": "calamidade",
+                "chefe": "boss",
             }
             tipo_raid = tipo_map.get((arg1 or "").lower())
             if not tipo_raid:

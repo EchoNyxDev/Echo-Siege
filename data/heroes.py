@@ -5706,9 +5706,9 @@ HEROES = {
     "stark": {
         "nome": "Stark",
         "origem": "Frieren: Beyond Journey's End",
-        "emoji": "🏹",
+        "emoji": "👊",
         "imagem": "",
-        "classe": "atirador",
+        "classe": "atacante",
         "raridade": 3,
         "max_star": 7,
         "hp": 130,
@@ -10366,8 +10366,6 @@ HEROES = {
 
             5: {
                 "nome": "# TEMPLATE",
-                "atk": 0,
-                "spd": 0,
                 "descricao": "# TEMPLATE"
             }
         }

@@ -210,6 +210,7 @@ class Ajuda(commands.Cog):
             value=(
                 "`eventos` - Lista os eventos sazonais rolando no momento.\n"
                 "`evento lutar|boss|dungeon|resgatar` - Interage com as atividades da season.\n"
+                "Invasões automáticas usam o canal do `adm set_iniciar`: raid 13:00, boss sábado 19:00 e calamidade no último dia do mês 22:00.\n"
                 "`rank` / `rank global` - Mostra a nata dos jogadores e quem tem mais dinheiro/poder."
             ),
             inline=False,
