@@ -33,12 +33,10 @@ ADM_USERS = [
     768671545790693437
 ]
 
-
 def normalize_hero_name(value):
     text = unicodedata.normalize("NFKD", str(value or ""))
     text = "".join(char for char in text if not unicodedata.combining(char))
     return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
-
 
 def ensure_admin_logs_schema(cursor):
     cursor.execute("""
@@ -65,7 +63,6 @@ def ensure_admin_logs_schema(cursor):
     }.items():
         if column not in columns:
             cursor.execute(f"ALTER TABLE administrative_logs ADD COLUMN {column} {ddl}")
-
 
 class BannerHeroSelect(discord.ui.Select):
     def __init__(self, builder, rarity, row):
@@ -111,7 +108,6 @@ class BannerHeroSelect(discord.ui.Select):
             self.rarity,
             list(self.values),
         )
-
 
 class BannerHeroSearchModal(discord.ui.Modal, title="Buscar herói para o banner"):
     rarity = discord.ui.TextInput(
@@ -181,7 +177,6 @@ class BannerHeroSearchModal(discord.ui.Modal, title="Buscar herói para o banner
                 embed=self.builder.build_embed(),
                 view=self.builder,
             )
-
 
 class BannerBuilderView(discord.ui.View):
     PAGE_SIZE = 25
@@ -496,6 +491,9 @@ class Adm(commands.Cog):
             cursor.execute("ALTER TABLE codes ADD COLUMN created_at INTEGER DEFAULT 0")
         if "expires_at" not in code_columns:
             cursor.execute("ALTER TABLE codes ADD COLUMN expires_at INTEGER DEFAULT 0")
+            
+        cursor.execute("UPDATE codes SET expires_at = 0 WHERE expires_at IS NULL")
+        
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS code_redemptions (
             code TEXT NOT NULL,

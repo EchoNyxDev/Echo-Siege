@@ -27,7 +27,6 @@ CODES_COMMENTS = [
     "TutoriUAU: se o code falhar, confira as letras antes de abrir uma investigação internacional.",
 ]
 
-
 class CodesView(discord.ui.View):
     def __init__(self, user, embeds, start_page=0):
         super().__init__(timeout=180)
@@ -81,10 +80,15 @@ class Codes(commands.Cog):
         """)
         cursor.execute("PRAGMA table_info(codes)")
         code_columns = {row[1] for row in cursor.fetchall()}
+        
         if "created_at" not in code_columns:
             cursor.execute("ALTER TABLE codes ADD COLUMN created_at INTEGER DEFAULT 0")
         if "expires_at" not in code_columns:
             cursor.execute("ALTER TABLE codes ADD COLUMN expires_at INTEGER DEFAULT 0")
+            
+        # Correção do Bug de Desaparecimento (Transforma os antigos NULL em 0)
+        cursor.execute("UPDATE codes SET expires_at = 0 WHERE expires_at IS NULL")
+            
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS code_redemptions (
                 code TEXT NOT NULL,
@@ -118,6 +122,7 @@ class Codes(commands.Cog):
         conn = sqlite3.connect("codes.db")
         cursor = conn.cursor()
         try:
+            # Bug de Desaparecimento corrigido no COALESCE
             cursor.execute(
                 """
                 SELECT
@@ -128,7 +133,7 @@ class Codes(commands.Cog):
                     MAX(CASE WHEN r.user_id = ? THEN 1 ELSE 0 END) AS resgatado_pelo_usuario
                 FROM codes c
                 LEFT JOIN code_redemptions r ON r.code = c.code
-                WHERE c.expires_at = 0 OR c.expires_at > ?
+                WHERE COALESCE(c.expires_at, 0) = 0 OR c.expires_at > ?
                 GROUP BY c.code, c.recompensa, c.expires_at
                 ORDER BY c.code ASC
                 """,
@@ -271,20 +276,18 @@ class Codes(commands.Cog):
                 f"❌ O código **{nome_do_code}** expirou. TutoriUAU tentou negociar com o calendário e perdeu."
             )
 
+        # Corrigido o bug do "BEGIN IMMEDIATE" que travava o SQLite
         try:
-            cursor.execute("BEGIN IMMEDIATE")
             cursor.execute(
                 "INSERT INTO code_redemptions (code, user_id) VALUES (?, ?)",
                 (codigo, str(ctx.author.id)),
             )
         except sqlite3.IntegrityError:
-            conn.rollback()
             conn.close()
             return await ctx.send(f"❌ Você já resgatou o código **{nome_do_code}**.")
 
         sucesso, mensagem = self._aplicar_recompensa(str(ctx.author.id), recompensa)
         if not sucesso:
-            conn.rollback()
             conn.close()
             return await ctx.send(f"❌ {mensagem}")
 

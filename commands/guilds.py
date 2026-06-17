@@ -26,6 +26,18 @@ except ModuleNotFoundError:
 
 CREATE_GUILD_COST = 5000
 
+# ==========================================
+# LOJA EXCLUSIVA DA GUILDA
+# ==========================================
+GUILD_SHOP_ITEMS = {
+    1: {"nome": "Poção de Energia", "custo": 200, "tipo": "item", "db_name": "pocao_energia", "emoji": "⚡"},
+    2: {"nome": "Kit de Reparos", "custo": 300, "tipo": "item", "db_name": "kit_reparos", "emoji": "🔨"},
+    3: {"nome": "Fragmento Dimensional", "custo": 400, "tipo": "item", "db_name": "fragmento_dimensional", "emoji": "📦"},
+    4: {"nome": "Ticket de Pet", "custo": 1000, "tipo": "item", "db_name": "ticket_pet", "emoji": "🐾"},
+    5: {"nome": "Ticket Herói Raro", "custo": 1500, "tipo": "item", "db_name": "ticket_heroi_raro", "emoji": "🎟️"},
+    6: {"nome": "Título: Lenda da Guilda", "custo": 3500, "tipo": "cosmetic", "db_name": "token_titulo_lenda_da_guilda", "emoji": "🎖️"}
+}
+
 GUILD_MISSIONS = {
     "caca": {
         "name": "Caçada da Guilda",
@@ -79,6 +91,15 @@ GUILD_HUNT_BOSSES = [
 
 
 def init_guild_db(cursor):
+    # Cria a coluna guild_coins na tabela players se não existir
+    try:
+        cursor.execute("PRAGMA table_info(players)")
+        cols = {row[1] for row in cursor.fetchall()}
+        if "guild_coins" not in cols:
+            cursor.execute("ALTER TABLE players ADD COLUMN guild_coins INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS player_guilds(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -197,7 +218,33 @@ def init_guild_db(cursor):
             PRIMARY KEY (user_id, stat)
         )
     """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS inventory(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT,
+            item_name TEXT,
+            quantity INTEGER DEFAULT 1
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS player_cosmetics(
+            user_id TEXT NOT NULL,
+            cosmetic_id TEXT NOT NULL,
+            type TEXT NOT NULL,
+            active INTEGER DEFAULT 0,
+            purchased_at INTEGER DEFAULT 0,
+            PRIMARY KEY (user_id, cosmetic_id)
+        )
+    """)
 
+
+def add_item(cursor, user_id, item_name, qty=1):
+    cursor.execute("SELECT id FROM inventory WHERE user_id = ? AND item_name = ?", (str(user_id), item_name))
+    row = cursor.fetchone()
+    if row:
+        cursor.execute("UPDATE inventory SET quantity = quantity + ? WHERE id = ?", (qty, row[0]))
+    else:
+        cursor.execute("INSERT INTO inventory (user_id, item_name, quantity) VALUES (?, ?, ?)", (str(user_id), item_name, qty))
 
 def get_equipped_party(cursor, user_id):
     """Puxa a Party real do jogador que está equipada no momento"""
@@ -265,6 +312,57 @@ def boss_phase(hp, max_hp):
     return "Abertura"
 
 
+class GuildListPaginator(discord.ui.View):
+    def __init__(self, ctx, guilds):
+        super().__init__(timeout=120)
+        self.ctx = ctx
+        self.guilds = guilds
+        self.page = 0
+        self.items_per_page = 10
+        self.update_buttons()
+
+    def update_buttons(self):
+        for child in self.children:
+            if isinstance(child, discord.ui.Button):
+                if child.custom_id == "btn_prev":
+                    child.disabled = self.page == 0
+                elif child.custom_id == "btn_next":
+                    child.disabled = (self.page + 1) * self.items_per_page >= len(self.guilds)
+
+    def generate_embed(self):
+        embed = discord.Embed(title="🔍 Guildas de Lugnica", color=discord.Color.blue(), description="Encontre uma guilda para chamar de sua e ganhar acesso à loja exclusiva.")
+        start = self.page * self.items_per_page
+        end = start + self.items_per_page
+        chunk = self.guilds[start:end]
+        
+        txt = ""
+        for gid, name, lvl, mode, members in chunk:
+            modo_txt = "🔓 Aberta" if mode == "aberto" else "🔒 Convite"
+            txt += f"`ID {gid}` **{name}** (Nv {lvl}) | 👥 {members} membros | {modo_txt}\n"
+        
+        if not txt:
+            txt = "Nenhuma guilda encontrada."
+            
+        embed.add_field(name="Disponíveis", value=txt)
+        total_pages = max(1, (len(self.guilds) + self.items_per_page - 1) // self.items_per_page)
+        embed.set_footer(text=f"Página {self.page + 1}/{total_pages} • Use: echo guild entrar <ID>")
+        return embed
+
+    @discord.ui.button(label="Anterior", style=discord.ButtonStyle.primary, emoji="◀️", custom_id="btn_prev")
+    async def btn_prev(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.ctx.author.id: return
+        self.page -= 1
+        self.update_buttons()
+        await interaction.response.edit_message(embed=self.generate_embed(), view=self)
+
+    @discord.ui.button(label="Próximo", style=discord.ButtonStyle.primary, emoji="▶️", custom_id="btn_next")
+    async def btn_next(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.ctx.author.id: return
+        self.page += 1
+        self.update_buttons()
+        await interaction.response.edit_message(embed=self.generate_embed(), view=self)
+
+
 class Guilds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -283,9 +381,10 @@ class Guilds(commands.Cog):
     def _get_user_guild(self, cursor, user_id):
         cursor.execute("""
             SELECT g.id, g.name, g.owner_id, g.level, g.xp, g.gold_bank, g.raid_score,
-                   m.role, m.contribution, g.description, g.icon_url, g.join_mode
+                   m.role, m.contribution, g.description, g.icon_url, g.join_mode, p.guild_coins
             FROM player_guild_members m
             JOIN player_guilds g ON g.id = m.guild_id
+            JOIN players p ON p.user_id = m.user_id
             WHERE m.user_id = ?
         """, (str(user_id),))
         return cursor.fetchone()
@@ -334,7 +433,7 @@ class Guilds(commands.Cog):
         return level
 
     def _guild_embed(self, guild):
-        gid, name, owner_id, level, xp, bank, score, role, contribution, desc, icon, join_mode = guild
+        gid, name, owner_id, level, xp, bank, score, role, contribution, desc, icon, join_mode, guild_coins = guild
         embed = discord.Embed(
             title=f"Guilda {name}",
             description=desc or "Sem descrição. Líder, capricha. O vazio não recruta ninguém.",
@@ -345,12 +444,16 @@ class Guilds(commands.Cog):
         embed.add_field(name="ID", value=str(gid), inline=True)
         embed.add_field(name="Líder", value=f"<@{owner_id}>", inline=True)
         embed.add_field(name="Entrada", value="Aberta" if join_mode == "aberto" else "Por convite/aprovação", inline=True)
+        
         embed.add_field(name="Nível", value=f"{level} ({xp}/{level * 150} XP)", inline=True)
         embed.add_field(name="Banco", value=f"{bank:,} Gold", inline=True)
-        embed.add_field(name="Score", value=f"{score:,}", inline=True)
-        embed.add_field(name="Sua função", value=role, inline=True)
+        embed.add_field(name="Score Global", value=f"{score:,}", inline=True)
+        
+        embed.add_field(name="Sua função", value=role.title(), inline=True)
+        embed.add_field(name="Moedas de Guilda", value=f"🪙 **{guild_coins or 0:,}**", inline=True)
         embed.add_field(name="Sua contribuição", value=f"{contribution or 0:,} Gold", inline=True)
-        embed.set_footer(text="TutoriUAU • guild membros, doar, missao, raid, caca, ranking, foto, descricao, modo")
+        
+        embed.set_footer(text="TutoriUAU • guild membros, doar, missao, raid, caca, loja, lista, sair")
         return embed
 
     @commands.group(name="guild", aliases=["g"], invoke_without_command=True)
@@ -362,10 +465,109 @@ class Guilds(commands.Cog):
         conn.close()
         if not guild:
             return await ctx.send(
-                "Você ainda não está em guilda. Use `echo guild criar <nome>` por **5000 Gold** "
-                "ou `echo guild entrar <id|nome>`. Sim, socializar agora tem taxa."
+                "Você ainda não está em guilda. Use `echo guild criar <nome>` por **5000 Gold**, "
+                "ou `echo guild lista` para ver quem está aceitando recrutas. Socializar compensa."
             )
         await ctx.send(embed=self._guild_embed(guild))
+
+    @guild_cmd.command(name="lista", aliases=["procurar", "search"])
+    async def lista_guildas(self, ctx):
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        init_guild_db(cursor)
+        
+        cursor.execute("""
+            SELECT g.id, g.name, g.level, g.join_mode, COUNT(m.user_id) 
+            FROM player_guilds g
+            LEFT JOIN player_guild_members m ON g.id = m.guild_id
+            GROUP BY g.id
+            ORDER BY g.level DESC, g.raid_score DESC
+        """)
+        guilds = cursor.fetchall()
+        conn.close()
+        
+        if not guilds:
+            return await ctx.send("Nenhuma guilda foi fundada em Lugnica ainda. Seja o primeiro a dominar esse mercado!")
+            
+        view = GuildListPaginator(ctx, guilds)
+        await ctx.send(embed=view.generate_embed(), view=view)
+
+    @guild_cmd.command(name="loja", aliases=["shop"])
+    async def loja_guilda(self, ctx):
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        init_guild_db(cursor)
+        
+        guild = self._get_user_guild(cursor, ctx.author.id)
+        if not guild:
+            conn.close()
+            return await ctx.send("❌ Você precisa fazer parte de uma guilda para acessar a Loja de Contrabando da Guilda.")
+            
+        cursor.execute("SELECT guild_coins FROM players WHERE user_id = ?", (str(ctx.author.id),))
+        moedas = (cursor.fetchone() or [0])[0] or 0
+        conn.close()
+        
+        embed = discord.Embed(
+            title="🏪 Loja Exclusiva da Guilda",
+            description=(
+                f"Sua Carteira: 🪙 **{moedas:,} Moedas de Guilda**\n\n"
+                "*Para conseguir mais moedas, doe ouro para o banco (`echo guild doar`) ou participe de missões, raides e caçadas!*\n\n"
+                "Use: `echo guild comprar <ID>`"
+            ),
+            color=discord.Color.purple()
+        )
+        
+        lines = []
+        for item_id, data in GUILD_SHOP_ITEMS.items():
+            lines.append(f"`{item_id}` {data['emoji']} **{data['nome']}** — 🪙 {data['custo']:,}")
+            
+        embed.add_field(name="Itens Disponíveis", value="\n".join(lines), inline=False)
+        await ctx.send(embed=embed)
+
+    @guild_cmd.command(name="comprar")
+    async def comprar_guilda(self, ctx, item_id: int = None, quantidade: int = 1):
+        if not item_id or item_id not in GUILD_SHOP_ITEMS:
+            return await ctx.send("❌ Informe um ID válido da `echo guild loja`.")
+            
+        if quantidade < 1:
+            return await ctx.send("❌ E eu com isso?")
+            
+        user_id = str(ctx.author.id)
+        item = GUILD_SHOP_ITEMS[item_id]
+        custo_total = item["custo"] * quantidade
+        
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        init_guild_db(cursor)
+        
+        guild = self._get_user_guild(cursor, user_id)
+        if not guild:
+            conn.close()
+            return await ctx.send("❌ Mercado bloqueado para lobos solitários. Junte-se a uma guilda.")
+            
+        cursor.execute("SELECT guild_coins FROM players WHERE user_id = ?", (user_id,))
+        moedas = (cursor.fetchone() or [0])[0] or 0
+        
+        if moedas < custo_total:
+            conn.close()
+            return await ctx.send(f"❌ Você precisa de 🪙 **{custo_total:,} Moedas de Guilda**, mas só tem {moedas:,}.")
+            
+        cursor.execute("UPDATE players SET guild_coins = guild_coins - ? WHERE user_id = ?", (custo_total, user_id))
+        
+        if item["tipo"] == "item":
+            add_item(cursor, user_id, item["db_name"], quantidade)
+            msg = f"🛍️ Compra de **{quantidade}x {item['emoji']} {item['nome']}** concluída!\n*Use `echo consumir {item['db_name'].replace('_', ' ')}` para usar.*"
+        else:
+            # Cosmético
+            cursor.execute(
+                "INSERT OR IGNORE INTO player_cosmetics (user_id, cosmetic_id, type, active, purchased_at) VALUES (?, ?, 'title', 0, ?)",
+                (user_id, item["db_name"], int(time.time())),
+            )
+            msg = f"🎖️ Compra de Título concluída! Use `echo titulo {item['db_name'].replace('token_titulo_', '').replace('_', ' ')}` para exibir seu novo ego."
+
+        conn.commit()
+        conn.close()
+        await ctx.send(msg)
 
     @guild_cmd.command(name="criar")
     async def criar(self, ctx, *, nome: str = None):
@@ -434,7 +636,8 @@ class Guilds(commands.Cog):
                 "INSERT INTO player_guild_members (guild_id, user_id, role, joined_at) VALUES (?, ?, 'member', ?)",
                 (gid, user_id, int(time.time())),
             )
-            cursor.execute("UPDATE player_guild_invites SET status = 'accepted' WHERE guild_id = ? AND user_id = ?", (gid, user_id))
+            if invite:
+                cursor.execute("UPDATE player_guild_invites SET status = 'accepted' WHERE guild_id = ? AND user_id = ?", (gid, user_id))
             conn.commit()
             conn.close()
             return await ctx.send(f"Você entrou na guilda **{name}**. Bem-vindo ao contrato social com buffs.")
@@ -711,19 +914,24 @@ class Guilds(commands.Cog):
         if not guild:
             conn.close()
             return await ctx.send("Você não está em guilda.")
+            
         cursor.execute("SELECT gold FROM players WHERE user_id = ?", (str(ctx.author.id),))
         player = cursor.fetchone()
         if not player or (player[0] or 0) < quantidade:
             conn.close()
             return await ctx.send("Ouro insuficiente.")
+            
         guild_xp = quantidade // 100
-        cursor.execute("UPDATE players SET gold = gold - ? WHERE user_id = ?", (quantidade, str(ctx.author.id)))
+        guild_coins_ganhas = max(1, quantidade // 50) # 1 Moeda de Guilda a cada 50 Gold doado
+        
+        cursor.execute("UPDATE players SET gold = gold - ?, guild_coins = guild_coins + ? WHERE user_id = ?", (quantidade, guild_coins_ganhas, str(ctx.author.id)))
         cursor.execute("UPDATE player_guilds SET gold_bank = gold_bank + ?, xp = xp + ? WHERE id = ?", (quantidade, guild_xp, guild[0]))
         cursor.execute("UPDATE player_guild_members SET contribution = COALESCE(contribution, 0) + ? WHERE user_id = ?", (quantidade, str(ctx.author.id)))
         level = self._level_up_guild(cursor, guild[0])
         conn.commit()
         conn.close()
-        await ctx.send(f"Doação registrada: **{quantidade:,} Gold**. Guilda no nível **{level}**. O banco agradece. Eu também, mas só por educação.")
+        
+        await ctx.send(f"Doação registrada: **{quantidade:,} Gold**. A guilda agradece e você ganhou 🪙 **{guild_coins_ganhas} Moedas de Guilda** de reembolso moral.")
 
     @guild_cmd.group(name="missao", aliases=["missão", "missoes", "missões", "missions"], invoke_without_command=True)
     async def missao(self, ctx, *args):
@@ -815,8 +1023,9 @@ class Guilds(commands.Cog):
         cursor.execute("SELECT last_action FROM player_guild_mission_actions WHERE guild_id = ? AND user_id = ?", (guild[0], user_id))
         last = cursor.fetchone()
         if last and now - (last[0] or 0) < 900:
+            tempo_pronto = (last[0] or 0) + 900
             conn.close()
-            return await ctx.send("Aguarde um pouco antes de contribuir de novo. Até herói precisa beber água.")
+            return await ctx.send(f"⏳ Aguarde um pouco! Sua próxima contribuição estará disponível <t:{tempo_pronto}:R>.")
             
         power, avg_level = party_power_and_level(cursor, user_id)
         gain = max(150, int(power * (1 + guild[3] * 0.04)))
@@ -827,8 +1036,9 @@ class Guilds(commands.Cog):
             "INSERT OR REPLACE INTO player_guild_mission_actions (guild_id, user_id, last_action) VALUES (?, ?, ?)",
             (guild[0], user_id, now),
         )
+        cursor.execute("UPDATE players SET guild_coins = guild_coins + 50 WHERE user_id = ?", (user_id,))
         
-        msg = f"{ctx.author.mention} contribuiu com **{gain:,}** de progresso.\nMissão: **{progress:,}/{active[3]:,}**"
+        msg = f"{ctx.author.mention} contribuiu com **{gain:,}** de progresso e recebeu 🪙 **50 Moedas de Guilda**.\nMissão: **{progress:,}/{active[3]:,}**"
         
         if progress >= active[3]:
             mission = GUILD_MISSIONS[active[1]]
@@ -872,7 +1082,7 @@ class Guilds(commands.Cog):
             conn.close()
             return await ctx.send("Você não está em guilda.")
             
-        guild_id, name, _, level, _, bank, _, _, _, _, _, _ = guild
+        guild_id, name, _, level, _, bank, _, _, _, _, _, _, _ = guild
         now = int(time.time())
         cursor.execute("SELECT boss_name, hp, max_hp, ends_at FROM player_guild_raids WHERE guild_id = ?", (guild_id,))
         raid = cursor.fetchone()
@@ -906,8 +1116,9 @@ class Guilds(commands.Cog):
         cursor.execute("SELECT last_action FROM player_guild_raid_actions WHERE guild_id = ? AND user_id = ?", (guild_id, user_id))
         last = cursor.fetchone()
         if last and now - (last[0] or 0) < 1800:
+            tempo_pronto = (last[0] or 0) + 1800
             conn.close()
-            return await ctx.send("Você já atacou essa raid recentemente. O chefe pediu intervalo sindical.")
+            return await ctx.send(f"⏳ O chefe está a recuperar o fôlego. Próximo ataque liberado <t:{tempo_pronto}:R>.")
             
         boss_name, hp, max_hp, _ = raid
         power, avg_level = party_power_and_level(cursor, user_id)
@@ -923,9 +1134,11 @@ class Guilds(commands.Cog):
             "INSERT OR REPLACE INTO player_guild_raid_actions (guild_id, user_id, last_action) VALUES (?, ?, ?)",
             (guild_id, user_id, now),
         )
+        cursor.execute("UPDATE players SET guild_coins = guild_coins + 150 WHERE user_id = ?", (user_id,))
         
         result_lines = [
             f"{ctx.author.mention} causou **{damage:,}** em **{boss_name}**{' com crítico' if crit else ''}.",
+            f"Bônus: Você recebeu 🪙 **150 Moedas de Guilda**.",
             f"Fase: **{phase}**",
         ]
         color = discord.Color.orange()
@@ -969,7 +1182,7 @@ class Guilds(commands.Cog):
             conn.close()
             return await ctx.send("Você não está em guilda. Caçada coletiva sem coletivo vira passeio perigoso.")
 
-        guild_id, name, _, level, _, bank, _, _, _, _, _, _ = guild
+        guild_id, name, _, level, _, bank, _, _, _, _, _, _, _ = guild
         now = int(time.time())
         cursor.execute("SELECT boss_name, hp, max_hp, reward_gold, ends_at FROM player_guild_hunts WHERE guild_id = ?", (guild_id,))
         hunt = cursor.fetchone()
@@ -1011,8 +1224,9 @@ class Guilds(commands.Cog):
         cursor.execute("SELECT last_action FROM player_guild_hunt_actions WHERE guild_id = ? AND user_id = ?", (guild_id, user_id))
         last = cursor.fetchone()
         if last and now - (last[0] or 0) < 1200:
+            tempo_pronto = (last[0] or 0) + 1200
             conn.close()
-            return await ctx.send("Você já atacou essa caçada recentemente. O boss pediu 20 minutos de paz, abusado.")
+            return await ctx.send(f"⏳ Cansaço! A próxima investida será liberada <t:{tempo_pronto}:R>.")
 
         boss_name, hp, max_hp, reward_member, _ = hunt
         power, avg_level = party_power_and_level(cursor, user_id)
@@ -1032,10 +1246,12 @@ class Guilds(commands.Cog):
             (guild_id, user_id, now, old_damage + damage),
         )
         cursor.execute("UPDATE player_guilds SET raid_score = raid_score + ? WHERE id = ?", (damage, guild_id))
+        cursor.execute("UPDATE players SET guild_coins = guild_coins + 100 WHERE user_id = ?", (user_id,))
         add_stat(cursor, user_id, "guild_hunts", 1)
 
         result_lines = [
             f"{ctx.author.mention} atacou **{boss_name}** e causou **{damage:,}**{' CRÍTICO' if crit else ''}.",
+            f"Bônus: Você recebeu 🪙 **100 Moedas de Guilda**.",
             f"Fase atual: **{phase}**",
         ]
         color = discord.Color.dark_gold()
