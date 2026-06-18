@@ -4,6 +4,31 @@ UPDATE_THUMB_URL = ""
 
 PATCH_NOTES = [
     {
+        "id": "patch_19",
+        "title": "Patch 19: Muita coisa, baby!",
+        "subtitle": "Simplesmente muita coisa mesmooooo",
+        "rows": [
+            ("echo evoluir all", 
+             "Agora podem evoluir todos os seus personagens de uma unica vez, sacrificando todas as cópias, para que não precise fazer um por um"),
+            
+            ("Prestígio dos Campeões", 
+             "Estão aparecendo oficialmente no ranking."),
+            
+            ("echo cd)", 
+             "Passaram a mostrar o CD da expedição e o CD da dungeon que antes não apareciam."),
+            
+            ("Nível", 
+             "Nível da conta agora dá bônus passivo de Gold/XP a cada 10 níveis."),
+            
+            ("O Grande Rebalanceamento 2", 
+             "Revisei NOVAMENTE todos os herois e monstros para se certificar de que suas habilidades e dano sejam justas e não torne tudo dificil ou facil demais."),
+
+            ("Codes", 
+             "Agora FINALMENTE os codes vão parar de sumir. Eu espero. Tomem code novo como desculpas")
+        ],
+        "footer": "TutoriUAU: 'Resumindo, ele está subornando voces para continuarem jogando. Continuem jogando, meu salário ficcticio depende disso!s'"
+    },
+    {
         "id": "patch_18",
         "title": "Patch 18: A Era de Ouro, Forja & Aventuras Imersivas",
         "subtitle": "A maior expansão do Echo Siege! O bot deixou de ser um simples 'apertador de botão' para se tornar um RPG de peso.",

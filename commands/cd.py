@@ -25,14 +25,17 @@ class Cooldowns(commands.Cog):
         cursor = conn.cursor()
 
         # 1. Puxa os CDs normais
-        cursor.execute("SELECT last_hunt, last_adventure, last_arena, last_daily FROM players WHERE user_id = ?", (str(user.id),))
+        try:
+            cursor.execute("SELECT last_hunt, last_adventure, last_arena, last_daily, last_dungeon FROM players WHERE user_id = ?", (str(user.id),))
+        except sqlite3.OperationalError:
+            cursor.execute("SELECT last_hunt, last_adventure, last_arena, last_daily, 0 FROM players WHERE user_id = ?", (str(user.id),))
         p_data = cursor.fetchone()
 
         if not p_data:
             conn.close()
             return f"❌ {user.mention}, não encontrei seus registros. Use `echo iniciar` primeiro antes de me fazer procurar fantasmas."
 
-        last_hunt, last_adv, last_arena, last_daily = p_data
+        last_hunt, last_adv, last_arena, last_daily, last_dungeon = p_data
         
         # 2. Puxa status do Work (As 3 missões diárias)
         try:
@@ -55,6 +58,12 @@ class Cooldowns(commands.Cog):
         except sqlite3.OperationalError:
             camp_data = None
 
+        try:
+            cursor.execute("SELECT hours, ends_at FROM player_expeditions WHERE user_id = ?", (str(user.id),))
+            expedition_data = cursor.fetchone()
+        except sqlite3.OperationalError:
+            expedition_data = None
+
         conn.close()
 
         tempo_agora = time.time()
@@ -66,8 +75,10 @@ class Cooldowns(commands.Cog):
         cd_hunt = (last_hunt or 0) + (30 * 60) - tempo_agora
         cd_adv = (last_adv or 0) + (120 * 60) - tempo_agora
         cd_arena = (last_arena or 0) + (60 * 60) - tempo_agora
+        cd_dungeon = (last_dungeon or 0) + (30 * 60) - tempo_agora
         cd_lab = ((lab_data[0] if lab_data else 0) or 0) + (5 * 60) - tempo_agora
         cd_campeoes = ((camp_data[0] if camp_data else 0) or 0) + (10 * 60) - tempo_agora
+        cd_expedicao = ((expedition_data[1] if expedition_data else 0) or 0) - tempo_agora
 
         # Status do Daily
         if str(last_daily) == hoje_str:
@@ -94,9 +105,13 @@ class Cooldowns(commands.Cog):
         embed.add_field(name="🏕️ Aventura (Adv)", value=self.formatar_tempo(cd_adv), inline=True)
         embed.add_field(name="🏰 Torre (Arena)", value=self.formatar_tempo(cd_arena), inline=True)
         
+        embed.add_field(name="⚔️ Dungeon", value=self.formatar_tempo(cd_dungeon), inline=True)
+        expedition_label = self.formatar_tempo(cd_expedicao)
+        if expedition_data and cd_expedicao > 0:
+            expedition_label += f"\nPatrulha de **{expedition_data[0]}h** em andamento."
+        embed.add_field(name="🧭 Expedição", value=expedition_label, inline=True)
         embed.add_field(name="🌀 Labirinto", value=self.formatar_tempo(cd_lab), inline=True)
         embed.add_field(name="🏆 Campeões", value=self.formatar_tempo(cd_campeoes), inline=True)
-        embed.add_field(name="\u200b", value="\u200b", inline=True) # Espaço vazio para alinhar a UI perfeitamente
         
         embed.add_field(name="📜 Missões da Guilda (Work)", value=status_work, inline=False)
         embed.add_field(name="🎁 Recompensa Diária (Daily)", value=status_daily, inline=False)

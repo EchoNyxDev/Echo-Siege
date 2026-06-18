@@ -87,11 +87,11 @@ class Iniciar(commands.Cog):
                 0,   # pity_4
                 0,   # pity_5
                 0,   # total_summons
-                0,   # 1*
-                0,   # 2*
-                0,   # 3*
-                0,   # 4*
-                0    # 5*
+                0,   # 1⭐
+                0,   # 2⭐
+                0,   # 3⭐
+                0,   # 4⭐
+                0    # 5⭐
             ))
 
             conn.commit()

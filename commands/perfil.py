@@ -282,6 +282,28 @@ class HeroisPaginator(discord.ui.View):
         await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
 
 
+class EvoluirAllConfirmView(discord.ui.View):
+    def __init__(self, cog, ctx):
+        super().__init__(timeout=90)
+        self.cog = cog
+        self.ctx = ctx
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.ctx.author.id:
+            await interaction.response.send_message("Essa pilha de sacrifícios não é sua. Abra a própria fila de clonagem.", ephemeral=True)
+            return False
+        return True
+
+    @discord.ui.button(label="Confirmar Evolução All", style=discord.ButtonStyle.danger)
+    async def confirmar(self, interaction: discord.Interaction, button: discord.ui.Button):
+        embed = self.cog._executar_evoluir_all(self.ctx.author)
+        await interaction.response.edit_message(embed=embed, view=None)
+
+    @discord.ui.button(label="Cancelar", style=discord.ButtonStyle.secondary)
+    async def cancelar(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.edit_message(content="Evolução em massa cancelada. As cópias respiram aliviadas.", embed=None, view=None)
+
+
 class Perfil(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -566,7 +588,7 @@ class Perfil(commands.Cog):
                     pet_base = PETS.get(p_id or "", {})
                     n_form = clean_text(p_name or pet_base.get('nome', p_id))
                     r_form = rarity or pet_base.get('raridade', 1)
-                    pet_text_clean = f"{n_form} - {r_form}★ | Lv {p_lvl or 1}"
+                    pet_text_clean = f"{n_form} - {r_form}⭐ | Lv {p_lvl or 1}"
             except: pass
 
         guild_text_clean = "Sem guilda. Lobo solitario."
@@ -682,10 +704,208 @@ class Perfil(commands.Cog):
         data = HEROES.get(hero[0], {})
         await ctx.send(f"👑 **{data.get('nome', 'Herói')}** agora é seu herói principal.")
 
+    def _busy_hero_ids(self, cursor, user_id):
+        busy = set()
+
+        def add(raw_id):
+            if raw_id is not None:
+                busy.add(str(raw_id))
+
+        cursor.execute("SELECT main_hero FROM players WHERE user_id = ?", (user_id,))
+        row = cursor.fetchone()
+        if row:
+            add(row[0])
+
+        cursor.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'teams'")
+        if cursor.fetchone():
+            cursor.execute("SELECT slot_2, slot_3, slot_4, slot_5 FROM teams WHERE user_id = ?", (user_id,))
+            for slot_id in cursor.fetchone() or []:
+                add(slot_id)
+
+        for table_name, id_column in (
+            ("champion_defense_teams", "hero_ids"),
+            ("player_expeditions", "party_ids"),
+        ):
+            cursor.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?", (table_name,))
+            if not cursor.fetchone():
+                continue
+            cursor.execute(f"SELECT {id_column} FROM {table_name} WHERE user_id = ?", (user_id,))
+            row = cursor.fetchone()
+            try:
+                stored_ids = json.loads(row[0] or "[]") if row else []
+            except (TypeError, ValueError, json.JSONDecodeError):
+                stored_ids = []
+            for stored_id in stored_ids:
+                add(stored_id)
+
+        return busy
+
+    def _planejar_evoluir_all(self, cursor, user_id):
+        cursor.execute("PRAGMA table_info(heroes)")
+        hero_columns = {row[1] for row in cursor.fetchall()}
+        equipment_columns = [
+            column
+            for column in ("equip_atk", "equip_def", "equip_livre")
+            if column in hero_columns
+        ]
+        selected_columns = ["id", "hero_id", "rarity", "stars", "level"] + equipment_columns
+        cursor.execute(
+            f"SELECT {', '.join(selected_columns)} FROM heroes WHERE user_id = ?",
+            (user_id,),
+        )
+        rows = cursor.fetchall()
+        busy_ids = self._busy_hero_ids(cursor, user_id)
+
+        grouped = {}
+        for row in rows:
+            grouped.setdefault(row[1], []).append(row)
+
+        plan = []
+        for hero_id, copies in grouped.items():
+            if len(copies) < 2:
+                continue
+            hero_data = HEROES.get(hero_id, {})
+            max_stage = max(1, int(hero_data.get("max_star", 7) or 7))
+            target = max(copies, key=lambda row: (int(row[3] or 1), int(row[4] or 1), int(row[2] or 1), -int(row[0])))
+            target_id = int(target[0])
+            current_stage = max(1, int(target[3] or 1))
+            if current_stage >= max_stage:
+                continue
+
+            donors = []
+            for row in copies:
+                donor_id = int(row[0])
+                if donor_id == target_id or str(donor_id) in busy_ids:
+                    continue
+                if any(item for item in row[5:] if item):
+                    continue
+                donors.append(row)
+            donors.sort(key=lambda row: (int(row[3] or 1), int(row[4] or 1), -int(row[0])))
+            consume = donors[: max(0, max_stage - current_stage)]
+            if not consume:
+                continue
+
+            new_stage = min(max_stage, current_stage + len(consume))
+            plan.append({
+                "target_id": target_id,
+                "hero_id": hero_id,
+                "name": hero_data.get("nome", hero_id),
+                "rarity": max(1, int(hero_data.get("raridade", target[2] or 1) or 1)),
+                "old_stage": current_stage,
+                "new_stage": new_stage,
+                "max_stage": max_stage,
+                "donor_ids": [int(row[0]) for row in consume],
+            })
+        return plan
+
+    async def _prompt_evoluir_all(self, ctx):
+        user_id = str(ctx.author.id)
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        plan = self._planejar_evoluir_all(cursor, user_id)
+        conn.close()
+        if not plan:
+            return await ctx.send("Nenhuma evolução automática disponível. TutoriUAU conferiu as cópias e só achou apego emocional ou burocracia.")
+
+        total_donors = sum(len(item["donor_ids"]) for item in plan)
+        lines = [
+            f"`ID {item['target_id']}` **{item['name']}**: {item['old_stage']}⭐ -> {item['new_stage']}⭐ ({len(item['donor_ids'])} cópia(s))"
+            for item in plan[:12]
+        ]
+        if len(plan) > 12:
+            lines.append(f"...e mais **{len(plan) - 12}** evolução(ões).")
+
+        embed = discord.Embed(
+            title="Evoluir All - Confirmação",
+            description=(
+                f"Vou evoluir **{len(plan)}** herói(s) e sacrificar **{total_donors}** cópia(s) livres.\n"
+                "Não uso herói na party, defesa dos Campeões, expedição ou com equipamento."
+            ),
+            color=discord.Color.orange(),
+        )
+        embed.add_field(name="Prévia", value="\n".join(lines)[:1024], inline=False)
+        embed.set_footer(text="TutoriUAU: botão vermelho. Sempre leia antes de apertar o botão vermelho.")
+        await ctx.send(embed=embed, view=EvoluirAllConfirmView(self, ctx))
+
+    def _executar_evoluir_all(self, user):
+        user_id = str(user.id)
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("BEGIN IMMEDIATE")
+            plan = self._planejar_evoluir_all(cursor, user_id)
+            if not plan:
+                conn.rollback()
+                return discord.Embed(
+                    title="Evoluir All",
+                    description="Nada para evoluir agora. As cópias sumiram, ficaram ocupadas ou o destino mudou.",
+                    color=discord.Color.red(),
+                )
+
+            evolved = 0
+            consumed = 0
+            for item in plan:
+                cursor.execute(
+                    "UPDATE heroes SET rarity = ?, stars = ? WHERE id = ? AND user_id = ?",
+                    (item["rarity"], item["new_stage"], item["target_id"], user_id),
+                )
+                if cursor.rowcount != 1:
+                    continue
+                for donor_id in item["donor_ids"]:
+                    cursor.execute("DELETE FROM heroes WHERE id = ? AND user_id = ?", (donor_id, user_id))
+                    consumed += cursor.rowcount
+                evolved += 1
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS player_stats(
+                    user_id TEXT NOT NULL,
+                    stat TEXT NOT NULL,
+                    value INTEGER DEFAULT 0,
+                    PRIMARY KEY (user_id, stat)
+                )
+            """)
+            cursor.execute(
+                "INSERT OR IGNORE INTO player_stats (user_id, stat, value) VALUES (?, 'hero_evolutions', 0)",
+                (user_id,),
+            )
+            cursor.execute(
+                "UPDATE player_stats SET value = value + ? WHERE user_id = ? AND stat = 'hero_evolutions'",
+                (consumed, user_id),
+            )
+            conn.commit()
+        except sqlite3.Error as exc:
+            conn.rollback()
+            return discord.Embed(title="Evoluir All falhou", description=f"Não consegui concluir: `{exc}`", color=discord.Color.red())
+        finally:
+            conn.close()
+
+        lines = [
+            f"`ID {item['target_id']}` **{item['name']}**: {item['old_stage']}⭐ -> {item['new_stage']}⭐"
+            for item in plan[:12]
+        ]
+        if len(plan) > 12:
+            lines.append(f"...e mais **{len(plan) - 12}**.")
+        embed = discord.Embed(
+            title="Evoluir All concluído",
+            description=f"**{evolved}** herói(s) evoluídos. **{consumed}** cópia(s) sacrificadas.",
+            color=discord.Color.gold(),
+        )
+        embed.add_field(name="Resultado", value="\n".join(lines)[:1024], inline=False)
+        embed.set_footer(text="TutoriUAU: produção em massa de estrelas. Sindicatos mágicos foram consultados superficialmente.")
+        return embed
+
     @commands.command(name="evoluir", aliases=["evolucao", "evolução"])
-    async def evoluir_prefix(self, ctx, hero_db_id: int = None):
+    async def evoluir_prefix(self, ctx, hero_db_id: str = None):
         if not hero_db_id:
             return await ctx.send("Informe o ID do herói principal da evolução. Exemplo: `echo evoluir 15`.")
+
+        if str(hero_db_id).lower() in {"all", "todos", "tudo"}:
+            return await self._prompt_evoluir_all(ctx)
+
+        try:
+            hero_db_id = int(hero_db_id)
+        except (TypeError, ValueError):
+            return await ctx.send("Use um ID numérico ou `echo evoluir all` para evoluir em massa.")
 
         user_id = str(ctx.author.id)
         conn = sqlite3.connect("players.db")

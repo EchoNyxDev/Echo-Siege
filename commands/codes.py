@@ -14,9 +14,14 @@ if root_dir not in sys.path:
 try:
     from data.heroes import HEROES
     from data.equipamentos import EQUIPAMENTOS
+    from utils.codes_storage import connect_codes_db, init_codes_db
 except ModuleNotFoundError:
     HEROES = {}
     EQUIPAMENTOS = {}
+    def connect_codes_db():
+        return sqlite3.connect("players.db")
+    def init_codes_db():
+        pass
 
 TUTOR_THUMB = "https://cdn.discordapp.com/attachments/1493317042760056987/1511161459168514058/TutoriUAU.png"
 CODES_PER_PAGE = 5
@@ -68,7 +73,7 @@ class Codes(commands.Cog):
 
     def _inicializar_banco(self):
         """Inicializa o banco de dados se ele ainda nao existir."""
-        conn = sqlite3.connect("codes.db")
+        conn = connect_codes_db()
         cursor = conn.cursor()
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS codes (
@@ -119,7 +124,7 @@ class Codes(commands.Cog):
         return " + ".join(self._descricao_token(token) for token in str(recompensa or "").split())
 
     def _listar_codes(self, user_id):
-        conn = sqlite3.connect("codes.db")
+        conn = connect_codes_db()
         cursor = conn.cursor()
         try:
             # Bug de Desaparecimento corrigido no COALESCE
@@ -259,7 +264,7 @@ class Codes(commands.Cog):
             )
 
         codigo = nome_do_code.upper()
-        conn = sqlite3.connect("codes.db")
+        conn = connect_codes_db()
         cursor = conn.cursor()
 
         cursor.execute("SELECT recompensa, expires_at FROM codes WHERE code = ?", (codigo,))

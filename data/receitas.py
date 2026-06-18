@@ -54,7 +54,7 @@ RECEITAS = {
     "bilhete_dourado": {
         "nome": "Bilhete Dourado",
         "emoji": "🎟️",
-        "desc": "Invocação 100% garantida de um herói Raro (3★ ou superior).",
+        "desc": "Invocação 100% garantida de um herói Raro (3⭐ ou superior).",
         "ingredientes": {
             "coracao_de_dragao": 1,
             "fragmento_dimensional": 10,

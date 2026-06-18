@@ -135,6 +135,30 @@ def parse_json_list(raw):
         return []
 
 
+def pick_balanced_bot_heroes(rng, count=5):
+    by_rarity = {1: [], 2: [], 3: [], 4: []}
+    fallback_pool = []
+    for hero_id, hero in HEROES.items():
+        rarity = int(hero.get("raridade", 1) or 1)
+        if hero_id == "id-nome" or hero.get("divino") or rarity >= 7:
+            continue
+        if rarity in by_rarity:
+            by_rarity[rarity].append(hero_id)
+        if rarity <= 5:
+            fallback_pool.append(hero_id)
+
+    selected = []
+    rarity_pattern = [3, 2, 3, 4, 2]
+    for index in range(count):
+        desired = rarity_pattern[index % len(rarity_pattern)]
+        choices = [hero_id for hero_id in by_rarity.get(desired, []) if hero_id not in selected]
+        if not choices:
+            choices = [hero_id for hero_id in fallback_pool if hero_id not in selected]
+        if choices:
+            selected.append(rng.choice(choices))
+    return selected
+
+
 def build_tactical_entity(hid, h_id, stars, level, e_atk, e_def, e_livre, user_name):
     """Constrói uma entidade de combate tático utilizando os atributos reais escalonados."""
     h_data = HEROES.get(h_id, {})
@@ -239,11 +263,10 @@ class Campeoes(commands.Cog):
             cursor.execute("UPDATE champion_tower SET weekly_score = 0, current_streak = 0, week_id = ? WHERE user_id = ?", (wid, str(user_id)))
 
     def _seed_bots(self, cursor):
-        hero_pool = [hid for hid in HEROES.keys() if hid != "id-nome"] or ["heroi_treino"]
         for idx, name in enumerate(BOT_NAMES, start=1):
             bot_id = f"champion_bot_{idx:02d}"
             rng = random.Random(idx * 777)
-            ids = rng.sample(hero_pool, min(5, len(hero_pool))) if len(hero_pool) >= 5 else hero_pool[:]
+            ids = pick_balanced_bot_heroes(rng, 5) or ["heroi_treino"]
             names = [hero_name(hid) for hid in ids]
             power = int(260 + (idx ** 1.35) * 95)
             cursor.execute(

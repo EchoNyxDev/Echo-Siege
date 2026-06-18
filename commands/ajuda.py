@@ -131,6 +131,7 @@ class Ajuda(commands.Cog):
             value=(
                 "`iniciar` - Cria sua conta e pega os presentes.\n"
                 "`perfil` - Mostra sua ficha de jogador e progresso.\n"
+                "Nível da conta dá bônus passivo de Gold/XP a cada 10 níveis, com teto saudável. Sim, agora serve para algo.\n"
                 "`herói <ID>` - Mostra os detalhes de um personagem.\n"
                 "`heróis` - Lista toda a sua coleção.\n"
                 "`main <ID>` - Define o líder da Party.\n"

@@ -37,6 +37,7 @@ class RankPaginator(discord.ui.View):
         "summon": "Summons",
         "colecao": "Coleção",
         "guildas": "Guildas",
+        "campeoes": "Campeões",
     }
 
     def __init__(self, ctx, is_global=False):
@@ -85,6 +86,15 @@ class RankPaginator(discord.ui.View):
                 SELECT id, name, level, raid_score, gold_bank
                 FROM player_guilds
                 ORDER BY raid_score DESC, level DESC, gold_bank DESC
+                LIMIT 200
+                """
+            )
+        elif self.category == "campeoes":
+            cursor.execute(
+                """
+                SELECT user_id, rating, wins, weekly_score
+                FROM champion_tower
+                ORDER BY rating DESC, wins DESC, weekly_score DESC
                 LIMIT 200
                 """
             )
@@ -140,11 +150,13 @@ class RankPaginator(discord.ui.View):
             elif self.category == "nivel":
                 lines.append(f"**{pos}** <@{row[0]}> - **Nível {row[1]}** ({row[2]} XP)")
             elif self.category == "summon":
-                lines.append(f"**{pos}** <@{row[0]}> - **{row[1]} summons** ({row[2]} 5*)")
+                lines.append(f"**{pos}** <@{row[0]}> - **{row[1]} summons** ({row[2]} 5⭐)")
             elif self.category == "colecao":
                 lines.append(f"**{pos}** <@{row[0]}> - **{row[1]} heróis** (maior nível {row[2] or 1})")
             elif self.category == "guildas":
                 lines.append(f"**{pos}** `{row[0]}` **{row[1]}** - Lv {row[2]} | Score {row[3]:,} | Banco {row[4]:,}")
+            elif self.category == "campeoes":
+                lines.append(f"**{pos}** <@{row[0]}> - **{row[1]} Prestígio** ({row[2]} vitórias | {row[3]:,} pts semanais)")
 
         embed.add_field(
             name=categoria,
@@ -165,6 +177,7 @@ class RankPaginator(discord.ui.View):
             discord.SelectOption(label="Summons", value="summon", description="Mais invocações e 5 estrelas."),
             discord.SelectOption(label="Coleção", value="colecao", description="Mais heróis na conta."),
             discord.SelectOption(label="Guildas", value="guildas", description="Guildas mais competitivas."),
+            discord.SelectOption(label="Campeões", value="campeoes", description="Maior prestígio na Torre dos Campeões."),
         ],
         custom_id="select_category",
     )

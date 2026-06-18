@@ -92,6 +92,38 @@ def choose_combat_skill(actor, skills=None, allies=None, enemies=None):
     return random.choice(useful or candidates)
 
 
+def choose_ai_combat_skill(actor, skills=None, allies=None, enemies=None, skill_chance=0.62):
+    """Escolhe habilidade para IA sem transformar todo turno em spam de skill."""
+    skills = skills or SKILLS
+    skill_id = choose_combat_skill(actor, skills, allies, enemies)
+    if not skill_id:
+        return None
+
+    skill = skills.get(skill_id, {})
+    skill_type = skill.get("tipo")
+    allies = list(allies or [])
+    dead_allies = [ally for ally in allies if getattr(ally, "is_dead", False)]
+    living_allies = [ally for ally in allies if not getattr(ally, "is_dead", False)]
+    wounded_allies = [
+        ally
+        for ally in living_allies
+        if getattr(ally, "max_hp", 1) > 0 and (ally.hp / ally.max_hp) <= 0.45
+    ]
+
+    if skill_type == "reviver" and dead_allies:
+        return skill_id
+    if skill_type == "cura" and wounded_allies:
+        return skill_id
+
+    chance = float(skill_chance)
+    if getattr(actor, "last_skill_id", None) == skill_id:
+        chance *= 0.55
+    if skill_type in {"buff", "escudo", "passiva", "especial"} and skill.get("alvo") == "self":
+        chance *= 0.85
+
+    return skill_id if random.random() <= max(0.05, min(0.95, chance)) else None
+
+
 # ==========================================
 # CLASSE DE ENTIDADE (Herói ou Monstro)
 # ==========================================
@@ -136,6 +168,7 @@ class CombatEntity:
         self.debuffs = []
         self.cooldowns = {}
         self.skill_uses = {}
+        self.last_skill_id = None
         self.is_dead = (self.hp <= 0)
         self.cannot_revive = False
         
@@ -1125,6 +1158,7 @@ class CombatEngine:
         
         if "cooldown" in skill_data: actor.cooldowns[skill_id] = skill_data["cooldown"]
         actor.skill_uses[skill_id] = actor.skill_uses.get(skill_id, 0) + 1
+        actor.last_skill_id = skill_id
 
         # Busca Quantidade Customizada de Alvos
         qtd_alvos = skill_data.get("quantidade", 1)
@@ -1503,7 +1537,7 @@ class CombatEngine:
             if not actor.is_stunned():
                 allies = self.team_b if actor.is_enemy else self.team_a
                 enemies = self.team_a if actor.is_enemy else self.team_b
-                skill_id = choose_combat_skill(actor, SKILLS, allies, enemies)
+                skill_id = choose_ai_combat_skill(actor, SKILLS, allies, enemies) if actor.is_enemy else choose_combat_skill(actor, SKILLS, allies, enemies)
                 skill_usada = skill_id is not None
                 if skill_usada:
                     action_log = self._execute_skill(actor, skill_id)

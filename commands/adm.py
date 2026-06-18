@@ -17,10 +17,15 @@ try:
     from data.heroes import HEROES
     from data.equipamentos import EQUIPAMENTOS
     from data.pets import PETS
+    from utils.codes_storage import connect_codes_db, init_codes_db
 except ModuleNotFoundError:
     HEROES = {}
     EQUIPAMENTOS = {}
     PETS = {}
+    def connect_codes_db():
+        return sqlite3.connect("players.db")
+    def init_codes_db():
+        pass
 
 try:
     from data.banners import save_manual_banner
@@ -475,7 +480,7 @@ class Adm(commands.Cog):
         conn.close()
 
     def _init_codes_db(self):
-        conn = sqlite3.connect("codes.db")
+        conn = connect_codes_db()
         cursor = conn.cursor()
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS codes (
@@ -569,7 +574,7 @@ class Adm(commands.Cog):
                 return await ctx.send("❌ O code temporário precisa durar pelo menos 1 dia.")
             expires_at = created_at + (valid_days * 86400)
 
-        conn = sqlite3.connect("codes.db")
+        conn = connect_codes_db()
         cursor = conn.cursor()
         try:
             cursor.execute(
@@ -596,7 +601,7 @@ class Adm(commands.Cog):
         if not codigo:
             return await ctx.send("⚠ Uso: `echo adm delete code <NOME-DO-CODE>`")
 
-        conn = sqlite3.connect("codes.db")
+        conn = connect_codes_db()
         cursor = conn.cursor()
         cursor.execute("DELETE FROM codes WHERE code = ?", (codigo,))
         deleted = cursor.rowcount

@@ -17,7 +17,7 @@ try:
     from data.enemies import ENEMIES
     from data.habilidades import SKILLS
     from data.equipamentos import EQUIPAMENTOS
-    from utils.combat import CombatEntity, _as_ratio, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_combat_skill
+    from utils.combat import CombatEntity, _as_ratio, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_ai_combat_skill, choose_combat_skill
     from utils.xp_system import dar_xp_jogador, dar_xp_heroi
     from utils.skills import get_hero_skill_ids
     from utils.hero_stats import calculate_hero_stats, normalize_class
@@ -59,6 +59,8 @@ except ModuleNotFoundError:
     def choose_combat_skill(actor, skills=None, allies=None, enemies=None):
         available = [skill_id for skill_id in actor.habilidades if skill_id in (skills or {}) and skill_id not in actor.cooldowns]
         return random.choice(available) if available else None
+    def choose_ai_combat_skill(actor, skills=None, allies=None, enemies=None, skill_chance=0.62):
+        return choose_combat_skill(actor, skills, allies, enemies) if random.random() <= skill_chance else None
     def calculate_hero_stats(hero_data, stars=1, level=1, equipment_bonuses=None):
         return {"hp": 100, "atk": 10, "matk": 10, "def": 5, "spd": 10, "crt": 5, "level": level}
     def normalize_class(value):
@@ -249,6 +251,8 @@ class ArenaBattleView(discord.ui.View):
             return f"🗡️ {actor.clean_name} atacou {target.clean_name} por **{dealt}**{crit_str}."
 
         if "cooldown" in s_data: actor.cooldowns[skill_id] = s_data["cooldown"]
+        actor.skill_uses[skill_id] = actor.skill_uses.get(skill_id, 0) + 1
+        actor.last_skill_id = skill_id
         
         tipo = s_data.get("tipo", "dano")
         alvo_req = s_data.get("alvo", "unico_inimigo")
@@ -363,7 +367,9 @@ class ArenaBattleView(discord.ui.View):
                     for st in ["atk", "def", "spd", "matk"]: t.buffs.append({"stat": st, "mult": efeito["buff_geral"]/100.0, "turnos": turnos})
                 
                 if "imortalidade_turnos" in efeito: t.buffs.append({"stat": "imortal", "imortal": True, "turnos": efeito["imortalidade_turnos"]})
-                if "imunidade_dano_turnos" in efeito or "ignora_dano_fisico" in efeito: t.buffs.append({"stat": "imune", "imune_all": True, "turnos": turnos})
+                if "imunidade_dano_turnos" in efeito: t.buffs.append({"stat": "imune", "imune_all": True, "turnos": turnos})
+                if "ignora_dano_fisico" in efeito: t.buffs.append({"stat": "imune", "imune_fisico": True, "turnos": turnos})
+                if "ignora_dano_magico" in efeito: t.buffs.append({"stat": "imune", "imune_magico": True, "turnos": turnos})
                 apply_status_protection(t, efeito, turnos)
                 
             if tipo in ["debuff", "especial"] and t.is_enemy != actor.is_enemy and not t.is_dead:
@@ -396,7 +402,7 @@ class ArenaBattleView(discord.ui.View):
         vivos_a = self._get_alive(self.team_a)
         if not vivos_a: return ""
         
-        skill_usar = choose_combat_skill(actor, SKILLS, self.team_b, self.team_a)
+        skill_usar = choose_ai_combat_skill(actor, SKILLS, self.team_b, self.team_a)
                 
         if skill_usar:
             return self._executar_habilidade(actor, skill_usar)

@@ -19,7 +19,7 @@ try:
     from data.heroes import HEROES
     from data.equipamentos import EQUIPAMENTOS
     from data.habilidades import SKILLS
-    from utils.combat import CombatEntity, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_combat_skill
+    from utils.combat import CombatEntity, _as_ratio, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_ai_combat_skill, choose_combat_skill
     from utils.xp_system import dar_xp_jogador, dar_xp_heroi
     from utils.skills import get_hero_skill_ids, resolve_skill_list
     from utils.hero_stats import calculate_hero_stats, normalize_class
@@ -51,6 +51,20 @@ except ModuleNotFoundError:
     def choose_combat_skill(actor, skills=None, allies=None, enemies=None):
         available = [skill_id for skill_id in actor.habilidades if skill_id in (skills or {}) and skill_id not in actor.cooldowns]
         return random.choice(available) if available else None
+    def choose_ai_combat_skill(actor, skills=None, allies=None, enemies=None, skill_chance=0.62):
+        return choose_combat_skill(actor, skills, allies, enemies) if random.random() <= skill_chance else None
+    def _as_ratio(value, default_when_true=0.0):
+        if value is True:
+            return float(default_when_true)
+        if value in (None, False):
+            return 0.0
+        try:
+            ratio = float(value)
+        except (TypeError, ValueError):
+            return 0.0
+        if ratio > 1:
+            ratio /= 100
+        return max(0.0, ratio)
     def calculate_hero_stats(hero_data, stars=1, level=1, equipment_bonuses=None):
         return {"hp": 100, "atk": 10, "matk": 10, "def": 5, "spd": 10, "crt": 5, "level": level}
     def normalize_class(value):
@@ -59,6 +73,52 @@ except ModuleNotFoundError:
         return gold, xp
 
 COOLDOWN_DUNGEON = 1800 # 30 minutos em segundos
+
+
+def _party_average_level(party_data):
+    levels = []
+    for member in party_data or []:
+        if hasattr(member, "level"):
+            levels.append(int(getattr(member, "level", 1) or 1))
+        elif isinstance(member, dict):
+            stats = member.get("stats", {})
+            levels.append(int(member.get("level", stats.get("level", 1)) or 1))
+    return sum(levels) / len(levels) if levels else 1
+
+
+def scale_dungeon_enemy_stats(enemy_data, dungeon_id, area, party_data, is_boss=False):
+    progress = max(1, ((int(dungeon_id) - 1) * 5) + int(area))
+    avg_level = _party_average_level(party_data)
+    hp_mult = 1.0 + (progress * 0.10) + min(0.75, avg_level * 0.008)
+    atk_mult = 1.0 + (progress * 0.07) + min(0.55, avg_level * 0.005)
+    def_mult = 1.0 + (progress * 0.06) + min(0.45, avg_level * 0.004)
+    if is_boss:
+        hp_mult *= 1.35
+        atk_mult *= 1.15
+        def_mult *= 1.12
+
+    return {
+        "hp": max(1, int((enemy_data.get("hp", 100) or 100) * hp_mult)),
+        "atk": max(0, int((enemy_data.get("atk", 10) or 0) * atk_mult)),
+        "def": max(0, int((enemy_data.get("def", 5) or 0) * def_mult)),
+        "matk": max(0, int((enemy_data.get("matk", 0) or 0) * atk_mult)),
+        "spd": max(1, min(65, int((enemy_data.get("spd", 15) or 15) + progress * 0.35))),
+        "crt": max(0, min(45, int((enemy_data.get("crt", 5) or 5) + progress * 0.25))),
+        "level": max(1, int(avg_level)),
+    }
+
+
+def build_dungeon_enemy_raw(enemy_id, index, dungeon_id, area, party_data, is_boss=False, summoned=False):
+    enemy_data = ENEMIES.get(enemy_id, {})
+    suffix = "Invocado" if summoned else str(index)
+    return {
+        "id": f"{enemy_id}_{index}_{int(time.time() * 1000) % 100000}" if summoned else f"{enemy_id}_{index}",
+        "nome": f"{enemy_data.get('nome', enemy_id)} {suffix}",
+        "classe": enemy_data.get("tipo", "boss" if is_boss else "comum"),
+        "stats": scale_dungeon_enemy_stats(enemy_data, dungeon_id, area, party_data, is_boss=is_boss),
+        "habilidades": [enemy_data.get("habilidade")] if enemy_data.get("habilidade") else [],
+    }
+
 
 def puxar_party_para_combate(user_id, user_name):
     conn = sqlite3.connect("players.db")
@@ -151,6 +211,39 @@ class DungeonBattleView(discord.ui.View):
             if roll <= acumulado: return e
         return vivos[0]
 
+    def _roll_damage_variance(self, actor, amount):
+        low = 0.90 if actor.is_enemy else 0.94
+        high = 1.10 if actor.is_enemy else 1.07
+        return max(1, int(amount * random.uniform(low, high)))
+
+    def _summon_enemies(self, actor, effect):
+        enemy_id = effect.get("invoca_inimigo") or effect.get("summon_enemy")
+        if not actor.is_enemy or not enemy_id:
+            return []
+
+        alive_enemies = self._get_alive(self.team_b)
+        if len(alive_enemies) >= 8:
+            return []
+
+        amount = min(3, max(1, int(effect.get("quantidade_invocada", 1) or 1)))
+        amount = min(amount, 8 - len(alive_enemies))
+        summoned = []
+        for _ in range(amount):
+            raw = build_dungeon_enemy_raw(
+                enemy_id,
+                len(self.team_b) + 1,
+                self.dungeon_id,
+                self.andar,
+                self.team_a,
+                is_boss=False,
+                summoned=True,
+            )
+            entity = CombatEntity(raw["id"], raw["nome"], raw["stats"], True)
+            entity.habilidades = resolve_skill_list(raw.get("habilidades", []))
+            self.team_b.append(entity)
+            summoned.append(entity.clean_name)
+        return summoned
+
     def _gerar_timeline(self, todos_vivos):
         if not hasattr(self, 'turn_queue'): self.turn_queue = []
         fila = [e for e in self.turn_queue if not e.is_dead]
@@ -206,6 +299,8 @@ class DungeonBattleView(discord.ui.View):
             return f"🗡️ {actor.clean_name} improvisou um ataque por **{dealt}**."
 
         if "cooldown" in s_data: actor.cooldowns[skill_id] = s_data["cooldown"]
+        actor.skill_uses[skill_id] = actor.skill_uses.get(skill_id, 0) + 1
+        actor.last_skill_id = skill_id
         
         tipo = s_data.get("tipo", "dano")
         alvo_req = s_data.get("alvo", "unico_inimigo")
@@ -227,24 +322,89 @@ class DungeonBattleView(discord.ui.View):
         elif alvo_req == "unico_aliado" and aliados: targets = [random.choice(aliados)]
         elif alvo_req == "aliado_menor_hp" and aliados: targets = [min(aliados, key=lambda x: x.hp)]
         elif alvo_req in ["dps_aliado", "dps_aliados"] and aliados: targets = [max(aliados, key=lambda x: x.get_stat("atk") + x.get_stat("matk"))]
+        elif "aleatorio" in alvo_req and inimigos:
+            quantidade = min(len(inimigos), max(1, int(s_data.get("quantidade", 1) or 1)))
+            targets = random.sample(inimigos, quantidade)
         
         if not targets: return f"❓ {actor.clean_name} conjurou ao vazio."
 
         log_line = f"✨ **{actor.clean_name}** usou `[{s_data['nome']}]`!"
         total_dmg, total_healed = 0, 0
+        summoned_names = []
         
         for t in targets:
-            if tipo in ["dano", "insta_kill"] and t.is_enemy != actor.is_enemy:
-                base = actor.get_stat("matk") if ("matk" in str(efeito)) else actor.get_stat("atk")
-                dano = (base + efeito.get("dano_atk_extra", 0) + efeito.get("dano_matk_extra", 0)) * efeito.get("multiplicador_hit", 1)
+            if tipo in ["dano", "insta_kill", "especial"] and t.is_enemy != actor.is_enemy:
+                is_magic = "matk" in str(efeito)
+                base = actor.get_stat("matk") if is_magic else actor.get_stat("atk")
+                if efeito.get("soma_atk_matk") or efeito.get("soma_atk_matk_buff") or efeito.get("soma_atk_matk_100"):
+                    base = actor.get_stat("atk") + actor.get_stat("matk")
+
+                dano = base + efeito.get("dano_atk_extra", 0) + efeito.get("dano_matk_extra", 0)
+                mult = efeito.get("multiplicador_hit", 1) * efeito.get("multiplicador_atk", 1.0) * efeito.get("multiplicador_matk", 1.0)
+                if efeito.get("dano_massivo") and not any(
+                    key in efeito
+                    for key in (
+                        "multiplicador_atk",
+                        "multiplicador_matk",
+                        "multiplicador_soma_atk_matk",
+                        "dano_atk_extra",
+                        "dano_matk_extra",
+                        "dano_hp_atual",
+                        "dano_hp_max",
+                    )
+                ):
+                    mult *= 2.2
+                if efeito.get("multiplica_atk_matk"):
+                    mult *= efeito.get("multiplica_atk_matk")
+                if efeito.get("multiplicador_soma_atk_matk"):
+                    mult *= efeito.get("multiplicador_soma_atk_matk")
+
                 is_crit = random.randint(1, 100) <= actor.get_stat("crt") or efeito.get("critico_garantido", False)
-                if is_crit: dano *= 1.5
-                if hasattr(actor, "cap_outgoing_damage"): dano = actor.cap_outgoing_damage(dano, is_skill=True)
-                dealt = t.take_damage(dano, base, is_magic=("matk" in str(efeito)), ignore_def=efeito.get("ignora_def", False))
+                if is_crit:
+                    mult *= 1.5
+
+                dano = dano * mult
+                if "dano_fixo" in efeito:
+                    dano += int(efeito["dano_fixo"])
+                if "dano_hp_atual" in efeito:
+                    dano += int(t.hp * _as_ratio(efeito["dano_hp_atual"]))
+                if "dano_hp_max" in efeito:
+                    dano += int(t.max_hp * _as_ratio(efeito["dano_hp_max"]))
+                if hasattr(actor, "cap_outgoing_damage"):
+                    dano = actor.cap_outgoing_damage(dano, is_skill=True)
+                dano = self._roll_damage_variance(actor, dano)
+
+                persistent_ignore = max(
+                    (float(buff.get("ignora_def_on_hit", 0)) for buff in actor.buffs),
+                    default=0,
+                )
+                ignore_def = efeito.get("ignora_def_escudos", False) or efeito.get("ignora_def", False)
+                if ignore_def is not True:
+                    ignore_def = max(float(ignore_def or 0), persistent_ignore)
+                if any(
+                    efeito.get(key)
+                    for key in [
+                        "ignora_def_escudos",
+                        "ignora_escudos",
+                        "ignora_def_e_shield",
+                        "remove_escudos",
+                        "destroi_escudos",
+                        "quebra_escudos",
+                    ]
+                ):
+                    t.shield = 0
+
+                dealt = t.take_damage(dano, base, is_magic=is_magic, ignore_def=ignore_def)
                 total_dmg += dealt
                 
                 apply_status_effects(actor, t, efeito, dealt)
                 apply_on_hit_statuses(actor, t, is_crit)
+                if ("chance_insta_kill" in efeito and random.random() <= efeito["chance_insta_kill"]) or efeito.get("insta_kill_on_hit_garantido"):
+                    if not t.is_dead:
+                        t.hp = 0
+                        t.is_dead = True
+                if not summoned_names:
+                    summoned_names.extend(self._summon_enemies(actor, efeito))
             elif tipo == "cura" and t.is_enemy == actor.is_enemy:
                 cura = efeito.get("cura_fixa", int(actor.get_stat("matk") * 0.5))
                 total_healed += t.heal(cura)
@@ -256,7 +416,12 @@ class DungeonBattleView(discord.ui.View):
                 if "buff_def" in efeito or tipo == "escudo": t.buffs.append({"stat": "def", "mult": efeito.get("buff_def", 50) / 100.0, "turnos": turnos})
                 if "buff_spd" in efeito: t.buffs.append({"stat": "spd", "mult": efeito["buff_spd"] / 100.0, "turnos": turnos})
                 if "escudo_hp_max" in efeito: t.shield += int(t.max_hp * efeito["escudo_hp_max"])
+                if "imunidade_dano_turnos" in efeito: t.buffs.append({"stat": "imune", "imune_all": True, "turnos": turnos})
+                if "ignora_dano_fisico" in efeito: t.buffs.append({"stat": "imune", "imune_fisico": True, "turnos": turnos})
+                if "ignora_dano_magico" in efeito: t.buffs.append({"stat": "imune", "imune_magico": True, "turnos": turnos})
                 apply_status_protection(t, efeito, turnos)
+                if not summoned_names:
+                    summoned_names.extend(self._summon_enemies(actor, efeito))
             elif tipo in ["debuff", "especial"] and t.is_enemy != actor.is_enemy and not t.is_dead:
                 turnos = efeito.get("turnos", 2)
                 if "debuff_atk" in efeito: t.debuffs.append({"stat": "atk", "mult": efeito["debuff_atk"] / 100.0, "turnos": turnos})
@@ -266,13 +431,15 @@ class DungeonBattleView(discord.ui.View):
 
         if total_dmg > 0: log_line += f"\n⚔️ Causou aprox. **{total_dmg // len(targets)}** de dano!"
         elif total_healed > 0: log_line += f"\n💚 Curou aprox. **{total_healed // len(targets)} HP**!"
+        if summoned_names:
+            log_line += f"\n🐺 Reforços chegaram: **{', '.join(summoned_names[:3])}**."
         return log_line
 
     def _ia_inimigo_agir(self, actor):
         vivos_a = self._get_alive(self.team_a)
         if not vivos_a: return ""
         
-        skill_usar = choose_combat_skill(actor, SKILLS, self.team_b, self.team_a)
+        skill_usar = choose_ai_combat_skill(actor, SKILLS, self.team_b, self.team_a)
         if skill_usar: return self._executar_habilidade(actor, skill_usar)
             
         target = self._get_target_aggro(vivos_a)
@@ -423,18 +590,8 @@ class BossEncounterView(discord.ui.View):
 
     @discord.ui.button(label="Enfrentar Chefe!", style=discord.ButtonStyle.danger, emoji="⚔️")
     async def btn_enfrentar(self, interaction: discord.Interaction, button: discord.ui.Button):
-        b_data = ENEMIES.get(self.boss_id, {})
-        team_b_raw = [{
-            "id": self.boss_id,
-            "nome": f"👑 {b_data.get('nome', 'Chefe')}",
-            "classe": b_data.get("tipo", "boss"),
-            "stats": {
-                "hp": b_data.get("hp", 1000), "atk": b_data.get("atk", 50),
-                "def": b_data.get("def", 20), "matk": b_data.get("matk", 0),
-                "spd": b_data.get("spd", 20), "crt": b_data.get("crt", 5)
-            },
-            "habilidades": [b_data.get("habilidade")] if b_data.get("habilidade") else []
-        }]
+        team_b_raw = [build_dungeon_enemy_raw(self.boss_id, 1, self.dungeon_id, self.andar, self.team_a, is_boss=True)]
+        team_b_raw[0]["nome"] = f"👑 {team_b_raw[0]['nome']}"
 
         # Cria a view do combate interativo agora contra o boss
         view_boss = DungeonBattleView(self.ctx, [], team_b_raw, self.boss_id, self.andar_data, self.dungeon_id, self.andar, self.moral, self.prosp, self.d_cog, is_boss_phase=True)
@@ -617,19 +774,8 @@ class Dungeon(commands.Cog):
         team_b_raw = []
         c = 1
         for in_id, quantidade in andar_data.get("inimigos", {}).items():
-            in_data = ENEMIES.get(in_id, {})
             for _ in range(quantidade):
-                team_b_raw.append({
-                    "id": f"{in_id}_{c}",
-                    "nome": f"{in_data.get('nome')} {c}",
-                    "classe": "comum",
-                    "stats": {
-                        "hp": in_data.get("hp", 100), "atk": in_data.get("atk", 10),
-                        "def": in_data.get("def", 5), "matk": in_data.get("matk", 0),
-                        "spd": in_data.get("spd", 15), "crt": in_data.get("crt", 5)
-                    },
-                    "habilidades": [in_data.get("habilidade")] if in_data.get("habilidade") else []
-                })
+                team_b_raw.append(build_dungeon_enemy_raw(in_id, c, dungeon_id, andar, team_a_data))
                 c += 1
 
         boss_id = andar_data.get("mini_boss") or andar_data.get("boss")

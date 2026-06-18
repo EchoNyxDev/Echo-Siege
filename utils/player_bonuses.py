@@ -23,13 +23,29 @@ def get_perk_level(cursor, user_id, perk_id):
         return 0
 
 
+def get_account_reward_bonus(cursor, user_id):
+    try:
+        cursor.execute("SELECT level FROM players WHERE user_id = ?", (str(user_id),))
+        row = cursor.fetchone()
+        level = int(row[0] or 1) if row else 1
+    except sqlite3.OperationalError:
+        return 0.0
+    return min(0.15, (max(1, level) // 10) * 0.02)
+
+
 def apply_reward_bonuses(cursor, user_id, gold=0, xp=0):
     gold_level = get_perk_level(cursor, user_id, "gold_bonus")
     xp_level = get_perk_level(cursor, user_id, "xp_bonus")
+    account_bonus = get_account_reward_bonus(cursor, user_id)
     if gold and gold_level:
         gold = int(gold * (1 + 0.05 * gold_level))
     if xp and xp_level:
         xp = int(xp * (1 + 0.05 * xp_level))
+    if account_bonus:
+        if gold:
+            gold = int(gold * (1 + account_bonus))
+        if xp:
+            xp = int(xp * (1 + account_bonus))
     return gold, xp
 
 

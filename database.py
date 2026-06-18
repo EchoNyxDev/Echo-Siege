@@ -241,6 +241,32 @@ cursor.execute("UPDATE cidades SET moral = 100 WHERE moral > 100")
 cursor.execute("UPDATE cidades SET prosperidade = 100 WHERE prosperidade > 100")
 
 cursor.execute("""
+CREATE TABLE IF NOT EXISTS codes(
+    code TEXT PRIMARY KEY,
+    recompensa TEXT NOT NULL,
+    created_at INTEGER DEFAULT 0,
+    expires_at INTEGER DEFAULT 0
+)
+""")
+add_column(cursor, "codes", "created_at", "INTEGER DEFAULT 0")
+add_column(cursor, "codes", "expires_at", "INTEGER DEFAULT 0")
+cursor.execute("UPDATE codes SET expires_at = 0 WHERE expires_at IS NULL")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS code_redemptions(
+    code TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    redeemed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (code, user_id)
+)
+""")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS code_storage_meta(
+    key TEXT PRIMARY KEY,
+    value TEXT DEFAULT ''
+)
+""")
+
+cursor.execute("""
 CREATE TABLE IF NOT EXISTS player_guilds(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL,

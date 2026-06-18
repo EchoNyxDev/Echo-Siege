@@ -19,7 +19,7 @@ try:
     from data.heroes import HEROES
     from data.habilidades import SKILLS
     from data.equipamentos import EQUIPAMENTOS
-    from utils.combat import CombatEntity, _as_ratio, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_combat_skill
+    from utils.combat import CombatEntity, _as_ratio, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_ai_combat_skill, choose_combat_skill
     from utils.skills import get_hero_skill_ids
     from utils.hero_stats import calculate_hero_stats, normalize_class
     from utils.equipment import get_equipment_bonus
@@ -56,6 +56,8 @@ except ModuleNotFoundError as e:
     def choose_combat_skill(actor, skills=None, allies=None, enemies=None):
         available = [skill_id for skill_id in actor.habilidades if skill_id in (skills or {}) and skill_id not in actor.cooldowns]
         return random.choice(available) if available else None
+    def choose_ai_combat_skill(actor, skills=None, allies=None, enemies=None, skill_chance=0.62):
+        return choose_combat_skill(actor, skills, allies, enemies) if random.random() <= skill_chance else None
     def calculate_hero_stats(hero_data, stars=1, level=1, equipment_bonuses=None):
         return {"hp": 100, "atk": 10, "matk": 10, "def": 5, "spd": 10, "crt": 5, "level": level}
     def normalize_class(value):
@@ -346,6 +348,8 @@ class PvpBattleView(discord.ui.View):
 
         if "cooldown" in s_data:
             actor.cooldowns[skill_id] = s_data["cooldown"]
+        actor.skill_uses[skill_id] = actor.skill_uses.get(skill_id, 0) + 1
+        actor.last_skill_id = skill_id
 
         tipo = s_data.get("tipo", "dano")
         efeito = s_data.get("efeito", {})
@@ -444,8 +448,12 @@ class PvpBattleView(discord.ui.View):
                     target.buffs.append({"stat": "crt", "flat": efeito["buff_crt"], "turnos": turnos})
                 if "imortalidade_turnos" in efeito:
                     target.buffs.append({"stat": "imortal", "imortal": True, "turnos": efeito["imortalidade_turnos"]})
-                if "imunidade_dano_turnos" in efeito or "ignora_dano_fisico" in efeito:
+                if "imunidade_dano_turnos" in efeito:
                     target.buffs.append({"stat": "imune", "imune_all": True, "turnos": turnos})
+                if "ignora_dano_fisico" in efeito:
+                    target.buffs.append({"stat": "imune", "imune_fisico": True, "turnos": turnos})
+                if "ignora_dano_magico" in efeito:
+                    target.buffs.append({"stat": "imune", "imune_magico": True, "turnos": turnos})
                 apply_status_protection(target, efeito, turnos)
 
             if tipo in ["debuff", "especial"] and target.is_enemy != actor.is_enemy and not target.is_dead:
@@ -509,7 +517,7 @@ class PvpBattleView(discord.ui.View):
             self.current_actor = actor
             owner = self.p2 if actor.is_enemy else self.p1
             if getattr(owner, "bot", False):
-                skill_id = choose_combat_skill(
+                skill_id = choose_ai_combat_skill(
                     actor,
                     SKILLS,
                     self._team_do_actor(actor),
@@ -962,11 +970,30 @@ class PvP(commands.Cog):
         return OnlinePvpBot(name, bot_rating, seed)
 
     def _build_bot_party(self, bot, reference_party):
-        pool = [hero_id for hero_id in HEROES if hero_id != "id-nome"]
-        if not pool or not reference_party:
+        if not reference_party:
             return []
         rng = random.Random(bot.seed + int(bot.rating))
-        selected = rng.sample(pool, min(len(reference_party), 5, len(pool)))
+        by_rarity = {1: [], 2: [], 3: [], 4: []}
+        fallback_pool = []
+        for hero_id, hero in HEROES.items():
+            rarity = int(hero.get("raridade", 1) or 1)
+            if hero_id == "id-nome" or hero.get("divino") or rarity >= 7:
+                continue
+            if rarity in by_rarity:
+                by_rarity[rarity].append(hero_id)
+            if rarity <= 5:
+                fallback_pool.append(hero_id)
+        if not fallback_pool:
+            return []
+        rarity_pattern = [3, 2, 3, 4, 2]
+        selected = []
+        for index in range(min(len(reference_party), 5)):
+            desired = rarity_pattern[index % len(rarity_pattern)]
+            choices = [hero_id for hero_id in by_rarity.get(desired, []) if hero_id not in selected]
+            if not choices:
+                choices = [hero_id for hero_id in fallback_pool if hero_id not in selected]
+            if choices:
+                selected.append(rng.choice(choices))
         party = []
         for index, hero_id in enumerate(selected):
             template = reference_party[index % len(reference_party)]

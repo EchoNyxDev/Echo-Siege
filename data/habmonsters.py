@@ -9,7 +9,7 @@ MONSTER_SKILLS = {
     # ==========================================
     # DUNGEON 1 E 2: Goblins, Lobos e Mortos-Vivos
     # ==========================================
-    "invocar_goblins": {"nome": "Chamado da Horda", "tipo": "buff", "alvo": "self", "efeito": {"buff_atk": 30, "buff_spd": 20, "turnos": 3}},
+    "invocar_goblins": {"nome": "Chamado da Horda", "tipo": "buff", "alvo": "self", "efeito": {"buff_atk": 25, "buff_spd": 15, "turnos": 2, "invoca_inimigo": "goblin_guerreiro", "quantidade_invocada": 2}, "cooldown": 3, "uso_maximo": 2},
     "dano_area_3_turnos": {"nome": "Maldição Espalhada", "tipo": "dano", "alvo": "todos_inimigos", "efeito": {"multiplicador_matk": 1.2, "dot": {"tipo": "maldicao", "dano_matk": 20, "turnos": 3}}},
     "prender_oponente": {"nome": "Prisão Tumular", "tipo": "debuff", "alvo": "unico_inimigo", "efeito": {"stun_turnos": 2, "debuff_def": 30}},
     "imune_atk_fisico": {"nome": "Corpo Etéreo", "tipo": "buff", "alvo": "self", "efeito": {"ignora_dano_fisico": True, "turnos": 1}, "cooldown": 4},
@@ -43,7 +43,7 @@ MONSTER_SKILLS = {
     "magia_em_massa": {"nome": "Magia em Massa", "tipo": "dano", "alvo": "todos_inimigos", "efeito": {"multiplicador_matk": 1.8}},
     "furia_cega": {"nome": "Fúria Cega", "tipo": "buff", "alvo": "self", "efeito": {"buff_atk": 70, "buff_spd": 30, "turnos": 3}},
     "uivo_de_guerra": {"nome": "Uivo de Guerra", "tipo": "buff", "alvo": "self", "efeito": {"buff_atk": 40, "buff_spd": 40, "buff_crt": 20, "turnos": 3}},
-    "invocar_horda_goblin": {"nome": "O Rei Ordena!", "tipo": "dano", "alvo": "todos_inimigos", "efeito": {"multiplicador_atk": 2.0, "chance_stun": 0.30}},
+    "invocar_horda_goblin": {"nome": "O Rei Ordena!", "tipo": "dano", "alvo": "todos_inimigos", "efeito": {"multiplicador_atk": 2.0, "chance_stun": 0.30, "invoca_inimigo": "goblin_guerreiro", "quantidade_invocada": 2}, "cooldown": 3, "uso_maximo": 2},
     "investida_mortal": {"nome": "Investida Mortal", "tipo": "dano", "alvo": "unico_inimigo", "efeito": {"multiplicador_atk": 3.5, "chance_insta_kill": 0.05, "ignora_def": True}},
     "dano_area_constante": {"nome": "Aura de Decadência", "tipo": "dano", "alvo": "todos_inimigos", "efeito": {"multiplicador_matk": 1.0, "dot": {"tipo": "trevas", "dano_matk": 100, "turnos": 3}}},
     "prisao_das_almas": {"nome": "Prisão das Almas", "tipo": "debuff", "alvo": "dps_aliado", "efeito": {"stun_turnos": 3, "debuff_atk": 50}},
