@@ -20,16 +20,20 @@ try:
     from data.pets import PETS
     from data.calamidades import RAID_BOSSES
     from data.habilidades import SKILLS
+    from data.habmonsters import MONSTER_SKILLS
     from utils.codes_storage import connect_codes_db, init_codes_db
     from utils.skills import get_hero_skill_ids
     from utils.hero_stats import calculate_hero_stats, normalize_class
+    from utils.combat import choose_ai_combat_skill
     from commands.pvp import PvpBattleView, _cortar_texto
+    SKILLS.update(MONSTER_SKILLS)
 except ModuleNotFoundError:
     HEROES = {}
     EQUIPAMENTOS = {}
     PETS = {}
     RAID_BOSSES = {}
     SKILLS = {}
+    MONSTER_SKILLS = {}
     PvpBattleView = None
     def _cortar_texto(texto, limite=1024):
         return str(texto)[:limite]
@@ -40,6 +44,9 @@ except ModuleNotFoundError:
         return {"hp": 100, "atk": 10, "matk": 10, "def": 5, "spd": 10, "crt": 5, "level": level}
     def normalize_class(value):
         return str(value or "neutro").lower()
+    def choose_ai_combat_skill(actor, skills=None, allies=None, enemies=None, skill_chance=0.62):
+        available = [skill_id for skill_id in actor.habilidades if skill_id in (skills or {}) and skill_id not in actor.cooldowns]
+        return random.choice(available) if available and random.random() <= skill_chance else None
     def connect_codes_db():
         return sqlite3.connect("players.db")
     def init_codes_db():
@@ -572,8 +579,8 @@ class AdminCombatTestSetupView(discord.ui.View):
         embed = discord.Embed(
             title="ADM Combate Teste",
             description=(
-                "Monte até **5 heróis base Lv 1** para bater em uma calamidade parada.\n"
-                "As habilidades de evolução ficam liberadas para debug, porque hoje a ciência venceu a progressão."
+                "Monte até **5 heróis base Lv 1** contra uma calamidade com HP original e dano nerfado.\n"
+                "Ela ataca de volta em escala Lv 1, para testar cura, revive, status e dano sem virar massacre instantâneo."
             ),
             color=discord.Color.dark_teal(),
         )
@@ -588,7 +595,7 @@ class AdminCombatTestSetupView(discord.ui.View):
             embed.add_field(name="Equipe de Teste", value=_cortar_texto("\n\n".join(lines), 1024), inline=False)
         else:
             embed.add_field(name="Equipe de Teste", value="Nenhum herói selecionado ainda.", inline=False)
-        embed.set_footer(text="TutoriUAU: escolha bonecos, aperte iniciar, descubra qual habilidade quebrou a matemática.")
+        embed.set_footer(text="TutoriUAU: escolha cobaias, aperte iniciar, descubra qual habilidade quebrou a matemática.")
         return embed
 
     @discord.ui.button(label="Adicionar Herói", style=discord.ButtonStyle.primary, custom_id="add_debug_hero")
@@ -602,7 +609,7 @@ class AdminCombatTestSetupView(discord.ui.View):
 
         pool = [(boss_id, data) for boss_id, data in RAID_BOSSES.items() if data.get("tipo") in {"mensal", "calamidade"}]
         if not pool:
-            return await interaction.response.send_message("Não encontrei calamidades cadastradas para usar como boneco de treino.", ephemeral=True)
+            return await interaction.response.send_message("Não encontrei calamidades cadastradas para usar como sparring de treino.", ephemeral=True)
 
         boss_id, boss_data = random.choice(pool)
         battle = AdminCombatTestBattleView(self.ctx, list(self.heroes), boss_id, boss_data)
@@ -695,27 +702,34 @@ class AdminCombatTestBattleView(PvpBattleView if PvpBattleView else discord.ui.V
         self.calamity_id = calamity_id
         self.calamity_data = calamity_data
         opponent = AdminCombatDummyUser(calamity_data.get("nome", calamity_id))
+        def nerf_stat(value, divisor, minimum, maximum):
+            return max(minimum, min(maximum, int((value or 0) / divisor)))
+
+        calamity_skills = list(calamity_data.get("habilidades") or [])
+        if calamity_data.get("habilidade"):
+            calamity_skills.append(calamity_data["habilidade"])
+        calamity_skills = [skill_id for skill_id in calamity_skills if skill_id in SKILLS]
         enemy_raw = {
             "id": calamity_id,
-            "nome": f"{calamity_data.get('nome', calamity_id)} [Boneco]",
+            "nome": f"{calamity_data.get('nome', calamity_id)} [Teste]",
             "classe": "calamidade",
             "stats": {
                 "hp": int(calamity_data.get("hp", 500000) or 500000),
-                "atk": int(calamity_data.get("atk", 0) or 0),
-                "matk": int(calamity_data.get("matk", 0) or 0),
-                "def": int(calamity_data.get("def", 0) or 0),
-                "spd": 1,
-                "crt": 0,
-                "level": 999,
+                "atk": nerf_stat(calamity_data.get("atk", 0), 220, 8, 30),
+                "matk": nerf_stat(calamity_data.get("matk", 0), 220, 8, 30),
+                "def": nerf_stat(calamity_data.get("def", 0), 180, 4, 25),
+                "spd": nerf_stat(calamity_data.get("spd", 0), 12, 6, 18),
+                "crt": nerf_stat(calamity_data.get("crt", 0), 5, 0, 8),
+                "level": 1,
             },
-            "habilidades": [],
+            "habilidades": calamity_skills,
         }
         super().__init__(None, ctx.channel, ctx.author, opponent, heroes, [enemy_raw], online=False)
         for enemy in self.team_b:
-            enemy.habilidades = []
-            enemy.base_spd = 1
+            enemy.habilidades = calamity_skills
+            enemy.cap_outgoing_damage = lambda amount, is_skill=True: min(amount, 75) if is_skill else amount
         self.log_display = [
-            f"Teste iniciado contra {self.team_b[0].clean_name}. A calamidade não ataca; só apanha com dignidade duvidosa."
+            f"Teste iniciado contra {self.team_b[0].clean_name}. HP original mantido, atributos ofensivos Lv 1 e habilidades com dano limitado."
         ]
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
@@ -749,10 +763,13 @@ class AdminCombatTestBattleView(PvpBattleView if PvpBattleView else discord.ui.V
             color=discord.Color.dark_teal(),
         )
         embed.add_field(name="Heróis de Teste", value=_cortar_texto(self._barra_time(self.team_a)), inline=True)
-        embed.add_field(name="Boneco de Calamidade", value=_cortar_texto(self._barra_time(self.team_b)), inline=True)
+        embed.add_field(name="Calamidade de Teste", value=_cortar_texto(self._barra_time(self.team_b)), inline=True)
         embed.add_field(
             name="HP do Alvo",
-            value=f"**{target.hp:,}/{target.max_hp:,}**\nDEF {target.get_stat('def'):,}",
+            value=(
+                f"**{target.hp:,}/{target.max_hp:,}**\n"
+                f"ATK {target.get_stat('atk'):,} | MATK {target.get_stat('matk'):,} | DEF {target.get_stat('def'):,}"
+            ),
             inline=False,
         )
         embed.add_field(name="Log de Teste", value=f"```{_cortar_texto(chr(10).join(self.log_display[-8:]), 1000)}```", inline=False)
@@ -792,7 +809,14 @@ class AdminCombatTestBattleView(PvpBattleView if PvpBattleView else discord.ui.V
             if actor.is_dead:
                 continue
             if actor.is_enemy:
-                self.log_display.append(f"{actor.clean_name} ficou parado e passou o turno. Boneco profissional.")
+                if estava_atordoado:
+                    self.log_display.append(f"{actor.clean_name} está atordoada e perdeu a vez.")
+                    continue
+                skill_id = choose_ai_combat_skill(actor, SKILLS, self.team_b, self.team_a, skill_chance=0.45)
+                if skill_id and not actor.is_silenced():
+                    self.log_display.append(self._executar_habilidade(actor, skill_id))
+                else:
+                    self.log_display.append(self._ataque_basico(actor))
                 continue
             if estava_atordoado:
                 self.log_display.append(f"{actor.clean_name} está atordoado e perdeu a vez.")
@@ -1519,7 +1543,7 @@ class Adm(commands.Cog):
                            "`echo adm criarcode <code> <G1000 T3 heroi item>`\n"
                            "`echo adm criarcode temp <dias> <code> <recompensas>`\n"
                            "`echo adm delete code <code>`\n"
-                           "`echo adm combate teste` (Laboratório de dano/habilidades contra calamidade parada)\n"
+                           "`echo adm combate teste` (Laboratório de dano/habilidades contra calamidade nerfada)\n"
                            "`echo adm criar banner` (Editor do banner especial por 7 dias)\n"
                            "`echo adm melhorar loja` (Sobe a loja em 1 nível para testes)\n"
                            "`echo adm reset cidade` (Reseta Lugnica)\n"
