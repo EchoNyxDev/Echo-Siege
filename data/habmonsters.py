@@ -12,7 +12,7 @@ MONSTER_SKILLS = {
     "invocar_goblins": {"nome": "Chamado da Horda", "tipo": "buff", "alvo": "self", "efeito": {"buff_atk": 30, "buff_spd": 20, "turnos": 3}},
     "dano_area_3_turnos": {"nome": "Maldição Espalhada", "tipo": "dano", "alvo": "todos_inimigos", "efeito": {"multiplicador_matk": 1.2, "dot": {"tipo": "maldicao", "dano_matk": 20, "turnos": 3}}},
     "prender_oponente": {"nome": "Prisão Tumular", "tipo": "debuff", "alvo": "unico_inimigo", "efeito": {"stun_turnos": 2, "debuff_def": 30}},
-    "imune_atk_fisico": {"nome": "Corpo Etéreo", "tipo": "passiva", "alvo": "self", "efeito": {"ignora_dano_fisico": True, "turnos": -1}},
+    "imune_atk_fisico": {"nome": "Corpo Etéreo", "tipo": "buff", "alvo": "self", "efeito": {"ignora_dano_fisico": True, "turnos": 1}, "cooldown": 4},
     "necromancia_lentidao": {"nome": "Toque do Necromante", "tipo": "debuff", "alvo": "todos_inimigos", "efeito": {"debuff_spd": 40, "chance_stun": 0.20, "turnos": 2}},
 
     # ==========================================

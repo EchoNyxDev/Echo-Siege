@@ -342,9 +342,19 @@ class Mochila(commands.Cog):
             msg_sucesso = f"🍷 Poção guardada para combate! Sua próxima batalha recebe **+{cura} HP** por herói."
             
         elif db_name == "kit_reparos":
-            try: cursor.execute("UPDATE cidades SET suprimentos = suprimentos + 50 WHERE guild_id = ?", (str(ctx.guild.id),))
-            except: pass
-            cursor.execute("UPDATE city_stats SET suprimentos = suprimentos + 50 WHERE id = 1")
+            try:
+                cursor.execute("""
+                    INSERT OR IGNORE INTO cidades
+                    (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
+                    VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+                """, (str(ctx.guild.id),))
+                cursor.execute(
+                    "UPDATE cidades SET suprimentos = min(max_suprimentos, suprimentos + 50) WHERE guild_id = ?",
+                    (str(ctx.guild.id),),
+                )
+            except Exception:
+                pass
+            cursor.execute("UPDATE city_stats SET suprimentos = min(max_suprimentos, suprimentos + 50) WHERE id = 1")
             msg_sucesso = "🔨 Você enviou um Kit de Reparos para Lugnica! +50 Suprimentos adicionados às defesas."
 
         elif db_name == "pergaminho_de_xp":

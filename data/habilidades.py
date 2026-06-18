@@ -1373,19 +1373,60 @@ def _ensure_runtime_effect(skill):
         effect.setdefault("reduz_dano_recebido", effect["reducao_dano_recebido"])
     if "contra_ataque_dodge" in effect:
         effect.setdefault("counter_atk_percent", effect["contra_ataque_dodge"])
-    if effect.get("dano_massivo") and not any(
-        key in effect
-        for key in {
-            "multiplicador_atk", "multiplicador_matk", "dano_atk_extra",
-            "dano_matk_extra", "dano_hp_atual", "dano_hp_max",
-        }
-    ):
-        effect.setdefault("multiplicador_atk", 2.5)
+    if effect.get("dano_massivo"):
+        if not any(
+            key in effect
+            for key in {
+                "multiplicador_atk", "multiplicador_matk", "dano_atk_extra",
+                "dano_matk_extra", "dano_hp_atual", "dano_hp_max",
+            }
+        ):
+            effect.setdefault("multiplicador_atk", 2.2)
+        effect.pop("dano_massivo", None)
     if effect.get("dano_massivo_hp_max"):
         effect.setdefault("multiplicador_atk", 1.5)
         effect.setdefault("dano_hp_max", 0.18)
+        effect.pop("dano_massivo_hp_max", None)
     if effect.get("chance_insta_kill_hp_baixo"):
         effect.setdefault("executa_abaixo_percent", 30)
+    if skill_type in {"dano", "insta_kill"}:
+        target_name = str(skill.get("alvo", ""))
+        target_quantity = int(skill.get("quantidade", 1) or 1)
+        is_area = target_name in {"todos_inimigos", "campo", "inimigos_aleatorios"} or target_quantity > 1
+        mult_cap = 2.15 if is_area else 2.65
+        total_cap = 2.45 if is_area else 3.0
+        for key in ("multiplicador_atk", "multiplicador_matk", "multiplicador_soma_atk_matk"):
+            if key in effect:
+                try:
+                    effect[key] = min(float(effect[key]), mult_cap)
+                except (TypeError, ValueError):
+                    effect[key] = 1.0
+        if "multiplicador_hit" in effect:
+            try:
+                effect["multiplicador_hit"] = min(float(effect["multiplicador_hit"]), 3.0 if is_area else 4.0)
+            except (TypeError, ValueError):
+                effect["multiplicador_hit"] = 1.0
+        strongest_mult = max(
+            float(effect.get("multiplicador_atk", 1) or 1),
+            float(effect.get("multiplicador_matk", 1) or 1),
+            float(effect.get("multiplicador_soma_atk_matk", 1) or 1),
+        )
+        hit_mult = float(effect.get("multiplicador_hit", 1) or 1)
+        total_mult = strongest_mult * hit_mult
+        if total_mult > total_cap:
+            scale = total_cap / total_mult
+            if hit_mult > 1:
+                effect["multiplicador_hit"] = max(1.0, round(hit_mult * scale, 2))
+            else:
+                for key in ("multiplicador_atk", "multiplicador_matk", "multiplicador_soma_atk_matk"):
+                    if key in effect:
+                        effect[key] = max(0.75, round(float(effect[key]) * scale, 2))
+        for key, cap in {"dano_hp_atual": 0.18, "dano_hp_max": 0.12}.items():
+            if key in effect:
+                try:
+                    effect[key] = min(float(effect[key]), cap)
+                except (TypeError, ValueError):
+                    effect[key] = cap
 
     supported_buff_keys = {
         "buff_atk", "buff_matk", "buff_def", "buff_spd", "buff_crt",

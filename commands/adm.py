@@ -833,7 +833,10 @@ class Adm(commands.Cog):
                 (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
                 VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
             """, (str(ctx.guild.id),))
-            cursor.execute("UPDATE cidades SET prosperidade = MAX(prosperidade, ?) WHERE guild_id = ?", (nova_prosperidade, str(ctx.guild.id)))
+            cursor.execute(
+                "UPDATE cidades SET prosperidade = MIN(100, MAX(prosperidade, ?)) WHERE guild_id = ?",
+                (nova_prosperidade, str(ctx.guild.id)),
+            )
 
         cursor.execute("UPDATE summon_data SET shop_level = ?", (novo_nivel,))
         conn.commit()

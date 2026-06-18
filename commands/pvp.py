@@ -19,7 +19,7 @@ try:
     from data.heroes import HEROES
     from data.habilidades import SKILLS
     from data.equipamentos import EQUIPAMENTOS
-    from utils.combat import CombatEntity, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_combat_skill
+    from utils.combat import CombatEntity, _as_ratio, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_combat_skill
     from utils.skills import get_hero_skill_ids
     from utils.hero_stats import calculate_hero_stats, normalize_class
     from utils.equipment import get_equipment_bonus
@@ -43,6 +43,16 @@ except ModuleNotFoundError as e:
         return []
     def apply_on_hit_statuses(actor, target, critical=False):
         return []
+    def _as_ratio(value, default_when_true=0.0):
+        if value is True:
+            return float(default_when_true)
+        if value in (None, False):
+            return 0.0
+        try:
+            ratio = float(value)
+        except (TypeError, ValueError):
+            return 0.0
+        return max(0.0, ratio / 100 if ratio > 1 else ratio)
     def choose_combat_skill(actor, skills=None, allies=None, enemies=None):
         available = [skill_id for skill_id in actor.habilidades if skill_id in (skills or {}) and skill_id not in actor.cooldowns]
         return random.choice(available) if available else None
@@ -209,6 +219,10 @@ class PvpBattleView(discord.ui.View):
                 return e
         return vivos[0]
 
+    def _roll_damage_variance(self, actor, amount):
+        high = 1.10 if actor.is_enemy else 1.07
+        return max(1, int(amount * random.uniform(0.90, high)))
+
     def _gerar_timeline(self):
         todos_vivos = self._get_alive(self.team_a) + self._get_alive(self.team_b)
         fila = [e for e in self.turn_queue if not e.is_dead]
@@ -349,17 +363,42 @@ class PvpBattleView(discord.ui.View):
             if tipo in ["dano", "insta_kill", "especial"] and target.is_enemy != actor.is_enemy:
                 is_magic = "matk" in str(efeito)
                 base = actor.get_stat("matk") if is_magic else actor.get_stat("atk")
+                if efeito.get("soma_atk_matk") or efeito.get("soma_atk_matk_buff") or efeito.get("soma_atk_matk_100"):
+                    base = actor.get_stat("atk") + actor.get_stat("matk")
                 dano = base + efeito.get("dano_atk_extra", 0) + efeito.get("dano_matk_extra", 0)
                 mult = efeito.get("multiplicador_hit", 1) * efeito.get("multiplicador_atk", 1.0) * efeito.get("multiplicador_matk", 1.0)
-                if efeito.get("dano_massivo"):
-                    mult *= 2.5
                 if efeito.get("multiplica_atk_matk"):
                     mult *= efeito.get("multiplica_atk_matk")
+                if efeito.get("multiplicador_soma_atk_matk"):
+                    mult *= efeito.get("multiplicador_soma_atk_matk")
                 if random.randint(1, 100) <= actor.get_stat("crt") or efeito.get("critico_garantido", False):
                     mult *= 1.5
 
-                dano_final = actor.cap_outgoing_damage(dano * mult, is_skill=True)
-                dealt = target.take_damage(dano_final, base, is_magic=is_magic, ignore_def=efeito.get("ignora_def", False))
+                dano_final = dano * mult
+                if "dano_fixo" in efeito:
+                    dano_final += int(efeito["dano_fixo"])
+                if "dano_hp_atual" in efeito:
+                    dano_final += int(target.hp * _as_ratio(efeito["dano_hp_atual"]))
+                if "dano_hp_max" in efeito:
+                    dano_final += int(target.max_hp * _as_ratio(efeito["dano_hp_max"]))
+                dano_final = actor.cap_outgoing_damage(dano_final, is_skill=True)
+                dano_final = self._roll_damage_variance(actor, dano_final)
+
+                ignore_def = efeito.get("ignora_def_escudos", False) or efeito.get("ignora_def", False)
+                if any(
+                    efeito.get(key)
+                    for key in [
+                        "ignora_def_escudos",
+                        "ignora_escudos",
+                        "ignora_def_e_shield",
+                        "remove_escudos",
+                        "destroi_escudos",
+                        "quebra_escudos",
+                    ]
+                ):
+                    target.shield = 0
+
+                dealt = target.take_damage(dano_final, base, is_magic=is_magic, ignore_def=ignore_def)
                 total_dmg += dealt
 
                 statuses = apply_status_effects(actor, target, efeito, dealt)
@@ -433,7 +472,7 @@ class PvpBattleView(discord.ui.View):
         target = self._get_target_aggro(inimigos)
         is_crit = random.randint(1, 100) <= actor.get_stat("crt")
         dmg = actor.get_stat("atk") * (1.5 if is_crit else 1.0)
-        dealt = target.take_damage(dmg, actor.get_stat("atk"))
+        dealt = target.take_damage(self._roll_damage_variance(actor, dmg), actor.get_stat("atk"))
         apply_on_hit_statuses(actor, target, is_crit)
         crit = " CRITICO" if is_crit else ""
         log = f"{actor.clean_name} atacou {target.clean_name} por {dealt}{crit}."

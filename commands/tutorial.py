@@ -157,6 +157,18 @@ class Tutorial(commands.Cog):
             4, total, discord.Color.red()
         )
         e4.add_field(name="Afinidade (Sinergia)", value="Coloque heróis do mesmo universo no time! 2/3/4/5 heróis da mesma obra ganham buffs absurdos. Com 5, eles ganham Ressonância.", inline=False)
+        e4.add_field(
+            name="Cidade, Muralha e Invasões",
+            value=(
+                "`echo cidade` mostra HP da muralha, moral, prosperidade e suprimentos do servidor.\n"
+                "`echo doar <gold>` transforma ouro em suprimentos para obras. Sim, imposto medieval com interface.\n"
+                "`echo consertar <suprimentos>` repara a muralha; `echo melhorar` aumenta o HP máximo dela.\n"
+                "`echo loja` vende Kit de Reparos; `echo comprar 3 <qtd>` aplica suprimentos direto na cidade.\n"
+                "Invasões automáticas usam o canal definido pela staff: Raid todo dia 13:00, Boss sábado 19:00 e Calamidade no último dia do mês 22:00.\n"
+                "Quando o aviso aparecer, clique para registrar sua party. TutoriUAU avisa: olhar a muralha cair não conta como participação."
+            ),
+            inline=False,
+        )
         pages.append(e4)
 
         # ========================================================

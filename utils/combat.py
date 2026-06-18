@@ -149,12 +149,14 @@ class CombatEntity:
         if self.is_enemy or not is_skill:
             return amount
 
-        max_offense = max(self.get_stat("atk"), self.get_stat("matk"), 1)
-        soft_cap = 220 + (self.level * 35) + (max_offense * 3)
-        if self.level >= 60:
-            soft_cap *= 1.8
-        elif self.level >= 30:
+        max_offense = max(self.base_atk, self.base_matk, 1)
+        soft_cap = 85 + (self.level * 18) + (max_offense * 1.65)
+        if self.level >= 80:
+            soft_cap *= 1.55
+        elif self.level >= 50:
             soft_cap *= 1.35
+        elif self.level >= 25:
+            soft_cap *= 1.18
         return min(amount, soft_cap)
 
     def get_stat(self, stat_name):
@@ -969,7 +971,8 @@ class CombatEngine:
                     )
                 return 0
 
-        damage = target.take_damage(amount, source_atk, is_magic, ignore_def)
+        variance = random.uniform(0.90, 1.10 if actor.is_enemy else 1.07)
+        damage = target.take_damage(max(1, int(amount * variance)), source_atk, is_magic, ignore_def)
         if damage > 0:
             reflect_percent = max(
                 (
@@ -1171,7 +1174,19 @@ class CombatEngine:
                 
                 mult = efeito.get("multiplicador_hit", 1) * efeito.get("multiplicador_atk", 1.0) * efeito.get("multiplicador_matk", 1.0)
                 
-                if efeito.get("dano_massivo"): mult *= 2.5
+                if efeito.get("dano_massivo") and not any(
+                    key in efeito
+                    for key in (
+                        "multiplicador_atk",
+                        "multiplicador_matk",
+                        "multiplicador_soma_atk_matk",
+                        "dano_atk_extra",
+                        "dano_matk_extra",
+                        "dano_hp_atual",
+                        "dano_hp_max",
+                    )
+                ):
+                    mult *= 2.2
                 if efeito.get("multiplica_atk_matk"): mult *= efeito.get("multiplica_atk_matk")
                 if efeito.get("multiplicador_soma_atk_matk"): mult *= efeito.get("multiplicador_soma_atk_matk")
                 

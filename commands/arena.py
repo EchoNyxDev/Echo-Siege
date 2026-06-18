@@ -17,7 +17,7 @@ try:
     from data.enemies import ENEMIES
     from data.habilidades import SKILLS
     from data.equipamentos import EQUIPAMENTOS
-    from utils.combat import CombatEntity, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_combat_skill
+    from utils.combat import CombatEntity, _as_ratio, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_combat_skill
     from utils.xp_system import dar_xp_jogador, dar_xp_heroi
     from utils.skills import get_hero_skill_ids
     from utils.hero_stats import calculate_hero_stats, normalize_class
@@ -46,6 +46,16 @@ except ModuleNotFoundError:
         return []
     def apply_on_hit_statuses(actor, target, critical=False):
         return []
+    def _as_ratio(value, default_when_true=0.0):
+        if value is True:
+            return float(default_when_true)
+        if value in (None, False):
+            return 0.0
+        try:
+            ratio = float(value)
+        except (TypeError, ValueError):
+            return 0.0
+        return max(0.0, ratio / 100 if ratio > 1 else ratio)
     def choose_combat_skill(actor, skills=None, allies=None, enemies=None):
         available = [skill_id for skill_id in actor.habilidades if skill_id in (skills or {}) and skill_id not in actor.cooldowns]
         return random.choice(available) if available else None
@@ -172,6 +182,10 @@ class ArenaBattleView(discord.ui.View):
             if roll <= acumulado: return e
         return vivos[0]
 
+    def _roll_damage_variance(self, actor, amount):
+        high = 1.10 if actor.is_enemy else 1.07
+        return max(1, int(amount * random.uniform(0.90, high)))
+
     def _gerar_timeline(self, todos_vivos):
         if not hasattr(self, 'turn_queue'):
             self.turn_queue = []
@@ -222,7 +236,7 @@ class ArenaBattleView(discord.ui.View):
     def _executar_habilidade(self, actor, skill_id):
         if actor.is_silenced():
             target = self._get_target_aggro(self._get_alive(self.team_b if not actor.is_enemy else self.team_a))
-            dealt = target.take_damage(actor.get_stat("atk"), actor.get_stat("atk"))
+            dealt = target.take_damage(self._roll_damage_variance(actor, actor.get_stat("atk")), actor.get_stat("atk"))
             return f"🤐 {actor.clean_name} está silenciado e atacou {target.clean_name} por **{dealt}**."
 
         s_data = SKILLS.get(skill_id)
@@ -230,7 +244,7 @@ class ArenaBattleView(discord.ui.View):
             target = self._get_target_aggro(self._get_alive(self.team_b if not actor.is_enemy else self.team_a))
             is_crit = random.randint(1, 100) <= actor.get_stat("crt")
             dmg = actor.get_stat("atk") * (1.5 if is_crit else 1.0)
-            dealt = target.take_damage(dmg, actor.get_stat("atk"))
+            dealt = target.take_damage(self._roll_damage_variance(actor, dmg), actor.get_stat("atk"))
             crit_str = " (💥)" if is_crit else ""
             return f"🗡️ {actor.clean_name} atacou {target.clean_name} por **{dealt}**{crit_str}."
 
@@ -271,19 +285,44 @@ class ArenaBattleView(discord.ui.View):
         
         for t in targets:
             if tipo in ["dano", "insta_kill", "especial"] and t.is_enemy != actor.is_enemy:
-                base = actor.get_stat("matk") if ("matk" in str(efeito)) else actor.get_stat("atk")
+                is_magic = "matk" in str(efeito)
+                base = actor.get_stat("matk") if is_magic else actor.get_stat("atk")
+                if efeito.get("soma_atk_matk") or efeito.get("soma_atk_matk_buff") or efeito.get("soma_atk_matk_100"):
+                    base = actor.get_stat("atk") + actor.get_stat("matk")
                 dano_bruto = base + efeito.get("dano_atk_extra", 0) + efeito.get("dano_matk_extra", 0)
                 
                 mult = efeito.get("multiplicador_hit", 1) * efeito.get("multiplicador_atk", 1.0) * efeito.get("multiplicador_matk", 1.0)
-                if efeito.get("dano_massivo"): mult *= 2.5
                 if efeito.get("multiplica_atk_matk"): mult *= efeito.get("multiplica_atk_matk")
+                if efeito.get("multiplicador_soma_atk_matk"): mult *= efeito.get("multiplicador_soma_atk_matk")
                 
                 is_crit = random.randint(1, 100) <= actor.get_stat("crt") or efeito.get("critico_garantido", False)
                 if is_crit: mult *= 1.5
                 
                 dano_final = dano_bruto * mult
+                if "dano_fixo" in efeito:
+                    dano_final += int(efeito["dano_fixo"])
+                if "dano_hp_atual" in efeito:
+                    dano_final += int(t.hp * _as_ratio(efeito["dano_hp_atual"]))
+                if "dano_hp_max" in efeito:
+                    dano_final += int(t.max_hp * _as_ratio(efeito["dano_hp_max"]))
                 dano_final = actor.cap_outgoing_damage(dano_final, is_skill=True)
-                dealt = t.take_damage(dano_final, base, is_magic=("matk" in str(efeito)), ignore_def=efeito.get("ignora_def", False))
+                dano_final = self._roll_damage_variance(actor, dano_final)
+
+                ignore_def = efeito.get("ignora_def_escudos", False) or efeito.get("ignora_def", False)
+                if any(
+                    efeito.get(key)
+                    for key in [
+                        "ignora_def_escudos",
+                        "ignora_escudos",
+                        "ignora_def_e_shield",
+                        "remove_escudos",
+                        "destroi_escudos",
+                        "quebra_escudos",
+                    ]
+                ):
+                    t.shield = 0
+
+                dealt = t.take_damage(dano_final, base, is_magic=is_magic, ignore_def=ignore_def)
                 total_dmg += dealt
                 
                 statuses = apply_status_effects(actor, t, efeito, dealt)
@@ -365,7 +404,7 @@ class ArenaBattleView(discord.ui.View):
         target = self._get_target_aggro(vivos_a)
         is_crit = random.randint(1, 100) <= actor.get_stat("crt")
         dmg = actor.get_stat("atk") * (1.5 if is_crit else 1.0)
-        dealt = target.take_damage(dmg, actor.get_stat("atk"))
+        dealt = target.take_damage(self._roll_damage_variance(actor, dmg), actor.get_stat("atk"))
         apply_on_hit_statuses(actor, target, is_crit)
         crit = " (💥)" if is_crit else ""
         return f"🗡️ {actor.clean_name} atacou {target.clean_name} por **{dealt}**{crit}."
@@ -512,7 +551,7 @@ class ButtonAtacar(discord.ui.Button):
         
         is_crit = random.randint(1, 100) <= actor.get_stat("crt")
         dmg = actor.get_stat("atk") * (1.5 if is_crit else 1.0)
-        dealt = target.take_damage(dmg, actor.get_stat("atk"))
+        dealt = target.take_damage(self.view_ref._roll_damage_variance(actor, dmg), actor.get_stat("atk"))
         crit = " (💥)" if is_crit else ""
         
         self.view_ref.log_display.append(f"🗡️ {actor.clean_name} atacou {target.clean_name} por **{dealt}**{crit}.")

@@ -221,9 +221,19 @@ class Loja(commands.Cog):
 
         if item_id == 3:
             suprimentos = 50 * quantidade
-            try: cursor.execute("UPDATE cidades SET suprimentos = suprimentos + ? WHERE guild_id = ?", (suprimentos, str(ctx.guild.id)))
-            except sqlite3.OperationalError: pass
-            cursor.execute("UPDATE city_stats SET suprimentos = suprimentos + ? WHERE id = 1", (suprimentos,))
+            try:
+                cursor.execute("""
+                    INSERT OR IGNORE INTO cidades
+                    (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
+                    VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+                """, (str(ctx.guild.id),))
+                cursor.execute(
+                    "UPDATE cidades SET suprimentos = min(max_suprimentos, suprimentos + ?) WHERE guild_id = ?",
+                    (suprimentos, str(ctx.guild.id)),
+                )
+            except sqlite3.OperationalError:
+                pass
+            cursor.execute("UPDATE city_stats SET suprimentos = min(max_suprimentos, suprimentos + ?) WHERE id = 1", (suprimentos,))
             
             msg_sucesso = f"🔨 Compra realizada! Você comprou **{quantidade}x Kit(s) de Reparos** e aplicou diretamente nas muralhas (+{suprimentos} Suprimentos)."
         else:

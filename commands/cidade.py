@@ -3,6 +3,8 @@ from discord.ext import commands
 from discord import app_commands
 import sqlite3
 
+CITY_STAT_CAP = 100
+
 class Cidade(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -24,6 +26,7 @@ class Cidade(commands.Cog):
             prosperidade INTEGER DEFAULT 0
         )
         """)
+        self._clamp_city_caps(cursor)
         
         try:
             cursor.execute("ALTER TABLE server_config ADD COLUMN guild_id TEXT")
@@ -32,6 +35,15 @@ class Cidade(commands.Cog):
 
         conn.commit()
         conn.close()
+
+    def _clamp_city_caps(self, cursor):
+        cursor.execute("UPDATE cidades SET moral = ? WHERE moral > ?", (CITY_STAT_CAP, CITY_STAT_CAP))
+        cursor.execute("UPDATE cidades SET prosperidade = ? WHERE prosperidade > ?", (CITY_STAT_CAP, CITY_STAT_CAP))
+        try:
+            cursor.execute("UPDATE city_stats SET moral = ? WHERE moral > ?", (CITY_STAT_CAP, CITY_STAT_CAP))
+            cursor.execute("UPDATE city_stats SET prosperidade = ? WHERE prosperidade > ?", (CITY_STAT_CAP, CITY_STAT_CAP))
+        except sqlite3.OperationalError:
+            pass
 
     # ==========================================
     # LAZY INITIALIZATION: Puxa ou Cria a Cidade
@@ -49,8 +61,11 @@ class Cidade(commands.Cog):
                 VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
             """, (str(guild_id),))
             conn.commit()
-            cursor.execute("SELECT hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade, nome FROM cidades WHERE guild_id = ?", (str(guild_id),))
-            city = cursor.fetchone()
+
+        self._clamp_city_caps(cursor)
+        conn.commit()
+        cursor.execute("SELECT hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade, nome FROM cidades WHERE guild_id = ?", (str(guild_id),))
+        city = cursor.fetchone()
             
         conn.close()
         return city
@@ -175,7 +190,7 @@ class Cidade(commands.Cog):
     # ==========================================
     # SISTEMA DE CONSERTO DA MURALHA
     # ==========================================
-    @commands.command(name="consertar")
+    @commands.command(name="consertar", aliases=["reparar", "reparos", "muralha"])
     async def consertar_muralha(self, ctx, suprimentos_usados: int = 0):
         if not ctx.guild: return await ctx.send("❌ Precisa estar num servidor.")
             
@@ -218,7 +233,7 @@ class Cidade(commands.Cog):
     # ==========================================
     # SISTEMA DE MELHORIA DA MURALHA (+MAX HP)
     # ==========================================
-    @commands.command(name="melhorar")
+    @commands.command(name="melhorar", aliases=["evoluircidade", "evoluir_cidade", "melhorarcidade", "melhorar_cidade"])
     async def melhorar_muralha(self, ctx):
         if not ctx.guild: return await ctx.send("❌ Precisa estar num servidor.")
         custo = 2500

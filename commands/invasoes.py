@@ -67,6 +67,7 @@ except ModuleNotFoundError:
 
 BRT = datetime.timezone(datetime.timedelta(hours=-3))
 ROLE_INVOCADOR_ID = 1512228151382511748
+CITY_STAT_CAP = 100
 
 TYPE_ALIASES = {
     "diaria": "raid",
@@ -267,6 +268,22 @@ def ensure_invasion_db(cursor):
         """
     )
     cursor.execute("INSERT OR IGNORE INTO city_stats (id) VALUES (1)")
+    cursor.execute(
+        "UPDATE city_stats SET moral = ? WHERE moral > ?",
+        (CITY_STAT_CAP, CITY_STAT_CAP),
+    )
+    cursor.execute(
+        "UPDATE city_stats SET prosperidade = ? WHERE prosperidade > ?",
+        (CITY_STAT_CAP, CITY_STAT_CAP),
+    )
+    cursor.execute(
+        "UPDATE cidades SET moral = ? WHERE moral > ?",
+        (CITY_STAT_CAP, CITY_STAT_CAP),
+    )
+    cursor.execute(
+        "UPDATE cidades SET prosperidade = ? WHERE prosperidade > ?",
+        (CITY_STAT_CAP, CITY_STAT_CAP),
+    )
 
 
 def _ensure_city(cursor, guild_id):
@@ -277,6 +294,14 @@ def _ensure_city(cursor, guild_id):
         VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
         """,
         (str(guild_id),),
+    )
+    cursor.execute(
+        "UPDATE cidades SET moral = ? WHERE guild_id = ? AND moral > ?",
+        (CITY_STAT_CAP, str(guild_id), CITY_STAT_CAP),
+    )
+    cursor.execute(
+        "UPDATE cidades SET prosperidade = ? WHERE guild_id = ? AND prosperidade > ?",
+        (CITY_STAT_CAP, str(guild_id), CITY_STAT_CAP),
     )
 
 
@@ -325,7 +350,7 @@ def _scale_enemy_stats(enemy_data, invasion_type, metrics, enemy_count=1):
     damage_factor = {"raid": 0.08, "boss": 0.11, "calamidade": 0.14}[invasion_type]
     defense_factor = {"raid": 0.75, "boss": 1.00, "calamidade": 1.20}[invasion_type]
 
-    jitter = random.uniform(0.92, 1.08)
+    jitter = random.uniform(0.94, 1.10)
     hp = int((metrics["total_offense"] * hp_factor / enemy_count) * jitter)
     offense = int((metrics["total_hp"] * damage_factor / enemy_count) * jitter)
     defense = int((metrics["avg_def"] * defense_factor) + (metrics["avg_level"] * 1.4))
@@ -631,8 +656,8 @@ class Invasoes(commands.Cog):
             cursor.execute(
                 """
                 UPDATE cidades
-                SET moral = min(200, moral + ?),
-                    prosperidade = prosperidade + ?
+                SET moral = min(100, max(0, moral) + ?),
+                    prosperidade = min(100, max(0, prosperidade) + ?)
                 WHERE guild_id = ?
                 """,
                 (config["victory_moral"], config["prosperity"], str(guild_id)),
@@ -640,8 +665,8 @@ class Invasoes(commands.Cog):
             cursor.execute(
                 """
                 UPDATE city_stats
-                SET moral = min(200, moral + ?),
-                    prosperidade = prosperidade + ?
+                SET moral = min(100, max(0, moral) + ?),
+                    prosperidade = min(100, max(0, prosperidade) + ?)
                 WHERE id = 1
                 """,
                 (config["victory_moral"], config["prosperity"]),
@@ -650,7 +675,7 @@ class Invasoes(commands.Cog):
             cursor.execute(
                 """
                 UPDATE cidades
-                SET moral = max(0, moral - ?),
+                SET moral = max(0, min(100, moral) - ?),
                     hp = max(0, hp - ?)
                 WHERE guild_id = ?
                 """,
@@ -659,7 +684,7 @@ class Invasoes(commands.Cog):
             cursor.execute(
                 """
                 UPDATE city_stats
-                SET moral = max(0, moral - ?),
+                SET moral = max(0, min(100, moral) - ?),
                     hp = max(0, hp - ?)
                 WHERE id = 1
                 """,

@@ -235,6 +235,10 @@ add_column(cursor, "cidades", "moral", "INTEGER DEFAULT 100")
 add_column(cursor, "cidades", "suprimentos", "INTEGER DEFAULT 0")
 add_column(cursor, "cidades", "max_suprimentos", "INTEGER DEFAULT 5000")
 add_column(cursor, "cidades", "prosperidade", "INTEGER DEFAULT 0")
+cursor.execute("UPDATE city_stats SET moral = 100 WHERE moral > 100")
+cursor.execute("UPDATE city_stats SET prosperidade = 100 WHERE prosperidade > 100")
+cursor.execute("UPDATE cidades SET moral = 100 WHERE moral > 100")
+cursor.execute("UPDATE cidades SET prosperidade = 100 WHERE prosperidade > 100")
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS player_guilds(

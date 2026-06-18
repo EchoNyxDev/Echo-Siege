@@ -233,6 +233,7 @@ class Ajuda(commands.Cog):
                 "`forja` - Onde você transforma o lixo dos monstros em armas, consumíveis e tickets mágicos.\n"
                 "`consumir <item>` - Bebe poções, rasga pergaminhos ou aciona tickets da sua mochila.\n"
                 "`vender <item> [qtd|tudo]` - Livra-se do peso extra e ganha um troco.\n"
+                "`doar <gold>` / `consertar <suprimentos>` / `melhorar` - Abastece, repara e evolui a muralha da cidade.\n"
                 "`code <código>` - Usa códigos promocionais secretos.\n"
                 "`moldura <nome>` / `titulo <nome>` - Veste seus cosméticos adquiridos."
             ),
