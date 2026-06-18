@@ -132,7 +132,11 @@ def migrate_legacy_codes(cursor):
     legacy_cursor = legacy.cursor()
     try:
         legacy_cursor.execute(
-            "SELECT code, recompensa, COALESCE(created_at, 0), COALESCE(expires_at, 0) FROM codes"
+            """
+            SELECT UPPER(TRIM(code)), recompensa, COALESCE(created_at, 0), COALESCE(expires_at, 0)
+            FROM codes
+            WHERE code IS NOT NULL AND TRIM(code) != '' AND recompensa IS NOT NULL
+            """
         )
         for code, recompensa, created_at, expires_at in legacy_cursor.fetchall():
             cursor.execute(

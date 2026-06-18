@@ -26,7 +26,7 @@ PATCH_NOTES = [
             ("Codes", 
              "Agora FINALMENTE os codes vão parar de sumir. Eu espero. Tomem code novo como desculpas")
         ],
-        "footer": "TutoriUAU: 'Resumindo, ele está subornando voces para continuarem jogando. Continuem jogando, meu salário ficcticio depende disso!s'"
+        "footer": "TutoriUAU: 'Resumindo, ele está subornando voces para continuarem jogando. Continuem jogando, meu salário ficcticio depende disso!'"
     },
     {
         "id": "patch_18",

@@ -464,6 +464,373 @@ class BannerBuilderView(discord.ui.View):
             except discord.HTTPException:
                 pass
 
+class AdminCombatDummyUser:
+    def __init__(self, name):
+        self.id = 0
+        self.name = name
+        self.display_name = name
+        self.mention = f"**{name}**"
+        self.bot = True
+
+
+class AdminCombatAddHeroModal(discord.ui.Modal, title="Adicionar herói ao teste"):
+    hero_query = discord.ui.TextInput(
+        label="Nome ou ID do herói",
+        placeholder="Ex: Levi, sinbad, natsu_dragneel...",
+        max_length=80,
+    )
+
+    def __init__(self, setup_view):
+        super().__init__()
+        self.setup_view = setup_view
+
+    async def on_submit(self, interaction: discord.Interaction):
+        ok, message = self.setup_view.add_hero(str(self.hero_query.value))
+        await interaction.response.send_message(message, ephemeral=True)
+        if ok and self.setup_view.message:
+            await self.setup_view.message.edit(embed=self.setup_view.build_embed(), view=self.setup_view)
+
+
+class AdminCombatTestSetupView(discord.ui.View):
+    MAX_HEROES = 5
+
+    def __init__(self, cog, ctx):
+        super().__init__(timeout=300)
+        self.cog = cog
+        self.ctx = ctx
+        self.heroes = []
+        self.message = None
+        self._sync_buttons()
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.ctx.author.id:
+            await interaction.response.send_message("Esse laboratório é de outro admin. TutoriUAU guardou a prancheta.", ephemeral=True)
+            return False
+        return True
+
+    def _sync_buttons(self):
+        for child in self.children:
+            if getattr(child, "custom_id", None) == "start_debug_combat":
+                child.disabled = not self.heroes
+            if getattr(child, "custom_id", None) == "add_debug_hero":
+                child.disabled = len(self.heroes) >= self.MAX_HEROES
+
+    def _find_hero(self, query):
+        query_norm = normalize_hero_name(query)
+        if not query_norm:
+            return None, None
+
+        for hero_id, hero in HEROES.items():
+            if hero_id == "id-nome":
+                continue
+            if query_norm in {normalize_hero_name(hero_id), normalize_hero_name(hero.get("nome", hero_id))}:
+                return hero_id, hero
+
+        for hero_id, hero in HEROES.items():
+            if hero_id == "id-nome":
+                continue
+            name_norm = normalize_hero_name(hero.get("nome", hero_id))
+            if query_norm in name_norm or query_norm in normalize_hero_name(hero_id):
+                return hero_id, hero
+        return None, None
+
+    def _build_test_hero(self, hero_id, hero):
+        stats = calculate_hero_stats(hero, stars=1, level=1, equipment_bonuses=[])
+        skill_ids = get_hero_skill_ids(hero, stars=99, rarity=hero.get("raridade", 1))
+        return {
+            "id": f"debug_{len(self.heroes) + 1}_{hero_id}",
+            "hero_id": hero_id,
+            "nome": f"{hero.get('nome', hero_id)} [Teste]",
+            "classe": normalize_class(hero.get("classe", "neutro")),
+            "level": 1,
+            "hp": stats["hp"],
+            "atk": stats["atk"],
+            "matk": stats["matk"],
+            "def": stats["def"],
+            "spd": stats["spd"],
+            "crt": stats["crt"],
+            "stats": stats,
+            "habilidades": skill_ids,
+        }
+
+    def add_hero(self, query):
+        if len(self.heroes) >= self.MAX_HEROES:
+            return False, "O teste aceita no máximo 5 heróis. Até laboratório precisa de limite, infelizmente."
+
+        hero_id, hero = self._find_hero(query)
+        if not hero:
+            return False, f"Não encontrei **{query}** no catálogo."
+
+        test_hero = self._build_test_hero(hero_id, hero)
+        self.heroes.append(test_hero)
+        self._sync_buttons()
+        skills = ", ".join(SKILLS.get(skill_id, {}).get("nome", skill_id) for skill_id in test_hero["habilidades"]) or "nenhuma habilidade"
+        return True, f"Adicionado: **{hero.get('nome', hero_id)}** Lv 1 base com habilidades liberadas: {skills}."
+
+    def build_embed(self):
+        self._sync_buttons()
+        embed = discord.Embed(
+            title="ADM Combate Teste",
+            description=(
+                "Monte até **5 heróis base Lv 1** para bater em uma calamidade parada.\n"
+                "As habilidades de evolução ficam liberadas para debug, porque hoje a ciência venceu a progressão."
+            ),
+            color=discord.Color.dark_teal(),
+        )
+        if self.heroes:
+            lines = []
+            for index, hero in enumerate(self.heroes, start=1):
+                skill_names = [SKILLS.get(skill_id, {}).get("nome", skill_id) for skill_id in hero.get("habilidades", [])]
+                lines.append(
+                    f"**{index}. {hero['nome']}** | ATK {hero['stats']['atk']} / MATK {hero['stats']['matk']} / HP {hero['stats']['hp']}\n"
+                    f"Habilidades: {_cortar_texto(', '.join(skill_names) or 'nenhuma', 220)}"
+                )
+            embed.add_field(name="Equipe de Teste", value=_cortar_texto("\n\n".join(lines), 1024), inline=False)
+        else:
+            embed.add_field(name="Equipe de Teste", value="Nenhum herói selecionado ainda.", inline=False)
+        embed.set_footer(text="TutoriUAU: escolha bonecos, aperte iniciar, descubra qual habilidade quebrou a matemática.")
+        return embed
+
+    @discord.ui.button(label="Adicionar Herói", style=discord.ButtonStyle.primary, custom_id="add_debug_hero")
+    async def add_hero_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(AdminCombatAddHeroModal(self))
+
+    @discord.ui.button(label="Iniciar Teste", style=discord.ButtonStyle.success, custom_id="start_debug_combat")
+    async def start_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if not self.heroes:
+            return await interaction.response.send_message("Adicione pelo menos um herói antes. Testar o vazio é filosofia, não QA.", ephemeral=True)
+
+        pool = [(boss_id, data) for boss_id, data in RAID_BOSSES.items() if data.get("tipo") in {"mensal", "calamidade"}]
+        if not pool:
+            return await interaction.response.send_message("Não encontrei calamidades cadastradas para usar como boneco de treino.", ephemeral=True)
+
+        boss_id, boss_data = random.choice(pool)
+        battle = AdminCombatTestBattleView(self.ctx, list(self.heroes), boss_id, boss_data)
+        battle.add_message(interaction.message)
+        await battle.processar_fila(interaction)
+
+    @discord.ui.button(label="Limpar", style=discord.ButtonStyle.secondary)
+    async def clear_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.heroes.clear()
+        self._sync_buttons()
+        await interaction.response.edit_message(embed=self.build_embed(), view=self)
+
+    @discord.ui.button(label="Cancelar", style=discord.ButtonStyle.danger)
+    async def cancel_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.stop()
+        await interaction.response.edit_message(content="Combate teste cancelado. TutoriUAU guardou os jalecos.", embed=None, view=None)
+
+
+class AdminCombatSkillSelect(discord.ui.Select):
+    def __init__(self, battle_view, skills):
+        options = []
+        for skill_id in skills[:25]:
+            skill = SKILLS.get(skill_id, {})
+            label = skill.get("nome", skill_id)[:100]
+            description = f"{skill.get('tipo', 'habilidade')} | {skill.get('alvo', 'alvo')}"[:100]
+            options.append(discord.SelectOption(label=label, value=skill_id, description=description))
+        super().__init__(
+            placeholder="Escolha a habilidade para testar...",
+            min_values=1,
+            max_values=1,
+            options=options,
+        )
+        self.battle_view = battle_view
+
+    async def callback(self, interaction: discord.Interaction):
+        async with self.battle_view.action_lock:
+            if not await self.battle_view._validate_admin_turn(interaction):
+                return
+            actor = self.battle_view.current_actor
+            skill_id = self.values[0]
+            if skill_id in actor.cooldowns:
+                return await interaction.response.send_message("Essa habilidade está em recarga neste teste.", ephemeral=True)
+            self.battle_view.log_display.append(self.battle_view._executar_habilidade(actor, skill_id))
+            await self.battle_view.processar_fila(interaction)
+
+
+class AdminCombatBasicButton(discord.ui.Button):
+    def __init__(self, battle_view):
+        super().__init__(label="Ataque Básico", style=discord.ButtonStyle.secondary)
+        self.battle_view = battle_view
+
+    async def callback(self, interaction: discord.Interaction):
+        async with self.battle_view.action_lock:
+            if not await self.battle_view._validate_admin_turn(interaction):
+                return
+            self.battle_view.log_display.append(self.battle_view._ataque_basico(self.battle_view.current_actor))
+            await self.battle_view.processar_fila(interaction)
+
+
+class AdminCombatExitButton(discord.ui.Button):
+    def __init__(self, battle_view):
+        super().__init__(label="Sair", style=discord.ButtonStyle.danger)
+        self.battle_view = battle_view
+
+    async def callback(self, interaction: discord.Interaction):
+        if not await self.battle_view._validate_admin_turn(interaction, allow_any_turn=True):
+            return
+        await self.battle_view.encerrar(interaction, "Simulação encerrada manualmente.")
+
+
+class AdminCombatControls(discord.ui.View):
+    def __init__(self, battle_view):
+        super().__init__(timeout=None)
+        self.battle_view = battle_view
+        actor = battle_view.current_actor
+        available_skills = [
+            skill_id
+            for skill_id in (actor.habilidades if actor else [])
+            if skill_id in SKILLS and skill_id not in actor.cooldowns
+        ]
+        if available_skills:
+            self.add_item(AdminCombatSkillSelect(battle_view, available_skills))
+        self.add_item(AdminCombatBasicButton(battle_view))
+        self.add_item(AdminCombatExitButton(battle_view))
+
+
+class AdminCombatTestBattleView(PvpBattleView if PvpBattleView else discord.ui.View):
+    def __init__(self, ctx, heroes, calamity_id, calamity_data):
+        self.ctx = ctx
+        self.calamity_id = calamity_id
+        self.calamity_data = calamity_data
+        opponent = AdminCombatDummyUser(calamity_data.get("nome", calamity_id))
+        enemy_raw = {
+            "id": calamity_id,
+            "nome": f"{calamity_data.get('nome', calamity_id)} [Boneco]",
+            "classe": "calamidade",
+            "stats": {
+                "hp": int(calamity_data.get("hp", 500000) or 500000),
+                "atk": int(calamity_data.get("atk", 0) or 0),
+                "matk": int(calamity_data.get("matk", 0) or 0),
+                "def": int(calamity_data.get("def", 0) or 0),
+                "spd": 1,
+                "crt": 0,
+                "level": 999,
+            },
+            "habilidades": [],
+        }
+        super().__init__(None, ctx.channel, ctx.author, opponent, heroes, [enemy_raw], online=False)
+        for enemy in self.team_b:
+            enemy.habilidades = []
+            enemy.base_spd = 1
+        self.log_display = [
+            f"Teste iniciado contra {self.team_b[0].clean_name}. A calamidade não ataca; só apanha com dignidade duvidosa."
+        ]
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.ctx.author.id:
+            await interaction.response.send_message("Só o admin que abriu o teste pode clicar aqui.", ephemeral=True)
+            return False
+        return True
+
+    async def _validate_admin_turn(self, interaction, allow_any_turn=False):
+        if interaction.user.id != self.ctx.author.id:
+            await interaction.response.send_message("Esse teste pertence a outro admin.", ephemeral=True)
+            return False
+        if self.finalizado:
+            await interaction.response.send_message("Essa simulação já terminou.", ephemeral=True)
+            return False
+        if not allow_any_turn and (not self.current_actor or self.current_actor.is_enemy):
+            await interaction.response.send_message("Ainda não é turno de um herói de teste.", ephemeral=True)
+            return False
+        return True
+
+    def _build_controls(self):
+        return AdminCombatControls(self)
+
+    async def _atualizar_mensagem(self, interaction=None):
+        self._restart_timeout()
+        actor_name = self.current_actor.clean_name if self.current_actor else "aguardando"
+        target = self.team_b[0]
+        embed = discord.Embed(
+            title="ADM Combate Teste",
+            description=f"Turno de **{actor_name}**. Escolha exatamente o que quer testar.",
+            color=discord.Color.dark_teal(),
+        )
+        embed.add_field(name="Heróis de Teste", value=_cortar_texto(self._barra_time(self.team_a)), inline=True)
+        embed.add_field(name="Boneco de Calamidade", value=_cortar_texto(self._barra_time(self.team_b)), inline=True)
+        embed.add_field(
+            name="HP do Alvo",
+            value=f"**{target.hp:,}/{target.max_hp:,}**\nDEF {target.get_stat('def'):,}",
+            inline=False,
+        )
+        embed.add_field(name="Log de Teste", value=f"```{_cortar_texto(chr(10).join(self.log_display[-8:]), 1000)}```", inline=False)
+        embed.set_footer(text="TutoriUAU: isso aqui é um laboratório. Se explodir, pelo menos agora temos log.")
+
+        controls = self._build_controls()
+        if interaction:
+            try:
+                await interaction.response.edit_message(embed=embed, view=controls)
+            except discord.errors.InteractionResponded:
+                await interaction.message.edit(embed=embed, view=controls)
+        elif self.messages:
+            await self.messages[0].edit(embed=embed, view=controls)
+        else:
+            message = await self.ctx.send(embed=embed, view=controls)
+            self.add_message(message)
+
+    async def processar_fila(self, interaction=None):
+        while not self.finalizado:
+            vivos_a = self._get_alive(self.team_a)
+            vivos_b = self._get_alive(self.team_b)
+            if not vivos_a:
+                return await self.encerrar(interaction, "Todos os heróis de teste caíram. Isso não deveria acontecer, mas o universo é criativo.")
+            if not vivos_b:
+                return await self.encerrar(interaction, "A calamidade de teste foi derrotada.")
+
+            all_alive = vivos_a + vivos_b
+            self.turn_queue = [entity for entity in self.turn_queue if not entity.is_dead]
+            if not self.turn_queue:
+                self.turn_queue = sorted(all_alive, key=lambda entity: (entity.get_stat("spd"), 0 if entity.is_enemy else 1), reverse=True)
+
+            actor = self.turn_queue.pop(0)
+            estava_atordoado = actor.is_stunned()
+            dot_logs = actor.tick_effects()
+            self.log_display.extend(dot_logs)
+
+            if actor.is_dead:
+                continue
+            if actor.is_enemy:
+                self.log_display.append(f"{actor.clean_name} ficou parado e passou o turno. Boneco profissional.")
+                continue
+            if estava_atordoado:
+                self.log_display.append(f"{actor.clean_name} está atordoado e perdeu a vez.")
+                continue
+
+            self.current_actor = actor
+            await self._atualizar_mensagem(interaction)
+            return
+
+    async def encerrar(self, interaction=None, motivo="Simulação encerrada."):
+        if self.finalizado:
+            return
+        self.finalizado = True
+        self._cancel_timeout()
+        embed = discord.Embed(
+            title="ADM Combate Teste Encerrado",
+            description=motivo,
+            color=discord.Color.orange(),
+        )
+        embed.add_field(name="Últimos acontecimentos", value=f"```{_cortar_texto(chr(10).join(self.log_display[-10:]), 1000)}```", inline=False)
+        embed.set_footer(text="TutoriUAU: relatório encerrado. Nenhuma calamidade real foi ferida. Tecnicamente.")
+        if interaction:
+            try:
+                await interaction.response.edit_message(embed=embed, view=None)
+            except discord.errors.InteractionResponded:
+                await interaction.message.edit(embed=embed, view=None)
+        for message in list(self.messages):
+            if interaction and message.id == interaction.message.id:
+                continue
+            try:
+                await message.edit(embed=embed, view=None)
+            except (discord.NotFound, discord.Forbidden, discord.HTTPException):
+                pass
+
+    async def on_timeout(self):
+        if not self.finalizado:
+            await self.encerrar(None, "Simulação encerrada por inatividade.")
+
 
 class Adm(commands.Cog):
     def __init__(self, bot):
@@ -1152,6 +1519,7 @@ class Adm(commands.Cog):
                            "`echo adm criarcode <code> <G1000 T3 heroi item>`\n"
                            "`echo adm criarcode temp <dias> <code> <recompensas>`\n"
                            "`echo adm delete code <code>`\n"
+                           "`echo adm combate teste` (Laboratório de dano/habilidades contra calamidade parada)\n"
                            "`echo adm criar banner` (Editor do banner especial por 7 dias)\n"
                            "`echo adm melhorar loja` (Sobe a loja em 1 nível para testes)\n"
                            "`echo adm reset cidade` (Reseta Lugnica)\n"
@@ -1203,6 +1571,18 @@ class Adm(commands.Cog):
 
         if action in ["delechar", "deletechar", "delchar", "apagarheroi"]:
             return await self._delete_character(ctx, target_id, arg2)
+
+        if action in ["combate", "combat"] and (arg1 or "").lower() in ["teste", "test", "debug"]:
+            view = AdminCombatTestSetupView(self, ctx)
+            message = await ctx.send(embed=view.build_embed(), view=view)
+            view.message = message
+            return
+
+        if action in ["combateteste", "combate_teste", "testcombat"]:
+            view = AdminCombatTestSetupView(self, ctx)
+            message = await ctx.send(embed=view.build_embed(), view=view)
+            view.message = message
+            return
 
         # ================== RAIDS POR SERVIDOR ==================
         if action in ["set_iniciar", "set_invasao", "setcanal"]:
