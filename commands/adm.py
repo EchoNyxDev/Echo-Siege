@@ -805,6 +805,7 @@ class AdminCombatTestBattleView(PvpBattleView if PvpBattleView else discord.ui.V
             estava_atordoado = actor.is_stunned()
             dot_logs = actor.tick_effects()
             self.log_display.extend(dot_logs)
+            self.log_display.extend(self._sincronizar_clones())
 
             if actor.is_dead:
                 continue

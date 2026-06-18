@@ -19,7 +19,8 @@ except ModuleNotFoundError:
     HEROES = {}
     EQUIPAMENTOS = {}
     def connect_codes_db():
-        return sqlite3.connect("players.db")
+        # Adicionado timeout de 20s para evitar locks em picos de uso
+        return sqlite3.connect("players.db", timeout=20.0)
     def init_codes_db():
         pass
 
@@ -198,7 +199,7 @@ class Codes(commands.Cog):
         return embeds
 
     def _aplicar_recompensa(self, user_id, recompensa):
-        conn = sqlite3.connect("players.db")
+        conn = sqlite3.connect("players.db", timeout=20.0)
         cursor = conn.cursor()
 
         cursor.execute("SELECT user_id FROM players WHERE user_id = ?", (user_id,))
@@ -281,23 +282,31 @@ class Codes(commands.Cog):
                 f"❌ O código **{nome_do_code}** expirou. TutoriUAU tentou negociar com o calendário e perdeu."
             )
 
-        # Corrigido o bug do "BEGIN IMMEDIATE" que travava o SQLite
+        # 1. Inserimos o resgate PRIMEIRO para travar a corrida (Race Condition)
         try:
             cursor.execute(
                 "INSERT INTO code_redemptions (code, user_id) VALUES (?, ?)",
                 (codigo, str(ctx.author.id)),
             )
+            conn.commit()
         except sqlite3.IntegrityError:
             conn.close()
             return await ctx.send(f"❌ Você já resgatou o código **{nome_do_code}**.")
 
-        sucesso, mensagem = self._aplicar_recompensa(str(ctx.author.id), recompensa)
-        if not sucesso:
-            conn.close()
-            return await ctx.send(f"❌ {mensagem}")
-
-        conn.commit()
+        # 2. Fechamos a conexão Imediatamente para liberar o banco e evitar Locks!
         conn.close()
+
+        # 3. Agora aplicamos a recompensa com o banco livre
+        sucesso, mensagem = self._aplicar_recompensa(str(ctx.author.id), recompensa)
+        
+        # 4. Se a recompensa falhar, devolvemos o uso do code ao jogador
+        if not sucesso:
+            conn = connect_codes_db()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM code_redemptions WHERE code = ? AND user_id = ?", (codigo, str(ctx.author.id)))
+            conn.commit()
+            conn.close()
+            return await ctx.send(f"❌ Falha no resgate: {mensagem}")
 
         await ctx.send(f"✅ Código resgatado! Você recebeu: **{mensagem}**")
 

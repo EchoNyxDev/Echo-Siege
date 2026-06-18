@@ -163,6 +163,7 @@ class PvpBattleView(discord.ui.View):
         self.messages = []
         self.public_messages = []
         self.log_display = ["O duelo começou. A ordem dos turnos segue a velocidade dos heróis."]
+        self.log_display.extend(self._ativar_passivas_iniciais())
         self.finalizado = False
         self.action_lock = asyncio.Lock()
         self.timeout_task = asyncio.create_task(self._timeout_after_inactivity())
@@ -220,6 +221,293 @@ class PvpBattleView(discord.ui.View):
             if roll <= acumulado:
                 return e
         return vivos[0]
+
+    def _todas_entidades(self):
+        return self.team_a + self.team_b
+
+    def _aplicar_efeitos_suporte(self, actor, target, efeito, turnos=3, include_basic=False):
+        if not target or target.is_dead:
+            return []
+
+        notes = []
+        turnos = max(1, int(turnos or efeito.get("turnos", 3) or 3))
+        buffs_blocked = any(debuff.get("stat") == "bloqueia_buffs" for debuff in target.debuffs)
+
+        if include_basic and not buffs_blocked:
+            for key, stat_name in [
+                ("buff_atk", "atk"),
+                ("buff_matk", "matk"),
+                ("buff_def", "def"),
+                ("buff_spd", "spd"),
+            ]:
+                if key in efeito:
+                    target.buffs.append({"stat": stat_name, "mult": efeito[key] / 100.0, "turnos": turnos})
+                    notes.append(stat_name.upper())
+            if "buff_crt" in efeito:
+                target.buffs.append({"stat": "crt", "flat": efeito["buff_crt"], "turnos": turnos})
+                notes.append("CRT")
+            if "buff_geral" in efeito:
+                for stat_name in ["atk", "matk", "def", "spd"]:
+                    target.buffs.append({"stat": stat_name, "mult": efeito["buff_geral"] / 100.0, "turnos": turnos})
+                notes.append("atributos gerais")
+
+        if "cura_turnos" in efeito:
+            target.buffs.append({"stat": "regen", "regen": int(efeito["cura_turnos"]), "turnos": turnos})
+            notes.append("regeneração")
+        if "escudo_hp_max" in efeito and not buffs_blocked:
+            ganho = max(1, int(target.max_hp * float(efeito["escudo_hp_max"])))
+            target.shield += ganho
+            notes.append(f"escudo {ganho}")
+        if "imortalidade_turnos" in efeito:
+            target.buffs.append({"stat": "imortal", "imortal": True, "turnos": int(efeito["imortalidade_turnos"])})
+            notes.append("imortalidade")
+        if "imunidade_dano_turnos" in efeito:
+            target.buffs.append({"stat": "imune", "imune_all": True, "turnos": int(efeito.get("imunidade_dano_turnos") or turnos)})
+            notes.append("imunidade total")
+        if efeito.get("ignora_dano_fisico") or efeito.get("imune_dano_fisico") or efeito.get("imunidade_dano_fisico"):
+            target.buffs.append({"stat": "imune", "imune_fisico": True, "turnos": turnos})
+            notes.append("imunidade física")
+        if efeito.get("ignora_dano_magico"):
+            target.buffs.append({"stat": "imune", "imune_magico": True, "turnos": turnos})
+            notes.append("imunidade mágica")
+        if "reduz_dano_recebido" in efeito:
+            target.buffs.append({"stat": "damage_reduction", "reduz_dano_recebido": efeito["reduz_dano_recebido"], "turnos": turnos})
+            notes.append("redução de dano")
+        if "chance_ataque_duplo" in efeito:
+            target.buffs.append({"stat": "extra_attack", "chance_ataque_duplo": float(efeito["chance_ataque_duplo"]), "turnos": turnos})
+            notes.append("ataque duplo")
+        if "chance_insta_kill_on_hit" in efeito or efeito.get("insta_kill_on_hit_garantido"):
+            target.buffs.append({
+                "stat": "on_hit_status",
+                "chance_insta_kill_on_hit": float(efeito.get("chance_insta_kill_on_hit", 1.0)),
+                "dano_minimo_atk": bool(efeito.get("dano_minimo_atk")),
+                "turnos": turnos,
+            })
+            notes.append("abate ao atacar")
+        if efeito.get("absorve_proxima_habilidade_reflete_dobro") or "absorver_dano_refletir" in efeito:
+            target.buffs.append({
+                "stat": "skill_absorb",
+                "absorve_proxima_habilidade": True,
+                "reflect_mult": float(efeito.get("absorver_dano_refletir", 2.0) or 2.0),
+                "turnos": turnos,
+            })
+            notes.append("absorção")
+        if efeito.get("anular_habilidade_contra_si"):
+            target.buffs.append({
+                "stat": "skill_nullify",
+                "anula_proxima_habilidade": int(efeito.get("anular_habilidade_contra_si") or 1),
+                "turnos": turnos,
+            })
+            notes.append("anulação")
+        if efeito.get("morre_apos_turnos"):
+            target.buffs.append({
+                "stat": "self_ko_timer",
+                "morre_apos_turnos": True,
+                "turnos": int(efeito["morre_apos_turnos"]),
+            })
+            notes.append("risco mortal")
+        if efeito.get("melhora_item_usado"):
+            bonus = float(efeito["melhora_item_usado"])
+            for stat_name in ["atk", "matk", "def"]:
+                target.buffs.append({"stat": stat_name, "mult": bonus, "turnos": turnos})
+            notes.append("Jinki no equipamento")
+        if efeito.get("contrato_morte_dps") or efeito.get("insta_kill_inimigo_aleatorio"):
+            target.buffs.append({"stat": "contrato_makima", "contrato_makima": True, "turnos": turnos})
+            notes.append("contrato")
+        if efeito.get("marca_dps_redireciona_dano_self"):
+            actor.buffs.append({"stat": "taunt", "turnos": turnos})
+            actor.buffs.append({"stat": "damage_reduction", "reduz_dano_recebido": 25, "turnos": turnos})
+            notes.append("proteção do diário")
+        if efeito.get("transfere_atk_para_dps") and not buffs_blocked:
+            target.buffs.append({"stat": "atk", "flat": max(1, int(actor.get_stat("atk") * 0.35)), "turnos": turnos})
+            notes.append("ATK transferido")
+
+        apply_status_protection(target, efeito, turnos)
+        return notes
+
+    def _ativar_passivas_iniciais(self):
+        logs = []
+        for team in [self.team_a, self.team_b]:
+            for actor in list(team):
+                for skill_id in actor.habilidades:
+                    skill = SKILLS.get(skill_id)
+                    if not skill or skill.get("tipo") != "passiva":
+                        continue
+                    efeito = skill.get("efeito", {})
+                    target = actor
+                    if efeito.get("contrato_morte_dps") or efeito.get("insta_kill_inimigo_aleatorio"):
+                        vivos = self._get_alive(team)
+                        if vivos:
+                            target = max(vivos, key=lambda ally: ally.get_stat("atk") + ally.get_stat("matk"))
+                    notes = self._aplicar_efeitos_suporte(actor, target, efeito, efeito.get("turnos", 99), include_basic=True)
+                    if notes:
+                        logs.append(f"{actor.clean_name} preparou [{skill.get('nome', skill_id)}]: {', '.join(notes[:3])}.")
+        return logs[:5]
+
+    def _consumir_defesa_de_habilidade(self, actor, target, raw_damage, is_magic=False):
+        for index, buff in enumerate(list(target.buffs)):
+            if buff.get("anula_proxima_habilidade"):
+                buff["anula_proxima_habilidade"] -= 1
+                if buff["anula_proxima_habilidade"] <= 0 and buff in target.buffs:
+                    target.buffs.remove(buff)
+                return "nullify", 0
+            if buff.get("absorve_proxima_habilidade"):
+                if buff in target.buffs:
+                    target.buffs.remove(buff)
+                reflect = max(
+                    actor.get_stat("atk"),
+                    actor.get_stat("matk"),
+                    int(raw_damage),
+                    1,
+                )
+                reflect = int(reflect * float(buff.get("reflect_mult", 2.0)))
+                reflected = actor.take_damage(reflect, target.get_stat("matk"), is_magic=True, ignore_def=True)
+                return "absorb", reflected
+        return None, 0
+
+    def _aplicar_dano_minimo(self, actor, target, efeito, dealt, is_magic=False):
+        minimo = 0
+        if efeito.get("dano_minimo_matk"):
+            minimo = max(minimo, actor.get_stat("matk"))
+        if efeito.get("dano_minimo_atk"):
+            minimo = max(minimo, actor.get_stat("atk"))
+        if minimo <= 0 or target.is_dead or dealt >= minimo:
+            return 0
+        return target.take_damage(minimo - dealt, minimo, is_magic=is_magic, ignore_def=True)
+
+    def _checar_contrato_morte(self, victim):
+        if not victim.is_dead:
+            return None
+        contract = next((buff for buff in victim.buffs if buff.get("contrato_makima") and not buff.get("_usado")), None)
+        if not contract:
+            return None
+        contract["_usado"] = True
+        enemies = self._get_alive(self._inimigos_do_actor(victim))
+        if not enemies:
+            return None
+        alvo = random.choice(enemies)
+        alvo.hp = 0
+        alvo.is_dead = True
+        return f"O contrato de {victim.clean_name} arrastou {alvo.clean_name} junto."
+
+    def _sincronizar_clones(self):
+        logs = []
+        entities = self._todas_entidades()
+        by_id = {entity.id: entity for entity in entities}
+        for entity in entities:
+            if entity.is_dead:
+                continue
+            link = next((buff for buff in entity.buffs if buff.get("clone_source_id")), None)
+            if not link or not link.get("morre_se_dps_morrer"):
+                continue
+            source = by_id.get(link["clone_source_id"])
+            if source and source.is_dead:
+                entity.hp = 0
+                entity.is_dead = True
+                logs.append(f"{entity.clean_name} desapareceu porque a fonte da ilusão caiu.")
+        return logs
+
+    def _invocar_clone(self, actor, efeito):
+        team = self._team_do_actor(actor)
+        vivos = self._get_alive(team)
+        if len(team) >= 8:
+            return None, "O campo já está cheio demais para outra cópia."
+        source = actor
+        if efeito.get("clona_dps_atributos") or efeito.get("clona_dps_perfeito"):
+            source = max(vivos, key=lambda ally: ally.get_stat("atk") + ally.get_stat("matk"))
+
+        hp = int(efeito.get("hp_fixo") or max(1, source.max_hp * float(efeito.get("hp_percent", 1.0))))
+        perfect = bool(efeito.get("clona_dps_perfeito"))
+        clone_data = {
+            "nome": f"Cópia de {source.name.split(' [')[0]}",
+            "classe": source.classe,
+            "level": source.level,
+            "stats": {
+                "hp": hp,
+                "atk": source.get_stat("atk"),
+                "matk": source.get_stat("matk"),
+                "def": source.get_stat("def"),
+                "spd": max(1, source.get_stat("spd")),
+                "crt": source.get_stat("crt"),
+                "level": source.level,
+            },
+            "habilidades": [s for s in source.habilidades if s not in {"kyoka_suigetsu", "hipnose_completa", "clone_de_agua"}] if perfect else [],
+        }
+        clone = CombatEntity(f"{actor.id}_clone_{len(team) + 1}", clone_data["nome"], clone_data, actor.is_enemy)
+        if efeito.get("imune_a_dano"):
+            clone.buffs.append({"stat": "imune", "imune_all": True, "turnos": 99})
+        clone.buffs.append({
+            "stat": "clone_link",
+            "clone_source_id": source.id,
+            "morre_se_dps_morrer": bool(efeito.get("morre_se_dps_morrer")),
+            "turnos": 99,
+        })
+        team.append(clone)
+        self.turn_queue.append(clone)
+        return clone, f"{actor.clean_name} criou {clone.clean_name} copiando {source.clean_name}."
+
+    def _resolver_ciel(self, actor, skill_name):
+        allies = self._get_alive(self._team_do_actor(actor))
+        enemies = self._get_alive(self._inimigos_do_actor(actor))
+        if any(ally.hp / ally.max_hp <= 0.50 for ally in allies):
+            total = 0
+            for ally in allies:
+                if ally.hp / ally.max_hp <= 0.75:
+                    total += ally.heal(int(ally.max_hp * 0.50))
+                    apply_status_protection(ally, {"remove_debuffs": True}, 1)
+            return f"{actor.clean_name} usou [{skill_name}] e Ciel recalculou a luta: curou {total} HP do time."
+        execute_targets = [enemy for enemy in enemies if enemy.hp <= enemy.max_hp * 0.20]
+        if execute_targets:
+            target = min(execute_targets, key=lambda enemy: enemy.hp / enemy.max_hp)
+            target.hp = 0
+            target.is_dead = True
+            return f"{actor.clean_name} usou [{skill_name}] e Ciel executou {target.clean_name} sem pedir licença."
+        for ally in allies:
+            ally.buffs.append({"stat": "atk", "mult": 0.30, "turnos": 3})
+            ally.buffs.append({"stat": "def", "mult": 0.30, "turnos": 3})
+        return f"{actor.clean_name} usou [{skill_name}] e Ciel deu +30% ATK/DEF ao time por 3 turnos."
+
+    def _resolver_cor_leonis(self, actor, skill_name):
+        allies = self._get_alive(self._team_do_actor(actor))
+        enemies = self._get_alive(self._inimigos_do_actor(actor))
+        wounded = [ally for ally in allies if ally.hp / ally.max_hp <= 0.65]
+        if wounded:
+            for ally in allies:
+                ally.buffs.append({"stat": "damage_reduction", "reduz_dano_recebido": 25, "turnos": 2})
+            actor.buffs.append({"stat": "taunt", "turnos": 2})
+            return f"{actor.clean_name} usou [{skill_name}] como Cor Leonis: o dano do time foi reduzido e ele puxou a linha de frente."
+        if not enemies:
+            return f"{actor.clean_name} usou [{skill_name}], mas não havia inimigo para a Providência alcançar."
+        target = max(enemies, key=lambda enemy: enemy.get_stat("atk") + enemy.get_stat("matk"))
+        amount = actor.get_stat("matk") + 30
+        dealt = target.take_damage(amount, actor.get_stat("matk"), is_magic=True, ignore_def=True)
+        extra = self._aplicar_dano_minimo(actor, target, {"dano_minimo_matk": True}, dealt, is_magic=True)
+        total = dealt + extra
+        fallen = " e caiu" if target.is_dead else ""
+        return f"{actor.clean_name} usou [{skill_name}] como Providência Invisível: {target.clean_name} sofreu {total} de dano{fallen}."
+
+    def _resolver_demonio_do_controle(self, actor, skill_name):
+        allies = [ally for ally in self._get_alive(self._team_do_actor(actor)) if ally is not actor]
+        enemies = self._get_alive(self._inimigos_do_actor(actor))
+        if not enemies:
+            return f"{actor.clean_name} usou [{skill_name}], mas não havia alvo para controlar."
+        target = max(enemies, key=lambda enemy: enemy.get_stat("atk") + enemy.get_stat("matk"))
+        sacrifice = max(allies, key=lambda ally: ally.get_stat("atk") + ally.get_stat("matk")) if allies else actor
+        if sacrifice is actor:
+            paid = max(1, int(actor.max_hp * 0.35))
+            actor.take_damage(paid, paid, ignore_def=True)
+            sacrifice_text = f"{actor.clean_name} pagou {paid} HP"
+        else:
+            sacrifice.hp = 0
+            sacrifice.is_dead = True
+            sacrifice_text = f"{sacrifice.clean_name} foi sacrificado"
+        if target.max_hp >= 100000:
+            damage = max(actor.get_stat("matk") * 6, int(target.max_hp * 0.25))
+            dealt = target.take_damage(damage, actor.get_stat("matk"), is_magic=True, ignore_def=True)
+            return f"{actor.clean_name} usou [{skill_name}]: {sacrifice_text} e {target.clean_name} sofreu {dealt} de dano de controle."
+        target.hp = 0
+        target.is_dead = True
+        return f"{actor.clean_name} usou [{skill_name}]: {sacrifice_text} e {target.clean_name} foi eliminado."
 
     def _roll_damage_variance(self, actor, amount):
         high = 1.10 if actor.is_enemy else 1.07
@@ -301,27 +589,38 @@ class PvpBattleView(discord.ui.View):
             message = await self.channel.send(embed=embed, view=self._build_controls())
             self.add_message(message)
 
-    def _buscar_alvos(self, actor, alvo_req):
+    def _buscar_alvos(self, actor, alvo_req, skill_type=None):
         time_aliado = self._team_do_actor(actor)
         inimigos = self._get_alive(self._inimigos_do_actor(actor))
         aliados = self._get_alive(time_aliado)
         aliados_mortos = [a for a in time_aliado if a.is_dead]
 
-        if not inimigos and ("inimigo" in alvo_req or "campo" in alvo_req):
+        alvo_req = str(alvo_req or "unico_inimigo")
+        if not inimigos and ("inimigo" in alvo_req or (alvo_req == "campo" and skill_type in {"dano", "debuff", "insta_kill"})):
             return []
         if not aliados and ("aliado" in alvo_req or alvo_req == "self"):
             return []
 
-        if alvo_req == "self":
+        if alvo_req in {"self", "item_contra_si", "adaptativo"}:
             return [actor]
         if alvo_req == "aliado_morto":
             return aliados_mortos[:1]
         if alvo_req == "aliados_mortos":
             return aliados_mortos
+        if alvo_req == "campo":
+            return inimigos if skill_type in {"dano", "debuff", "insta_kill"} else aliados
         if alvo_req == "unico_inimigo":
             return [self._get_target_aggro(inimigos)]
-        if alvo_req == "todos_inimigos" or "campo" in alvo_req:
+        if alvo_req == "todos_inimigos":
             return inimigos
+        if alvo_req in {"inimigo_aleatorio", "aleatorio"}:
+            return [random.choice(inimigos)]
+        if alvo_req in {"dps_inimigo", "inimigo_maior_dano"}:
+            return [max(inimigos, key=lambda x: x.get_stat("atk") + x.get_stat("matk"))]
+        if alvo_req == "inimigo_menor_hp":
+            return [min(inimigos, key=lambda x: x.hp / x.max_hp)]
+        if alvo_req == "inimigo_menor_def":
+            return [min(inimigos, key=lambda x: x.get_stat("def"))]
         if alvo_req == "unico_aliado":
             return [random.choice(aliados)]
         if alvo_req == "aliado_menor_hp":
@@ -330,12 +629,14 @@ class PvpBattleView(discord.ui.View):
             return aliados
         if alvo_req == "dps_aliado":
             return [max(aliados, key=lambda x: x.get_stat("atk") + x.get_stat("matk"))]
+        if "aleatorio" in alvo_req:
+            if "aliado" in alvo_req:
+                return [random.choice(aliados)]
+            return [random.choice(inimigos)]
         if "aliado" in alvo_req:
             return [random.choice(aliados)]
         if "inimigo" in alvo_req:
             return [self._get_target_aggro(inimigos)]
-        if "aleatorio" in alvo_req:
-            return [random.choice(inimigos)]
         return [self._get_target_aggro(inimigos)]
 
     def _executar_habilidade(self, actor, skill_id):
@@ -353,15 +654,30 @@ class PvpBattleView(discord.ui.View):
 
         tipo = s_data.get("tipo", "dano")
         efeito = s_data.get("efeito", {})
-        targets = self._buscar_alvos(actor, s_data.get("alvo", "unico_inimigo"))
+        skill_name = s_data.get("nome", skill_id)
+        if efeito.get("adaptativo"):
+            return self._resolver_ciel(actor, skill_name)
+        if efeito.get("cor_leonis_providencia"):
+            return self._resolver_cor_leonis(actor, skill_name)
+        if efeito.get("sacrifica_dps_aliado_para_matar_dps_inimigo"):
+            return self._resolver_demonio_do_controle(actor, skill_name)
+
+        targets = self._buscar_alvos(actor, s_data.get("alvo", "unico_inimigo"), tipo)
         if not targets:
             return f"{actor.clean_name} tentou agir, mas não encontrou alvo."
 
-        log_line = f"{actor.clean_name} usou [{s_data.get('nome', skill_id)}]!"
+        log_line = f"{actor.clean_name} usou [{skill_name}]!"
         total_dmg = 0
         total_heal = 0
         mortos = []
         stunned = []
+        special_logs = []
+
+        if tipo == "invocacao" and any(
+            efeito.get(key) for key in ["clona_dps_atributos", "clona_dps_perfeito", "clona_self"]
+        ):
+            clone, clone_log = self._invocar_clone(actor, efeito)
+            return f"{log_line} {clone_log}"
 
         for target in targets:
             if tipo in ["dano", "insta_kill", "especial"] and target.is_enemy != actor.is_enemy:
@@ -402,19 +718,44 @@ class PvpBattleView(discord.ui.View):
                 ):
                     target.shield = 0
 
+                defense_result, reflected = self._consumir_defesa_de_habilidade(actor, target, dano_final, is_magic)
+                if defense_result == "nullify":
+                    special_logs.append(f"{target.clean_name} anulou a habilidade recebida.")
+                    continue
+                if defense_result == "absorb":
+                    special_logs.append(f"{target.clean_name} absorveu a habilidade e devolveu {reflected} de dano.")
+                    if actor.is_dead:
+                        mortos.append(actor.clean_name)
+                    continue
+
                 dealt = target.take_damage(dano_final, base, is_magic=is_magic, ignore_def=ignore_def)
+                extra_minimo = self._aplicar_dano_minimo(actor, target, efeito, dealt, is_magic=is_magic)
+                if extra_minimo:
+                    dealt += extra_minimo
+                    special_logs.append(f"{target.clean_name} sofreu {extra_minimo} de dano mínimo garantido.")
                 total_dmg += dealt
 
                 statuses = apply_status_effects(actor, target, efeito, dealt)
                 statuses.extend(apply_on_hit_statuses(actor, target))
                 if any(status in {"stun", "freeze", "root"} for status in statuses):
                     stunned.append(target.clean_name)
+                if efeito.get("absorve_atk_converte_cura") and not target.is_dead:
+                    steal_ratio = 0.20
+                    target.debuffs.append({"stat": "atk", "mult": steal_ratio, "turnos": 3})
+                    target.debuffs.append({"stat": "matk", "mult": steal_ratio, "turnos": 3})
+                    actor.buffs.append({"stat": "atk", "mult": steal_ratio, "turnos": 3})
+                    actor.buffs.append({"stat": "matk", "mult": steal_ratio, "turnos": 3})
+                    cura_roubo = actor.heal(max(1, int(dealt * 0.45)))
+                    special_logs.append(f"{actor.clean_name} absorveu poder de {target.clean_name} e curou {cura_roubo} HP.")
                 if ("chance_insta_kill" in efeito and random.random() <= efeito["chance_insta_kill"]) or efeito.get("insta_kill_on_hit_garantido"):
                     if not target.is_dead:
                         target.hp = 0
                         target.is_dead = True
                 if target.is_dead:
                     mortos.append(target.clean_name)
+                    contract_log = self._checar_contrato_morte(target)
+                    if contract_log:
+                        special_logs.append(contract_log)
 
             if tipo in ["cura", "reviver", "especial"] and target.is_enemy == actor.is_enemy:
                 if target.is_dead and (tipo == "reviver" or "reviver_aliado" in str(efeito)):
@@ -431,6 +772,10 @@ class PvpBattleView(discord.ui.View):
                         cura = int(actor.get_stat("matk") * 0.5)
                     total_heal += target.heal(cura)
                 apply_status_protection(target, efeito, efeito.get("turnos", 3))
+                if tipo in ["cura", "reviver"]:
+                    notes = self._aplicar_efeitos_suporte(actor, target, efeito, efeito.get("turnos", 3), include_basic=False)
+                    if notes:
+                        special_logs.append(f"{target.clean_name}: {', '.join(notes[:3])}.")
 
             if tipo in ["buff", "escudo", "passiva", "especial"] and not target.is_dead:
                 turnos = efeito.get("turnos", 3)
@@ -455,13 +800,32 @@ class PvpBattleView(discord.ui.View):
                 if "ignora_dano_magico" in efeito:
                     target.buffs.append({"stat": "imune", "imune_magico": True, "turnos": turnos})
                 apply_status_protection(target, efeito, turnos)
+                notes = self._aplicar_efeitos_suporte(actor, target, efeito, turnos, include_basic=False)
+                if notes:
+                    special_logs.append(f"{target.clean_name}: {', '.join(notes[:3])}.")
 
             if tipo in ["debuff", "especial"] and target.is_enemy != actor.is_enemy and not target.is_dead:
                 turnos = efeito.get("turnos", 2)
                 if "debuff_def" in efeito:
                     target.debuffs.append({"stat": "def", "mult": efeito["debuff_def"] / 100.0, "turnos": turnos})
-                apply_status_effects(actor, target, efeito)
+                statuses = apply_status_effects(actor, target, efeito)
+                if any(status in {"stun", "freeze", "root"} for status in statuses):
+                    stunned.append(target.clean_name)
 
+        if efeito.get("stun_todos_inimigos") or efeito.get("parar_tempo"):
+            stun_turns = int(efeito.get("stun_todos_inimigos") or 1)
+            for enemy in self._get_alive(self._inimigos_do_actor(actor)):
+                if enemy.add_status("stun", stun_turns, ignore_immunity=True):
+                    stunned.append(enemy.clean_name)
+        if efeito.get("parar_tempo"):
+            if not actor.is_dead and int(efeito.get("turnos_extra", 0) or 0) > 0:
+                self.turn_queue.insert(0, actor)
+            special_logs.append("O tempo parou: inimigos perderam a próxima ação e o usuário ganhou iniciativa.")
+
+        if total_dmg and "lifesteal" in efeito and not actor.is_dead:
+            cura = actor.heal(int(total_dmg * float(efeito["lifesteal"])))
+            if cura:
+                special_logs.append(f"{actor.clean_name} sugou {cura} HP.")
         if total_dmg:
             log_line += f" Causou {total_dmg} de dano total."
         if total_heal:
@@ -470,22 +834,55 @@ class PvpBattleView(discord.ui.View):
             log_line += f" Atordoou: {', '.join(stunned)}."
         if mortos:
             log_line += f" Caiu: {', '.join(mortos)}."
+        if special_logs:
+            log_line += " " + " ".join(special_logs)
         return log_line
 
     def _ataque_basico(self, actor):
-        inimigos = self._get_alive(self._inimigos_do_actor(actor))
-        if not inimigos:
+        def hit_once(extra_label=""):
+            inimigos_vivos = self._get_alive(self._inimigos_do_actor(actor))
+            if not inimigos_vivos:
+                return "", 0
+            target = self._get_target_aggro(inimigos_vivos)
+            is_crit = random.randint(1, 100) <= actor.get_stat("crt")
+            dmg = actor.get_stat("atk") * (1.5 if is_crit else 1.0)
+            dealt = target.take_damage(self._roll_damage_variance(actor, dmg), actor.get_stat("atk"))
+            statuses = apply_on_hit_statuses(actor, target, is_crit)
+            needs_minimum = any(
+                buff.get("stat") == "on_hit_status" and buff.get("dano_minimo_atk")
+                for buff in actor.buffs
+            )
+            if needs_minimum and not target.is_dead and dealt < actor.get_stat("atk"):
+                extra = target.take_damage(actor.get_stat("atk") - dealt, actor.get_stat("atk"), ignore_def=True)
+                dealt += extra
+            crit = " CRITICO" if is_crit else ""
+            status_txt = " IK" if "insta_kill" in statuses else ""
+            line = f"{actor.clean_name} {extra_label}atacou {target.clean_name} por {dealt}{crit}{status_txt}."
+            if target.is_dead:
+                line += f" {target.clean_name} caiu."
+                contract_log = self._checar_contrato_morte(target)
+                if contract_log:
+                    line += f" {contract_log}"
+            return line, dealt
+
+        log, _ = hit_once()
+        if not log:
             return ""
 
-        target = self._get_target_aggro(inimigos)
-        is_crit = random.randint(1, 100) <= actor.get_stat("crt")
-        dmg = actor.get_stat("atk") * (1.5 if is_crit else 1.0)
-        dealt = target.take_damage(self._roll_damage_variance(actor, dmg), actor.get_stat("atk"))
-        apply_on_hit_statuses(actor, target, is_crit)
-        crit = " CRITICO" if is_crit else ""
-        log = f"{actor.clean_name} atacou {target.clean_name} por {dealt}{crit}."
-        if target.is_dead:
-            log += f" {target.clean_name} caiu."
+        double_chance = max(
+            (
+                float(buff.get("chance_ataque_duplo", 0))
+                for buff in actor.buffs
+                if buff.get("stat") == "extra_attack" or buff.get("chance_ataque_duplo") is not None
+            ),
+            default=0.0,
+        )
+        if double_chance > 1:
+            double_chance /= 100
+        if double_chance > 0 and random.random() <= double_chance and self._get_alive(self._inimigos_do_actor(actor)):
+            extra_log, _ = hit_once("ativou Star Platinum e ")
+            if extra_log:
+                log += " " + extra_log
         return log
 
     async def processar_fila(self, interaction=None):
@@ -507,6 +904,7 @@ class PvpBattleView(discord.ui.View):
             estava_atordoado = actor.is_stunned()
             dot_logs = actor.tick_effects()
             self.log_display.extend(dot_logs)
+            self.log_display.extend(self._sincronizar_clones())
 
             if actor.is_dead:
                 continue

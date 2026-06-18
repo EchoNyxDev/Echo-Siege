@@ -486,6 +486,10 @@ class CombatEntity:
                 cura = self.heal(b["regen"])
                 if cura > 0:
                     log_effects.append(f"💚 **{self.clean_name}** regenerou {cura} HP.")
+            if b.get("morre_apos_turnos") and b.get("turnos", 1) <= 1 and not self.is_dead:
+                self.hp = 0
+                self.is_dead = True
+                log_effects.append(f"☠️ **{self.clean_name}** caiu pelo preço da Lâmina Carmesim.")
 
         self.buffs = [b for b in self.buffs if self._decrement_turn(b)]
         self.debuffs = [d for d in self.debuffs if self._decrement_turn(d)]
@@ -973,12 +977,286 @@ class CombatEngine:
         self.team_b = [CombatEntity(f"B{i}", d["nome"], d, True) for i, d in enumerate(team_b_data)]
         self.log = []
         self.turn_limit = 150 
+        self.log.extend(self._activate_initial_passives())
 
     def _get_alive(self, team):
         return [e for e in team if not e.is_dead]
 
     def _get_team(self, entity):
         return self.team_b if entity.is_enemy else self.team_a
+
+    def _get_enemy_team(self, entity):
+        return self.team_a if entity.is_enemy else self.team_b
+
+    def _all_entities(self):
+        return self.team_a + self.team_b
+
+    def _apply_support_effects(self, actor, target, effect, turns=3, include_basic=False):
+        if not target or target.is_dead:
+            return []
+        notes = []
+        turns = max(1, int(turns or effect.get("turnos", 3) or 3))
+        buffs_blocked = any(debuff.get("stat") == "bloqueia_buffs" for debuff in target.debuffs)
+
+        if include_basic and not buffs_blocked:
+            for key, stat_name in [
+                ("buff_atk", "atk"),
+                ("buff_matk", "matk"),
+                ("buff_def", "def"),
+                ("buff_spd", "spd"),
+            ]:
+                if key in effect:
+                    target.buffs.append({"stat": stat_name, "mult": effect[key] / 100.0, "turnos": turns})
+                    notes.append(stat_name.upper())
+            if "buff_crt" in effect:
+                target.buffs.append({"stat": "crt", "flat": effect["buff_crt"], "turnos": turns})
+                notes.append("CRT")
+            if "buff_geral" in effect:
+                for stat_name in ["atk", "matk", "def", "spd"]:
+                    target.buffs.append({"stat": stat_name, "mult": effect["buff_geral"] / 100.0, "turnos": turns})
+                notes.append("atributos gerais")
+
+        if "cura_turnos" in effect:
+            target.buffs.append({"stat": "regen", "regen": int(effect["cura_turnos"]), "turnos": turns})
+            notes.append("regeneracao")
+        if "escudo_hp_max" in effect and not buffs_blocked:
+            shield = max(1, int(target.max_hp * float(effect["escudo_hp_max"])))
+            target.shield += shield
+            notes.append(f"escudo {shield}")
+        if "imortalidade_turnos" in effect:
+            target.buffs.append({"stat": "imortal", "imortal": True, "turnos": int(effect["imortalidade_turnos"])})
+            notes.append("imortalidade")
+        if "imunidade_dano_turnos" in effect:
+            target.buffs.append({"stat": "imune", "imune_all": True, "turnos": int(effect.get("imunidade_dano_turnos") or turns)})
+            notes.append("imunidade")
+        if effect.get("ignora_dano_fisico") or effect.get("imune_dano_fisico") or effect.get("imunidade_dano_fisico"):
+            target.buffs.append({"stat": "imune", "imune_fisico": True, "turnos": turns})
+            notes.append("imunidade fisica")
+        if effect.get("ignora_dano_magico"):
+            target.buffs.append({"stat": "imune", "imune_magico": True, "turnos": turns})
+            notes.append("imunidade magica")
+        if "reduz_dano_recebido" in effect:
+            target.buffs.append({"stat": "damage_reduction", "reduz_dano_recebido": effect["reduz_dano_recebido"], "turnos": turns})
+            notes.append("reducao de dano")
+        if "chance_ataque_duplo" in effect:
+            target.buffs.append({"stat": "extra_attack", "chance_ataque_duplo": float(effect["chance_ataque_duplo"]), "turnos": turns})
+            notes.append("ataque duplo")
+        if "chance_insta_kill_on_hit" in effect or effect.get("insta_kill_on_hit_garantido"):
+            target.buffs.append({
+                "stat": "on_hit_status",
+                "chance_insta_kill_on_hit": float(effect.get("chance_insta_kill_on_hit", 1.0)),
+                "dano_minimo_atk": bool(effect.get("dano_minimo_atk")),
+                "turnos": turns,
+            })
+            notes.append("abate ao atacar")
+        if effect.get("absorve_proxima_habilidade_reflete_dobro") or "absorver_dano_refletir" in effect:
+            target.buffs.append({
+                "stat": "skill_absorb",
+                "absorve_proxima_habilidade": True,
+                "reflect_mult": float(effect.get("absorver_dano_refletir", 2.0) or 2.0),
+                "turnos": turns,
+            })
+            notes.append("absorcao")
+        if effect.get("anular_habilidade_contra_si"):
+            target.buffs.append({
+                "stat": "skill_nullify",
+                "anula_proxima_habilidade": int(effect.get("anular_habilidade_contra_si") or 1),
+                "turnos": turns,
+            })
+            notes.append("anulacao")
+        if effect.get("morre_apos_turnos"):
+            target.buffs.append({"stat": "self_ko_timer", "morre_apos_turnos": True, "turnos": int(effect["morre_apos_turnos"])})
+            notes.append("risco mortal")
+        if effect.get("melhora_item_usado"):
+            bonus = float(effect["melhora_item_usado"])
+            for stat_name in ["atk", "matk", "def"]:
+                target.buffs.append({"stat": stat_name, "mult": bonus, "turnos": turns})
+            notes.append("jinki")
+        if effect.get("contrato_morte_dps") or effect.get("insta_kill_inimigo_aleatorio"):
+            target.buffs.append({"stat": "contrato_makima", "contrato_makima": True, "turnos": turns})
+            notes.append("contrato")
+        if effect.get("marca_dps_redireciona_dano_self"):
+            actor.buffs.append({"stat": "taunt", "turnos": turns})
+            actor.buffs.append({"stat": "damage_reduction", "reduz_dano_recebido": 25, "turnos": turns})
+            notes.append("protecao")
+        if effect.get("transfere_atk_para_dps") and not buffs_blocked:
+            target.buffs.append({"stat": "atk", "flat": max(1, int(actor.get_stat("atk") * 0.35)), "turnos": turns})
+            notes.append("atk transferido")
+
+        apply_status_protection(target, effect, turns)
+        return notes
+
+    def _activate_initial_passives(self):
+        logs = []
+        for team in [self.team_a, self.team_b]:
+            for actor in list(team):
+                for skill_id in actor.habilidades:
+                    skill = SKILLS.get(skill_id)
+                    if not skill or skill.get("tipo") != "passiva":
+                        continue
+                    effect = skill.get("efeito", {})
+                    target = actor
+                    if effect.get("contrato_morte_dps") or effect.get("insta_kill_inimigo_aleatorio"):
+                        living = self._get_alive(team)
+                        if living:
+                            target = max(living, key=lambda ally: ally.get_stat("atk") + ally.get_stat("matk"))
+                    notes = self._apply_support_effects(actor, target, effect, effect.get("turnos", 99), include_basic=True)
+                    if notes:
+                        logs.append(f"**{actor.clean_name}** preparou `{skill.get('nome', skill_id)}`.")
+        return logs[:5]
+
+    def _consume_skill_defense(self, actor, target, raw_damage):
+        for buff in list(target.buffs):
+            if buff.get("anula_proxima_habilidade"):
+                buff["anula_proxima_habilidade"] -= 1
+                if buff["anula_proxima_habilidade"] <= 0 and buff in target.buffs:
+                    target.buffs.remove(buff)
+                return "nullify", 0
+            if buff.get("absorve_proxima_habilidade"):
+                if buff in target.buffs:
+                    target.buffs.remove(buff)
+                reflect = max(actor.get_stat("atk"), actor.get_stat("matk"), int(raw_damage), 1)
+                reflected = actor.take_damage(int(reflect * float(buff.get("reflect_mult", 2.0))), target.get_stat("matk"), True, True)
+                return "absorb", reflected
+        return None, 0
+
+    def _apply_minimum_damage(self, actor, target, effect, dealt, is_magic=False):
+        minimum = 0
+        if effect.get("dano_minimo_matk"):
+            minimum = max(minimum, actor.get_stat("matk"))
+        if effect.get("dano_minimo_atk"):
+            minimum = max(minimum, actor.get_stat("atk"))
+        if minimum <= 0 or target.is_dead or dealt >= minimum:
+            return 0
+        return target.take_damage(minimum - dealt, minimum, is_magic, True)
+
+    def _check_death_contract(self, victim):
+        if not victim.is_dead:
+            return None
+        contract = next((buff for buff in victim.buffs if buff.get("contrato_makima") and not buff.get("_usado")), None)
+        if not contract:
+            return None
+        contract["_usado"] = True
+        enemies = self._get_alive(self._get_enemy_team(victim))
+        if not enemies:
+            return None
+        target = random.choice(enemies)
+        target.hp = 0
+        target.is_dead = True
+        return f"O contrato de **{victim.clean_name}** levou **{target.clean_name}** junto."
+
+    def _summon_clone(self, actor, effect):
+        team = self._get_team(actor)
+        living = self._get_alive(team)
+        if len(team) >= 8:
+            return "O campo ja estava cheio para outra copia."
+        source = actor
+        if effect.get("clona_dps_atributos") or effect.get("clona_dps_perfeito"):
+            source = max(living, key=lambda ally: ally.get_stat("atk") + ally.get_stat("matk"))
+        hp = int(effect.get("hp_fixo") or max(1, source.max_hp * float(effect.get("hp_percent", 1.0))))
+        perfect = bool(effect.get("clona_dps_perfeito"))
+        clone_data = {
+            "nome": f"Copia de {source.name.split(' (')[0]}",
+            "classe": source.classe,
+            "level": source.level,
+            "stats": {
+                "hp": hp,
+                "atk": source.get_stat("atk"),
+                "matk": source.get_stat("matk"),
+                "def": source.get_stat("def"),
+                "spd": max(1, source.get_stat("spd")),
+                "crt": source.get_stat("crt"),
+                "level": source.level,
+            },
+            "habilidades": [s for s in source.habilidades if s not in {"kyoka_suigetsu", "hipnose_completa", "clone_de_agua"}] if perfect else [],
+        }
+        clone = CombatEntity(f"{actor.id}_clone_{len(team) + 1}", clone_data["nome"], clone_data, actor.is_enemy)
+        if effect.get("imune_a_dano"):
+            clone.buffs.append({"stat": "imune", "imune_all": True, "turnos": 99})
+        clone.buffs.append({
+            "stat": "clone_link",
+            "clone_source_id": source.id,
+            "morre_se_dps_morrer": bool(effect.get("morre_se_dps_morrer")),
+            "turnos": 99,
+        })
+        team.append(clone)
+        return f"**{actor.clean_name}** criou **{clone.clean_name}** copiando **{source.clean_name}**."
+
+    def _sync_clones(self):
+        logs = []
+        entities = self._all_entities()
+        by_id = {entity.id: entity for entity in entities}
+        for entity in entities:
+            if entity.is_dead:
+                continue
+            link = next((buff for buff in entity.buffs if buff.get("clone_source_id")), None)
+            if not link or not link.get("morre_se_dps_morrer"):
+                continue
+            source = by_id.get(link["clone_source_id"])
+            if source and source.is_dead:
+                entity.hp = 0
+                entity.is_dead = True
+                logs.append(f"**{entity.clean_name}** desapareceu com a queda da fonte da ilusao.")
+        return logs
+
+    def _resolve_ciel(self, actor, skill_name):
+        allies = self._get_alive(self._get_team(actor))
+        enemies = self._get_alive(self._get_enemy_team(actor))
+        if any(ally.hp / ally.max_hp <= 0.50 for ally in allies):
+            total = 0
+            for ally in allies:
+                if ally.hp / ally.max_hp <= 0.75:
+                    total += ally.heal(int(ally.max_hp * 0.50))
+                    apply_status_protection(ally, {"remove_debuffs": True}, 1)
+            return f"🧠 **{actor.clean_name}** usou `[{skill_name}]`: Ciel curou **{total} HP** do time."
+        execute_targets = [enemy for enemy in enemies if enemy.hp <= enemy.max_hp * 0.20]
+        if execute_targets:
+            target = min(execute_targets, key=lambda enemy: enemy.hp / enemy.max_hp)
+            target.hp = 0
+            target.is_dead = True
+            return f"🧠 **{actor.clean_name}** usou `[{skill_name}]`: Ciel executou **{target.clean_name}**."
+        for ally in allies:
+            ally.buffs.append({"stat": "atk", "mult": 0.30, "turnos": 3})
+            ally.buffs.append({"stat": "def", "mult": 0.30, "turnos": 3})
+        return f"🧠 **{actor.clean_name}** usou `[{skill_name}]`: +30% ATK/DEF para o time."
+
+    def _resolve_cor_leonis(self, actor, skill_name):
+        allies = self._get_alive(self._get_team(actor))
+        enemies = self._get_alive(self._get_enemy_team(actor))
+        wounded = [ally for ally in allies if ally.hp / ally.max_hp <= 0.65]
+        if wounded:
+            for ally in allies:
+                ally.buffs.append({"stat": "damage_reduction", "reduz_dano_recebido": 25, "turnos": 2})
+            actor.buffs.append({"stat": "taunt", "turnos": 2})
+            return f"🛡️ **{actor.clean_name}** usou `[{skill_name}]`: Cor Leonis reduziu o dano do time."
+        if not enemies:
+            return f"**{actor.clean_name}** usou `[{skill_name}]`, mas nao havia alvo."
+        target = max(enemies, key=lambda enemy: enemy.get_stat("atk") + enemy.get_stat("matk"))
+        dealt = self._deal_damage(actor, target, actor.get_stat("matk") + 30, actor.get_stat("matk"), True, True)
+        dealt += self._apply_minimum_damage(actor, target, {"dano_minimo_matk": True}, dealt, True)
+        return f"👁️ **{actor.clean_name}** usou `[{skill_name}]`: **{target.clean_name}** sofreu **{dealt}**."
+
+    def _resolve_control_demon(self, actor, skill_name):
+        allies = [ally for ally in self._get_alive(self._get_team(actor)) if ally is not actor]
+        enemies = self._get_alive(self._get_enemy_team(actor))
+        if not enemies:
+            return f"**{actor.clean_name}** usou `[{skill_name}]`, mas nao havia alvo."
+        target = max(enemies, key=lambda enemy: enemy.get_stat("atk") + enemy.get_stat("matk"))
+        sacrifice = max(allies, key=lambda ally: ally.get_stat("atk") + ally.get_stat("matk")) if allies else actor
+        if sacrifice is actor:
+            paid = max(1, int(actor.max_hp * 0.35))
+            actor.take_damage(paid, paid, False, True)
+            cost = f"pagou {paid} HP"
+        else:
+            sacrifice.hp = 0
+            sacrifice.is_dead = True
+            cost = f"sacrificou **{sacrifice.clean_name}**"
+        if target.max_hp >= 100000:
+            dealt = self._deal_damage(actor, target, max(actor.get_stat("matk") * 6, int(target.max_hp * 0.25)), actor.get_stat("matk"), True, True)
+            return f"⛓️ **{actor.clean_name}** usou `[{skill_name}]`, {cost}, e causou **{dealt}** em **{target.clean_name}**."
+        target.hp = 0
+        target.is_dead = True
+        return f"⛓️ **{actor.clean_name}** usou `[{skill_name}]`, {cost}, e eliminou **{target.clean_name}**."
 
     def _deal_damage(self, actor, target, amount, source_atk, is_magic=False, ignore_def=False):
         previous_hp = target.hp
