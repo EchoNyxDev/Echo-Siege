@@ -492,7 +492,7 @@ class ArenaBattleView(discord.ui.View):
             
         embed = discord.Embed(
             title="✅ Andar Limpo!",
-            description=f"Vitória! Vocês descansaram 15% do HP.\n\n💰 Loot atual: **{self.gold_acumulado} Gold** | ⭐ **{self.xp_acumulado} XP**\n\n**Atenção:** Se avançar e morreR, vai perder 75% de todo o loot acumulado. Deseja continuar subindo ou recuar com o loot seguro?",
+            description=f"Vitória! Vocês descansaram 15% do HP.\n\n💰 Loot atual: **{self.gold_acumulado} Gold** | ⭐ **{self.xp_acumulado} XP**\n\n**Atenção:** Se avançar e morrer, vai perder 75% de todo o loot acumulado. Deseja continuar subindo ou recuar com o loot seguro?",
             color=discord.Color.green()
         )
         view = ArenaClearView(self)

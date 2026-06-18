@@ -14,7 +14,7 @@ PATCH_NOTES = [
             ("Prestígio dos Campeões", 
              "Estão aparecendo oficialmente no ranking."),
             
-            ("echo cd)", 
+            ("echo cd", 
              "Passaram a mostrar o CD da expedição e o CD da dungeon que antes não apareciam."),
             
             ("Nível", 

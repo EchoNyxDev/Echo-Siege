@@ -4,6 +4,7 @@ import json
 import sqlite3
 import re
 import os
+import random
 import sys
 import time
 import unicodedata
@@ -17,11 +18,28 @@ try:
     from data.heroes import HEROES
     from data.equipamentos import EQUIPAMENTOS
     from data.pets import PETS
+    from data.calamidades import RAID_BOSSES
+    from data.habilidades import SKILLS
     from utils.codes_storage import connect_codes_db, init_codes_db
+    from utils.skills import get_hero_skill_ids
+    from utils.hero_stats import calculate_hero_stats, normalize_class
+    from commands.pvp import PvpBattleView, _cortar_texto
 except ModuleNotFoundError:
     HEROES = {}
     EQUIPAMENTOS = {}
     PETS = {}
+    RAID_BOSSES = {}
+    SKILLS = {}
+    PvpBattleView = None
+    def _cortar_texto(texto, limite=1024):
+        return str(texto)[:limite]
+    def get_hero_skill_ids(hero_data, stars=1, rarity=None):
+        habilidade = hero_data.get("habilidade") if hero_data else None
+        return [habilidade] if habilidade else []
+    def calculate_hero_stats(hero_data, stars=1, level=1, equipment_bonuses=None):
+        return {"hp": 100, "atk": 10, "matk": 10, "def": 5, "spd": 10, "crt": 5, "level": level}
+    def normalize_class(value):
+        return str(value or "neutro").lower()
     def connect_codes_db():
         return sqlite3.connect("players.db")
     def init_codes_db():
