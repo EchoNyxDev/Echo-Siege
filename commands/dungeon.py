@@ -88,22 +88,24 @@ def scale_dungeon_enemy_stats(enemy_data, dungeon_id, area, party_data, is_boss=
     progress = max(1, ((int(dungeon_id) - 1) * 5) + int(area))
     avg_level = _party_average_level(party_data)
     
-    hp_mult = 1.0 + (progress * 0.10) + min(0.75, avg_level * 0.008)
-    atk_mult = 1.0 + (progress * 0.07) + min(0.55, avg_level * 0.005)
-    def_mult = 1.0 + (progress * 0.06) + min(0.45, avg_level * 0.004)
+    # Escalonamento suavizado: Apenas 5% por área em vez de 10%
+    hp_mult = 1.0 + (progress * 0.05) + min(0.50, avg_level * 0.006)
+    atk_mult = 1.0 + (progress * 0.03) + min(0.35, avg_level * 0.004)
+    def_mult = 1.0 + (progress * 0.03) + min(0.30, avg_level * 0.003)
     
+    # Reduzindo o Multiplicador Base do Chefe (pois ele já tem atributos brutais no enemies.py)
     if is_boss:
-        hp_mult *= 1.35
-        atk_mult *= 1.15
-        def_mult *= 1.12
+        hp_mult *= 1.10 # Era 1.35
+        atk_mult *= 1.05 # Era 1.15
+        def_mult *= 1.05 # Era 1.12
 
     return {
         "hp": max(1, int((enemy_data.get("hp", 100) or 100) * hp_mult)),
         "atk": max(0, int((enemy_data.get("atk", 10) or 0) * atk_mult)),
         "def": max(0, int((enemy_data.get("def", 5) or 0) * def_mult)),
         "matk": max(0, int((enemy_data.get("matk", 0) or 0) * atk_mult)),
-        "spd": max(1, min(65, int((enemy_data.get("spd", 15) or 15) + progress * 0.35))),
-        "crt": max(0, min(45, int((enemy_data.get("crt", 5) or 5) + progress * 0.25))),
+        "spd": max(1, min(65, int((enemy_data.get("spd", 15) or 15) + progress * 0.20))),
+        "crt": max(0, min(45, int((enemy_data.get("crt", 5) or 5) + progress * 0.15))),
         "level": max(1, int(avg_level)),
     }
 

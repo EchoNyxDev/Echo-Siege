@@ -46,7 +46,7 @@ ENEMIES = {
     # Boss Final D1
     "rei_goblin": {
         "nome": "Rei Goblin", "tipo": "boss",
-        "hp": 3500, "atk": 130, "def": 60, "matk": 0, "spd": 25, "crt": 10,
+        "hp": 2500, "atk": 130, "def": 60, "matk": 0, "spd": 25, "crt": 10,
         "habilidade": "invocar_goblins",
         "imagem": ""
     },
