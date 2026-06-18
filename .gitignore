@@ -6,3 +6,5 @@ backup_*.db
 venv/
 .env.locals
 *.db
+codes.db
+codes.db-journal
