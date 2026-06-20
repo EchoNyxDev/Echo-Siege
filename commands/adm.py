@@ -1204,6 +1204,63 @@ class Adm(commands.Cog):
             "TutoriUAU registrou a intervenção antes que alguém dissesse que foi magia."
         )
 
+    def _normalizar_item_admin(self, item_name):
+        text = unicodedata.normalize("NFKD", str(item_name or ""))
+        text = "".join(char for char in text if not unicodedata.combining(char))
+        text = re.sub(r"[^a-zA-Z0-9_ -]+", "", text)
+        text = re.sub(r"\s+", "_", text.strip().lower())
+        return text
+
+    async def _delete_item(self, ctx, target_id, raw_item):
+        if not target_id or not raw_item:
+            return await ctx.send("⚠ Uso: `echo adm deletar item @usuário <nome-do-item>`")
+
+        item_query = str(raw_item).strip()
+        normalized_query = self._normalizar_item_admin(item_query)
+        if not normalized_query:
+            return await ctx.send("❌ Informe o nome do item para apagar. O vazio já foi nerfado.")
+
+        conn = sqlite3.connect("players.db")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id, item_name, quantity FROM inventory WHERE user_id = ?",
+            (str(target_id),),
+        )
+        rows = cursor.fetchall()
+
+        matches = []
+        for item_id, item_name, quantity in rows:
+            stored_norm = self._normalizar_item_admin(item_name)
+            if item_name == item_query or stored_norm == normalized_query:
+                matches.append((item_id, item_name, quantity))
+
+        if not matches:
+            partial = [
+                (item_id, item_name, quantity)
+                for item_id, item_name, quantity in rows
+                if normalized_query in self._normalizar_item_admin(item_name)
+            ]
+            if len(partial) == 1:
+                matches = partial
+
+        if not matches:
+            conn.close()
+            return await ctx.send(
+                f"❌ Não encontrei **{item_query}** na mochila de <@{target_id}>. "
+                "TutoriUAU: ou o item não existe, ou está disfarçado com outro ID."
+            )
+
+        removed_total = sum(max(0, int(quantity or 0)) for _, _, quantity in matches)
+        removed_names = ", ".join(f"{quantity}x `{item_name}`" for _, item_name, quantity in matches)
+        cursor.executemany("DELETE FROM inventory WHERE id = ?", [(item_id,) for item_id, _, _ in matches])
+        conn.commit()
+        conn.close()
+
+        await ctx.send(
+            f"🗑️ Removi **{removed_total}** item(ns) da mochila de <@{target_id}>: {removed_names}.\n"
+            "TutoriUAU: faxina administrativa concluída. O item bugado foi escoltado para fora."
+        )
+
     def _nivel_loja_por_prosperidade(self, prosperidade):
         if prosperidade >= 100: return 4
         if prosperidade >= 75: return 3
@@ -1213,30 +1270,29 @@ class Adm(commands.Cog):
     def _prosperidade_para_nivel_loja(self, nivel):
         return {1: 0, 2: 50, 3: 75, 4: 100}.get(nivel, 100)
 
+    def _sync_shop_level_for_guild_members(self, cursor, guild, nivel, extra_user_id=None):
+        if not guild:
+            cursor.execute("UPDATE summon_data SET shop_level = ?", (nivel,))
+            return None
+
+        member_ids = {str(getattr(guild, "owner_id", "") or "")}
+        member_ids.update(str(member.id) for member in getattr(guild, "members", []) if not member.bot)
+        if extra_user_id:
+            member_ids.add(str(extra_user_id))
+        member_ids = [member_id for member_id in member_ids if member_id]
+        if not member_ids:
+            return 0
+
+        placeholders = ",".join("?" for _ in member_ids)
+        cursor.execute(
+            f"UPDATE summon_data SET shop_level = ? WHERE user_id IN ({placeholders})",
+            (nivel, *member_ids),
+        )
+        return cursor.rowcount
+
     async def _melhorar_loja(self, ctx):
         conn = sqlite3.connect("players.db")
         cursor = conn.cursor()
-
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS city_stats (
-            id INTEGER PRIMARY KEY,
-            hp INTEGER DEFAULT 100000, max_hp INTEGER DEFAULT 100000,
-            moral INTEGER DEFAULT 100, suprimentos INTEGER DEFAULT 0,
-            max_suprimentos INTEGER DEFAULT 5000, prosperidade INTEGER DEFAULT 0
-        )
-        """)
-        cursor.execute("INSERT OR IGNORE INTO city_stats (id) VALUES (1)")
-        cursor.execute("SELECT prosperidade FROM city_stats WHERE id = 1")
-        prosperidade_atual = cursor.fetchone()[0] or 0
-        nivel_atual = self._nivel_loja_por_prosperidade(prosperidade_atual)
-
-        if nivel_atual >= 4:
-            conn.close()
-            return await ctx.send("A loja já está no nível máximo: **4 (Lugnica Dourada)**.")
-
-        novo_nivel = nivel_atual + 1
-        nova_prosperidade = self._prosperidade_para_nivel_loja(novo_nivel)
-        cursor.execute("UPDATE city_stats SET prosperidade = ? WHERE id = 1", (nova_prosperidade,))
 
         if ctx.guild:
             cursor.execute("""
@@ -1253,16 +1309,51 @@ class Adm(commands.Cog):
                 (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
                 VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
             """, (str(ctx.guild.id),))
+            cursor.execute("SELECT prosperidade FROM cidades WHERE guild_id = ?", (str(ctx.guild.id),))
+            prosperidade_atual = cursor.fetchone()[0] or 0
+        else:
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS city_stats (
+                id INTEGER PRIMARY KEY,
+                hp INTEGER DEFAULT 100000, max_hp INTEGER DEFAULT 100000,
+                moral INTEGER DEFAULT 100, suprimentos INTEGER DEFAULT 0,
+                max_suprimentos INTEGER DEFAULT 5000, prosperidade INTEGER DEFAULT 0
+            )
+            """)
+            cursor.execute("INSERT OR IGNORE INTO city_stats (id) VALUES (1)")
+            cursor.execute("SELECT prosperidade FROM city_stats WHERE id = 1")
+            prosperidade_atual = cursor.fetchone()[0] or 0
+        nivel_atual = self._nivel_loja_por_prosperidade(prosperidade_atual)
+
+        if nivel_atual >= 4:
+            conn.close()
+            return await ctx.send("A loja já está no nível máximo: **4 (Lugnica Dourada)**.")
+
+        novo_nivel = nivel_atual + 1
+        nova_prosperidade = self._prosperidade_para_nivel_loja(novo_nivel)
+
+        if ctx.guild:
             cursor.execute(
-                "UPDATE cidades SET prosperidade = MIN(100, MAX(prosperidade, ?)) WHERE guild_id = ?",
+                "UPDATE cidades SET prosperidade = ? WHERE guild_id = ?",
                 (nova_prosperidade, str(ctx.guild.id)),
             )
+        else:
+            cursor.execute("UPDATE city_stats SET prosperidade = ? WHERE id = 1", (nova_prosperidade,))
 
-        cursor.execute("UPDATE summon_data SET shop_level = ?", (novo_nivel,))
+        sincronizados = self._sync_shop_level_for_guild_members(cursor, ctx.guild, novo_nivel, ctx.author.id)
         conn.commit()
         conn.close()
 
-        await ctx.send(f"📈 Loja melhorada para **Nível {novo_nivel}**! Prosperidade ajustada para **{nova_prosperidade}/100**.")
+        sync_text = ""
+        if sincronizados is None:
+            sync_text = " Gacha sincronizado globalmente."
+        elif sincronizados > 0:
+            sync_text = f" Gacha sincronizado para **{sincronizados}** jogador(es) deste servidor."
+        await ctx.send(
+            f"🏪 Loja melhorada de **Nível {nivel_atual}** para **Nível {novo_nivel}**. "
+            f"Prosperidade ajustada para **{nova_prosperidade}/100**.{sync_text}\n"
+            "TutoriUAU: agora sobe degrau por degrau, como uma escada normal. Revolucionário."
+        )
 
     async def verificar_exilados(self, ctx):
         conn = sqlite3.connect("players.db")
@@ -1556,6 +1647,7 @@ class Adm(commands.Cog):
                            "`echo adm reset cidade` (Reseta Lugnica)\n"
                            "`echo adm hack @usuário <id_do_heroi>` (Nível Max + 7 Estrelas)\n"
                            "`echo adm give @usuário <id_heroi_ou_item>` (Dá um herói ou item)\n"
+                           "`echo adm deletar item @usuário <item>` (Remove item bugado da mochila)\n"
                            "`echo adm delechar @usuário <nome-do-personagem>` (Apaga uma cópia específica)\n"
                            "`echo adm stats` (Painel geral do jogo)\n"
                            "`echo adm logs [@usuário]` | `echo adm log @usuário <ação> | <valor>`\n"
@@ -1602,6 +1694,17 @@ class Adm(commands.Cog):
 
         if action in ["delechar", "deletechar", "delchar", "apagarheroi"]:
             return await self._delete_character(ctx, target_id, arg2)
+
+        if action in ["deletaritem", "deleteitem", "delitem", "apagaritem"]:
+            return await self._delete_item(ctx, target_id, arg2)
+
+        if action in ["deletar", "delete", "remover", "apagar"] and (arg1 or "").lower() in ["item", "itens"]:
+            partes = str(arg2 or "").strip().split(maxsplit=1)
+            if not partes:
+                return await self._delete_item(ctx, None, None)
+            item_target_id = re.sub(r"\D", "", partes[0])
+            item_name = partes[1] if len(partes) > 1 else None
+            return await self._delete_item(ctx, item_target_id, item_name)
 
         if action in ["combate", "combat"] and (arg1 or "").lower() in ["teste", "test", "debug"]:
             view = AdminCombatTestSetupView(self, ctx)
@@ -1873,6 +1976,18 @@ class Adm(commands.Cog):
                 SET hp = 100000, max_hp = 100000, moral = 100, suprimentos = 0, max_suprimentos = 5000, prosperidade = 0 
                 WHERE id = 1
             """)
+            if ctx.guild:
+                cursor.execute("""
+                    INSERT OR IGNORE INTO cidades
+                    (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
+                    VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+                """, (str(ctx.guild.id),))
+                cursor.execute("""
+                    UPDATE cidades
+                    SET hp = 100000, max_hp = 100000, moral = 100,
+                        suprimentos = 0, max_suprimentos = 5000, prosperidade = 0
+                    WHERE guild_id = ?
+                """, (str(ctx.guild.id),))
             conn.commit()
             conn.close()
             await ctx.send("♻️ **LUGNICA RESETADA!** A muralha voltou ao zero.")
