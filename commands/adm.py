@@ -22,6 +22,7 @@ try:
     from data.habilidades import SKILLS
     from data.habmonsters import MONSTER_SKILLS
     from utils.codes_storage import connect_codes_db, init_codes_db
+    from utils.db import backup_databases, list_database_backups
     from utils.skills import get_hero_skill_ids
     from utils.hero_stats import calculate_hero_stats, normalize_class
     from utils.combat import choose_ai_combat_skill
@@ -51,6 +52,10 @@ except ModuleNotFoundError:
         return sqlite3.connect("players.db")
     def init_codes_db():
         pass
+    def backup_databases(*args, **kwargs):
+        return []
+    def list_database_backups(*args, **kwargs):
+        return []
 
 try:
     from data.banners import save_manual_banner
@@ -1544,6 +1549,7 @@ class Adm(commands.Cog):
                            "`echo adm criarcode <code> <G1000 T3 heroi item>`\n"
                            "`echo adm criarcode temp <dias> <code> <recompensas>`\n"
                            "`echo adm delete code <code>`\n"
+                           "`echo adm backup criar|listar` (Backup manual do banco)\n"
                            "`echo adm combate teste` (Laboratório de dano/habilidades contra calamidade nerfada)\n"
                            "`echo adm criar banner` (Editor do banner especial por 7 dias)\n"
                            "`echo adm melhorar loja` (Sobe a loja em 1 nível para testes)\n"
@@ -1608,6 +1614,25 @@ class Adm(commands.Cog):
             message = await ctx.send(embed=view.build_embed(), view=view)
             view.message = message
             return
+
+        if action in ["backup", "dbbackup", "banco"]:
+            modo = (arg1 or "listar").lower()
+            if modo in ["criar", "create", "forcar", "forçar", "agora", "now"]:
+                backups = backup_databases(reason=f"adm_{ctx.author.id}", force=True)
+                if not backups:
+                    return await ctx.send("Nenhum backup foi criado. TutoriUAU olhou a pasta e ficou desconfiado.")
+                linhas = "\n".join(f"`{path.name}`" for path in backups)
+                return await ctx.send(f"✅ Backup manual criado:\n{linhas}")
+
+            backups = list_database_backups(limit=10)
+            if not backups:
+                return await ctx.send("Nenhum backup encontrado ainda. Use `echo adm backup criar` antes de brincar com dinamite.")
+            linhas = []
+            for path in backups:
+                size_kb = max(1, int(path.stat().st_size / 1024))
+                when = time.strftime("%d/%m/%Y %H:%M:%S", time.localtime(path.stat().st_mtime))
+                linhas.append(f"`{path.name}` - {size_kb} KB - {when}")
+            return await ctx.send("📦 **Backups recentes do banco:**\n" + "\n".join(linhas[:10]))
 
         # ================== RAIDS POR SERVIDOR ==================
         if action in ["set_iniciar", "set_invasao", "setcanal"]:

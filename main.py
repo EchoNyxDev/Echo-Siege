@@ -1,8 +1,11 @@
-from discord.ext import commands
+from discord.ext import commands, tasks
 import discord
 import os
 
 from dotenv import load_dotenv
+from utils.db import backup_databases, configure_sqlite_paths
+
+configure_sqlite_paths()
 import database
 
 load_dotenv()
@@ -25,6 +28,18 @@ bot = commands.Bot(
 @bot.event
 async def on_ready():
     print(f"{bot.user} online!")
+    created = backup_databases(reason="startup", min_interval_hours=1)
+    if created:
+        print("Backup de banco criado:", ", ".join(str(path) for path in created))
+    if not automatic_database_backup.is_running():
+        automatic_database_backup.start()
+
+
+@tasks.loop(hours=6)
+async def automatic_database_backup():
+    created = backup_databases(reason="auto", min_interval_hours=6)
+    if created:
+        print("Backup automatico de banco:", ", ".join(str(path) for path in created))
 
 async def load_commands():
     await bot.load_extension("commands.iniciar")

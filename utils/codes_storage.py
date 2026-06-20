@@ -1,9 +1,11 @@
 import os
 import sqlite3
 
+from utils.db import CODES_DB_PATH as LEGACY_CODES_PATH, PLAYERS_DB_PATH, configure_sqlite_paths
 
-CODES_DB_PATH = "players.db"
-LEGACY_CODES_DB_PATH = "codes.db"
+
+CODES_DB_PATH = str(PLAYERS_DB_PATH)
+LEGACY_CODES_DB_PATH = str(LEGACY_CODES_PATH)
 
 
 def _table_exists(cursor, table):
@@ -116,8 +118,6 @@ def ensure_codes_schema(cursor):
 def migrate_legacy_codes(cursor):
     cursor.execute("SELECT value FROM code_storage_meta WHERE key = 'legacy_codes_import_v2'")
     row = cursor.fetchone()
-    if row and row[0] == "done":
-        return
 
     if not os.path.exists(LEGACY_CODES_DB_PATH):
         cursor.execute(
@@ -128,7 +128,7 @@ def migrate_legacy_codes(cursor):
         )
         return
 
-    legacy = sqlite3.connect(LEGACY_CODES_DB_PATH)
+    legacy = sqlite3.connect(LEGACY_CODES_DB_PATH, timeout=20.0)
     legacy_cursor = legacy.cursor()
     try:
         legacy_cursor.execute(
@@ -172,7 +172,8 @@ def migrate_legacy_codes(cursor):
 
 
 def connect_codes_db():
-    conn = sqlite3.connect(CODES_DB_PATH)
+    configure_sqlite_paths()
+    conn = sqlite3.connect(CODES_DB_PATH, timeout=20.0)
     cursor = conn.cursor()
     ensure_codes_schema(cursor)
     migrate_legacy_codes(cursor)

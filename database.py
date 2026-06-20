@@ -1,5 +1,10 @@
 import sqlite3
 
+from utils.db import configure_sqlite_paths
+
+
+configure_sqlite_paths()
+
 
 def add_column(cursor, table, column, ddl):
     cursor.execute(f"PRAGMA table_info({table})")
