@@ -693,7 +693,9 @@ def apply_status_effects(actor, target, effect, damage_dealt=0, critical=False):
         ("debuff_atk", "atk"),
         ("debuff_matk", "matk"),
         ("debuff_def", "def"),
+        ("debuff_spd", "spd"),
         ("debuff_acc", "acc"),
+        ("debuff_dodge", "dodge"),
     ]:
         value = effect.get(effect_key)
         if value:
@@ -1720,6 +1722,9 @@ class CombatEngine:
                 if "debuff_atk" in efeito: target.debuffs.append({"stat": "atk", "mult": efeito["debuff_atk"]/100.0, "turnos": turnos})
                 if "debuff_matk" in efeito: target.debuffs.append({"stat": "matk", "mult": efeito["debuff_matk"]/100.0, "turnos": turnos})
                 if "debuff_def" in efeito: target.debuffs.append({"stat": "def", "mult": efeito["debuff_def"]/100.0, "turnos": turnos})
+                if "debuff_spd" in efeito: target.debuffs.append({"stat": "spd", "mult": efeito["debuff_spd"]/100.0, "turnos": turnos})
+                if "debuff_acc" in efeito: target.debuffs.append({"stat": "acc", "mult": efeito["debuff_acc"]/100.0, "turnos": turnos})
+                if "debuff_dodge" in efeito: target.debuffs.append({"stat": "dodge", "mult": efeito["debuff_dodge"]/100.0, "turnos": turnos})
                 if "debuff_geral" in efeito:
                     for st in ["atk", "def", "spd", "matk"]: target.debuffs.append({"stat": st, "mult": efeito["debuff_geral"]/100.0, "turnos": turnos})
                 if efeito.get("remove_todos_buffs"):

@@ -89,6 +89,10 @@ PROFILE_BACKGROUND_FILES = {
     "token_moldura_minecraft": os.path.join(root_dir, "assets", "profile_themes", "minecraft.png"),
     "token_moldura_arvore_glacial": os.path.join(root_dir, "assets", "profile_themes", "arvore_glacial.png"),
     "token_moldura_flores_cerejeira": os.path.join(root_dir, "assets", "profile_themes", "flores_cerejeira.png"),
+    "token_moldura_arquibancada_lotada": os.path.join(root_dir, "assets", "profile_themes", "arquibancada_lotada.png"),
+    "token_moldura_gramado_noturno": os.path.join(root_dir, "assets", "profile_themes", "gramado_noturno.png"),
+    "token_moldura_sala_de_imprensa": os.path.join(root_dir, "assets", "profile_themes", "sala_de_imprensa.png"),
+    "token_moldura_taca_mundial": os.path.join(root_dir, "assets", "profile_themes", "taça_2026.png"),
 }
 
 # ===================================================
@@ -144,6 +148,46 @@ THEMES = {
         "value": (255, 255, 255, 255),
         "small": (255, 230, 240, 255),
         "font_file": "PlayfairDisplay-Bold.ttf"
+    },
+    "token_moldura_arquibancada_lotada": {
+        "panel_fill": (4, 18, 18, 145),
+        "panel_outline": (80, 220, 160, 170),
+        "title": (235, 255, 245, 255),
+        "sub": (150, 235, 190, 255),
+        "label": (120, 220, 170, 255),
+        "value": (255, 255, 255, 255),
+        "small": (220, 245, 235, 255),
+        "font_file": "Roboto-Bold.ttf"
+    },
+    "token_moldura_gramado_noturno": {
+        "panel_fill": (0, 8, 20, 150),
+        "panel_outline": (110, 190, 255, 160),
+        "title": (215, 240, 255, 255),
+        "sub": (140, 210, 255, 255),
+        "label": (100, 180, 255, 255),
+        "value": (255, 255, 255, 255),
+        "small": (220, 235, 255, 255),
+        "font_file": "Roboto-Bold.ttf"
+    },
+    "token_moldura_sala_de_imprensa": {
+        "panel_fill": (18, 18, 22, 155),
+        "panel_outline": (235, 235, 235, 135),
+        "title": (255, 255, 255, 255),
+        "sub": (225, 225, 225, 255),
+        "label": (170, 200, 230, 255),
+        "value": (255, 255, 255, 255),
+        "small": (230, 230, 230, 255),
+        "font_file": "Roboto-Bold.ttf"
+    },
+    "token_moldura_taca_mundial": {
+        "panel_fill": (28, 18, 4, 145),
+        "panel_outline": (255, 210, 90, 180),
+        "title": (255, 235, 160, 255),
+        "sub": (255, 210, 120, 255),
+        "label": (255, 200, 90, 255),
+        "value": (255, 255, 255, 255),
+        "small": (255, 238, 190, 255),
+        "font_file": "Cinzel-Bold.ttf"
     }
 }
 
@@ -179,11 +223,20 @@ def cosmetic_label(cosmetic_id):
         "token_moldura_minecraft": "Minecraft",
         "token_moldura_arvore_glacial": "Árvore Glacial",
         "token_moldura_flores_cerejeira": "Flores de Cerejeira",
+        "token_moldura_arquibancada_lotada": "Arquibancada Lotada",
+        "token_moldura_gramado_noturno": "Gramado Noturno",
+        "token_moldura_sala_de_imprensa": "Sala de Imprensa",
+        "token_moldura_taca_mundial": "Taça Mundial",
         "token_titulo_pontual": "Pontual",
         "token_titulo_pontual_demais": "Pontual Demais",
         "token_titulo_bug_ambulante": "Bug Ambulante",
         "token_titulo_tutoriuau_aprovou": "TutoriUAU Aprovou",
         "token_titulo_patrocinador": "Patrocinador",
+        "token_titulo_campeao_de_lugnica": "Campeão de Lugnica",
+        "token_titulo_lenda_echo_cup": "Lenda da Echo Cup",
+        "token_titulo_rei_dos_ecos": "Rei dos Ecos",
+        "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Lugnica",
+        "token_titulo_campeao_do_mundo": "Campeão do Mundo",
     }
     return labels.get(cosmetic_id, str(cosmetic_id or "").replace("token_", "").replace("_", " ").title())
 

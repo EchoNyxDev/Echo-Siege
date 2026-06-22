@@ -122,7 +122,7 @@ PETS = {
     "serpente_alada": {
         "nome": "Serpente Alada", "raridade": 3, "is_gacha": True, "emoji": "🐍",
         "hp": 65, "atk": 30, "matk": 45, "def": 20, "spd": 35, "crt": 15,
-        "passiva": "Seu veneno é poderoso: causa Dano Mágico Contínuo garantido."
+        "passiva": "Seu tempo e drible são venenosos: causa Dano Mágico Contínuo garantido."
     },
     "falcao_trovao": {
         "nome": "Falcão do Trovão", "raridade": 3, "is_gacha": True, "emoji": "⚡",
@@ -220,5 +220,33 @@ PETS = {
         "nome": "Boneco Amaldiçoado", "raridade": 4, "is_gacha": False, "emoji": "🎎",
         "hp": 90, "atk": 10, "matk": 70, "def": 30, "spd": 20, "crt": 5,
         "passiva": "Construto demônio que amaldiçoa e reflete as habilidades inimigas."
+    },
+
+    # ========================================================
+    # PETS EXCLUSIVOS DA COPA DO MUNDO (LOJA ESPECIAL DA COPA)
+    # ========================================================
+    "maple_alce": {
+        "nome": "Maple (Ligeiro)",
+        "raridade": 4,
+        "is_gacha": False,
+        "emoji": "🫎",
+        "hp": 190, "atk": 20, "matk": 10, "def": 75, "spd": 35, "crt": 5,
+        "passiva": "Chifres da Defesa: Distribui um escudo de 15% do HP máximo de Maple para toda a zaga aliada."
+    },
+    "zayu_onca": {
+        "nome": "Zayu (Onça-Pintada)",
+        "raridade": 5,
+        "is_gacha": False,
+        "emoji": "🐆",
+        "hp": 140, "atk": 85, "matk": 0, "def": 35, "spd": 52, "crt": 20,
+        "passiva": "Ginga Brasileira: Concede +30% de velocidade de drible para as pontas e aumenta a precisão do ataque."
+    },
+    "clutch_aguia": {
+        "nome": "Clutch (Águia Real)",
+        "raridade": 5,
+        "is_gacha": False,
+        "emoji": "🦅",
+        "hp": 130, "atk": 70, "matk": 40, "def": 30, "spd": 48, "crt": 25,
+        "passiva": "Olhar do Falcão: Seus voos rasantes limpam os desvios de projéteis e aumentam a precisão de passes em 30%."
     }
 }

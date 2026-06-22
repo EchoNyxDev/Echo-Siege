@@ -1213,105 +1213,284 @@ def _catalog_skill_definition(skill_data, rarity=1):
     name = str(skill_data.get("nome", "Habilidade"))
     description = str(skill_data.get("descricao", ""))
     text = _skill_key(f"{name} {description}")
+    desc_key = _skill_key(description)
     percent = _first_percent(description)
-    turns_match = re.search(r"(\d+)\s*turn", description.lower())
+    turns_match = re.search(r"(\d+)\s*(?:turn|rodad)", description.lower())
     turns = int(turns_match.group(1)) if turns_match else 3
 
+    def has_any(tokens):
+        return any(token in text for token in tokens)
+
+    def cap(value, limit):
+        try:
+            return min(float(value), limit)
+        except (TypeError, ValueError):
+            return limit
+
+    def damage_percent_for(stat):
+        match = re.search(rf"(?:causa|causando|causar|desfere|atinge|inflige|arremata|chute|golpe|corte|disparo|tiro|impacto|retalhando|devolve|retalia)[a-z0-9_]*_(\d+(?:[_,]\d+)?)_de_{stat}", desc_key)
+        if not match:
+            return None
+        try:
+            return float(match.group(1).replace("_", ".").replace(",", "."))
+        except ValueError:
+            return None
+
+    def stat_percent(stat, mode):
+        verbs = {
+            "buff": ["aumenta", "ganha", "concede", "recebe", "fortalece", "eleva", "buff"],
+            "debuff": ["reduz", "diminui", "remove", "enfraquece", "quebra", "rompe", "debuff"],
+        }[mode]
+        stat_aliases = [stat]
+        if stat == "atk":
+            stat_aliases.append("ataque")
+        if stat == "matk":
+            stat_aliases.extend(["magia", "magico", "magica"])
+        if stat == "def":
+            stat_aliases.extend(["defesa", "defesas"])
+        if stat == "spd":
+            stat_aliases.append("velocidade")
+        if stat == "crt":
+            stat_aliases.extend(["critico", "critica"])
+        if stat == "acc":
+            stat_aliases.extend(["precisao", "acerto"])
+        if stat == "dodge":
+            stat_aliases.extend(["evasao", "esquiva"])
+        for verb in verbs:
+            for alias in stat_aliases:
+                patterns = [
+                    rf"{verb}[a-z0-9_]*?_{alias}[a-z0-9_]*?_(\d+(?:[_,]\d+)?)",
+                    rf"{verb}[a-z0-9_]*?_(\d+(?:[_,]\d+)?)_de_{alias}",
+                    rf"{verb}[a-z0-9_]*?_(\d+(?:[_,]\d+)?)[a-z0-9_]*?_{alias}",
+                ]
+                for pattern in patterns:
+                    match = re.search(pattern, desc_key)
+                    if match:
+                        try:
+                            return float(match.group(1).replace("_", ".").replace(",", "."))
+                        except ValueError:
+                            return None
+        return None
+
+    def chance_percent():
+        patterns = [
+            r"(\d+(?:[_,]\d+)?)_de_chance",
+            r"chance_de_(\d+(?:[_,]\d+)?)",
+            r"chance[a-z0-9_]*?_(\d+(?:[_,]\d+)?)",
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, desc_key)
+            if not match:
+                continue
+            try:
+                return float(match.group(1).replace("_", ".").replace(",", "."))
+            except ValueError:
+                return None
+        return None
+
     target = "unico_inimigo"
-    if any(token in text for token in ["todos_os_inimigos", "equipe_inimiga", "em_area", "campo_inimigo"]):
+    if has_any(["todos_os_inimigos", "equipe_inimiga", "em_area", "campo_inimigo", "atingindo_todos_os_inimigos", "todos_inimigos"]):
         target = "todos_inimigos"
-    elif any(token in text for token in ["todos_os_aliados", "equipe_inteira", "todo_o_grupo", "sua_equipe", "aliados"]):
+    elif has_any(["todos_os_aliados", "equipe_inteira", "toda_a_equipe", "todos_da_equipe", "todo_o_grupo", "sua_equipe", "alianca", "todos_aliados", "grupo_inteiro"]):
         target = "todos_aliados"
+
+    damage_terms = [
+        "causa", "causando", "desfere", "atinge", "inflige", "arremata", "chute",
+        "golpe", "golpeia", "corte", "disparo", "tiro", "impacto", "retalha", "retalhando", "devolve", "retalia", "lanca", "lança",
+    ]
+    atk_damage_percent = damage_percent_for("atk")
+    matk_damage_percent = damage_percent_for("matk")
+    has_damage_percent = atk_damage_percent is not None or matk_damage_percent is not None
+    damage_trigger = has_damage_percent or any(_has_word(text, token) for token in damage_terms)
+
+    negative_heal = has_any(["anti_cura", "curas_inimigas", "cura_inimiga", "eficacia_de_curas", "corta_cura"])
+    is_heal = not negative_heal and has_any(["cura_o", "cura_um", "cura_todos", "curativo", "recupera_hp", "recuperacao", "restaura", "restaura_hp", "beijo_de_cura", "manto_curativo"])
+    is_revive = has_any(["revive", "reviver", "ressuscita", "ressurreicao"])
+    is_execute = has_any(["morte_instantanea", "insta_kill", "executa"])
+    is_summon = has_any(["cria_clone", "invoca_clone", "invoca_um_clone", "invoca_monstro", "invoca_servo", "invoca_invocacao"]) or ("invoca" in text and not damage_trigger)
+    is_shield = has_any(["barreira_protetora", "escudo_protetor", "escudo_mistico", "concede_um_escudo", "protege_a_equipe", "protege_o_time", "protege_o_grupo", "absorvendo_todo_dano", "muralha", "guarda"]) and not has_any(["ignora_escudo", "ignoram_escudo", "destroi_escudo", "destruir_escudo"])
+    is_debuff = has_any(["reduz", "diminui", "debuff", "atordoa", "stun", "silencia", "fraqueza", "congela", "confusao", "medo"])
+    is_debuff = is_debuff or ("lentidao" in text and has_any(["aplica", "causa_lentidao", "reduz_a_velocidade"]))
+    is_buff = has_any(["aumenta", "ganha", "concede", "fortalece", "forma_", "modo_", "buff", "transforma", "fica_imune", "imune", "seus_ataques", "suas_habilidades", "passa_a", "passam_a", "atrai_ataques", "reduz_pela_metade", "reduz_50_de_todo"])
+    self_modifier = has_any(["seus_ataques", "suas_habilidades", "seu_ataque", "ataques_normais", "passa_a", "passam_a", "atrai_ataques", "ferimentos_da_party", "sofrido_por_ele_mesmo", "reduz_50_de_todo"])
 
     skill_type = "dano"
     effect = {}
-    is_heal = any(token in text for token in ["cura", "curar", "recupera_hp", "restaura_hp"])
-    is_revive = any(token in text for token in ["revive", "reviver", "ressuscita", "ressurreicao"])
-    is_shield = any(token in text for token in ["escudo", "barreira", "imunidade_a_tudo", "intocavel"])
-    is_debuff = any(token in text for token in ["reduz", "debuff", "atordoa", "stun", "silencia", "fraqueza", "lentidao", "congela"])
-    is_buff = any(token in text for token in ["aumenta", "ganha", "concede", "fortalece", "forma_", "modo_", "buff"])
-    is_execute = any(token in text for token in ["morte_instantanea", "insta_kill", "executa"])
-    is_summon = any(token in text for token in ["invoca", "cria_clone"])
 
-    if is_revive:
+    if damage_trigger:
+        skill_type = "dano"
+        base_multiplier = 1.15 + min(0.85, max(0, int(rarity or 1) - 1) * 0.17)
+        if has_any(["dano_massivo", "golpe_massivo", "grande_dano", "dano_pesado", "devastador", "destrutivo"]):
+            base_multiplier += 0.35
+        if matk_damage_percent is not None or (atk_damage_percent is None and has_any(["magia", "mana", "fogo", "gelo", "raio", "relampago", "eletricidade", "explosao"])):
+            effect["multiplicador_matk"] = (matk_damage_percent / 100) if matk_damage_percent and matk_damage_percent >= 100 else base_multiplier
+            damage_base = "matk"
+        else:
+            effect["multiplicador_atk"] = (atk_damage_percent / 100) if atk_damage_percent and atk_damage_percent >= 100 else base_multiplier
+            damage_base = "atk"
+    elif is_revive:
         skill_type = "reviver"
         target = "aliado_morto_aleatorio"
         effect = {"hp_percent": (percent or 50) / 100}
-    elif is_heal:
-        skill_type = "cura"
-        target = "todos_aliados" if target == "todos_aliados" else "aliado_menor_hp"
-        if "matk" in text:
-            effect["multiplicador_matk"] = (percent or 150) / 100
-        else:
-            effect["cura_percent_max"] = (percent or 20) / 100
+        damage_base = "matk"
     elif is_execute:
         skill_type = "insta_kill"
         effect["chance_insta_kill"] = (percent or 20) / 100
         effect["restricao"] = "nao_afeta_boss"
-        effect["multiplicador_atk"] = 2.0
+        effect["multiplicador_atk"] = 1.8
+        damage_base = "atk"
     elif is_summon:
         skill_type = "invocacao"
         target = "campo"
-        effect["invocar"] = {"id": "minion", "nome": "Invocação", "hp_percent": 0.5, "atk_percent": 0.5, "comportamento": "atacar", "turnos": turns}
-    elif is_shield and not any(token in text for token in ["causa", "golpe", "corte", "disparo"]):
+        effect["invocar"] = {"id": "minion", "nome": "Invocação", "hp_percent": 0.45, "atk_percent": 0.45, "comportamento": "atacar", "turnos": turns}
+        damage_base = "atk"
+    elif is_heal:
+        skill_type = "cura"
+        target = "todos_aliados" if target == "todos_aliados" else "aliado_menor_hp"
+        if "matk" in text:
+            effect["multiplicador_matk"] = min((percent or 35) / 100, 0.60)
+        else:
+            effect["cura_percent_max"] = min((percent or 20) / 100, 0.45)
+        damage_base = "matk"
+    elif is_shield:
         skill_type = "escudo"
         target = "todos_aliados" if target == "todos_aliados" else "self"
-        effect["escudo_hp_max"] = (percent or 25) / 100
-        effect["turnos"] = turns
-    elif is_debuff and not any(token in text for token in ["causa", "golpe", "corte", "disparo", "ataque"]):
-        skill_type = "debuff"
-    elif is_buff and not any(token in text for token in ["causa", "golpe", "corte", "disparo", "ataque"]):
+        effect["escudo_hp_max"] = min((percent or 25) / 100, 0.45)
+        damage_base = "def"
+    elif is_buff and (self_modifier or not is_debuff):
         skill_type = "buff"
         target = "todos_aliados" if target == "todos_aliados" else "self"
-
-    if skill_type == "dano":
-        base_multiplier = 1.15 + min(0.85, max(0, int(rarity or 1) - 1) * 0.17)
-        if any(token in text for token in ["dano_massivo", "golpe_massivo", "grande_dano", "dano_pesado", "devastador"]):
-            base_multiplier += 0.55
-        if _has_word(text, "matk") or any(token in text for token in ["magia", "mana", "fogo", "gelo", "raio"]):
-            effect["multiplicador_matk"] = (percent / 100) if percent and percent >= 100 else base_multiplier
-        else:
-            effect["multiplicador_atk"] = (percent / 100) if percent and percent >= 100 else base_multiplier
+        damage_base = "atk"
+    elif is_debuff:
+        skill_type = "debuff"
+        damage_base = "atk"
+    else:
+        damage_base = "atk"
 
     stat_tokens = {
         "atk": "atk",
+        "ataque": "atk",
         "matk": "matk",
+        "magia": "matk",
+        "magico": "matk",
+        "magica": "matk",
         "def": "def",
         "defesa": "def",
+        "defesas": "def",
         "spd": "spd",
         "velocidade": "spd",
+        "acc": "acc",
+        "precisao": "acc",
+        "acerto": "acc",
+        "dodge": "dodge",
+        "evasao": "dodge",
+        "esquiva": "dodge",
+        "crt": "crt",
+        "critico": "crt",
+        "critica": "crt",
     }
+    seen_stats = set()
     for token, stat in stat_tokens.items():
-        if not _has_word(text, token):
+        if stat in seen_stats or not _has_word(text, token):
             continue
-        value = percent or (35 if int(rarity or 1) >= 5 else 20)
-        if any(word in text for word in ["reduz", "diminui", "perde", "debuff"]):
-            effect.setdefault(f"debuff_{stat}", value)
-        elif skill_type in {"buff", "escudo", "especial"} or any(word in text for word in ["aumenta", "ganha", "concede"]):
-            effect.setdefault(f"buff_{stat}", value)
+        seen_stats.add(stat)
+        debuff_value = stat_percent(stat, "debuff")
+        buff_value = stat_percent(stat, "buff")
+        if stat == "matk" and debuff_value is not None and has_any(["dano_magico", "ataque_magico"]) and has_any(["reduz_pela_metade", "todo_e_qualquer_dano", "reduz_50_de_todo"]):
+            debuff_value = None
+        if debuff_value is not None:
+            effect.setdefault(f"debuff_{stat}", cap(debuff_value, 50))
+        elif buff_value is not None:
+            effect.setdefault(f"buff_{stat}", cap(buff_value, 50))
+        debuff_near_stat = any(
+            re.search(rf"{word}(?:_[a-z0-9]+){{0,8}}_{token}", text)
+            for word in ["reduz", "diminui", "baixa", "enfraquece"]
+        )
+        buff_near_stat = any(
+            re.search(rf"{word}(?:_[a-z0-9]+){{0,8}}_{token}", text)
+            for word in ["aumenta", "ganha", "concede", "fortalece", "buffa"]
+        )
+        if stat == "matk" and has_any(["dano_magico", "ataque_magico"]) and has_any(["reduz_pela_metade", "todo_e_qualquer_dano", "reduz_50_de_todo"]):
+            debuff_near_stat = False
+        if debuff_near_stat and stat in {"atk", "matk", "def", "spd", "acc", "dodge"}:
+            default_value = 20 if int(rarity or 1) < 5 else 30
+            effect.setdefault(f"debuff_{stat}", default_value)
+        elif buff_near_stat and stat in {"atk", "matk", "def", "spd", "crt", "acc", "dodge"}:
+            default_value = 20 if int(rarity or 1) < 5 else 30
+            effect.setdefault(f"buff_{stat}", default_value)
 
-    if any(token in text for token in ["atordoa", "stun", "paralisa"]):
-        effect["stun_turnos"] = turns
-    if any(token in text for token in ["congela", "congelamento", "freeze"]):
-        effect["freeze_turnos"] = turns
-    if any(token in text for token in ["queimadura", "incendeia", "burn"]):
-        effect["dot"] = {"tipo": "fogo", "base": "matk", "mult": 0.3, "turnos": turns}
-    if any(token in text for token in ["veneno", "envenena", "poison"]):
-        effect["dot"] = {"tipo": "veneno", "base": "matk", "mult": 0.3, "turnos": turns}
-    if any(token in text for token in ["sangramento", "sangrar", "bleed"]):
-        effect["dot"] = {"tipo": "sangramento", "base": "atk", "mult": 0.3, "turnos": turns}
+    status_percent = chance_percent() or 100
+    if has_any(["atordoa", "stun", "paralisa"]):
+        if "chance" in text:
+            effect["chance_stun"] = min(status_percent / 100, 0.75)
+        effect["stun_turnos"] = min(turns, 2)
+    if has_any(["congela", "congelamento", "freeze"]):
+        effect["freeze_turnos"] = min(turns, 2)
+    if has_any(["queimadura", "incendeia", "burn"]):
+        effect["dot"] = {"tipo": "fogo", "base": damage_base if damage_base in {"atk", "matk"} else "matk", "mult": 0.25, "turnos": turns}
+    if has_any(["veneno", "envenena", "poison"]):
+        effect["dot"] = {"tipo": "veneno", "base": damage_base if damage_base in {"atk", "matk"} else "matk", "mult": 0.25, "turnos": turns}
+    if has_any(["sangramento", "sangrar", "bleed"]):
+        effect["dot"] = {"tipo": "sangramento", "base": "atk", "mult": 0.25, "turnos": turns}
     if "fraqueza" in text:
-        effect["aplica_fraqueza"] = percent or 25
-    if any(token in text for token in ["lentidao", "reduz_a_velocidade"]):
-        effect["debuff_spd"] = percent or 25
+        effect["aplica_fraqueza"] = cap(percent or 25, 40)
+    if negative_heal:
+        effect["anti_cura"] = True
+    if has_any(["lentidao", "reduz_a_velocidade"]):
+        if "imune" in text:
+            effect["imune_lentidao"] = True
+        else:
+            effect.setdefault("debuff_spd", cap(percent or 25, 45))
     if "silencia" in text or "silence" in text:
-        effect["silence_turnos"] = turns
-    if "limpa" in text and "debuff" in text:
+        effect["silence_turnos"] = min(turns, 2)
+    if "confusao" in text:
+        effect["confusao"] = True
+    if "medo" in text:
+        effect["fear_turnos"] = min(turns, 2)
+    if has_any(["limpa_debuff", "remove_efeitos", "remove_debuff", "remove_todos_os_debuffs", "remove_malignos"]):
         effect["remove_todos_debuffs"] = True
-    if "critico_garantido" in text or "acerto_critico_inevitavel" in text:
+    if has_any(["efeitos_negativos", "imunidade_debuffs", "imunidade_absoluta_a_efeitos"]):
+        effect["imunidade_debuffs"] = True
+    if has_any(["critico_garantido", "acerto_critico_garantido", "acerto_critico_inevitavel"]):
         effect["critico_garantido"] = True
-    if "ignora" in text and any(token in text for token in ["defesa", "armadura", "escudo"]):
-        effect["ignora_def_escudos"] = True
+    if has_any(["chance_de_atacar", "atacar_duas_vezes", "ataque_duplo"]):
+        effect["chance_ataque_duplo"] = min((chance_percent() or 25) / 100, 0.50)
+    if has_any(["regeneracao", "regenera", "cura_por_turno"]):
+        effect["cura_turnos"] = cap(percent or 10, 25)
+    if "imune" in text or "imunidade" in text:
+        if has_any(["stun", "atordoamento"]):
+            effect["imune_stun"] = True
+        if has_any(["confusao"]):
+            effect["imune_confusao"] = True
+        if has_any(["medo"]):
+            effect["imune_medo"] = True
+    if has_any(["invisivel", "esquiva"]):
+        effect["buff_dodge"] = cap(percent or 40, 50)
+    if has_any(["taunt", "aggro", "provocacao", "atrai_ataques", "atrai_provocacao"]):
+        effect["aggro_max"] = True
+    if has_any(["reduz_pela_metade", "metade_os_ferimentos", "todo_e_qualquer_dano", "reduz_50_de_todo"]):
+        effect["reduz_dano_recebido"] = cap(percent or 50, 60)
+    if "todos_os_status" in text:
+        effect["buff_geral"] = cap(percent or 30, 40)
+    if has_any(["dano_causado", "poder_de_ataques_fisicos", "ataques_fisicos_puros"]):
+        effect["multiplicador_dano_atk"] = 1 + (cap(percent or 25, 50) / 100)
+    if has_any(["turno_extra", "turno_magico_ou_fisico_extra"]):
+        effect["turnos_extra"] = 1
+    if has_any(["vampiro", "cura_sua_vida", "curam_lhe_a_vida"]):
+        effect["lifesteal"] = 0.25
+    if has_any(["curar_a_equipe", "cura_a_equipe", "curam_a_equipe", "criticos_magicos_curam"]) and "dano" in text:
+        effect["lifesteal_global"] = min((percent or 25) / 100, 0.50)
+    if has_any(["criticos_magicos_curam", "bonus_passivo_e_duradouro_em_todas_as_curas"]):
+        effect["cura_turnos"] = cap(percent or 10, 25)
+    if has_any(["copiar_os_bonus", "copia_os_bonus", "copiar_buffs"]):
+        effect["buff_atk"] = cap(percent or 25, 40)
+        effect["buff_matk"] = cap(percent or 25, 40)
+    if has_any(["anula_automaticamente", "primeiro_ataque_magico"]):
+        effect["ignora_dano_magico"] = True
+    if has_any(["ignora", "romper", "rompe", "quebra", "quebrar", "quebram"]) and has_any(["defesa", "armadura"]):
+        effect["ignora_def"] = cap(percent or 35, 60)
+    if has_any(["ignora", "destroi", "destruir", "rompe", "quebra", "quebrar", "quebram"]) and "escudo" in text:
+        effect["remove_escudos"] = True
     if "permanente" in text or "combate_inteiro" in text:
         effect["turnos"] = 99
     else:
@@ -1438,6 +1617,47 @@ def _ensure_runtime_effect(skill):
         effect.setdefault("reduz_dano_recebido", effect.pop("reducao_dano_recebido"))
     if "contra_ataque_dodge" in effect:
         effect.setdefault("counter_atk_percent", effect.pop("contra_ataque_dodge"))
+    if "remove_debuffs" in effect:
+        effect.setdefault("remove_todos_debuffs", effect.pop("remove_debuffs"))
+
+    numeric_caps = {
+        "buff_atk": 55, "buff_matk": 55, "buff_def": 55, "buff_hp": 55,
+        "debuff_atk": 55, "debuff_matk": 55, "debuff_def": 55,
+        "buff_spd": 50, "buff_crt": 50, "buff_acc": 50, "buff_dodge": 50,
+        "debuff_spd": 50, "debuff_acc": 50, "debuff_dodge": 50,
+        "buff_geral": 40, "debuff_geral": 40,
+        "cura_turnos": 30, "reduz_dano_recebido": 60, "reflete_dano": 80,
+    }
+    for key, cap_value in numeric_caps.items():
+        if key not in effect or isinstance(effect[key], bool):
+            continue
+        try:
+            effect[key] = max(0, min(float(effect[key]), cap_value))
+        except (TypeError, ValueError):
+            effect[key] = cap_value
+
+    for chance_key in ("chance_stun", "chance_ataque_duplo"):
+        if chance_key not in effect or isinstance(effect[chance_key], bool):
+            continue
+        try:
+            chance_value = float(effect[chance_key])
+            if chance_value > 1:
+                chance_value /= 100
+            effect[chance_key] = max(0, min(chance_value, 0.75))
+        except (TypeError, ValueError):
+            effect[chance_key] = 0.25
+
+    ratio_caps = {"escudo_hp_max": 0.50, "cura_percent_max": 0.60, "hp_percent": 1.0, "lifesteal": 0.60, "lifesteal_global": 1.0}
+    for key, cap_value in ratio_caps.items():
+        if key not in effect or isinstance(effect[key], bool):
+            continue
+        try:
+            ratio_value = float(effect[key])
+            if ratio_value > 1:
+                ratio_value /= 100
+            effect[key] = max(0, min(ratio_value, cap_value))
+        except (TypeError, ValueError):
+            effect[key] = cap_value
         
     if effect.get("dano_massivo"):
         if not any(key in effect for key in {"multiplicador_atk", "multiplicador_matk", "dano_atk_extra", "dano_matk_extra", "dano_hp_atual", "dano_hp_max"}):
@@ -1516,11 +1736,12 @@ def _ensure_runtime_effect(skill):
         "insta_kill_on_hit_garantido", "morre_apos_turnos",
         "melhora_item_usado", "cor_leonis_providencia",
         "reduz_dano_recebido_time", "contrato_morte_dps",
-        "insta_kill_inimigo_aleatorio", "invocar", "dot", "lifesteal_global"
+        "insta_kill_inimigo_aleatorio", "invocar", "dot", "lifesteal_global",
+        "ignora_def", "ignora_def_escudos", "remove_escudos",
     }
     supported_debuff_keys = {
         "debuff_atk", "debuff_matk", "debuff_def", "debuff_spd",
-        "debuff_acc",
+        "debuff_acc", "debuff_dodge",
         "debuff_geral", "stun_turnos", "chance_stun", "freeze_turnos",
         "root_turnos", "silence_turnos", "fear_turnos", "medo_turnos",
         "confusao", "aplica_fraqueza", "dano_recebido_extra",

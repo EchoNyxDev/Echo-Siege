@@ -1643,6 +1643,7 @@ class Adm(commands.Cog):
                            "`echo adm backup criar|listar` (Backup manual do banco)\n"
                            "`echo adm combate teste` (Laboratório de dano/habilidades contra calamidade nerfada)\n"
                            "`echo adm criar banner` (Editor do banner especial por 7 dias)\n"
+                           "`echo adm copa iniciar|encerrar|reset @user|echobet @user <qtd>` (Controle da Echo Cup)\n"
                            "`echo adm melhorar loja` (Sobe a loja em 1 nível para testes)\n"
                            "`echo adm reset cidade` (Reseta Lugnica)\n"
                            "`echo adm hack @usuário <id_do_heroi>` (Nível Max + 7 Estrelas)\n"
@@ -1659,6 +1660,12 @@ class Adm(commands.Cog):
 
         action = action.lower()
         target_id = re.sub(r'\D', '', arg1) if arg1 else None
+
+        if action == "copa":
+            copa_cog = self.bot.get_cog("Copa")
+            if not copa_cog or not hasattr(copa_cog, "admin_dispatch"):
+                return await ctx.send("O sistema da Echo Cup ainda não carregou.")
+            return await copa_cog.admin_dispatch(ctx, arg1, arg2)
 
         if (
             action in ["criarbanner", "bannercriar"]

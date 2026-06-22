@@ -44,12 +44,21 @@ COSMETIC_LABELS = {
     "token_moldura_minecraft": "Tema Minecraft",
     "token_moldura_arvore_glacial": "Tema Árvore Glacial",
     "token_moldura_flores_cerejeira": "Tema Flores de Cerejeira",
+    "token_moldura_arquibancada_lotada": "Tema Arquibancada Lotada",
+    "token_moldura_gramado_noturno": "Tema Gramado Noturno",
+    "token_moldura_sala_de_imprensa": "Tema Sala de Imprensa",
+    "token_moldura_taca_mundial": "Tema Taça Mundial",
     "token_titulo_pontual": "Pontual",
     "token_titulo_pontual_demais": "Pontual Demais",
     "token_titulo_bug_ambulante": "Bug Ambulante",
     "token_titulo_tutoriuau_aprovou": "TutoriUAU Aprovou",
     "token_titulo_patrocinador": "Patrocinador",
     "token_titulo_clicador": "Clicador Profissional",
+    "token_titulo_campeao_de_lugnica": "Campeão de Lugnica",
+    "token_titulo_lenda_echo_cup": "Lenda da Echo Cup",
+    "token_titulo_rei_dos_ecos": "Rei dos Ecos",
+    "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Lugnica",
+    "token_titulo_campeao_do_mundo": "Campeão do Mundo",
 }
 
 LEGACY_FRAME_MIGRATIONS = {

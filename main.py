@@ -68,6 +68,7 @@ async def load_commands():
     await bot.load_extension("commands.campeoes")
     await bot.load_extension("commands.conquistas")
     await bot.load_extension("commands.eventos")
+    await bot.load_extension("commands.copa")
     await bot.load_extension("commands.logs")
     await bot.load_extension("commands.rank")
     await bot.load_extension("commands.daily")

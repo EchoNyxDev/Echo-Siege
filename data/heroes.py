@@ -10330,48 +10330,2684 @@ HEROES = {
             }
         }
     },
-
     # =========================386
-    "id-nome": {
-
-    "nome": "# TEMPLATE",
-
-    "origem": "# TEMPLATE",
-
-    "emoji": "# TEMPLATE",
-    "imagem": "",
-
-    "classe": "# TEMPLATE",
-    "raridade": 0,
-    "max_star": 7,
-
-    "hp": 0,
-    "atk": 0,
-    "matk": 0,
-    "def": 0,
-    "spd": 0,
-    "crt": 0,
-
-    "habilidade": {
-        "nome": "# TEMPLATE",
-        "descricao": "# TEMPLATE"
+    "yoruichi_shihoin": {
+        "nome": "Yoruichi Shihoin",
+        "origem": "Bleach",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 85,
+        "matk": 45,
+        "def": 20,
+        "spd": 55,
+        "crt": 25,
+        "habilidade": {
+            "nome": "Shunko: Trovão",
+            "descricao": "Funde magia com combate físico. Causa 160% de ATK ao alvo e ganha um buff que aumenta sua velocidade (SPD) em 30% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Deusa do Relâmpago",
+                "descricao": "Transforma-se em pura eletricidade. Seus ataques ganham acerto crítico garantido e ignoram completamente os escudos físicos do inimigo."
+            }
+        }
     },
 
-    "evolucoes": {
-
-            3: {
-                "nome": "# TEMPLATE",
-                "atk": 0,
-            },
-
+    # =========================387
+    "kenshin_himura": {
+        "nome": "Kenshin Himura",
+        "origem": "Rurouni Kenshin",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105,
+        "atk": 88,
+        "matk": 0,
+        "def": 22,
+        "spd": 48,
+        "crt": 30,
+        "habilidade": {
+            "nome": "Amakakeru Ryu no Hirameki",
+            "descricao": "A técnica suprema do saque rápido. Causa 180% de ATK em um único inimigo e aplica sangramento pesado por 3 turnos."
+        },
+        "evolucoes": {
             5: {
-                "nome": "# TEMPLATE",
-                "descricao": "# TEMPLATE"
+                "nome": "Battousai, o Retalhador",
+                "descricao": "Seus instintos assassinos despertam. Seus ataques normais passam a ignorar 40% da defesa do oponente e reduzem a eficácia de curas inimigas."
+            }
+        }
+    },
+
+    # =========================388
+    "sojiro_hoshina": {
+        "nome": "Sojiro Hoshina",
+        "origem": "Kaiju No. 8",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100,
+        "atk": 75,
+        "matk": 0,
+        "def": 18,
+        "spd": 45,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Estilo Hoshina: Lâminas Gêmeas",
+            "descricao": "Avança com agilidade absurda retalhando tudo. Causa 140% de ATK e aumenta seu próprio ataque (ATK) em 25% por 3 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Liberação de Combate Total",
+                "descricao": "Hoshina libera todo o potencial do seu traje. Fica imune à lentidão e tem 30% de chance de atacar o inimigo duas vezes na mesma rodada."
+            }
+        }
+    },
+
+    # =========================389
+    "rob_lucci": {
+        "nome": "Rob Lucci",
+        "origem": "One Piece",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 80,
+        "matk": 0,
+        "def": 28,
+        "spd": 40,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Rokuougan",
+            "descricao": "Desfere um impacto de choque interno de curta distância. Causa 150% de ATK ignorando 100% da armadura e destrói escudos ativos do inimigo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Despertar do Leopardo",
+                "descricao": "Assume sua forma híbrida de pura agressão. Ganha regeneração de 15% do HP máximo por turno e aumenta seu ATK em 30% permanentemente."
+            }
+        }
+    },
+
+    # =========================390
+    "zeno_zoldyck": {
+        "nome": "Zeno Zoldyck",
+        "origem": "Hunter x Hunter",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120,
+        "atk": 95,
+        "matk": 50,
+        "def": 25,
+        "spd": 50,
+        "crt": 25,
+        "habilidade": {
+            "nome": "Dragon Dive",
+            "descricao": "Invoca uma chuva de dragões dourados de Nen a partir do céu. Causa 220% de ATK em área atingindo todos os inimigos, com 25% de chance de atordoar (stun) por 1 turno."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Mestre Assassino Experiente",
+                "descricao": "Analisa o alvo e dita a morte. Fica invisível (esquiva de 100%) por 1 turno, e seu ataque seguinte causa dano destrutivo triplicado."
+            }
+        }
+    },
+
+    # =========================391
+    "yuzuriha": {
+        "nome": "Yuzuriha",
+        "origem": "Hell's Paradise",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 90,
+        "atk": 60,
+        "matk": 20,
+        "def": 15,
+        "spd": 42,
+        "crt": 18,
+        "habilidade": {
+            "nome": "Fios Ninja e Secreção",
+            "descricao": "Prende e manipula o alvo com fios ocultos revestidos de toxina. Causa 110% de ATK, aplica veneno por 3 turnos e reduz a velocidade do alvo em 20%."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Dança Kunoichi Ágil",
+                "descricao": "Aumenta a sua agilidade em combate. Concede passivamente +25% de evasão (dodge) para evitar ataques inimigos diretos."
+            },
+            5: {
+                "nome": "Mestra dos Venenos Letais",
+                "descricao": "Seu veneno atinge o sistema nervoso. Inimigos envenenados por Yuzuriha têm o dano reduzido em 30%."
+            }
+        }
+    },
+
+    # =========================392
+    "yujiro_hanma": {
+        "nome": "Yujiro Hanma",
+        "origem": "Baki",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 160,
+        "atk": 110,
+        "matk": 0,
+        "def": 45,
+        "spd": 35,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Costas de Demônio",
+            "descricao": "Tensiona as costas formando o rosto de um demônio sorridente. Causa 250% de ATK em um único inimigo, ignorando a defesa, com acerto crítico garantido."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "A Criatura Mais Forte da Terra",
+                "descricao": "Sua força absoluta aterroriza até exércitos. Reflete 50% de qualquer dano de ataque corpo a corpo recebido e ganha +50% de ATK de forma permanente."
+            }
+        }
+    },
+
+    # =========================393
+    "sanji": {
+        "nome": "Sanji",
+        "origem": "One Piece",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 130,
+        "atk": 85,
+        "matk": 0,
+        "def": 30,
+        "spd": 42,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Diable Jambe",
+            "descricao": "Atrita a perna no chão até incendiar o membro. Causa 160% de ATK e aplica queimadura contínua no inimigo por 3 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Ifrit Jambe",
+                "descricao": "As chamas atingem o calor azul extremo de plasma. Seus chutes passam a ignorar 40% da defesa física e têm 30% de chance de atordoar (Stun)."
+            }
+        }
+    },
+
+    # =========================394
+    "choso": {
+        "nome": "Choso",
+        "origem": "Jujutsu Kaisen",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 125,
+        "atk": 75,
+        "matk": 30,
+        "def": 32,
+        "spd": 25,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Sangue Perfurante",
+            "descricao": "Condensa o sangue e o dispara em velocidade supersônica. Causa 140% de ATK, aplica sangramento e reduz a velocidade (SPD) do alvo em 25% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Supernova de Sangue",
+                "descricao": "Manipula orbes de sangue para detonar ao redor do alvo. Seus ataques normais afetam a área inteira e quebram escudos mágicos inimigos."
+            }
+        }
+    },
+
+    # =========================395
+    "kafka_hibino": {
+        "nome": "Kafka Hibino",
+        "origem": "Kaiju No. 8",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 140,
+        "atk": 92,
+        "matk": 0,
+        "def": 38,
+        "spd": 28,
+        "crt": 12,
+        "habilidade": {
+            "nome": "Soco Kaiju",
+            "descricao": "Transforma os braços em tecido de monstro para desferir um impacto sônico. Causa 190% de ATK, quebra escudos de terra e tem 30% de chance de atordoar (stun)."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Transformação Kaiju Completa",
+                "descricao": "Ao invés de morrer ao receber um golpe letal, transforma-se no Kaiju #8, recuperando 100% de HP e ganhando força destrutiva massiva por 3 turnos."
+            }
+        }
+    },
+
+    # =========================396
+    "ippo_makunouchi": {
+        "nome": "Ippo Makunouchi",
+        "origem": "Hajime no Ippo",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 120,
+        "atk": 65,
+        "matk": 0,
+        "def": 30,
+        "spd": 22,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Dempsey Roll",
+            "descricao": "Balança o corpo em forma de oito e avança batendo. Causa 130% de ATK. Seus socos implacáveis batem duas vezes e atordoam (stun) o alvo por 1 turno."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Foco Feroz",
+                "descricao": "O peso do treinamento não o deixa cair. Ippo ganha imunidade absoluta contra atordoamento (Stun) e medo."
+            },
+            5: {
+                "nome": "Gazelle Punch",
+                "descricao": "Ippo agacha e salta projetando todo o corpo no queixo do adversário. Seu próximo ataque ignorará completamente a defesa física do alvo."
+            }
+        }
+    },
+
+    # =========================397
+    "seras_victoria": {
+        "nome": "Seras Victoria",
+        "origem": "Hellsing",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 70,
+        "matk": 15,
+        "def": 20,
+        "spd": 26,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Canhão Harkonnen",
+            "descricao": "Dispara projéteis anti-tanque urânio de 30mm. Dispara seu canhão e causa 150% de ATK em todos os inimigos, reduzindo a defesa deles em 25% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Vampira Desperta",
+                "descricao": "O sangue no campo de batalha a fortalece. Seus ataques recuperam HP igual a 30% do dano causado (Lifesteal) e ela ganha +25% de velocidade."
+            }
+        }
+    },
+
+    # =========================398
+    "daisuke_jigen": {
+        "nome": "Daisuke Jigen",
+        "origem": "Lupin III",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 90,
+        "atk": 60,
+        "matk": 0,
+        "def": 15,
+        "spd": 35,
+        "crt": 25,
+        "habilidade": {
+            "nome": "Saque Rápido de Magnum",
+            "descricao": "Saca o revólver num piscar de olhos. Causa 120% de ATK no inimigo. O tiro é infalível e possui acerto crítico garantido (ignora a evasão)."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Tiro Furador de Armadura",
+                "descricao": "Sua mira acha os pontos fracos dos coletes balísticos. Suas balas passam a ignorar 30% de qualquer armadura ou barreira inimiga."
+            },
+            5: {
+                "nome": "Bala Ricochete Milagrosa",
+                "descricao": "Jigen atira em objetos do cenário para atingir a retaguarda. Seus ataques atingem até 2 alvos a mais com 80% do dano base da arma."
+            }
+        }
+    },
+
+    # =========================399
+    "cross_marian": {
+        "nome": "Cross Marian",
+        "origem": "D.Gray-man",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 125,
+        "atk": 88,
+        "matk": 60,
+        "def": 25,
+        "spd": 30,
+        "crt": 25,
+        "habilidade": {
+            "nome": "Judgement: Balas do Julgamento",
+            "descricao": "Dispara balas teleguiadas amaldiçoadas que perseguem o pecador até o fim do mundo. Causa 200% de ATK, ignorando 100% de escudos, defesas e evasão do inimigo."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Grave of Maria: Controle Cadavérico",
+                "descricao": "Invoca a magia do cadáver de Maria que canta. Silencia (impede magias) todos os oponentes da arena por 2 turnos e reduz o poder de ataque deles em 30%."
+            }
+        }
+    },
+
+    # =========================400
+    "reze": {
+        "nome": "Reze",
+        "origem": "Chainsaw Man",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 80,
+        "matk": 30,
+        "def": 22,
+        "spd": 38,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Explosão Bomba",
+            "descricao": "Lança pedaços de si mesma como bombas em área. Causa 170% de ATK em todos os inimigos e aplica queimadura pesada por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Híbrida Demônio Bomba",
+                "descricao": "Quando derrotada, puxa o próprio pino no pescoço. Revive uma vez com 50% de HP e explode ao retornar causando 200% de ATK suicida no inimigo que a matou."
+            }
+        }
+    },
+
+    # =========================401
+    "hyakunosuke_ogata": {
+        "nome": "Hyakunosuke Ogata",
+        "origem": "Golden Kamuy",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 1,
+        "max_star": 7,
+        "hp": 85,
+        "atk": 55,
+        "matk": 0,
+        "def": 12,
+        "spd": 25,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Tiro Focado de Sniper",
+            "descricao": "Ajusta a mira pacientemente para finalizar os fracos. Causa 110% de ATK ignorando 30% da defesa física do oponente, e foca no inimigo de menor HP."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Foco Estóico Frio",
+                "descricao": "Ogata não treme sob pressão. Ganha um buff permanente de +20% na taxa de precisão."
+            },
+            5: {
+                "nome": "Headshot Perfeito",
+                "descricao": "A letalidade de um soldado sem alma. Seus ataques possuem 20% de chance de executar instantaneamente (Insta Kill) alvos com menos de 20% do HP."
+            }
+        }
+    },
+
+    # =========================402
+    "tsukasa_shishio": {
+        "nome": "Tsukasa Shishio",
+        "origem": "Dr. Stone",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 130,
+        "atk": 75,
+        "matk": 0,
+        "def": 35,
+        "spd": 24,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Força Primata Mais Forte",
+            "descricao": "Lidera o front com poder e carisma brutais. Causa 140% de ATK no inimigo e concede um buff que aumenta o ataque (ATK) de todos os aliados de linha de frente em 20% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "O Império da Força Jovem",
+                "descricao": "A sua visão atrai as mentes puras de seus guerreiros. Enquanto Tsukasa viver, a equipe recebe imunidade total a efeitos de atordoamento (Stun) e paralisia."
+            }
+        }
+    },
+
+    # =========================403
+    "rintarou_okabe": {
+        "nome": "Rintarou Okabe",
+        "origem": "Steins;Gate",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 1,
+        "max_star": 7,
+        "hp": 80,
+        "atk": 10,
+        "matk": 15,
+        "def": 15,
+        "spd": 20,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Reading Steiner",
+            "descricao": "Usa seu telefone mágico para ver linhas do tempo alternativas. Antecipa o perigo e concede um buff que aumenta a evasão de todos os aliados em 25% por 2 turnos."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Telefone Micro-ondas (Nome Provisório)",
+                "descricao": "A ciência louca interfere no espaço-tempo. Uma vez por batalha, zera completamente os tempos de recarga (cooldowns) das magias da sua equipe."
+            },
+            5: {
+                "nome": "El Psy Kongroo",
+                "descricao": "Ele viaja no tempo para desfazer a tragédia. Impede a primeira morte de um aliado na rodada, devolvendo 10% do HP do alvo ferido instantaneamente."
+            }
+        }
+    },
+
+    # =========================404
+    "l_lawliet": {
+        "nome": "L Lawliet",
+        "origem": "Death Note",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 90,
+        "atk": 12,
+        "matk": 25,
+        "def": 20,
+        "spd": 35,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Análise de Fraquezas",
+            "descricao": "L não luta com os punhos. Ele descobre todas as falhas mentais do inimigo. Reduz a defesa e a velocidade (SPD) do inimigo com maior ataque em 40% por 3 turnos."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Deduzir a Tática Inimiga",
+                "descricao": "O brilhante detetive avisa o grupo por onde o inimigo irá atacar. Concede +15% de Chance de Crítico para toda a equipe aliada."
+            },
+            5: {
+                "nome": "Um Passo à Frente do Assassino",
+                "descricao": "L prepara uma isca genial. A equipe ganha um escudo invisível que anula automaticamente o primeiro debuff pesado (veneno/sangramento/stun) que receberem."
+            }
+        }
+    },
+
+    # =========================405
+    "koro_sensei": {
+        "nome": "Koro-sensei",
+        "origem": "Assassination Classroom",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 140,
+        "atk": 70,
+        "matk": 60,
+        "def": 40,
+        "spd": 85,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Movimento Veloz Mach 20",
+            "descricao": "Move-se rapidamente e cuida dos seus alunos de forma tentacular. Causa 150% de ATK a todos os inimigos e concede um escudo equivalente a 25% de HP para a equipe."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Defesa Absoluta de Esfera de Energia",
+                "descricao": "Ao sofrer um dano letal, encolhe-se dentro de uma esfera cristalina indestrutível. Fica invulnerável a todos os ataques por 1 turno e cura 50% do HP de todos os seus alunos aliados na arena."
+            }
+        }
+    },
+
+    # =========================406
+    "luffy": {
+        "nome": "Monkey D. Luffy",
+        "origem": "One Piece",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 160,
+        "atk": 90,
+        "matk": 0,
+        "def": 45,
+        "spd": 35,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Haki do Rei (Haoshoku Haki)",
+            "descricao": "Dispara uma onda massiva de Haki de intimidação imperial. Causa 140% de ATK em todos os inimigos com 40% de chance de atordoar (stun) a equipe inimiga inteira por 1 turno."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Despertar: Gear 5 (Deus do Sol Nika)",
+                "descricao": "Ao cair em batalha, desperta o tambor da libertação. Revive com 100% de HP, ganha +50% em todos os status, e seus ataques de borracha deformam a realidade, ignorando defesas e escudos."
+            }
+        }
+    },
+
+    # =========================407
+    "rin_tohsaka": {
+        "nome": "Rin Tohsaka",
+        "origem": "Fate/stay night",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100,
+        "atk": 20,
+        "matk": 70,
+        "def": 20,
+        "spd": 28,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Joias Mágicas Gandr",
+            "descricao": "Dispara joias acumuladas com magia amaldiçoada condensada. Causa 140% de MATK e reduz o ataque do inimigo em 25% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Mestra Herdeira das Joias Tohsaka",
+                "descricao": "A linhagem de Tohsaka transforma dor em recursos. Seus críticos mágicos curam 15% do HP máximo de toda a equipe devido à redistribuição de mana."
+            }
+        }
+    },
+
+    # =========================408
+    "lina_inverse": {
+        "nome": "Lina Inverse",
+        "origem": "Slayers",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105,
+        "atk": 15,
+        "matk": 85,
+        "def": 18,
+        "spd": 25,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Conjuração do Drag Slave",
+            "descricao": "O feitiço que assusta até dragões. Causa 220% de MATK em todos os inimigos, arrasando a arena e destruindo os escudos mágicos ativos oponentes."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Giga Slave (Invocação das Trevas)",
+                "descricao": "Um feitiço perigoso que usa o poder do Lorde dos Pesadelos. O seu próximo dano mágico é elevado para a potência absurda de 300% de MATK, mas ela ficará silenciada no turno seguinte."
+            }
+        }
+    },
+
+    # =========================409
+    "pikachu": {
+        "nome": "Pikachu",
+        "origem": "Pokémon",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 85,
+        "atk": 30,
+        "matk": 55,
+        "def": 15,
+        "spd": 40,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Choque do Trovão",
+            "descricao": "Libera uma descarga de eletricidade estática. Causa 120% de MATK e tem 35% de chance de atordoar (stun/paralisar) o alvo por 1 turno."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Agilidade Eletrizante",
+                "descricao": "Corre de forma confusa deixando rastros de luz. Concede um bônus que aumenta a sua própria velocidade (SPD) e evasão em 20%."
+            },
+            5: {
+                "nome": "Explosão de Trovão Supremo",
+                "descricao": "Concentra as energias da chuva elétrica. O choque aumenta a potência para 160% de MATK e eleva a chance de Atordoar para colossais 50%."
+            }
+        }
+    },
+
+    # =========================410
+    "tatsuya_shiba": {
+        "nome": "Tatsuya Shiba",
+        "origem": "Mahouka",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 125,
+        "atk": 60,
+        "matk": 95,
+        "def": 35,
+        "spd": 45,
+        "crt": 25,
+        "habilidade": {
+            "nome": "Material Burst de Decomposição",
+            "descricao": "Decompõe a massa de matéria do alvo e converte em energia letal. Causa 250% de MATK, ignorando completamente imunidades, escudos e as defesas mágicas do alvo."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Magia de Regrowth (Recreação)",
+                "descricao": "Lê os dados da magia base e reverte o universo local a instantes atrás. Restaura instantaneamente 100% de todo o HP perdido de um aliado alvo ou si mesmo no turno."
+            }
+        }
+    },
+
+    # =========================411
+    "evangeline": {
+        "nome": "Evangeline A.K. McDowell",
+        "origem": "UQ Holder",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 135,
+        "atk": 35,
+        "matk": 80,
+        "def": 30,
+        "spd": 28,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Nevasca do Gelo Eterno",
+            "descricao": "A deusa vampiresca imortal sopra uma nevasca congelante do submundo glacial. Causa 170% de MATK em todos os inimigos e tem 30% de chance de congelar (stun) por 1 turno."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Magia Das Trevas (Absorção Absoluta)",
+                "descricao": "Magia Erabotea se mescla com magia de vampiro. Ela absorve energias direcionadas a si, convertendo 30% do MATK mágico do oponente em bônus para si mesma por 3 turnos."
+            }
+        }
+    },
+
+    # =========================412
+    "ira_gamagori": {
+        "nome": "Ira Gamagori",
+        "origem": "Kill la Kill",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 170,
+        "atk": 50,
+        "matk": 0,
+        "def": 60,
+        "spd": 15,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Shackle Regalia em Guarda",
+            "descricao": "Entra em postura inabalável fechada nas suas vestes. Atrai provocação de todos os inimigos (Taunt) e ganha escudo que absorve e reduz o dano sofrido em 40% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Scourge Regalia: A Fúria",
+                "descricao": "Ao abrir a sua vestimenta cheia de farpas, o chicote de aço se solta brutalmente. Causa 150% de ATK em área devolvendo em choque massivo o dano recebido enquanto defendia."
+            }
+        }
+    },
+
+    # =========================413
+    "reiner_braun": {
+        "nome": "Reiner Braun",
+        "origem": "Shingeki no Kyojin",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 180,
+        "atk": 55,
+        "matk": 0,
+        "def": 70,
+        "spd": 14,
+        "crt": 5,
+        "habilidade": {
+            "nome": "A Pele de Titã Encouraçado",
+            "descricao": "Endurece a pele na forma do famoso Titã blindado de Marley. Ganha um escudo impenetrável de 35% do seu HP Máximo e recebe imunidade a sangramento por 3 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Investida Esmagadora de Gigante",
+                "descricao": "Corre em alta velocidade arremessando toda sua carcaça dura na muralha inimiga. Causa 160% de ATK, destrói escudos físicos e atordoa o alvo principal na porrada."
+            }
+        }
+    },
+
+    # =========================414
+    "wobbuffet": {
+        "nome": "Wobbuffet",
+        "origem": "Pokémon",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 1,
+        "max_star": 7,
+        "hp": 160,
+        "atk": 0,
+        "matk": 0,
+        "def": 40,
+        "spd": 5,
+        "crt": 0,
+        "habilidade": {
+            "nome": "Counter: Devolver na Mesma Moeda",
+            "descricao": "Sua postura é 100% defensiva pura. Reflete 100% do dano recebido de volta ao inimigo que o atacou com o dobro de força kármica (absorve dano refletir)."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Destiny Bond (Ligação Fatal)",
+                "descricao": "Ao morrer por golpe do inimigo, desfere uma maldição de punição cármica suprema, executando com 50% de chance o inimigo responsável."
+            },
+            5: {
+                "nome": "Safeguard: Escudo Sagrado Místico",
+                "descricao": "Usa seu corpo macio como isolante psíquico para a sua party aliada. Protege o grupo dando imunidade absoluta a efeitos negativos (Debuffs) por 2 turnos."
+            }
+        }
+    },
+
+    # =========================415
+    "jinbe": {
+        "nome": "Jinbe",
+        "origem": "One Piece",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 175,
+        "atk": 65,
+        "matk": 30,
+        "def": 60,
+        "spd": 20,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Karatê de Água: Bloqueio Marítimo",
+            "descricao": "Suga a umidade do ar. Concede um escudo à equipe que absorve danos elementais de fogo e cura as feridas de combate aliadas em 15% do HP máximo de todos os heróis."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Vagabond Drill (Tritão)",
+                "descricao": "Seu soco de água vibra direto no interior líquido do alvo, furando peles grossas. Desfere 170% de ATK e atinge ignorando totalmente todas as defesas de blindagem do alvo."
+            }
+        }
+    },
+
+    # =========================416
+    "superalloy_darkshine": {
+        "nome": "Superalloy Darkshine",
+        "origem": "One Punch Man",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 200,
+        "atk": 70,
+        "matk": 0,
+        "def": 90,
+        "spd": 18,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Brilho Muscular Deslumbrante",
+            "descricao": "Tensiona seus músculos banhados a óleo para repelir ferro e balas. Atrai provocação (Taunt) absoluta e fica imune a qualquer ataque que não seja um acerto crítico por 2 turnos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Tackle Duplo Sombrio Místico",
+                "descricao": "Usa suas duas toneladas de carne endurecida para obliterar com o ombro as defesas da frente. Avança atropelando tudo e causa dano físico crítico massivo de 200% de ATK empurrando o alvo no relógio de batalha."
+            }
+        }
+    },
+
+    # =========================417
+    "retsu_unohana": {
+        "nome": "Retsu Unohana",
+        "origem": "Bleach",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 160,
+        "atk": 90,
+        "matk": 70,
+        "def": 35,
+        "spd": 35,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Minazuki: Shikai Esquadrão Médico",
+            "descricao": "Libera a cura esbranquiçada de sua raia espiritual na quadra e envolve toda a tropa. Cura 35% do HP máximo de todos os aliados e limpa todos os efeitos maldosos de veneno e sangramento."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Minazuki: Bankai da Morte Original",
+                "descricao": "O lado Kenpachi assassino sangrento aflora a essência do combate em feridas eternas. Seus ataques normais passam a curar a equipe em 50% do dano brutal causado às defesas oponentes."
+            }
+        }
+    },
+
+    # =========================418
+    "hotaru_tomoe": {
+        "nome": "Hotaru Tomoe",
+        "origem": "Sailor Moon",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 125,
+        "atk": 15,
+        "matk": 75,
+        "def": 30,
+        "spd": 26,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Cura Através da Destruição Escura",
+            "descricao": "Sua luz estelar sombria destrói para reconstruir as vidas feridas em campo. Sacrifica 20% do próprio HP para reviver um aliado morto e curar todos os outros aliados vivos com escudo místico em 25%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "O Silêncio de Saturno Escudo",
+                "descricao": "O gládio letal da morte repousa como muralha cósmica de contenção inquebrável. Aplica um escudo de 30% do HP Máximo de Hotaru na party inteira que silencia por 1 turno quem se atrever a atacar as barreiras de luz."
+            }
+        }
+    },
+
+    # =========================419
+    "recovery_girl": {
+        "nome": "Recovery Girl",
+        "origem": "Boku no Hero Academia",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 105,
+        "atk": 5,
+        "matk": 45,
+        "def": 20,
+        "spd": 18,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Beijo de Cura Médica Acelerada",
+            "descricao": "Força a super regeneração natural orgânica e exaustiva a funcionar às pressas! Restaura 40% do HP de um aliado selecionado e anula instantaneamente os debuffs cruéis como lentidão ou atordoamento no grupo."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Experiência de Suporte da U.A.",
+                "descricao": "Seus conselhos aos feridos são inestimáveis e cruciais. Concede um buff de +15% bônus passivo e duradouro em todas as curas que o grupo inteiro desferir."
+            },
+            5: {
+                "nome": "Repouso Forçado Autorizado!",
+                "descricao": "Gritando para repousar de vez, remove todos os debuffs do aliado curado instantaneamente e concede uma recuperação menor (10% HP) a cada começo da rodada seguinte."
+            }
+        }
+    },
+
+    # =========================420
+    "akiko_yosano": {
+        "nome": "Akiko Yosano",
+        "origem": "Bungo Stray Dogs",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 40,
+        "matk": 40,
+        "def": 22,
+        "spd": 25,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Thou Shalt Not Die (Você Não Vai Morrer)",
+            "descricao": "Cura drástica e letal. Cura totalmente a equipe inteira em 50% do HP e, se uma morte tiver ocorrido na rodada presente, ela ressuscita esse infeliz aliado estripado com 50% de vida curando os sangramentos!"
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Medicina Agressiva Cortante e Furiosa",
+                "descricao": "Abusa da brutalidade de cura sacando o cutelo e o machado cirúrgico para a batalha infernal. Ela ataca os inimigos causando um golpe letal de 120% ATK físico de área no esquadrão, aplicando sangramento massivo."
+            }
+        }
+    },
+    # =========================421
+    "hyoma_chigiri_bl": {
+        "nome": "Hyoma Chigiri",
+        "origem": "Blue Lock",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100,
+        "atk": 65,
+        "matk": 10,
+        "def": 18,
+        "spd": 45,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Aceleração Extrema",
+            "descricao": "Causa 140% de ATK e ganha um bônus de +25% de SPD por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Fórmula do Velocista",
+                "descricao": "Seu sprint é imparável. Aumenta o dano causado em 30% contra inimigos com SPD menor que a sua."
+            }
+        }
+    },
+
+    # =========================422
+    "isagi_yoichi_bl": {
+        "nome": "Yoichi Isagi",
+        "origem": "Blue Lock",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 60,
+        "matk": 20,
+        "def": 25,
+        "spd": 28,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Metavisão e Consciência",
+            "descricao": "Analisa o campo perfeitamente. Concede +40% de precisão e evasão (dodge) para toda a sua equipe por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Chute Direto Perfeito",
+                "descricao": "Isagi prevê o momento exato do gol. Seu ataque seguinte causa 200% de ATK e ignora defesas físicas do oponente."
+            }
+        }
+    },
+
+    # =========================423
+    "rensuke_kunigami_bl": {
+        "nome": "Rensuke Kunigami",
+        "origem": "Blue Lock",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 70,
+        "matk": 0,
+        "def": 25,
+        "spd": 20,
+        "crt": 12,
+        "habilidade": {
+            "nome": "Poder do Herói",
+            "descricao": "Desfere um chute físico brutal. Causa 150% de ATK e possui 20% de chance de atordoar (Stun) o alvo principal."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Esmagamento Físico",
+                "descricao": "Kunigami adota uma postura mais violenta. Seus ataques normais passam a quebrar 30% da armadura do inimigo."
+            }
+        }
+    },
+
+    # =========================424
+    "meguru_bachira_bl": {
+        "nome": "Meguru Bachira",
+        "origem": "Blue Lock",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105,
+        "atk": 72,
+        "matk": 10,
+        "def": 20,
+        "spd": 42,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Drible do Monstro",
+            "descricao": "Finta os adversários com movimentos caóticos. Causa 160% de ATK e reduz a velocidade de ação de 2 inimigos em 30%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Estado de Flow Instintivo",
+                "descricao": "O monstro desperta. Passa a ignorar provocações (Taunt) e ganha +30% de chance de acerto crítico na arena."
+            }
+        }
+    },
+
+    # =========================425
+    "shoei_barou_bl": {
+        "nome": "Shoei Barou",
+        "origem": "Blue Lock",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 120,
+        "atk": 78,
+        "matk": 0,
+        "def": 28,
+        "spd": 22,
+        "crt": 15,
+        "habilidade": {
+            "nome": "O Rei da Quadra",
+            "descricao": "Barou atropela tudo pela frente. Causa 180% de ATK físico e aumenta seu próprio ataque em 20% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Ego do Vilão Devorador",
+                "descricao": "Quanto mais sua party sofre, mais ele brilha. Causa dano extra se algum aliado tiver sido ferido nesta rodada."
+            }
+        }
+    },
+
+    # =========================426
+    "reo_mikage_bl": {
+        "nome": "Reo Mikage",
+        "origem": "Blue Lock",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 35,
+        "matk": 55,
+        "def": 22,
+        "spd": 24,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Cópia Versátil Camaleão",
+            "descricao": "Copia técnicas de suporte. Cura 25% do HP máximo de toda a equipe e aumenta a defesa do grupo em 15%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Sinergia de Gênio",
+                "descricao": "Reo refina suas cópias táticas. Passa a copiar os bônus (buffs) de ataque do inimigo de maior poder e aplicá-los à sua party."
+            }
+        }
+    },
+
+    # =========================427
+    "seichiro_nagi_bl": {
+        "nome": "Seichiro Nagi",
+        "origem": "Blue Lock",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 125,
+        "atk": 85,
+        "matk": 10,
+        "def": 25,
+        "spd": 32,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Recepção de Gênio do Espaço",
+            "descricao": "Domina o campo controlando ataques aéreos. Causa 220% de ATK e ignora 50% da blindagem defensiva oponente."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Contra-Ataque Criativo Nulo",
+                "descricao": "A sua intuição preguiçosa é mortal. Sempre que recebe um ataque físico, revida automaticamente causando 150% de ATK no agressor."
+            }
+        }
+    },
+
+    # =========================428
+    "kenyu_yukimiya_bl": {
+        "nome": "Kenyu Yukimiya",
+        "origem": "Blue Lock",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 90,
+        "atk": 45,
+        "matk": 10,
+        "def": 15,
+        "spd": 30,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Drible de Gyro Cortante",
+            "descricao": "Seus movimentos geram ilusões visuais. Causa 110% de ATK e reduz a precisão (cegueira) do alvo em 20% por 2 turnos."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Imperador Solitário",
+                "descricao": "Aumenta a própria velocidade (SPD) e adiciona +15% de chance de acerto crítico nos ataques."
+            },
+            5: {
+                "nome": "Corte Vertical Decisivo",
+                "descricao": "Foca-se puramente no alvo, fazendo os seus próximos ataques ignorarem 30% da armadura física permanentemente."
+            }
+        }
+    },
+
+    # =========================429
+    "itoshi_rin_bl": {
+        "nome": "Itoshi Rin",
+        "origem": "Blue Lock",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 82,
+        "matk": 30,
+        "def": 25,
+        "spd": 35,
+        "crt": 25,
+        "habilidade": {
+            "nome": "Marionetista do Campo Frio",
+            "descricao": "Força os oponentes a exporem fraquezas. Causa 190% de ATK focado na retaguarda e reduz a DEF deles em 40%."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Estado de Fluxo Destrutivo (Flow)",
+                "descricao": "Seu ego nojento assume. Dispara projéteis que causam dano verdadeiro em área, atingindo e quebrando qualquer escudo inimigo."
+            }
+        }
+    },
+
+    # =========================430
+    "ryusei_shidou_bl": {
+        "nome": "Ryusei Shidou",
+        "origem": "Blue Lock",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 130,
+        "atk": 90,
+        "matk": 10,
+        "def": 28,
+        "spd": 34,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Extrema Volúpia de Chute",
+            "descricao": "Desfere chutes acrobáticos em qualquer ângulo sem olhar. Causa 230% de ATK e possui acerto garantido mesmo contra inimigos furtivos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Demônio da Grande Área (ZG Drive)",
+                "descricao": "Entra em transe de destruição total. Seus golpes passam a dar dano em área com 50% de impacto e ele cura 10% do HP a cada abate."
+            }
+        }
+    },
+
+    # =========================431
+    "tabito_karasu_bl": {
+        "nome": "Tabito Karasu",
+        "origem": "Blue Lock",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 95,
+        "atk": 35,
+        "matk": 20,
+        "def": 20,
+        "spd": 22,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Análise do Corvo Tático",
+            "descricao": "Localiza os pontos fracos. Marca o inimigo com menor DEF, reduzindo a defesa e velocidade dele em 25%."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Finta de Pressão Fria",
+                "descricao": "Aumenta a precisão de todos os aliados da party em 15% por 2 rodadas completas."
+            },
+            5: {
+                "nome": "Galinheiro das Sombras",
+                "descricao": "As suas táticas elevam o grupo. Concede um buff contínuo de +20% de ATK físico para a sua equipe enquanto ele estiver vivo na arena."
+            }
+        }
+    },
+
+    # =========================432
+    "oliver_aiku_bl": {
+        "nome": "Oliver Aiku",
+        "origem": "Blue Lock",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 150,
+        "atk": 40,
+        "matk": 0,
+        "def": 60,
+        "spd": 18,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Muralha Sentinela Diamante",
+            "descricao": "Lê os movimentos defensivos e salta na trajetória. Atrai provocação (Taunt) e reduz em 40% todo o dano recebido nesta rodada."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Defesa Aérea Suprema Absoluta",
+                "descricao": "Protege todos à sua volta. Cria escudos protetores para a party inteira equivalentes a 25% de seu HP máximo e os torna imunes a atordoamento."
+            }
+        }
+    },
+
+    # =========================433
+    "julian_loki_bl": {
+        "nome": "Julian Loki",
+        "origem": "Blue Lock",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 88,
+        "matk": 10,
+        "def": 25,
+        "spd": 65,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Velocidade Deus Divina",
+            "descricao": "Dispara numa velocidade imperceptível. Causa 200% de ATK e ganha um turno extra imediato, sem permitir reações inimigas."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Luz Francesa Intocável Veloz",
+                "descricao": "Sua esquiva supera qualquer lei física. Concede +100% de evasão ativa por 1 turno e seus ataques cortam as curas do inimigo."
+            }
+        }
+    },
+
+    # =========================434
+    "itoshi_sae_bl": {
+        "nome": "Itoshi Sae",
+        "origem": "Blue Lock",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120,
+        "atk": 30,
+        "matk": 85,
+        "def": 28,
+        "spd": 35,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Futebol Lindo e Estético",
+            "descricao": "Usa cálculos mágicos no campo de batalha. Causa 180% de MATK em área a todos os inimigos e reduz a SPD deles em 30% por 2 turnos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Gênio Cirúrgico da Magia Nova",
+                "descricao": "Tudo acontece no tempo que ele quer. Restaura completamente as recargas de magias (cooldowns) do seu líder aliado ao custo de mana."
+            }
+        }
+    },
+
+    # =========================435
+    "noel_noa_bl": {
+        "nome": "Noel Noa",
+        "origem": "Blue Lock",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135,
+        "atk": 80,
+        "matk": 50,
+        "def": 40,
+        "spd": 25,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Racionalidade Mecânica Fria",
+            "descricao": "Apenas o poder lógico importa na guerra de Lugnica. Concede +50% de ATK para toda a equipe e os torna imunes a efeitos de controle (CC)."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Ambidestria Computada Lógica",
+                "descricao": "Nenhum movimento é desperdiçado. O seu próximo ataque no 3º turno de batalha causa absurdos 300% de ATK com dano verdadeiro inevitável."
+            }
+        }
+    },
+
+    # =========================436
+    "michael_kaiser_bl": {
+        "nome": "Michael Kaiser",
+        "origem": "Blue Lock",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120,
+        "atk": 86,
+        "matk": 20,
+        "def": 25,
+        "spd": 32,
+        "crt": 30,
+        "habilidade": {
+            "nome": "Kaiser Impact Furioso",
+            "descricao": "O tiro mais veloz e egoísta. Causa 250% de ATK físico concentrado em um único alvo da retaguarda, ignorando 100% de sua defesa de escudos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Predador Rei Coroado Egoísta",
+                "descricao": "Sua glória ofusca a todos. Sempre que derrotar um oponente, ele rouba o ATK do defunto, ganhando +25% de ATK extra pelo resto da luta."
+            }
+        }
+    },
+
+    # =========================437
+    "lavinho_bl": {
+        "nome": "Lavinho",
+        "origem": "Blue Lock",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 78,
+        "matk": 10,
+        "def": 20,
+        "spd": 48,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Drible Rítmico de Ginga",
+            "descricao": "Foca nos ritmos loucos do corpo a corpo brasileiro. Causa 160% de ATK em ziguezague e confunde o alvo (ataca um aliado) por 1 turno."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Dançarino de Borboleta Gato",
+                "descricao": "Ganhou agilidade felina. Aumenta a própria evasão em 50% e os seus contra-ataques agora curam-lhe a vida por um pouco."
+            }
+        }
+    },
+
+    # =========================438
+    "bunny_iglesias_bl": {
+        "nome": "Bunny Iglesias",
+        "origem": "Blue Lock",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 85,
+        "atk": 25,
+        "matk": 0,
+        "def": 15,
+        "spd": 15,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Salto do Coelho Estiloso",
+            "descricao": "Impulsiona as pernas para um ataque direto. Causa 210% de ATK no oponente mais próximo."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Estripador Leve de Defesas",
+                "descricao": "Sua dedicação esmaga pedras. Ignora DEF e escudo, atacando diretamente na vida."
+            }
+        }
+    },
+
+    # =========================439
+    "chris_prince_bl": {
+        "nome": "Chris Prince",
+        "origem": "Blue Lock",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 165,
+        "atk": 50,
+        "matk": 0,
+        "def": 60,
+        "spd": 22,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Perfect Body Musculatura",
+            "descricao": "Tensiona cada músculo em postura rígida. Atrai todos os ataques (Taunt), ganha escudos massivos e fica imune a atordoamento e silêncio."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "O Herói Físico de 7 Estrelas",
+                "descricao": "Sua perfeição biológica beira o grotesco. Cura 20% do seu próprio HP máximo ao final de cada turno que atuar como escudo do time."
+            }
+        }
+    },
+
+    # =========================440
+    "marc_snuffy_bl": {
+        "nome": "Marc Snuffy",
+        "origem": "Blue Lock",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 130,
+        "atk": 55,
+        "matk": 40,
+        "def": 45,
+        "spd": 28,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Estratégia Defensiva Máxima",
+            "descricao": "Aplica o seu intelecto táctico supremo no campo. Aumenta a defesa geral (DEF) da equipa em 40% e anula os golpes críticos recebidos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "O Cérebro de Alexandria Escudo",
+                "descricao": "Nada escapa à sua proteção. Concede instantaneamente um escudo místico e impenetrável sempre que o aliado mais fraco for atacado por magia."
+            }
+        }
+    },
+
+    # =========================441
+    "don_lorenzo_bl": {
+        "nome": "Don Lorenzo",
+        "origem": "Blue Lock",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 150,
+        "atk": 45,
+        "matk": 0,
+        "def": 58,
+        "spd": 18,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Drible Zumbi Sombrio",
+            "descricao": "Lorenzo se contorce impedindo a passagem. Atrai aggro (Taunt) e reduz agressivamente o ataque do oponente que lhe bater em 30%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "O Devorador de Gênios Ladrão",
+                "descricao": "Absorve os atributos inimigos. Rouba silenciosamente 20% do ATK e SPD do inimigo mais forte e repassa isso para si permanentemente."
+            }
+        }
+    },
+
+    # =========================442
+    "charles_chevalier_bl": {
+        "nome": "Charles Chevalier",
+        "origem": "Blue Lock",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100,
+        "atk": 15,
+        "matk": 58,
+        "def": 20,
+        "spd": 26,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Passe Preciso Mágico de Cura",
+            "descricao": "Cruza curas exatas ignorando barreiras. Restaura 30% do poder de MATK na forma de HP para os dois aliados mais feridos do esquadrão."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Cálculo de Sinergia Ofensiva",
+                "descricao": "Sua cura não apenas fecha feridas, mas levanta a moral. Aumenta em 25% o ATK e a taxa crítica do líder do grupo por 2 rodadas completas."
+            }
+        }
+    },
+
+    # =========================443
+    "vivian_hugo_bl": {
+        "nome": "Vivian Hugo",
+        "origem": "Blue Lock",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135,
+        "atk": 65,
+        "matk": 70,
+        "def": 35,
+        "spd": 32,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Aura da Nova Geração (New Gen 11)",
+            "descricao": "Sua presença esmagadora dita o ritmo absoluto do jogo. Aumenta a velocidade de ação (SPD) e o ATK de todos os aliados em 40% e anula os buffs ativos dos inimigos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Maestria Tática do Campo",
+                "descricao": "A visão de um gênio de elite mundial. Anula automaticamente o primeiro ataque mágico em área que a sua party receber e concede 25% de cura de HP máximo como retaliação tática."
+            }
+        }
+    },
+
+    # =========================444
+    "endou_mamoru_in": {
+        "nome": "Endou Mamoru",
+        "origem": "Inazuma Eleven",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 165,
+        "atk": 35,
+        "matk": 40,
+        "def": 65,
+        "spd": 15,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Mão Celestial (God Hand)",
+            "descricao": "Cria uma muralha colossal de pura determinação e magia divina. Bloqueia completamente o primeiro ataque físico ou mágico fatal direcionado à equipe."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Majin The Hand: Mão Demoníaca",
+                "descricao": "Invoca o demônio dourado de energia atrás de si. Além de defender a equipa inteira de magias, reflete 40% do dano das Calamidades e Chefes de volta."
+            }
+        }
+    },
+
+    # =========================445
+    "gouenji_shuuya_in": {
+        "nome": "Gouenji Shuuya",
+        "origem": "Inazuma Eleven",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 82,
+        "matk": 25,
+        "def": 25,
+        "spd": 26,
+        "crt": 18,
+        "habilidade": {
+            "nome": "Furacão de Fogo de Ataque",
+            "descricao": "Gouenji gira envolto em chamas vivas para chutar. Causa 200% de ATK físico a um único inimigo e inflige uma Queimadura severa de longo prazo."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Fogo Cruzado Fera",
+                "descricao": "Seu fogo não pode ser apagado. Seus ataques normais passam a ignorar as resistências e armaduras mágicas de gelo ou água do oponente."
+            }
+        }
+    },
+
+    # =========================446
+    "kiyama_hiroto_in": {
+        "nome": "Kiyama Hiroto",
+        "origem": "Inazuma Eleven",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105,
+        "atk": 20,
+        "matk": 76,
+        "def": 22,
+        "spd": 28,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Ryuusei Blade (Lâmina Meteoro)",
+            "descricao": "Hiroto descarrega chuvas de estrelas cadentes mágicas. Causa 160% de MATK em área na arena inimiga inteira e reduz a defesa de todos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Supernova Alienígena Extrema",
+                "descricao": "Concentre a força do universo inteiro em um alvo. Causa um dano mágico massivo colossal focado que derrete e pulveriza o inimigo com mais vida."
+            }
+        }
+    },
+
+    # =========================447
+    "kidou_yuuto_in": {
+        "nome": "Kidou Yuuto",
+        "origem": "Inazuma Eleven",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 45,
+        "matk": 55,
+        "def": 28,
+        "spd": 32,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Pinguins Imperiais Nº2 Ofensivo",
+            "descricao": "Comanda pinguins malucos mágicos do subsolo que mordem a linha inimiga. Causa 180% de ATK em área e tem chance de atordoar alvos fracos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Illusion Ball de Defesa",
+                "descricao": "Cria ilusões óticas usando magia de zona de campo. Concede impressionantes +40% de evasão (Dodge) mágica para a sua party inteira por 2 rodadas."
+            }
+        }
+    },
+
+    # =========================448
+    "fubuki_shirou_in": {
+        "nome": "Fubuki Shirou",
+        "origem": "Inazuma Eleven",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135,
+        "atk": 50,
+        "matk": 40,
+        "def": 52,
+        "spd": 28,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Chão de Gelo Glacial",
+            "descricao": "Fubuki desliza espalhando gelo espesso na arena. Causa 150% de ATK nos oponentes e aplica uma lentidão brutal de 50% de SPD na retaguarda."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Vendaval Eterno (Atsuya)",
+                "descricao": "Atsuya assume a liderança do corpo. Troca sua postura de Tank para Atacante, buffa todos os status em 50."
+            }
+        }
+    },
+
+    # =========================449
+    "rococo_urupa_in": {
+        "nome": "Rococo Urupa",
+        "origem": "Inazuma Eleven",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 170,
+        "atk": 45,
+        "matk": 30,
+        "def": 62,
+        "spd": 20,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Mão de X Escudo Vermelho",
+            "descricao": "Bloqueia e agarra tudo com força magnética de energia pura. Atrai ataques para si (Taunt) e reduz pela metade os ferimentos da party nesta rodada."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "X Blast: O Contra-Ataque do Abismo",
+                "descricao": "Rococo não só defende como destrói quem ataca. Devolve os ataques mágicos dos inimigos em forma de um feixe de 250% de MATK instantâneo."
+            }
+        }
+    },
+
+    # =========================450
+    "kazemaru_ichirouta_in": {
+        "nome": "Kazemaru Ichirouta",
+        "origem": "Inazuma Eleven",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100,
+        "atk": 62,
+        "matk": 15,
+        "def": 18,
+        "spd": 46,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Deslize de Vento Veloz",
+            "descricao": "Cria tufões de vento correndo por baixo das pernas do inimigo. Causa 140% de ATK e concede aumento de 30% em sua própria agilidade (SPD)."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Dança do Deus do Vento",
+                "descricao": "Transforma brisa em lâminas tempestuosas. Seus golpes básicos passam a aplicar hemorragia cortante (Sangramento) contínua nos adversários lentos."
+            }
+        }
+    },
+
+    # =========================451
+    "fudou_akio_in": {
+        "nome": "Fudou Akio",
+        "origem": "Inazuma Eleven",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 50,
+        "matk": 30,
+        "def": 22,
+        "spd": 26,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Estratégia Suja da Royal Academy",
+            "descricao": "Usa táticas que beiram a infração de regras. Cegue os inimigos com artifícios de campo, reduzindo a precisão em 30% de até 3 inimigos de forma covarde."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Sacrifício Pelo Poder Sujo",
+                "descricao": "Aumenta drasticamente o ataque físico de todos da equipe, ao custo de baixar ligeiramente as defesas do seu próprio time na frente de batalha."
+            }
+        }
+    },
+
+    # =========================452
+    "tobitaka_seiya_in": {
+        "nome": "Tobitaka Seiya",
+        "origem": "Inazuma Eleven",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 95,
+        "atk": 25,
+        "matk": 10,
+        "def": 30,
+        "spd": 12,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Sopro do Demônio Defesa (Shinkuuma)",
+            "descricao": "Chuta o ar e invoca sucções vácuas densas que atraem e mitigam flechas ou fogo inimigo atraindo o aggro levemente."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Bravura do Ex-Gangster Calejado",
+                "descricao": "Seu histórico na rua não o deixa temer pancada. Ganha um aumento sólido e duradouro na DEF física natural da sua ficha tática."
+            },
+            5: {
+                "nome": "Vácuo Místico Espiritual Mágico",
+                "descricao": "Além de golpes físicos, ele aprende a blindar magia. O Shinkuuma agora absorve e anula 1 feitiço mágico destrutivo por duelo sem sofrer arranhões."
+            }
+        }
+    },
+
+    # =========================453
+    "matsukaze_tenma_in": {
+        "nome": "Matsukaze Tenma",
+        "origem": "Inazuma Eleven",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 52,
+        "matk": 48,
+        "def": 25,
+        "spd": 32,
+        "crt": 12,
+        "habilidade": {
+            "nome": "Brisa Suave Veloz (Soyokaze Step)",
+            "descricao": "Avança criando redemoinhos de vento suave ao redor de sua party. Concede +30% de SPD e +20% de evasão ativa a todos por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Vento Mach: Mach Wind Divino",
+                "descricao": "Sua liderança inspira chutar tempestades. Causa 180% de ATK ignorando magia e limpa de vez todos os debuffs aplicados ao próprio esquadrão."
+            }
+        }
+    },
+
+    # =========================454
+    "tsurugi_kyousuke_in": {
+        "nome": "Tsurugi Kyousuke",
+        "origem": "Inazuma Eleven",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 80,
+        "matk": 20,
+        "def": 24,
+        "spd": 28,
+        "crt": 18,
+        "habilidade": {
+            "nome": "Queda Mortal da Espada (Death Drop)",
+            "descricao": "Chuta de cabeça para baixo gerando auras negras imponentes. Causa 170% de ATK e aplica sangramento perfurante pesado e cruel nos defensores."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Espadachim Santo Lancelot Desperto",
+                "descricao": "Invoca o Cavaleiro Lancelot no campo. Seus golpes adquirem peso místico e causam dano físico em área massivo esmagando a defesa do boss."
+            }
+        }
+    },
+
+    # =========================455
+    "fei_rune_in": {
+        "nome": "Fei Rune",
+        "origem": "Inazuma Eleven",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 105,
+        "atk": 25,
+        "matk": 60,
+        "def": 20,
+        "spd": 32,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Coelho Saltitante Suave (Bouncer Rabbit)",
+            "descricao": "Fei invoca coelhinhos energéticos que batem nas cabeças aliadas para os revigorar. Cura os guerreiros em 30% do MATK levemente."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Mixi Max Tyrano Temporal Extremo",
+                "descricao": "Ele une magia temporal à cura de grupo. Acelera drasticamente a velocidade de ação (SPD) de toda a equipe a curar."
+            }
+        }
+    },
+
+    # =========================456
+    "shindou_takuto_in": {
+        "nome": "Shindou Takuto",
+        "origem": "Inazuma Eleven",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100,
+        "atk": 18,
+        "matk": 68,
+        "def": 18,
+        "spd": 22,
+        "crt": 12,
+        "habilidade": {
+            "nome": "Batuta Divina Tática (Kami no Takuto)",
+            "descricao": "Shindou rege a arena orquestrando com as mãos no ar. Causa 130% de MATK a todos os inimigos e atordoa (Stun) o infeliz alvo de menor DEF."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Fortissimo Destruidor Pianista",
+                "descricao": "As notas musicais ganham o peso de bigornas caindo do teto. Suas magias sonoras passam a estilhaçar e ignorar as defesas mágicas ativas do oponente."
+            }
+        }
+    },
+
+    # =========================457
+    "zanark_avalonic_in": {
+        "nome": "Zanark Avalonic",
+        "origem": "Inazuma Eleven",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135,
+        "atk": 86,
+        "matk": 30,
+        "def": 30,
+        "spd": 22,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Super Catch de Desastre Absoluto",
+            "descricao": "Zanark condensa energia caótica em um impacto vulcânico no alvo. Causa 220% de ATK brutal esmagando 40% da DEF do alvo por longos 2 turnos infernais."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Great Max na Mim Sangue Puro",
+                "descricao": "A anomalia temporal liberta a sua fúria real sem os selos vermelhos. Sempre que seu HP cai abaixo de 30%, seu ATK salta em absurdos +50%."
+            }
+        }
+    },
+
+    # =========================458
+    "kageyama_tobio_hq": {
+        "nome": "Kageyama Tobio",
+        "origem": "Haikyuu!!",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 35,
+        "matk": 60,
+        "def": 24,
+        "spd": 32,
+        "crt": 10,
+        "habilidade": {
+            "nome": "O Levantador Genial Preciso",
+            "descricao": "Posiciona os aliados com precisão cirúrgica impecável. Concede um buff letal massivo de +50% no poder de ataques físicos puros de todos do grupo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Arremesso do Rei Solitário Ciente",
+                "descricao": "Ele entende agora como não ser um rei solitário de ditador cruel. Amplia as taxas de crítico e cura levemente todos os aliados da party que acertarem hits cruciais."
+            }
+        }
+    },
+
+    # =========================459
+    "ushijima_wakatoshi_hq": {
+        "nome": "Ushijima Wakatoshi",
+        "origem": "Haikyuu!!",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 140,
+        "atk": 90,
+        "matk": 0,
+        "def": 35,
+        "spd": 20,
+        "crt": 18,
+        "habilidade": {
+            "nome": "O Canhão Cortante Canhoto Imbatível",
+            "descricao": "Ushijima desfere um golpe esmagador na diagonal da linha esquerda em força bruta pura e simples cruel. Causa 230% de ATK em pancada focada blindada de destrói escudos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "O Orgulho Absoluto Mítico de Shiratorizawa",
+                "descricao": "Sua força assusta a guarda de qualquer inimigo em campo no bloqueio frontal. Seus ataques normais passam e atordoam defensores covardes no local por medo total do arremate."
+            }
+        }
+    },
+
+    # =========================460
+    "miya_atsumu_hq": {
+        "nome": "Miya Atsumu",
+        "origem": "Haikyuu!!",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 48,
+        "matk": 55,
+        "def": 25,
+        "spd": 34,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Saque Híbrido Enganoso Duplo",
+            "descricao": "Altera o peso da investida no último segundo da queda. Reduz drasticamente a precisão da retaguarda oponente e causa confusão nas trincheiras atiradoras dos alvos alheios."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "O Maestro das Raposas Místicas",
+                "descricao": "Acelera as peças certas do seu tabuleiro de xadrez na quadra sem esforço extra nenhum de mana bônus. Concede SPD permanente e segura a toda a sua equipe enquanto ele ditar os tempos e movimentos rítmicos."
+            }
+        }
+    },
+
+    # =========================461
+    "hinata_shoyo_hq": {
+        "nome": "Hinata Shoyo",
+        "origem": "Haikyuu!!",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 95,
+        "atk": 65,
+        "matk": 10,
+        "def": 18,
+        "spd": 48,
+        "crt": 18,
+        "habilidade": {
+            "nome": "Isca Suprema Veloz Saltitante",
+            "descricao": "Corre de um lado para o outro atraindo os olhares de predadores perigosos do campo alheio para fora de foco. Aumenta massivamente a taxa de chance crítica da equipe em generosos +30% limpos e ágeis."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Ataque Rápido Divino Acelerado Cortante",
+                "descricao": "As pernas funcionam como molas inatingíveis pelos radares lentos. Concede, mediante esforço físico extremo garantido, um turno mágico ou físico extra imediatamente após desferir o último ataque e salto celestial nas frentes."
+            }
+        }
+    },
+
+    # =========================462
+    "sakusa_kiyoomi_hq": {
+        "nome": "Sakusa Kiyoomi",
+        "origem": "Haikyuu!!",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 75,
+        "matk": 20,
+        "def": 22,
+        "spd": 28,
+        "crt": 30,
+        "habilidade": {
+            "nome": "Disparo Efeito Rotativo Chicote Severo",
+            "descricao": "Gira os punhos e articulações absurdas disparando ataques repulsivos que enganam as luvas de prata do oponente blindado frontal. Causa 170% de ATK e ignora cruelmente 40% da defesa física nula do bloqueador cego."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "O Jogador Mestre Precavido e Higiênico Lento",
+                "descricao": "Sua aversão a toxinas afia o seu sistema imunológico até o limite absoluto intransponível no inferno de sangue mágico. Fica total e eternamente imune contra envenenamento e sangramento de monstros ou fendas podres."
+            }
+        }
+    },
+
+    # =========================463
+    "bokuto_kotaro_hq": {
+        "nome": "Bokuto Kotaro",
+        "origem": "Haikyuu!!",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 125,
+        "atk": 82,
+        "matk": 0,
+        "def": 28,
+        "spd": 24,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Corte de Impacto Diagonal Brutal Furioso",
+            "descricao": "Bate rasgando espaços cegos onde corujas não caem normalmente sem rasgar teias no vazio cósmico. Causa um dano físico altíssimo focado que totaliza 180% de ATK bruto e também ignora a mágica defensiva."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Estrela Emo da Depressão de Ás",
+                "descricao": "Oscila entre tristeza e deus. Quando o seu vigor atinge níveis fracos por ataques inimigos sujos e seu HP cai de verdade e severamente para baixo dos 50%, ele acorda enfurecido curando partes e garantindo +ATK passivo limpo e constante na luta."
+            }
+        }
+    },
+
+    # =========================464
+    "hoshiumi_korai_hq": {
+        "nome": "Hoshiumi Korai",
+        "origem": "Haikyuu!!",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 98,
+        "atk": 68,
+        "matk": 10,
+        "def": 18,
+        "spd": 44,
+        "crt": 22,
+        "habilidade": {
+            "nome": "O Pequeno Gigante Planador Flutuante Célere",
+            "descricao": "Hoshiumi salta acima das redes montanhosas parando o tempo no ar como gaivota solta no temporal mágico. Causa 140% de ATK e ganha generosos buffs críticos nos seus hits mortais de arremesso aéreo curvo veloz."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Absoluta Versatilidade Técnica Global de Campo",
+                "descricao": "Domina de forma genial todas as áreas obscuras da partida limpa. Ele cura sua vida de forma de vampiro em porcentagens seguras sempre que arrancar sangue ou ouro do monstro e chefe atingido na cabeça das nuvens cegas."
+            }
+        }
+    },
+
+    # =========================465
+    "kozume_kenma_hq": {
+        "nome": "Kozume Kenma",
+        "origem": "Haikyuu!!",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 90,
+        "atk": 25,
+        "matk": 55,
+        "def": 20,
+        "spd": 18,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Análise Cérebro Analítico Gamer do Gato Oculto",
+            "descricao": "Joga a vida como simulador sem suar a testa, diminuindo o processamento e a CPU mental dos orcs ou deuses oponentes burros. Reduz de forma agressiva a SPD e o ATK inimigo em 30% em combates pesados no barro tático."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Estratégia Camuflagem Nível Boss Mestre do Teclado",
+                "descricao": "Atribui códigos bônus de furtividade hacker ao grupo aliado ignorado pelas bestas de Lugnica. Concede Evasão aprimorada (+Dodge) para manter seu teclado limpo de poeira cósmica."
+            }
+        }
+    },
+
+    # =========================466
+    "kuroo_tetsuro_hq": {
+        "nome": "Kuroo Tetsuro",
+        "origem": "Haikyuu!!",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 135,
+        "atk": 40,
+        "matk": 20,
+        "def": 45,
+        "spd": 22,
+        "crt": 5,
+        "habilidade": {
+            "nome": "O Bloqueio Leitura Negra do Gato Sujo Astuto Mestre",
+            "descricao": "Lê o ombro do demônio, saltando antes de magia ou punho fechar nos peitos frágeis dos magos velhos da base alheia no mato de espinhos cruzados. Atrai ameaça total do campo provocando todos para os braços fortes e escudos de mana brancos do seu casaco real."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Muralha Felina Chumbo Maciço Invencível do Sol Negro",
+                "descricao": "A dor de uma farpa é nula. Mitiga o primeiro impacto destrutivo violento no round até zero, provando que gato de telhado sobrevive a pedrada mágica limpa."
+            }
+        }
+    },
+
+    # =========================467
+    "yaku_morisuke_hq": {
+        "nome": "Yaku Morisuke",
+        "origem": "Haikyuu!!",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 20,
+        "matk": 15,
+        "def": 40,
+        "spd": 25,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Recepção Guardião Líbero de Sangue Sujo da Zaga Final de Batalha",
+            "descricao": "Coloca a cara na terra pelo grupo e salva o atirador pego de surpresa. Redireciona danos severos ao chão e cura danos físicos rasos que sofre do monstro tonto feio."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Manchete de Ferro",
+                "descricao": "Aumenta a DEF permanentemente e ignora veneno."
+            },
+            5: {
+                "nome": "A Limpeza Espiritual Silenciosa Rara de Pés Descalços Heróicos",
+                "descricao": "Sua persistência desfaz magias de silêncio e atordoamentos passivamente, libertando as pedras do controle arcano bruto impiedoso em Lugnica suja."
+            }
+        }
+    },
+
+    # =========================468
+    "akashi_seijuro_knb": {
+        "nome": "Akashi Seijuro",
+        "origem": "Kuroko no Basket",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 130,
+        "atk": 55,
+        "matk": 65,
+        "def": 28,
+        "spd": 35,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Olho do Imperador",
+            "descricao": "Akashi prevê o futuro dos movimentos do oponente. Reduz a velocidade de ação (SPD) e a evasão de todos os inimigos em 30% por 2 turnos, e atordoa (Stun) o inimigo de maior ATK por 1 turno."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "O Zone Absoluto",
+                "descricao": "Sua ordem é absoluta e inspira temor e eficiência. Aumenta o ATK e a SPD de toda a sua equipe em 40% por 3 turnos, ignorando qualquer redução de atributos aplicada pelos adversários."
+            }
+        }
+    },
+
+    # =========================469
+    "aomine_daiki_knb": {
+        "nome": "Aomine Daiki",
+        "origem": "Kuroko no Basket",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 90,
+        "matk": 10,
+        "def": 22,
+        "spd": 52,
+        "crt": 25,
+        "habilidade": {
+            "nome": "Arremesso Sem Forma",
+            "descricao": "Desfere golpes de ângulos biomecanicamente impossíveis. Causa 180% de ATK no inimigo com menor HP, ignorando 50% de sua defesa com acerto crítico garantido."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "O Ápice da Velocidade Feral (Zone)",
+                "descricao": "O monstro desperta sua verdadeira forma instintiva. Ganha +50% de SPD e +30% de chance crítica (CRT) por 3 turnos. Seus ataques contínuos causam Sangramento Pesado."
+            }
+        }
+    },
+
+    # =========================470
+    "kagami_taiga_knb": {
+        "nome": "Kagami Taiga",
+        "origem": "Kuroko no Basket",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 125,
+        "atk": 82,
+        "matk": 15,
+        "def": 26,
+        "spd": 30,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Meteor Jam",
+            "descricao": "Kagami salta além dos bloqueios e esmaga seus oponentes. Causa 160% de ATK físico em área a todos os inimigos e quebra instantaneamente escudos mágicos ativos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Poder do Pulo Supremo (Zone)",
+                "descricao": "Entra profundamente na zona concentrada. Aumenta seu próprio ATK em 45% e torna-se imune a atordoamento (Stun) e medo durante o resto do combate."
+            }
+        }
+    },
+
+    # =========================471
+    "murasakibara_atsushi_knb": {
+        "nome": "Murasakibara Atsushi",
+        "origem": "Kuroko no Basket",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 170,
+        "atk": 50,
+        "matk": 0,
+        "def": 60,
+        "spd": 16,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Martelo Destruidor (Thor's Hammer)",
+            "descricao": "Gira e usa sua força titânica para repelir invasores. Causa 150% de ATK em até dois alvos simultâneos e reduz a velocidade de ação (SPD) deles em 20% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Muralha Absoluta de Yosen",
+                "descricao": "Assume uma defesa passiva intransponível. Atrai o aggro (Taunt) de todos os ataques físicos inimigos e aumenta sua própria DEF em 60% por 2 rodadas."
+            }
+        }
+    },
+
+    # =========================472
+    "midorima_shintaro_knb": {
+        "nome": "Midorima Shintaro",
+        "origem": "Kuroko no Basket",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110,
+        "atk": 80,
+        "matk": 35,
+        "def": 24,
+        "spd": 22,
+        "crt": 35,
+        "habilidade": {
+            "nome": "Arremesso de 3 Pontos Impecável",
+            "descricao": "Calcula a trajetória milimétrica perfeita desde a sua base. Causa 170% de ATK físico diretamente à retaguarda inimiga com 100% de precisão (nunca erra)."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Confiança Máxima de Oha Asa",
+                "descricao": "Sua sorte astrológica cega é convertida em letalidade. Ganha acerto crítico inevitável a cada ataque básico, causando 50% de dano extra em inimigos com escudos."
+            }
+        }
+    },
+
+    # =========================473
+    "kise_ryota_knb": {
+        "nome": "Kise Ryota",
+        "origem": "Kuroko no Basket",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 35,
+        "matk": 80,
+        "def": 25,
+        "spd": 32,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Cópia Perfeita (Perfect Copy)",
+            "descricao": "Kise analisa instantaneamente e reflete a essência do inimigo. Causa 150% de MATK em área a todos os oponentes e concede um buff coletivo de +20% de dano à sua party."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Perfect Copy + Zone",
+                "descricao": "Sua cópia transcende o original. O uso de suas habilidades mágicas rouba passivamente os atributos do inimigo, reduzindo o ATK e DEF do alvo em 30% por 2 turnos."
+            }
+        }
+    },
+
+    # =========================474
+    "kuroko_tetsuya_knb": {
+        "nome": "Kuroko Tetsuya",
+        "origem": "Kuroko no Basket",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 90,
+        "atk": 15,
+        "matk": 50,
+        "def": 18,
+        "spd": 28,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Direcionamento Indireto (Misdirection)",
+            "descricao": "Apaga a própria presença e a dos aliados importantes. Reduz o aggro (ameaça) do líder da equipe para zero por 2 turnos, e aumenta a precisão geral do grupo em 25%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Ignite Pass Kai",
+                "descricao": "Acelera os passes concentrando magia defensiva. Aplica um reforço de ataque invisível: O próximo golpe físico ou mágico de qualquer aliado causará o dobro (2.0x) do dano final."
+            }
+        }
+    },
+
+    # =========================475
+    "himuro_tatsuya_knb": {
+        "nome": "Himuro Tatsuya",
+        "origem": "Kuroko no Basket",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 102,
+        "atk": 70,
+        "matk": 10,
+        "def": 20,
+        "spd": 36,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Arremesso de Miragem (Mirage Shot)",
+            "descricao": "Executa um ataque duplo enganoso na visão inimiga. Causa 140% de ATK que ignora 40% da defesa física, e cancela mecânicas de contra-ataque do alvo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Finta Elegante Assassina",
+                "descricao": "Sua perfeição fluida frustra os defensores brutos. Aumenta a própria evasão em 30% e aplica lentidão garantida (-20% SPD) em quem tentar atacá-lo de perto."
+            }
+        }
+    },
+
+    # =========================476
+    "imayoshi_shoichi_knb": {
+        "nome": "Imayoshi Shoichi",
+        "origem": "Kuroko no Basket",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 95,
+        "atk": 35,
+        "matk": 45,
+        "def": 18,
+        "spd": 24,
+        "crt": 12,
+        "habilidade": {
+            "nome": "Leitura Psicológica Tática",
+            "descricao": "Usa a guerra de nervos para quebrar o espírito adversário. Reduz o MATK e o ATK do inimigo mais forte do campo em 35% por 2 turnos."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Passe Intimidante Oculto",
+                "descricao": "Comanda o time de forma sádica e inteligente. Reduz passivamente a esquiva (dodge) de todos os inimigos em 20%."
+            },
+            5: {
+                "nome": "O Capitão Cruel de Touou",
+                "descricao": "O esquadrão sob sua tutela cínica recusa-se a recuar. A equipe recebe +25% de resistência mágica e imunidade total contra silenciamento por 3 rodadas."
+            }
+        }
+    },
+
+    # =========================477
+    "takao_kazunari_knb": {
+        "nome": "Takao Kazunari",
+        "origem": "Kuroko no Basket",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 100,
+        "atk": 20,
+        "matk": 40,
+        "def": 20,
+        "spd": 32,
+        "crt": 10,
+        "habilidade": {
+            "nome": "Olho de Falcão (Hawk Eye)",
+            "descricao": "Sua visão periférica divina elimina quaisquer pontos cegos do time. Remove debuffs de cegueira da equipe instantaneamente e aumenta o ATK de todos em 20% por 2 turnos."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Passe Rápido Pelas Costas",
+                "descricao": "Seus reflexos garantem tempo de resposta imediato. Concede a si mesmo ou a um aliado 20% de chance de agir duas vezes seguidas em um turno extra."
+            },
+            5: {
+                "nome": "Sincronia do Atirador Sombrio",
+                "descricao": "Age como a dupla fundamental para a linha de trás. Aumenta de forma permanente a taxa crítica (CRT) de todos os Atiradores do seu esquadrão em 30%."
+            }
+        }
+    },
+
+    # =========================478
+    "ozora_tsubasa_tsb": {
+        "nome": "Ozora Tsubasa",
+        "origem": "Captain Tsubasa",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135,
+        "atk": 65,
+        "matk": 55,
+        "def": 30,
+        "spd": 30,
+        "crt": 15,
+        "habilidade": {
+            "nome": "Chute de Folha Seca",
+            "descricao": "Um disparo genial onde a bola sobe e cai verticalmente, rasgando as defesas. Causa 160% de MATK (Dano Mágico Esportivo) e ignora 40% da armadura do alvo principal."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "A Bola é Sua Amiga",
+                "descricao": "Sua aura de protagonista inspira a todos ao redor. Sempre que Tsubasa atacar, ele curará toda a sua party em 15% do seu MATK e fornecerá +30% de defesa geral por 1 turno."
+            }
+        }
+    },
+
+    # =========================479
+    "wakabayashi_genzo_tsb": {
+        "nome": "Wakabayashi Genzo",
+        "origem": "Captain Tsubasa",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 180,
+        "atk": 35,
+        "matk": 20,
+        "def": 75,
+        "spd": 18,
+        "crt": 5,
+        "habilidade": {
+            "nome": "Goleiro Super Genial (SGGK)",
+            "descricao": "A sua confiança na zona defensiva permite bloquear impactos impossíveis. Cria um escudo para toda a equipe equivalente a 35% do seu próprio HP e reflete ataques mágicos ou de atiradores."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Defesa Absoluta de Fora da Área",
+                "descricao": "Lendas contam que ele rejeita danos massivos com as próprias mãos. Reduz 50% de todo e qualquer dano mágico ou físico sofrido por ele mesmo de maneira permanente."
+            }
+        }
+    },
+
+    # =========================480
+    "hyuga_kojiro_tsb": {
+        "nome": "Kojiro Hyuga",
+        "origem": "Captain Tsubasa",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 140,
+        "atk": 88,
+        "matk": 10,
+        "def": 32,
+        "spd": 22,
+        "crt": 18,
+        "habilidade": {
+            "nome": "Chute do Tigre (Tiger Shot)",
+            "descricao": "Um ataque puramente físico e animalesco que espalha destruição em linha reta. Causa 200% de ATK focado num alvo, com 30% de chance de aplicar atordoamento (Stun) brutal pelo impacto sonoro."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Neo Chute do Tigre",
+                "descricao": "Aperfeiçoa sua técnica bruta para aniquilar defesas robustas. Seu chute passa a romper permanentemente 40% da defesa inimiga e causa repulsão, diminuindo a SPD do alvo."
+            }
+        }
+    },
+
+    # =========================481
+    "misaki_taro_tsb": {
+        "nome": "Misaki Taro",
+        "origem": "Captain Tsubasa",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 115,
+        "atk": 35,
+        "matk": 55,
+        "def": 25,
+        "spd": 28,
+        "crt": 12,
+        "habilidade": {
+            "nome": "Passes do Companheiro de Ouro",
+            "descricao": "Fornece o apoio tático ideal desarmando defesas abertas de forma suave. Cura o aliado com HP mais baixo em 30% do seu MATK e ainda concede +20% de ATK a ele."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Sincronia Perfeita de Seleção",
+                "descricao": "Lê instintivamente as estratégias do líder do time de olhos vendados. Aumenta a velocidade (SPD) de toda a aliança em 25% e remove efeitos malignos de confusão e medo."
+            }
+        }
+    },
+
+    # =========================482
+    "schneider_karl_heinz_tsb": {
+        "nome": "Karl Heinz Schneider",
+        "origem": "Captain Tsubasa",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 130,
+        "atk": 90,
+        "matk": 30,
+        "def": 28,
+        "spd": 26,
+        "crt": 20,
+        "habilidade": {
+            "nome": "Chute de Fogo (Fire Shot)",
+            "descricao": "O jovem imperador alemão arremata deixando rastros colossais de calor no piso. Causa 180% de ATK e aplica Queimadura severa que extrai 50 de dano por turno ao longo de 3 rodadas."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "A Soberania do Imperador Alemão",
+                "descricao": "O seu sangue frio perante os defensores coroa sua técnica. Suas habilidades ignoram ativamente 50% de resistências elementares inimigas e destroem por completo barreiras protetoras (escudos mágicos)."
             }
         }
     }
 }
-
 
 CLASS_EMOJIS = {
     "atacante": "👊",

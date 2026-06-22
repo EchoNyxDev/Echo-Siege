@@ -90,7 +90,19 @@ class Eventos(commands.Cog):
             value="\n".join(f"**{event['name']}**: {event['start'].strftime('%d/%m/%Y')}" for event in upcoming) or "Sem calendario.",
             inline=False,
         )
-        embed.set_footer(text="Use echo evento lutar, echo evento boss, echo evento dungeon ou echo evento resgatar.")
+        embed.add_field(
+            name="Echo Cup / Copa do Mundo",
+            value=(
+                "`echo copa` - resumo do evento e das regras.\n"
+                "`echo copa iniciar` - cria seu time com 11 herois da sua conta.\n"
+                "`echo copa jogar` - simula grupos e mata-mata, uma tentativa a cada 6 horas.\n"
+                "`echo copa loja` / `echo copa resgatar <id>` - gasta echobet em temas, titulos, tickets e pets.\n"
+                "`echo copa ranking` / `echo copa hall` - classificacao global e mural dos melhores.\n"
+                "`echo copa banner` / `echo copa summon` - banner esportivo com custo reduzido."
+            ),
+            inline=False,
+        )
+        embed.set_footer(text="Use echo evento lutar, echo evento boss, echo evento dungeon, echo evento resgatar ou echo copa.")
         return embed
 
     def _progress(self, cursor, user_id, event_id):
