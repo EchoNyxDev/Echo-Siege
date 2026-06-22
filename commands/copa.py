@@ -16,6 +16,8 @@ root_dir = os.path.abspath(os.path.join(current_dir, ".."))
 if root_dir not in sys.path:
     sys.path.append(root_dir)
 
+TUTORI_COPA_IMAGE = os.path.join(root_dir, "assets", "tutori", "tutoricopa.png")
+
 try:
     from data.heroes import HEROES
     from data.world_cup_players import WORLD_CUP_PLAYERS
@@ -68,17 +70,17 @@ STAGE_LABELS = {
 }
 
 STAGE_REWARDS = {
-    "grupos": 100,
-    "oitavas": 250,
-    "quartas": 500,
-    "semi": 1000,
-    "finalista": 1500,
-    "campeao": 3000,
+    "grupos": 50,
+    "oitavas": 100,
+    "quartas": 200,
+    "semi": 400,
+    "finalista": 700,
+    "campeao": 1200,
 }
 
-MATCH_REWARDS = {"V": 100, "E": 45, "D": 20}
+MATCH_REWARDS = {"V": 15, "E": 8, "D": 5}
 MATCH_COOLDOWN = 6 * 60 * 60  # 6 Horas de Cooldown por Campanha Completa
-COPA_SUMMON_COST = 900
+COPA_SUMMON_COST = 800
 BASE_RATES = {1: 50.0, 2: 25.0, 3: 19.0, 4: 5.0, 5: 1.0}
 SOFT_PITY_4 = 15
 SOFT_PITY_5 = 30
@@ -91,6 +93,32 @@ SPORTS_ORIGINS = {
     "Haikyuu!!",
     "Kuroko no Basket",
     "Captain Tsubasa",
+}
+
+HERO_ID_ALIASES = {
+    "sukuna_jujutsu": "sukuna",
+    "frieren_elf": "frieren",
+    "lelouch_geass": "lelouch",
+    "okabe": "rintarou_okabe",
+    "gojo_satoru": "satoru_gojo",
+    "alex_louis_strong": "alex_louis_armstrong",
+    "tanjiro_demon": "tanjirou_kamado",
+    "saitama_one": "saitama",
+    "sinon_sao": "sinon",
+    "kurapika_hxh": "kurapika",
+    "shoyo_hinata_hq": "hinata_shoyo_hq",
+    "vash_stampede": "vash",
+    "guts_berserk": "guts",
+    "griffith_base": "griffith",
+    "mahito_base": "mahito",
+    "petelgeuse_base": "petelgeuse",
+    "orochimaru_base": "orochimaru",
+    "naraku_base": "naraku",
+    "kaguya_otsutsuki_base": "kaguya_otsutsuki",
+    "dabi_base": "dabi",
+    "crocodile_base": "crocodile",
+    "zeldris_base": "zeldris",
+    "ulquiorra_base": "ulquiorra",
 }
 
 ROLE_WEIGHTS = {
@@ -870,11 +898,21 @@ class Copa(commands.Cog):
         conn.row_factory = sqlite3.Row
         return conn
 
+    def _tutori_copa_file(self):
+        if os.path.isfile(TUTORI_COPA_IMAGE):
+            return discord.File(TUTORI_COPA_IMAGE, filename="tutoricopa.png")
+        return None
+
     def _resolve_hero_id(self, hero_id):
         raw = str(hero_id or "").strip()
         if raw in WORLD_CUP_PLAYERS:
             return raw
         normalized = normalize_text(raw)
+        alias = HERO_ID_ALIASES.get(raw) or HERO_ID_ALIASES.get(normalized)
+        if alias in WORLD_CUP_PLAYERS:
+            return alias
+        if normalized.endswith("_base") and normalized[:-5] in WORLD_CUP_PLAYERS:
+            return normalized[:-5]
         for key, data in WORLD_CUP_PLAYERS.items():
             if normalize_text(data.get("nome")) == normalized or key == normalized:
                 return key
@@ -1128,6 +1166,53 @@ class Copa(commands.Cog):
         stage_index = STAGE_ORDER.index(stage)
         return opponents[(5 + stage_index + run_id) % len(opponents)]
 
+    def _copa_skill_role(self, skill, position):
+        skill_text = " ".join(
+            str(skill.get(key, ""))
+            for key in ("nome", "efeito", "descricao")
+            if isinstance(skill, dict)
+        )
+        text = normalize_text(skill_text)
+        attack_terms = (
+            "gol", "chute", "finaliza", "drible", "finta", "ataque", "bomba",
+            "forca", "ignora", "imparavel", "penetracao", "infiltra"
+        )
+        defense_terms = (
+            "defesa", "defende", "bloque", "desarma", "intercepta", "anula",
+            "barreira", "goleiro", "mitiga", "parede"
+        )
+        support_terms = (
+            "cura", "restaura", "buff", "moral", "estamina", "passe",
+            "precisao", "controle", "formacao", "tatico", "equipe", "aliado"
+        )
+        if any(term in text for term in defense_terms) and position in {"GOL", "ZAG", "LAT", "VOL"}:
+            return "defesa"
+        if any(term in text for term in attack_terms):
+            return "ataque"
+        if any(term in text for term in support_terms):
+            return "suporte"
+        if position in {"ATA", "PE", "PD", "MEI"}:
+            return "ataque"
+        if position in {"GOL", "ZAG", "LAT", "VOL"}:
+            return "defesa"
+        return "suporte"
+
+    def _copa_skill_success(self, skill, base):
+        skill_text = " ".join(
+            str(skill.get(key, ""))
+            for key in ("nome", "efeito", "descricao")
+            if isinstance(skill, dict)
+        )
+        text = normalize_text(skill_text)
+        bonus = 0.0
+        if any(term in text for term in ("garante", "100", "absolut", "imparavel", "ignora", "nunca")):
+            bonus += 0.14
+        if any(term in text for term in ("precisao", "passe", "calculo", "estrateg", "controle")):
+            bonus += 0.07
+        if any(term in text for term in ("cansa", "fadiga", "esgota", "substituicao")):
+            bonus -= 0.08
+        return max(0.15, min(0.88, base + bonus))
+
     def _simulate_half(self, user, opponent, user_lineup, opponent_lineup, formation, opponent_formation, score_user, score_opp, minute_start, minute_end, seed):
         rng = random.Random(seed)
         user_power = self._team_power(user_lineup, formation, user.get("captain_id"), rng=rng)
@@ -1186,18 +1271,43 @@ class Copa(commands.Cog):
             skill = actor_data.get("habilidade")
             if skill and rng.random() < 0.25:
                 skill_name = skill.get("nome", "Habilidade Secreta")
-                skill_eff = skill.get("efeito", "Demonstrou sua maestria em campo!")
-                
-                is_offensive = actor.get("position") in ["ATA", "PE", "PD", "MEI", "MC"]
-                
-                if is_offensive:
-                    if side_user: score_user += 1
-                    else: score_opp += 1
-                    scorers.append(actor["hero_id"])
-                    log_line = f"`{minute:02d}'` 🌟 **HABILIDADE ATIVADA!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\n⚽ **GOOOL do {team_name.upper()}!**"
+                skill_eff = skill.get("efeito") or skill.get("descricao") or "Demonstrou sua maestria em campo!"
+                skill_role = self._copa_skill_role(skill, actor.get("position"))
+
+                if skill_role == "ataque":
+                    success = rng.random() < self._copa_skill_success(skill, 0.52 + max(0, goal_chance - 0.35))
+                    if success:
+                        if side_user:
+                            score_user += 1
+                        else:
+                            score_opp += 1
+                        scorers.append(actor["hero_id"])
+                        log_line = f"`{minute:02d}'` **HABILIDADE ATIVADA!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\n**GOOOL do {team_name.upper()}!**"
+                    else:
+                        log_line = f"`{minute:02d}'` **HABILIDADE ATIVADA!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\n{tag_defender} leu a jogada no ultimo instante. TutoriUAU chama isso de roteiro com freio."
+                elif skill_role == "defesa":
+                    success = rng.random() < self._copa_skill_success(skill, 0.66)
+                    if success:
+                        log_line = f"`{minute:02d}'` **DEFESA TATICA!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\nA jogada do {opp_team_name.upper()} foi anulada antes de virar perigo."
+                    else:
+                        log_line = f"`{minute:02d}'` **HABILIDADE DEFENSIVA!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\nFuncionou pela metade: reduziu o perigo, mas a bola continuou viva."
                 else:
-                    log_line = f"`{minute:02d}'` 🌟 **DEFESA ABSOLUTA!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\n🛡️ A jogada do {opp_team_name.upper()} foi completamente anulada!"
-                
+                    success = rng.random() < self._copa_skill_success(skill, 0.34)
+                    if success:
+                        finisher = get_actor(actor_lineup, ["ATA", "PE", "PD", "MEI"])
+                        finisher_data = WORLD_CUP_PLAYERS.get(finisher["hero_id"], {})
+                        finisher_name = finisher_data.get("nome", finisher["hero_id"])
+                        if side_user:
+                            score_user += 1
+                            finisher_tag = f"**[SEU TIME] {finisher_name}**"
+                        else:
+                            score_opp += 1
+                            finisher_tag = f"**[ADVERSARIO] {finisher_name}**"
+                        scorers.append(finisher["hero_id"])
+                        log_line = f"`{minute:02d}'` **HABILIDADE DE SUPORTE!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\nA jogada encaixou e {finisher_tag} completou para o gol."
+                    else:
+                        log_line = f"`{minute:02d}'` **HABILIDADE DE SUPORTE!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\nO time ganhou ritmo, mas a defesa adversaria segurou a onda."
+
                 log.append(log_line)
                 continue
             # ----------------------------------------------------
@@ -1401,6 +1511,7 @@ class Copa(commands.Cog):
         medals = 0
         note = "Campanha ativa."
         stand_table = ""
+        campaign_finished = False
 
         if stage == "grupos":
             p_pts = 3 if result == "V" else 1 if result == "E" else 0
@@ -1475,10 +1586,12 @@ class Copa(commands.Cog):
                 top_2 = [t["nome"] for t in group_data[:2]]
                 if state["team_name"] in top_2:
                     next_stage = "oitavas"
-                    stage_reward = STAGE_REWARDS["grupos"]
+                    stage_reward = 0
                     note = "🎉 **QUALIFICADO!** Seu time ficou no G2 e avançou de fase. Continue jogando livremente!"
                 else:
                     next_stage = "grupos"
+                    stage_reward = STAGE_REWARDS["grupos"]
+                    campaign_finished = True
                     cursor.execute("UPDATE world_cup_progress SET cooldown_end = ? WHERE user_id = ?", (now_ts() + MATCH_COOLDOWN, str(user_id)))
                     note = f"❌ **ELIMINADO!** Seu time ficou em {group_data.index(next(x for x in group_data if x['nome'] == state['team_name'])) + 1}º colocado no grupo. Campanha encerrada. Cooldown ativado."
                 
@@ -1500,19 +1613,23 @@ class Copa(commands.Cog):
                     next_stage = "grupos"
                     stage_reward = STAGE_REWARDS["campeao"]
                     medals = 1
+                    campaign_finished = True
                     self._grant_champion_title(cursor, user_id)
                     cursor.execute("UPDATE world_cup_progress SET cooldown_end = ? WHERE user_id = ?", (now_ts() + MATCH_COOLDOWN, str(user_id)))
                     note = "🏆 **CAMPEÃO DO MUNDO!** O troféu dourado é de Lugnica! Campanha vitoriosa encerrada. Cooldown ativado."
                 else:
                     next_stage = STAGE_ORDER[index + 1]
-                    stage_reward = STAGE_REWARDS.get(next_stage, 0)
+                    stage_reward = 0
                     note = f"🔥 **CLASSIFICADO!** Seu time avançou para as **{STAGE_LABELS[next_stage]}**. Jogue a próxima partida!"
             else:
                 next_stage = "grupos"
+                stage_reward = STAGE_REWARDS["finalista"] if stage == "final" else STAGE_REWARDS.get(stage, 0)
+                campaign_finished = True
                 cursor.execute("UPDATE world_cup_progress SET cooldown_end = ? WHERE user_id = ?", (now_ts() + MATCH_COOLDOWN, str(user_id)))
                 note = "❌ **ELIMINADO!** Seu time caiu no mata-mata. Fim de campanha. Cooldown ativado."
 
-        best_stage = self._best_stage(progress.get("best_stage"), next_stage)
+        best_candidate = "campeao" if medals else (stage if campaign_finished else next_stage)
+        best_stage = self._best_stage(progress.get("best_stage"), best_candidate)
         cursor.execute(
             """
             UPDATE world_cup_progress
@@ -1524,7 +1641,7 @@ class Copa(commands.Cog):
             (next_stage, match_reward + stage_reward, wins, draws, losses, goals_for, goals_against,
              best_stage, medals, unbeaten, best_unbeaten, str(user_id)),
         )
-        if next_stage == "grupos" and stage != "final" and result == "D":
+        if campaign_finished:
             cursor.execute("UPDATE world_cup_progress SET current_run = current_run + 1 WHERE user_id = ?", (str(user_id),))
             
         conn.commit()
@@ -1532,11 +1649,29 @@ class Copa(commands.Cog):
         return note, stage_reward, stand_table
 
     def _best_stage(self, current, candidate):
-        order = ["Fase de grupos", "Oitavas", "Quartas", "Semifinal", "Final", "Campeao"]
+        order = ["grupos", "oitavas", "quartas", "semi", "final", "campeao"]
         label = STAGE_LABELS.get(candidate, current or "Fase de grupos")
-        if label == "Eliminado": label = current or "Fase de grupos"
-        try: return label if order.index(label) > order.index(current or "Fase de grupos") else current
-        except ValueError: return label
+
+        def rank(value):
+            text = normalize_text(value)
+            if text in order:
+                return order.index(text)
+            for key, stage_label in STAGE_LABELS.items():
+                if normalize_text(stage_label) == text:
+                    return order.index(key) if key in order else 0
+            aliases = {
+                "fase_de_grupos": "grupos",
+                "oitavas_de_final": "oitavas",
+                "quartas_de_final": "quartas",
+                "semifinal": "semi",
+                "grande_final": "final",
+                "finalista": "final",
+                "campeao_do_mundo": "campeao",
+                "campeao": "campeao",
+            }
+            return order.index(aliases.get(text, "grupos"))
+
+        return label if rank(candidate) > rank(current or "Fase de grupos") else (current or label)
 
     def _grant_champion_title(self, cursor, user_id):
         item = "token_titulo_campeao_de_lugnica"
@@ -1581,7 +1716,12 @@ class Copa(commands.Cog):
             embed.set_footer(text=f"TutoriUAU: evento iniciado em <t:{started[0]}:f>.")
         else:
             embed.set_footer(text="TutoriUAU: esperando o apito administrativo.")
-        await ctx.send(embed=embed)
+        file = self._tutori_copa_file()
+        if file:
+            embed.set_thumbnail(url="attachment://tutoricopa.png")
+            await ctx.send(embed=embed, file=file)
+        else:
+            await ctx.send(embed=embed)
 
     @copa_group.command(name="iniciar", aliases=["criar", "editar"])
     async def copa_iniciar(self, ctx, *, nome: str = None):
@@ -1765,7 +1905,7 @@ class Copa(commands.Cog):
         embed = discord.Embed(
             title="Banner da Echo Cup",
             description=(
-                f"Custo: **{COPA_SUMMON_COST:,} Gold** por summon.\n"
+                f"Custo: **1 Ticket de Invocacao** ou **{COPA_SUMMON_COST:,} Gold** por summon.\n"
                 "Taxas: 1⭐ 50% | 2⭐ 25% | 3⭐ 19% | 4⭐ 5% | 5⭐ 1%.\n"
                 "Aqui só entram personagens de anime de esporte. TutoriUAU aprova o atletismo."
             ),
@@ -1788,11 +1928,6 @@ class Copa(commands.Cog):
         if not player:
             conn.close()
             return await ctx.send("Use `echo iniciar` primeiro.")
-        cost = COPA_SUMMON_COST * amount
-        if int(player[0] or 0) < cost:
-            conn.close()
-            return await ctx.send(f"Ouro insuficiente. Custo: **{cost:,} Gold**.")
-            
         cursor.execute(
             """
             INSERT OR IGNORE INTO summon_data(user_id, summon_tickets, shop_level, pity_4, pity_5, total_summons, total_1_star, total_2_star, total_3_star, total_4_star, total_5_star)
@@ -1800,9 +1935,19 @@ class Copa(commands.Cog):
             """,
             (user_id,),
         )
-        cursor.execute("SELECT pity_4, pity_5 FROM summon_data WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT summon_tickets, pity_4, pity_5 FROM summon_data WHERE user_id = ?", (user_id,))
         pity = cursor.fetchone()
-        pity_4, pity_5 = int(pity[0] or 0), int(pity[1] or 0)
+        tickets_available = int(pity[0] or 0)
+        tickets_used = min(amount, tickets_available)
+        paid_summons = amount - tickets_used
+        cost = COPA_SUMMON_COST * paid_summons
+        if int(player[0] or 0) < cost:
+            conn.close()
+            return await ctx.send(
+                f"Ouro insuficiente. Tickets disponiveis: **{tickets_available}**. "
+                f"Custo restante: **{cost:,} Gold**."
+            )
+        pity_4, pity_5 = int(pity[1] or 0), int(pity[2] or 0)
         
         cursor.execute("SELECT DISTINCT hero_id FROM heroes WHERE user_id = ?", (user_id,))
         owned = {self._resolve_hero_id(row[0]) or row[0] for row in cursor.fetchall()}
@@ -1857,13 +2002,13 @@ class Copa(commands.Cog):
         cursor.execute(
             """
             UPDATE summon_data
-            SET pity_4 = ?, pity_5 = ?, total_summons = total_summons + ?,
+            SET summon_tickets = summon_tickets - ?, pity_4 = ?, pity_5 = ?, total_summons = total_summons + ?,
                 total_1_star = total_1_star + ?, total_2_star = total_2_star + ?,
                 total_3_star = total_3_star + ?, total_4_star = total_4_star + ?,
                 total_5_star = total_5_star + ?
             WHERE user_id = ?
             """,
-            (pity_4, pity_5, amount, stats[1], stats[2], stats[3], stats[4], stats[5], user_id),
+            (tickets_used, pity_4, pity_5, amount, stats[1], stats[2], stats[3], stats[4], stats[5], user_id),
         )
         conn.commit()
         conn.close()
@@ -1874,7 +2019,10 @@ class Copa(commands.Cog):
         
         embed = discord.Embed(
             title="Summon da Echo Cup",
-            description=f"{ctx.author.mention} gastou **{cost:,} Gold** no banner esportivo.\n\n",
+            description=(
+                f"{ctx.author.mention} usou **{tickets_used} ticket(s)** "
+                f"e **{cost:,} Gold** no banner esportivo.\n\n"
+            ),
             color=discord.Color.green(),
         )
         for item in results:

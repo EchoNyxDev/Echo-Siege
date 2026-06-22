@@ -2,7 +2,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 1. ESPADACHINS FC
     "espadachins_fc": {
         "nome": "Espadachins FC",
-        "formacao": "3-4-3",
+        "formacao": "3-5-2",
         "capitao": "roronoa_zoro",
         "titulares": [
             "roronoa_zoro", "kenshin_himura", "kirito", "saber_artoria", 
@@ -53,7 +53,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 4. SNIPER ELITE (ATIRADORES)
     "sniper_elite": {
         "nome": "Sniper Elite",
-        "formacao": "4-2-4",
+        "formacao": "4-3-3",
         "capitao": "sinon",
         "titulares": [
             "sinon", "death_kid", "mine", "uryu_ishida", 
@@ -104,7 +104,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 7. CÉREBROS TÁTICOS (ESTRATEGISTAS)
     "cerebros_taticos": {
         "nome": "Cérebros Táticos",
-        "formacao": "4-5-1",
+        "formacao": "4-2-3-1",
         "capitao": "lelouch_geass",
         "titulares": [
             "lelouch_geass", "l_lawliet", "okabe", "tsukasa_shishio", 
@@ -160,7 +160,7 @@ WORLD_CUP_OPPONENTS = {
         "titulares": [
             "kageyama_tobio_hq", "hinata_shoyo_hq", "ushijima_wakatoshi_hq", "miya_atsumu_hq", 
             "sakusa_kiyoomi_hq", "bokuto_kotaro_hq", "hoshiumi_korai_hq", "kozume_kenma_hq", 
-            "kuroo_tetsuro_hq", "yaku_morisuke_hq", "shoyo_hinata"
+            "kuroo_tetsuro_hq", "yaku_morisuke_hq", "ozora_tsubasa_tsb"
         ],
         "reservas": [
             "kuroko_tetsuya_knb", "takao_kazunari_knb", "misaki_taro_tsb", "tony_chopper", 
@@ -172,7 +172,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 11. GERAÇÃO DOS MILAGRES
     "geracao_milagres": {
         "nome": "Geração dos Milagres",
-        "formacao": "3-4-3",
+        "formacao": "4-3-3",
         "capitao": "akashi_seijuro_knb",
         "titulares": [
             "akashi_seijuro_knb", "aomine_daiki_knb", "kagami_taiga_knb", "murasakibara_atsushi_knb", 
@@ -262,7 +262,7 @@ WORLD_CUP_OPPONENTS = {
         "titulares": [
             "tanjiro_demon", "kokushibo", "nezuko_kamado", "shinobu_kocho", 
             "kanao_tsuyuri", "genya_shinazugawa", "inosuke_hashibira", "rengoku_kyojuro", 
-            "suzuya_juuzou", "ghoul", "stain"
+            "suzuya_juuzou", "gabimaru", "stain"
         ],
         "reservas": [
             "akame", "chelsea_akame", "mine", "zabuza_momochi", 
@@ -274,7 +274,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 17. DIVINDADES ABSOLUTAS
     "divindades_absolutas": {
         "nome": "Divindades Absolutas",
-        "formacao": "3-4-3",
+        "formacao": "3-5-2",
         "capitao": "anos_voldigoad",
         "titulares": [
             "anos_voldigoad", "featherine", "anti_espiral", "zenoh", 
@@ -342,7 +342,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 21. MASTER GUILD (RPG MASTERS)
     "master_guild": {
         "nome": "Master Guild",
-        "formacao": "4-5-1",
+        "formacao": "4-2-3-1",
         "capitao": "ainz_gown",
         "titulares": [
             "ainz_gown", "albedo_overlord", "shalltear_bloodfallen", "mare_bello_fiore", 
@@ -369,7 +369,7 @@ WORLD_CUP_OPPONENTS = {
         "reservas": [
             "reigen_arataka", "revy_atiradora", "kanao_tsuyuri", "hyakkimaru", 
             "toji_fushiguro", "esdeath", "cid_kagenou", "sung_jin_woo", 
-            "lucy_heartfilia", "roxy_migurdia", "shuna", "julius_novachrono"
+            "lucy_heartfilia", "roxy_migurdia", "shuna", "makoto_yuki"
         ]
     },
 
@@ -410,7 +410,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 25. JARDIM DAS SOMBRAS (SHADOW GARDEN)
     "jardim_das_sombras": {
         "nome": "Jardim das Sombras",
-        "formacao": "4-5-1",
+        "formacao": "4-2-3-1",
         "capitao": "cid_kagenou",
         "titulares": [
             "cid_kagenou", "alpha", "beta", "gamma", 
@@ -495,7 +495,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 30. TITÃS DO APOCALIPSE
     "titas_do_apocalipse": {
         "nome": "Titãs do Apocalipse",
-        "formacao": "3-4-3",
+        "formacao": "3-5-2",
         "capitao": "esdeath",
         "titulares": [
             "esdeath", "kaidou", "brolly", "sukuna_jujutsu", 
@@ -503,7 +503,7 @@ WORLD_CUP_OPPONENTS = {
             "dio_brando", "barba_negra", "madara"
         ],
         "reservas": [
-            "griffith_base", "doflamingo", "all_for_one_base", "mahito_base", 
+            "griffith_base", "doflamingo", "all_for_one", "mahito_base", 
             "petelgeuse_base", "orochimaru_base", "naraku_base", "kaguya_otsutsuki_base", 
             "dabi_base", "crocodile_base", "zeldris_base", "ulquiorra_base"
         ]
@@ -512,7 +512,7 @@ WORLD_CUP_OPPONENTS = {
     # ========================= 31. INTELIGÊNCIA EXTREMA
     "inteligencia_extrema": {
         "nome": "Inteligência Extrema",
-        "formacao": "4-5-1",
+        "formacao": "4-2-3-1",
         "capitao": "light_yagami",
         "titulares": [
             "light_yagami", "johan_liebert", "l_lawliet", "okabe", 

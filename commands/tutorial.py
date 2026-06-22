@@ -130,7 +130,8 @@ class Tutorial(commands.Cog):
                 "*Nota do TutoriUAU: A cada 10 giros vem pelo menos um 3⭐ ou superior. A matemática te odeia, não reclame comigo.*\n\n"
                 "**Fortalecendo seus bonecos:**\n"
                 "`echo evoluir <ID>` - Sacrifica uma cópia solta para fortalecer o herói em 1 Estrela (⭐).\n"
-                "`echo herói <ID>` - Ficha de combate completa dele.\n"
+                "`echo herói <ID ou nome>` - Ficha de combate do seu herói pelo ID, ou ficha base do catálogo pelo nome.\n"
+                "`echo anime <obra>` - Lista personagens de uma origem específica. Ótimo para montar afinidade sem decorar 500 nomes.\n"
                 "`echo equipar <ID> <Item>` - Dá armas e relíquias para ele não ir pra rinha pelado.\n"
                 "`echo pets` / `echo equiparpet <ID>` - Animais de estimação que dão buffs cabulosos na party."
             ),
@@ -198,7 +199,8 @@ class Tutorial(commands.Cog):
             "Aula 6 // Ego e Recompensas",
             (
                 "`echo rank local` ou `global` - Para medir ego. Veja quem tem mais ELO no PvP, andares na Torre ou quem roubou mais Ouro.\n\n"
-                "`echo eventos` - Quando é feriado, eu solto eventos sazonais. Use `evento lutar` e `evento resgatar` para farmar cosméticos e itens que nunca mais voltam.\n\n"
+                "`echo eventos` - Quando é feriado, eu solto eventos sazonais. Use `evento lutar` e `evento resgatar` para farmar cosméticos e itens que nunca mais voltam.\n"
+                "`echo copa` - Evento da Echo Cup: monte 11 heróis, jogue fase de grupos/mata-mata e use `echo copa summon` com ticket ou ouro reduzido.\n\n"
                 "`echo conquistas` - Um tapinha nas costas por jogar demais. Tem botão de resgate que dá Gems e Ouro.\n\n"
                 "`echo codes` - Lista os códigos promocionais que o Dev soltou. Se achar um ativo, digite `echo code <código>` e corra para o abraço."
             ),

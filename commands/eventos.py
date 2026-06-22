@@ -98,7 +98,7 @@ class Eventos(commands.Cog):
                 "`echo copa jogar` - simula grupos e mata-mata, uma tentativa a cada 6 horas.\n"
                 "`echo copa loja` / `echo copa resgatar <id>` - gasta echobet em temas, titulos, tickets e pets.\n"
                 "`echo copa ranking` / `echo copa hall` - classificacao global e mural dos melhores.\n"
-                "`echo copa banner` / `echo copa summon` - banner esportivo com custo reduzido."
+                "`echo copa banner` / `echo copa summon` - banner esportivo com ticket ou custo reduzido em ouro."
             ),
             inline=False,
         )

@@ -731,7 +731,7 @@ WORLD_CUP_PLAYERS = {
     # =========================91
     "roy_mustang": {
         "nome": "Roy Mustang",
-        "posicoes": ["Meio-Campo", "Ponta"],
+        "posicoes": [["MC", "Meio-campo"], ["PD", "Ponta direita"]],
         "ataque": 88, "defesa": 65, "passe": 82, "velocidade": 78, "finalizacao": 90, "goleiro": 10, "mental": 92,
         "afinidades": ["Fullmetal Alchemist", "Fogo"],
         "habilidade": {
@@ -1479,7 +1479,7 @@ WORLD_CUP_PLAYERS = {
     # =========================168
     "isaac_netero": {
         "nome": "Isaac Netero",
-        "posicoes": [["Líder", "Meio-Campo"]],
+        "posicoes": [["MC", "Meio-campo"]],
         "ataque": 92, "defesa": 92, "passe": 94, "velocidade": 95, "finalizacao": 88, "goleiro": 30, "mental": 100,
         "afinidades": ["Hunter x Hunter", "Lenda"],
         "habilidade": {"nome": "Hyakushiki Kannon", "descricao": "Invoca a estátua de Buda para disparar palmadas de vento que repelem todos os desarmes."}
@@ -1623,7 +1623,7 @@ WORLD_CUP_PLAYERS = {
     # =========================186
     "sinbad": {
         "nome": "Sinbad",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 92, "defesa": 78, "passe": 96, "velocidade": 85, "finalizacao": 88, "goleiro": 15, "mental": 100,
         "afinidades": ["Magi", "Líder"],
         "habilidade": {"nome": "Focalor: Furacão", "efeito": "Lançamento em redemoinho que desorganiza a zaga e cria espaço de finalização."}
@@ -1679,7 +1679,7 @@ WORLD_CUP_PLAYERS = {
     # =========================193
     "yugi_muto": {
         "nome": "Yugi Muto",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 55, "defesa": 65, "passe": 94, "velocidade": 72, "finalizacao": 65, "goleiro": 10, "mental": 100,
         "afinidades": ["Yu-Gi-Oh!", "Mago"],
         "habilidade": {"nome": "Coração das Cartas", "efeito": "Restaura 25% da estamina e moral de todos os aliados no início do segundo tempo."}
@@ -2039,7 +2039,7 @@ WORLD_CUP_PLAYERS = {
     # =========================238
     "medaka_kurokami": {
         "nome": "Medaka Kurokami",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 90, "defesa": 88, "passe": 92, "velocidade": 88, "finalizacao": 85, "goleiro": 20, "mental": 100,
         "afinidades": ["Medaka Box", "Copiador"],
         "habilidade": {"nome": "The End", "efeito": "Copia a melhor finta do oponente e anula defesas da zaga."}
@@ -2135,7 +2135,7 @@ WORLD_CUP_PLAYERS = {
     # =========================250
     "aang": {
         "nome": "Aang",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 88, "defesa": 82, "passe": 94, "velocidade": 92, "finalizacao": 85, "goleiro": 20, "mental": 100,
         "afinidades": ["Avatar: A Lenda de Aang", "Líder"],
         "habilidade": {"nome": "Dobra de Energia", "efeito": "Anula habilidades de área oponentes e estabiliza a party."}
@@ -2199,7 +2199,7 @@ WORLD_CUP_PLAYERS = {
     # =========================258
     "giorno_giovanna": {
         "nome": "Giorno Giovanna",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 85, "defesa": 82, "passe": 94, "velocidade": 84, "finalizacao": 80, "goleiro": 15, "mental": 100,
         "afinidades": ["JoJo", "Líder"],
         "habilidade": {"nome": "Gold Experience", "efeito": "Concede cura e reverte desarmes oponentes na intermediária."}
@@ -2271,7 +2271,7 @@ WORLD_CUP_PLAYERS = {
     # =========================267
     "qin_shi_huang": {
         "nome": "Qin Shi Huang",
-        "posicoes": [["ZAG", "Zagueiro"], ["LID", "Líder"]],
+        "posicoes": [["ZAG", "Zagueiro"], ["MC", "Meio-campo"]],
         "ataque": 82, "defesa": 95, "passe": 88, "velocidade": 78, "finalizacao": 70, "goleiro": 20, "mental": 100,
         "afinidades": ["Record of Ragnarok", "Líder"],
         "habilidade": {"nome": "Armadura do Imperador", "efeito": "Concede bônus de 40% de DEF e mitiga danos físicos na área."}
@@ -2359,7 +2359,7 @@ WORLD_CUP_PLAYERS = {
     # =========================278
     "featherine": {
         "nome": "Featherine Augustus Aurora",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 75, "defesa": 80, "passe": 98, "velocidade": 82, "finalizacao": 70, "goleiro": 15, "mental": 100,
         "afinidades": ["Umineko", "Líder"],
         "habilidade": {"nome": "Reescrita do Roteiro", "efeito": "Muda a formação de toda a equipe para despistar a zaga inimiga."}
@@ -2375,7 +2375,7 @@ WORLD_CUP_PLAYERS = {
     # =========================280
     "zenoh": {
         "nome": "Zenoh",
-        "posicoes": [["LID", "Líder"]],
+        "posicoes": [["MC", "Meio-campo"]],
         "ataque": 60, "defesa": 70, "passe": 92, "velocidade": 75, "finalizacao": 60, "goleiro": 10, "mental": 100,
         "afinidades": ["Dragon Ball", "Líder"],
         "habilidade": {"nome": "Apagamento Brincalhão", "efeito": "Apaga fisicamente o alvo de forma infantil, garantindo 100% de sucesso no drible tático."}
@@ -2399,7 +2399,7 @@ WORLD_CUP_PLAYERS = {
     # =========================283
     "haruhi_suzumiya": {
         "nome": "Haruhi Suzumiya",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 75, "defesa": 70, "passe": 92, "velocidade": 88, "finalizacao": 80, "goleiro": 15, "mental": 100,
         "afinidades": ["Melancholy", "Líder"],
         "habilidade": {"nome": "Desejo Inconsciente", "efeito": "Sua mente cria realidades sem perceber, gerando passes e finalizações impecáveis."}
@@ -2471,7 +2471,7 @@ WORLD_CUP_PLAYERS = {
     # =========================292
     "dio_brando": {
         "nome": "Dio Brando",
-        "posicoes": [["LID", "Líder"], ["MEI", "Meio-Campista Ofensivo"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 85, "defesa": 80, "passe": 92, "velocidade": 86, "finalizacao": 82, "goleiro": 15, "mental": 98,
         "afinidades": ["JoJo", "Vilão"],
         "habilidade": {"nome": "O Mundo (The World)", "efeito": "Para o tempo temporariamente para uma finalização sem chances de defesa."}
@@ -2479,7 +2479,7 @@ WORLD_CUP_PLAYERS = {
     # =========================293
     "barba_negra": {
         "nome": "Barba Negra",
-        "posicoes": [["LID", "Líder"], ["ZAG", "Zagueiro"]],
+        "posicoes": [["ZAG", "Zagueiro"], ["MC", "Meio-campo"]],
         "ataque": 88, "defesa": 82, "passe": 90, "velocidade": 75, "finalizacao": 80, "goleiro": 10, "mental": 95,
         "afinidades": ["One Piece", "Vilão"],
         "habilidade": {"nome": "Yami Yami no Mi: Buraco Negro", "efeito": "Gera uma força de atração massiva no campo, bloqueando passes curtos."}
@@ -2487,7 +2487,7 @@ WORLD_CUP_PLAYERS = {
     # =========================294
     "madara": {
         "nome": "Madara Uchiha",
-        "posicoes": [["LID", "Líder"], ["MEI", "Meio-Campista Ofensivo"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 94, "defesa": 82, "passe": 90, "velocidade": 88, "finalizacao": 92, "goleiro": 15, "mental": 100,
         "afinidades": ["Naruto", "Vilão"],
         "habilidade": {"nome": "Tengai Shinsei (Meteoro Cósmico)", "efeito": "Dispara uma esfera de energia cósmica que reduz a defesa oponente."}
@@ -2495,7 +2495,7 @@ WORLD_CUP_PLAYERS = {
     # =========================295
     "griffith": {
         "nome": "Griffith",
-        "posicoes": [["LID", "Líder"], ["MEI", "Meio-Campista Ofensivo"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 90, "defesa": 82, "passe": 95, "velocidade": 88, "finalizacao": 85, "goleiro": 20, "mental": 95,
         "afinidades": ["Berserk", "Vilão"],
         "habilidade": {"nome": "Manipulação Causal de Femto", "efeito": "Dobra a probabilidade de interceptações favoráveis de sua equipe."}
@@ -2503,7 +2503,7 @@ WORLD_CUP_PLAYERS = {
     # =========================296
     "doflamingo": {
         "nome": "Donquixote Doflamingo",
-        "posicoes": [["LID", "Líder"], ["PE", "Ponta Esquerda"]],
+        "posicoes": [["PE", "Ponta Esquerda"], ["MC", "Meio-campo"]],
         "ataque": 84, "defesa": 70, "passe": 88, "velocidade": 84, "finalizacao": 80, "goleiro": 10, "mental": 90,
         "afinidades": ["One Piece", "Vilão"],
         "habilidade": {"nome": "Parasite: Controle de Fios", "efeito": "Conduz fintas confusas pelas laterais que invertem a marcação."}
@@ -2511,7 +2511,7 @@ WORLD_CUP_PLAYERS = {
     # =========================297
     "all_for_one": {
         "nome": "All For One",
-        "posicoes": [["LID", "Líder"], ["VOL", "Volante"]],
+        "posicoes": [["VOL", "Volante"], ["MC", "Meio-campo"]],
         "ataque": 85, "defesa": 80, "passe": 92, "velocidade": 80, "finalizacao": 78, "goleiro": 15, "mental": 95,
         "afinidades": ["Boku no Hero Academia", "Vilão"],
         "habilidade": {"nome": "Roubo de Individualidade", "efeito": "Drena temporariamente a força dos atacantes oponentes."}
@@ -2559,7 +2559,7 @@ WORLD_CUP_PLAYERS = {
     # =========================303
     "kaguya_otsutsuki": {
         "nome": "Kaguya Otsutsuki",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 92, "defesa": 85, "passe": 95, "velocidade": 85, "finalizacao": 90, "goleiro": 20, "mental": 100,
         "afinidades": ["Naruto", "Vilão"],
         "habilidade": {"nome": "Amenominaka (Dobra Dimensional)", "efeito": "Muda a gravidade do campo para reduzir a velocidade rival."}
@@ -2591,7 +2591,7 @@ WORLD_CUP_PLAYERS = {
     # =========================307
     "yhwach": {
         "nome": "Yhwach",
-        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["LID", "Líder"]],
+        "posicoes": [["MEI", "Meio-Campista Ofensivo"], ["MC", "Meio-campo"]],
         "ataque": 94, "defesa": 85, "passe": 96, "velocidade": 85, "finalizacao": 90, "goleiro": 20, "mental": 100,
         "afinidades": ["Bleach", "Vilão"],
         "habilidade": {"nome": "The Almighty: Futuro Escrito", "efeito": "Observa e altera as possibilidades futuras, anulando reações."}
@@ -4471,6 +4471,479 @@ WORLD_CUP_PLAYERS = {
         "habilidade": {
             "nome": "Chute de Fogo",
             "efeito": "O chute queima e debilita o goleiro rival, reduzindo a defesa dele por 3 rodadas."
+        }
+    },
+    # =========================483
+    "ken_kaneki": {
+        "nome": "Ken Kaneki",
+        "posicoes": [["PE", "Ponta Esquerda"], ["ATA", "Atacante"]],
+        "ataque": 90, "defesa": 65, "passe": 72, "velocidade": 94, "finalizacao": 88, "goleiro": 10, "mental": 92,
+        "afinidades": ["Tokyo Ghoul", "Assassino"],
+        "habilidade": {
+            "nome": "Kagune Predatória",
+            "efeito": "Aumenta a velocidade de drible em 30% e ignora 50% da defesa do oponente."
+        }
+    },
+    # =========================484
+    "nagisa_shiota": {
+        "nome": "Nagisa Shiota",
+        "posicoes": [["PE", "Ponta Esquerda"], ["MC", "Meio-Campo"]],
+        "ataque": 78, "defesa": 60, "passe": 88, "velocidade": 92, "finalizacao": 76, "goleiro": 10, "mental": 95,
+        "afinidades": ["Assassination Classroom", "Assassino"],
+        "habilidade": {
+            "nome": "Infiltração Silenciosa",
+            "efeito": "Torna-se invisível para a defesa, tornando o roubo de bola impossível nesta jogada."
+        }
+    },
+    # =========================485
+    "afro_samurai": {
+        "nome": "Afro Samurai",
+        "posicoes": [["ATA", "Atacante"], ["PE", "Ponta Esquerda"]],
+        "ataque": 92, "defesa": 58, "passe": 64, "velocidade": 95, "finalizacao": 90, "goleiro": 10, "mental": 94,
+        "afinidades": ["Afro Samurai", "Assassino"],
+        "habilidade": {
+            "nome": "Corte do Vingador",
+            "efeito": "Aumenta a velocidade e finalização em 35%, atacando subitamente pela retaguarda."
+        }
+    },
+    # =========================486
+    "shin_asakura": {
+        "nome": "Shin Asakura",
+        "posicoes": [["MC", "Meio-Campo"], ["PD", "Ponta Direita"]],
+        "ataque": 84, "defesa": 66, "passe": 85, "velocidade": 90, "finalizacao": 80, "goleiro": 10, "mental": 93,
+        "afinidades": ["Sakamoto Days", "Assassino"],
+        "habilidade": {
+            "nome": "Previsão de Poder",
+            "efeito": "Prevê a jogada adversária, concedendo 30% de precisão extra para o passe dos aliados."
+        }
+    },
+    # =========================487
+    "ryuko_matoi": {
+        "nome": "Ryuko Matoi",
+        "posicoes": [["ATA", "Atacante"], ["PE", "Ponta Esquerda"]],
+        "ataque": 91, "defesa": 70, "passe": 68, "velocidade": 93, "finalizacao": 89, "goleiro": 10, "mental": 95,
+        "afinidades": ["Kill la Kill", "Assassino"],
+        "habilidade": {
+            "nome": "Lâmina Tesoura",
+            "efeito": "Drible extremamente rápido, ignorando 40% da defesa do bloqueador adversário."
+        }
+    },
+    # =========================488
+    "ohma_tokita": {
+        "nome": "Ohma Tokita",
+        "posicoes": [["ATA", "Atacante"], ["VOL", "Volante"]],
+        "ataque": 95, "defesa": 88, "passe": 70, "velocidade": 91, "finalizacao": 93, "goleiro": 15, "mental": 98,
+        "afinidades": ["Kengan Ashura", "Atacante"],
+        "habilidade": {
+            "nome": "Estilo Niko: Avanço",
+            "efeito": "Aumenta o ataque e a velocidade em 40%, ignorando o consumo de energia na jogada."
+        }
+    },
+    # =========================489
+    "kikyo_inuyasha": {
+        "nome": "Kikyo",
+        "posicoes": [["PE", "Ponta Esquerda"]],
+        "ataque": 82, "defesa": 65, "passe": 80, "velocidade": 75, "finalizacao": 94, "goleiro": 10, "mental": 96,
+        "afinidades": ["InuYasha", "Atirador"],
+        "habilidade": {
+            "nome": "Flecha Sagrada",
+            "efeito": "Dispara uma flecha purificadora, anulando os bônus e escudos da defesa oponente."
+        }
+    },
+    # =========================490
+    "reborn_khr": {
+        "nome": "Reborn",
+        "posicoes": [["PD", "Ponta Direita"], ["MC", "Meio-Campo"]],
+        "ataque": 88, "defesa": 58, "passe": 84, "velocidade": 92, "finalizacao": 93, "goleiro": 10, "mental": 98,
+        "afinidades": ["Katekyo Hitman Reborn", "Atirador"],
+        "habilidade": {
+            "nome": "Bala da Última Vontade",
+            "efeito": "Dispara um tiro que aumenta em 45% o poder de ataque do líder aliado."
+        }
+    },
+    # =========================491
+    "rip_van_winkle_wc": {
+        "nome": "Rip Van Winkle",
+        "posicoes": [["PD", "Ponta Direita"]],
+        "ataque": 80, "defesa": 50, "passe": 78, "velocidade": 85, "finalizacao": 95, "goleiro": 10, "mental": 88,
+        "afinidades": ["Hellsing", "Atirador"],
+        "habilidade": {
+            "nome": "Bala Mágica do Caçador",
+            "efeito": "Um chute com trajetória imprevisível, ignorando escudos da defesa."
+        }
+    },
+    # =========================492
+    "kino_traveler": {
+        "nome": "Kino",
+        "posicoes": [["PD", "Ponta Direita"], ["LAT", "Lateral"]],
+        "ataque": 76, "defesa": 62, "passe": 85, "velocidade": 88, "finalizacao": 82, "goleiro": 10, "mental": 95,
+        "afinidades": ["Kino’s Journey", "Atirador"],
+        "habilidade": {
+            "nome": "Passe do Viajante",
+            "efeito": "Um passe longo e preciso, facilitando o drible do atacante receptor."
+        }
+    },
+    # =========================493
+    "gene_starwind": {
+        "nome": "Gene Starwind",
+        "posicoes": [["PD", "Ponta Direita"]],
+        "ataque": 84, "defesa": 55, "passe": 78, "velocidade": 85, "finalizacao": 90, "goleiro": 10, "mental": 88,
+        "afinidades": ["Outlaw Star", "Atirador"],
+        "habilidade": {
+            "nome": "Projétil de Fogo",
+            "efeito": "Um chute ígneo que rompe a zaga adversária e reduz a eficiência do goleiro."
+        }
+    },
+    # =========================494
+    "yukio_okumura": {
+        "nome": "Yukio Okumura",
+        "posicoes": [["PD", "Ponta Direita"]],
+        "ataque": 82, "defesa": 65, "passe": 84, "velocidade": 80, "finalizacao": 88, "goleiro": 10, "mental": 95,
+        "afinidades": ["Ao no Exorcist", "Atirador"],
+        "habilidade": {
+            "nome": "Disparo Sagrado",
+            "efeito": "Um chute tático focado, aumentando em 20% a precisão de um meio-campo aliado."
+        }
+    },
+    # =========================495
+    "henrietta_gg": {
+        "nome": "Henrietta",
+        "posicoes": [["PE", "Ponta Esquerda"]],
+        "ataque": 78, "defesa": 48, "passe": 74, "velocidade": 90, "finalizacao": 82, "goleiro": 10, "mental": 80,
+        "afinidades": ["Gunslinger Girl", "Atirador"],
+        "habilidade": {
+            "nome": "Precisão Fiel",
+            "efeito": "Ataca rapidamente pela lateral, aumentando em 20% a velocidade de interceptação."
+        }
+    },
+    # =========================496
+    "masked_sniper": {
+        "nome": "Masked Sniper",
+        "posicoes": [["PD", "Ponta Direita"]],
+        "ataque": 85, "defesa": 54, "passe": 72, "velocidade": 88, "finalizacao": 92, "goleiro": 10, "mental": 91,
+        "afinidades": ["High-Rise Invasion", "Atirador"],
+        "habilidade": {
+            "nome": "Sniper Mascarado",
+            "efeito": "Um chute de longa distância impecável, ignorando bônus defensivos do oponente."
+        }
+    },
+    # =========================497
+    "hajime_nagumo": {
+        "nome": "Hajime Nagumo",
+        "posicoes": [["PD", "Ponta Direita"], ["ATA", "Atacante"]],
+        "ataque": 91, "defesa": 68, "passe": 75, "velocidade": 89, "finalizacao": 94, "goleiro": 10, "mental": 95,
+        "afinidades": ["Arifureta", "Atirador"],
+        "habilidade": {
+            "nome": "Donner e Alquimia",
+            "efeito": "Dispara um tiro transmutado que aumenta em 30% o dano crítico e o ataque."
+        }
+    },
+    # =========================498
+    "kite_hxh": {
+        "nome": "Kite",
+        "posicoes": [["PD", "Ponta Direita"], ["MC", "Meio-Campo"]],
+        "ataque": 87, "defesa": 62, "passe": 81, "velocidade": 90, "finalizacao": 86, "goleiro": 10, "mental": 93,
+        "afinidades": ["Hunter x Hunter", "Atirador"],
+        "habilidade": {
+            "nome": "Roleta do Maluco",
+            "efeito": "Sorteia um efeito de bônus, aumentando a precisão de toda a sua equipe."
+        }
+    },
+    # =========================499
+    "wolfwood_trigun": {
+        "nome": "Nicholas D. Wolfwood",
+        "posicoes": [["PD", "Ponta Direita"], ["MC", "Meio-Campo"]],
+        "ataque": 84, "defesa": 60, "passe": 82, "velocidade": 84, "finalizacao": 88, "goleiro": 10, "mental": 92,
+        "afinidades": ["Trigun", "Atirador"],
+        "habilidade": {
+            "nome": "Punisher Cruzado",
+            "efeito": "Chute potente com a cruz pesada, reduzindo a defesa do oponente em 25%."
+        }
+    },
+    # =========================500
+    "kagome_higurashi": {
+        "nome": "Kagome Higurashi",
+        "posicoes": [["PE", "Ponta Esquerda"]],
+        "ataque": 75, "defesa": 55, "passe": 82, "velocidade": 72, "finalizacao": 88, "goleiro": 10, "mental": 94,
+        "afinidades": ["InuYasha", "Atirador"],
+        "habilidade": {
+            "nome": "Luz Sagrada",
+            "efeito": "Um passe focado, aumentando em 20% a precisão de um atacante aliado."
+        }
+    },
+    # =========================501
+    "makarov_dreyar": {
+        "nome": "Makarov Dreyar",
+        "posicoes": [["MC", "Meio-campo"], ["MEI", "Meia ofensivo"]],
+        "ataque": 75, "defesa": 78, "passe": 95, "velocidade": 72, "finalizacao": 70, "goleiro": 20, "mental": 100,
+        "afinidades": ["Fairy Tail", "Líder"],
+        "habilidade": {
+            "nome": "Lei das Fadas",
+            "efeito": "Aumenta drasticamente o ataque e a precisão de todos os aliados em campo."
+        }
+    },
+    # =========================502
+    "hashirama_senju": {
+        "nome": "Hashirama Senju",
+        "posicoes": [["ZAG", "Zagueiro"], ["MC", "Meio-Campo"]],
+        "ataque": 88, "defesa": 95, "passe": 88, "velocidade": 82, "finalizacao": 78, "goleiro": 25, "mental": 100,
+        "afinidades": ["Naruto", "Líder"],
+        "habilidade": {
+            "nome": "Estilo Madeira",
+            "efeito": "Fortalece a defesa e a capacidade de interceptação de toda a equipe."
+        }
+    },
+    # =========================503
+    "schwi_dola": {
+        "nome": "Schwi Dola",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 70, "defesa": 65, "passe": 94, "velocidade": 78, "finalizacao": 72, "goleiro": 10, "mental": 96,
+        "afinidades": ["No Game No Life", "Mago"],
+        "habilidade": {
+            "nome": "Sincronia de IA",
+            "efeito": "Dobla a eficácia dos passes e a capacidade de leitura de jogo da equipe."
+        }
+    },
+    # =========================504
+    "judar_magi": {
+        "nome": "Judar",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 72, "defesa": 60, "passe": 92, "velocidade": 84, "finalizacao": 80, "goleiro": 10, "mental": 90,
+        "afinidades": ["Magi", "Mago"],
+        "habilidade": {
+            "nome": "Magia de Gelo",
+            "efeito": "Cria barreiras de gelo que bloqueiam o caminho dos atacantes adversários."
+        }
+    },
+    # =========================505
+    "gildarts_clive": {
+        "nome": "Gildarts Clive",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 90, "defesa": 80, "passe": 88, "velocidade": 82, "finalizacao": 85, "goleiro": 15, "mental": 96,
+        "afinidades": ["Fairy Tail", "Mago"],
+        "habilidade": {
+            "nome": "Magia de Quebra",
+            "efeito": "Reduz drasticamente o ataque, defesa e precisão dos oponentes em uma área."
+        }
+    },
+    # =========================506
+    "ultear_milkovich": {
+        "nome": "Ultear Milkovich",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 74, "defesa": 68, "passe": 94, "velocidade": 80, "finalizacao": 78, "goleiro": 12, "mental": 94,
+        "afinidades": ["Fairy Tail", "Mago"],
+        "habilidade": {
+            "nome": "Arco do Tempo",
+            "efeito": "Recupera o fôlego da equipe, concedendo um bônus de regeneração de energia."
+        }
+    },
+    # =========================507
+    "makoto_misumi": {
+        "nome": "Makoto Misumi",
+        "posicoes": [["MC", "Meio-Campo"], ["ATA", "Atacante"]],
+        "ataque": 86, "defesa": 72, "passe": 91, "velocidade": 80, "finalizacao": 85, "goleiro": 15, "mental": 97,
+        "afinidades": ["Tsukimichi", "Mago"],
+        "habilidade": {
+            "nome": "Poder de Outro Mundo",
+            "efeito": "Aumenta muito o poder de finalização e remove debuffs da equipe."
+        }
+    },
+    # =========================508
+    "irene_belserion": {
+        "nome": "Irene Belserion",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 84, "defesa": 80, "passe": 93, "velocidade": 80, "finalizacao": 86, "goleiro": 12, "mental": 98,
+        "afinidades": ["Fairy Tail", "Mago"],
+        "habilidade": {
+            "nome": "Metamorfose",
+            "efeito": "Transforma o terreno para dificultar o drible dos adversários."
+        }
+    },
+    # =========================509
+    "dorothy_unsworth": {
+        "nome": "Dorothy Unsworth",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 70, "defesa": 65, "passe": 94, "velocidade": 72, "finalizacao": 70, "goleiro": 10, "mental": 95,
+        "afinidades": ["Black Clover", "Mago"],
+        "habilidade": {
+            "nome": "Mundo dos Sonhos",
+            "efeito": "Aprisiona o atacante adversário em uma ilusão, impedindo o drible."
+        }
+    },
+    # =========================510
+    "satella": {
+        "nome": "Satella",
+        "posicoes": [["MC", "Meio-campo"], ["MEI", "Meia ofensivo"]],
+        "ataque": 82, "defesa": 80, "passe": 95, "velocidade": 86, "finalizacao": 82, "goleiro": 15, "mental": 99,
+        "afinidades": ["Re:Zero", "Mago"],
+        "habilidade": {
+            "nome": "Mãos da Sombra",
+            "efeito": "Imobiliza o atacante adversário, garantindo a posse de bola."
+        }
+    },
+    # =========================511
+    "ange_ushiromiya": {
+        "nome": "Ange Ushiromiya",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 76, "defesa": 68, "passe": 91, "velocidade": 80, "finalizacao": 75, "goleiro": 10, "mental": 93,
+        "afinidades": ["Umineko", "Mago"],
+        "habilidade": {
+            "nome": "Magia da Esperança",
+            "efeito": "Aumenta a precisão dos passes e a força de finalização dos aliados."
+        }
+    },
+    # =========================512
+    "elias_ainsworth": {
+        "nome": "Elias Ainsworth",
+        "posicoes": [["MC", "Meio-Campo"], ["VOL", "Volante"]],
+        "ataque": 78, "defesa": 74, "passe": 89, "velocidade": 78, "finalizacao": 73, "goleiro": 15, "mental": 94,
+        "afinidades": ["The Ancient Magus' Bride", "Mago"],
+        "habilidade": {
+            "nome": "Magia das Sombras",
+            "efeito": "Cria uma cobertura defensiva para a equipe e remove efeitos negativos."
+        }
+    },
+    # =========================513
+    "arcueid_brunestud": {
+        "nome": "Arcueid Brunestud",
+        "posicoes": [["MC", "Meio-Campo"], ["ATA", "Atacante"]],
+        "ataque": 93, "defesa": 78, "passe": 85, "velocidade": 91, "finalizacao": 90, "goleiro": 15, "mental": 97,
+        "afinidades": ["Tsukihime", "Mago"],
+        "habilidade": {
+            "nome": "Mármore da Lua",
+            "efeito": "Um chute mágico de alto dano crítico, ignorando defesas básicas."
+        }
+    },
+    # =========================514
+    "winry_rockbell": {
+        "nome": "Winry Rockbell",
+        "posicoes": [["VOL", "Volante"]],
+        "ataque": 35, "defesa": 65, "passe": 82, "velocidade": 70, "finalizacao": 30, "goleiro": 10, "mental": 95,
+        "afinidades": ["Fullmetal Alchemist", "Suporte"],
+        "habilidade": {
+            "nome": "Ajuste Mecânico",
+            "efeito": "Recupera 20% da energia dos aliados e aumenta a defesa em 15%."
+        }
+    },
+    # =========================515
+    "tohka_yatogami": {
+        "nome": "Tohka Yatogami",
+        "posicoes": [["VOL", "Volante"], ["ZAG", "Zagueiro"]],
+        "ataque": 84, "defesa": 80, "passe": 72, "velocidade": 85, "finalizacao": 78, "goleiro": 15, "mental": 82,
+        "afinidades": ["Date A Live", "Suporte"],
+        "habilidade": {
+            "nome": "Sandalphon: Trono",
+            "efeito": "Aumenta em 25% a defesa da equipe e cria um escudo protetor."
+        }
+    },
+    # =========================516
+    "hestia": {
+        "nome": "Hestia",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 40, "defesa": 55, "passe": 92, "velocidade": 75, "finalizacao": 40, "goleiro": 10, "mental": 98,
+        "afinidades": ["DanMachi", "Suporte"],
+        "habilidade": {
+            "nome": "Bênção Sagrada",
+            "efeito": "Remove efeitos negativos de um aliado e regenera 20% da saúde."
+        }
+    },
+    # =========================517
+    "kokkoro_pcr_wc": {
+        "nome": "Kokkoro",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 50, "defesa": 72, "passe": 94, "velocidade": 85, "finalizacao": 55, "goleiro": 10, "mental": 98,
+        "afinidades": ["Princess Connect!", "Suporte"],
+        "habilidade": {
+            "nome": "Aurora da Guia",
+            "efeito": "Cura e remove debuffs de zagueiros e meio-campistas aliados."
+        }
+    },
+    # =========================518
+    "chika_fujiwara_wc": {
+        "nome": "Chika Fujiwara",
+        "posicoes": [["MC", "Meio-Campo"]],
+        "ataque": 40, "defesa": 55, "passe": 90, "velocidade": 82, "finalizacao": 45, "goleiro": 10, "mental": 95,
+        "afinidades": ["Kaguya-sama", "Suporte"],
+        "habilidade": {
+            "nome": "Dança da Chika",
+            "efeito": "Aumenta a velocidade de toda a equipe e melhora a precisão dos atacantes."
+        }
+    },
+    # =========================519
+    "iruma_suzuki": {
+        "nome": "Iruma Suzuki",
+        "posicoes": [["VOL", "Volante"]],
+        "ataque": 42, "defesa": 68, "passe": 84, "velocidade": 75, "finalizacao": 46, "goleiro": 10, "mental": 94,
+        "afinidades": ["Mairimashita! Iruma-kun", "Suporte"],
+        "habilidade": {
+            "nome": "Esquiva de Iruma",
+            "efeito": "Aumenta a velocidade de drible e permite um passe de contra-ataque rápido."
+        }
+    },
+    # =========================520
+    "yui_hirasawa": {
+        "nome": "Yui Hirasawa",
+        "posicoes": [["VOL", "Volante"]],
+        "ataque": 38, "defesa": 60, "passe": 85, "velocidade": 72, "finalizacao": 40, "goleiro": 10, "mental": 90,
+        "afinidades": ["K-On!", "Suporte"],
+        "habilidade": {
+            "nome": "Melodia de Guitarra",
+            "efeito": "Aumenta a moral e a saúde de toda a equipe por vários turnos."
+        }
+    },
+    # =========================521
+    "ristarte": {
+        "nome": "Ristarte",
+        "posicoes": [["VOL", "Volante"]],
+        "ataque": 30, "defesa": 58, "passe": 88, "velocidade": 70, "finalizacao": 30, "goleiro": 10, "mental": 96,
+        "afinidades": ["Cautious Hero", "Suporte"],
+        "habilidade": {
+            "nome": "Cura de Deusa",
+            "efeito": "Cura 30% da saúde de um aliado e remove efeitos de paralisia."
+        }
+    },
+    # =========================522
+    "genos": {
+        "nome": "Genos",
+        "posicoes": [["ZAG", "Zagueiro"]],
+        "ataque": 82, "defesa": 88, "passe": 65, "velocidade": 92, "finalizacao": 78, "goleiro": 15, "mental": 85,
+        "afinidades": ["One Punch Man", "Tank"],
+        "habilidade": {
+            "nome": "Incineração de Cyborg",
+            "efeito": "Cria uma parede de fogo que aumenta a defesa e a velocidade da zaga."
+        }
+    },
+    # =========================523
+    "elfman_strauss": {
+        "nome": "Elfman Strauss",
+        "posicoes": [["ZAG", "Zagueiro"]],
+        "ataque": 45, "defesa": 94, "passe": 62, "velocidade": 70, "finalizacao": 50, "goleiro": 15, "mental": 90,
+        "afinidades": ["Fairy Tail", "Tank"],
+        "habilidade": {
+            "nome": "Armadura da Besta",
+            "efeito": "Provoca os adversários, aumentando a defesa dos aliados próximos."
+        }
+    },
+    # =========================524
+    "fat_gum_wc": {
+        "nome": "Fat Gum",
+        "posicoes": [["ZAG", "Zagueiro"]],
+        "ataque": 40, "defesa": 96, "passe": 60, "velocidade": 72, "finalizacao": 45, "goleiro": 15, "mental": 90,
+        "afinidades": ["Boku no Hero Academia", "Tank"],
+        "habilidade": {
+            "nome": "Absorção de Gordura",
+            "efeito": "Cria um escudo baseado em 40% de sua vida e drena o ataque adversário."
+        }
+    },
+    # =========================525
+    "yasutora_sado_chad": {
+        "nome": "Yasutora Sado (Chad)",
+        "posicoes": [["ZAG", "Zagueiro"]],
+        "ataque": 48, "defesa": 92, "passe": 58, "velocidade": 74, "finalizacao": 50, "goleiro": 15, "mental": 92,
+        "afinidades": ["Bleach", "Tank"],
+        "habilidade": {
+            "nome": "Braço de Gigante",
+            "efeito": "Atrai o foco dos ataques adversários e reduz o dano sofrido em 45%."
         }
     }
 }

@@ -199,6 +199,11 @@ def clean_text(text):
     if not text: return ""
     return "".join(c for c in str(text) if unicodedata.category(c) not in ('So', 'Cs', 'Cn'))
 
+def normalize_lookup(text):
+    text = unicodedata.normalize("NFKD", str(text or ""))
+    text = "".join(char for char in text if not unicodedata.combining(char))
+    return "".join(char.lower() if char.isalnum() else " " for char in text).strip()
+
 def estrelas(rarity, stars=1):
     rarity = int(rarity or 1)
     stars = int(stars or 1)
@@ -1201,9 +1206,97 @@ class Perfil(commands.Cog):
         embed.set_footer(text="TutoriUAU: uma cópia entrou, números maiores saíram. Alquimia de planilha.")
         await ctx.send(embed=embed)
 
+    def _find_catalog_hero(self, query):
+        query_norm = normalize_lookup(query)
+        if not query_norm:
+            return None, None
+
+        candidates = []
+        for hero_id, hero in HEROES.items():
+            if hero_id == "id-nome":
+                continue
+            hero_name = hero.get("nome", hero_id)
+            lookup_names = {
+                normalize_lookup(hero_id.replace("_", " ")),
+                normalize_lookup(hero_name),
+            }
+            if query_norm in lookup_names:
+                return hero_id, hero
+            if any(query_norm in name or name in query_norm for name in lookup_names):
+                candidates.append((hero_id, hero))
+
+        if not candidates:
+            return None, None
+        candidates.sort(key=lambda item: (len(item[1].get("nome", item[0])), item[1].get("nome", item[0])))
+        return candidates[0]
+
+    async def _send_catalog_hero(self, ctx, hero_id, hero):
+        rarity = max(1, int(hero.get("raridade", 1) or 1))
+        max_evolution = max(1, int(hero.get("max_star", max(5, rarity)) or max(5, rarity)))
+        stats = calculate_hero_stats(hero, stars=1, level=1, equipment_bonuses=[])
+        skills = get_hero_skill_descriptions(hero, stars=max_evolution, rarity=rarity)
+
+        embed = discord.Embed(
+            title=f"{hero.get('emoji', '')} {hero.get('nome', hero_id)}",
+            description=(
+                f"`{hero_id}` | Ficha base do catalogo\n"
+                f"Classe: **{hero.get('classe', 'Sem classe')}** | "
+                f"Origem: **{hero.get('origem', 'Desconhecida')}**"
+            ),
+            color=discord.Color.gold(),
+        )
+        embed.add_field(
+            name="Raridade",
+            value=f"Base: **{'⭐' * rarity}** | Evolucao maxima: **{max_evolution}**",
+            inline=False,
+        )
+        embed.add_field(
+            name="Status Base",
+            value=(
+                f"HP: **{stats.get('hp', 0):,}** | ATK: **{stats.get('atk', 0):,}**\n"
+                f"MATK: **{stats.get('matk', 0):,}** | DEF: **{stats.get('def', 0):,}**\n"
+                f"SPD: **{stats.get('spd', 0):,}** | CRT: **{stats.get('crt', 0):,}%**"
+            ),
+            inline=False,
+        )
+
+        skill_lines = []
+        for skill in skills:
+            label = skill.get("tipo", "Habilidade")
+            description = _trim(skill.get("descricao") or "Descricao ainda nao cadastrada.", 850)
+            skill_lines.append(f"**{label} - {skill.get('nome', 'Habilidade')}**\n{description}")
+
+        if skill_lines:
+            for index, chunk in enumerate(chunk_lines(skill_lines, limit=1000)):
+                embed.add_field(
+                    name="Habilidades" if index == 0 else "Habilidades (continuacao)",
+                    value=chunk,
+                    inline=False,
+                )
+        else:
+            embed.add_field(name="Habilidades", value="Nenhuma habilidade cadastrada.", inline=False)
+
+        embed.set_footer(text="TutoriUAU: ficha base, sem buff de usuario, sem drama de mochila, sem desculpa.")
+        local_path, filename = get_hero_attachment(hero_id, prefix="catalogo")
+        hero_file = discord.File(local_path, filename=filename) if local_path else None
+        if hero_file:
+            embed.set_image(url=f"attachment://{filename}")
+            await ctx.send(embed=embed, file=hero_file)
+        else:
+            await ctx.send(embed=embed)
+
     @commands.command(name="heroi", aliases=["herói"])
-    async def heroi_prefix(self, ctx, hero_db_id: int = None):
-        if not hero_db_id: return await ctx.send("Faltou o ID. Exemplo: `echo heroi 15`.")
+    async def heroi_prefix(self, ctx, *, hero_ref: str = None):
+        if not hero_ref:
+            return await ctx.send("Faltou o ID ou nome. Exemplos: `echo heroi 15` ou `echo heroi Freeza`.")
+
+        if not str(hero_ref).strip().isdigit():
+            hero_id, hero = self._find_catalog_hero(hero_ref)
+            if not hero:
+                return await ctx.send("Nao encontrei esse heroi no catalogo. TutoriUAU procurou ate debaixo do sofa digital.")
+            return await self._send_catalog_hero(ctx, hero_id, hero)
+
+        hero_db_id = int(str(hero_ref).strip())
 
         conn = sqlite3.connect("players.db")
         cursor = conn.cursor()
@@ -1313,6 +1406,66 @@ class Perfil(commands.Cog):
         
         if hero_file: await ctx.send(embed=embed, file=hero_file)
         else: await ctx.send(embed=embed)
+
+    @commands.command(name="anime", aliases=["obra", "origem"])
+    async def anime_prefix(self, ctx, *, query: str = None):
+        if not query:
+            return await ctx.send("Use `echo anime <nome da obra>`. Exemplo: `echo anime Re:Zero`.")
+
+        query_norm = normalize_lookup(query)
+        matches = []
+        exact_origin = None
+        for hero_id, hero in HEROES.items():
+            if hero_id == "id-nome":
+                continue
+            origin = hero.get("origem", "Desconhecida")
+            origin_norm = normalize_lookup(origin)
+            if origin_norm == query_norm:
+                exact_origin = origin
+            if query_norm in origin_norm or origin_norm in query_norm:
+                matches.append((hero_id, hero))
+
+        if exact_origin:
+            matches = [
+                (hero_id, hero)
+                for hero_id, hero in matches
+                if normalize_lookup(hero.get("origem", "")) == normalize_lookup(exact_origin)
+            ]
+
+        if not matches:
+            return await ctx.send("Nao encontrei personagens dessa obra. TutoriUAU abriu a wiki mental e ela deu 404.")
+
+        matches.sort(key=lambda item: (item[1].get("origem", ""), item[1].get("nome", item[0])))
+        title_origin = exact_origin or query
+        comments = [
+            "TutoriUAU: elenco reunido. Agora tente nao montar uma party juridicamente questionavel.",
+            "TutoriUAU: pagina dois, porque claro que anime nunca tem so cinco personagens.",
+            "TutoriUAU: se voce decorou todos esses nomes, parabens e talvez descanse.",
+            "TutoriUAU: afinidade comecou como sistema e virou album de figurinhas com magia.",
+        ]
+
+        embeds = []
+        per_page = 12
+        for page, start in enumerate(range(0, len(matches), per_page), start=1):
+            chunk = matches[start:start + per_page]
+            embed = discord.Embed(
+                title=f"Personagens de {title_origin}",
+                color=discord.Color.blurple(),
+            )
+            lines = []
+            for hero_id, hero in chunk:
+                rarity = max(1, int(hero.get("raridade", 1) or 1))
+                lines.append(
+                    f"`{hero_id}` {hero.get('emoji', '')} **{hero.get('nome', hero_id)}** "
+                    f"| {hero.get('classe', 'Sem classe')} | {'⭐' * rarity}"
+                )
+            embed.description = "\n".join(lines)
+            total_pages = (len(matches) + per_page - 1) // per_page
+            embed.set_footer(text=f"Pagina {page}/{total_pages} - {comments[(page - 1) % len(comments)]}")
+            embeds.append(embed)
+
+        view = HeroisPaginator(ctx.author, embeds) if len(embeds) > 1 else None
+        await ctx.send(embed=embeds[0], view=view)
 
 async def setup(bot):
     await bot.add_cog(Perfil(bot))

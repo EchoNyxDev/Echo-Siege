@@ -132,7 +132,8 @@ class Ajuda(commands.Cog):
                 "`iniciar` - Cria sua conta e pega os presentes.\n"
                 "`perfil` - Mostra sua ficha de jogador e progresso.\n"
                 "Nível da conta dá bônus passivo de Gold/XP a cada 10 níveis, com teto saudável. Sim, agora serve para algo.\n"
-                "`herói <ID>` - Mostra os detalhes de um personagem.\n"
+                "`herói <ID|nome>` - Mostra detalhes do seu herói pelo ID ou a ficha base pelo nome.\n"
+                "`anime <obra>` - Lista personagens de uma obra específica, tipo `echo anime Re:Zero`.\n"
                 "`heróis` - Lista toda a sua coleção.\n"
                 "`main <ID>` - Define o líder da Party.\n"
                 "`mochila` - Mostra itens, tickets e drops guardados.\n"
@@ -168,7 +169,8 @@ class Ajuda(commands.Cog):
                 "`summon <quantidade>` - Roda a roleta no banner comum.\n"
                 "`summon especial <quantidade>` - Gacha no banner de destaques.\n"
                 "`banner` / `banner especial` - Vê as taxas e os destaques atuais.\n"
-                "`catálogo [classe]` - Lista todos os personagens que existem (ou os que te faltam)."
+                "`catálogo [classe]` - Lista todos os personagens que existem (ou os que te faltam).\n"
+                "`anime <obra>` - Filtra o elenco por origem. TutoriUAU chama isso de Ctrl+F com autoestima."
             ),
             inline=False,
         )
@@ -214,7 +216,7 @@ class Ajuda(commands.Cog):
                 "`copa` - Painel da Echo Cup / Copa do Mundo de Lugnica.\n"
                 "`copa iniciar|time|jogar` - Cria o time, consulta a escalação e joga partidas.\n"
                 "`copa loja|resgatar|ranking|hall` - Troca echobet e acompanha a classificação.\n"
-                "`copa banner|summon|heroi|historico` - Banner esportivo, fichas da Copa e últimas partidas.\n"
+                "`copa banner|summon|heroi|historico` - Banner esportivo, fichas da Copa e últimas partidas. O summon usa ticket antes de cobrar ouro.\n"
                 "Invasões automáticas usam o canal do `adm set_iniciar`: raid 13:00, boss sábado 19:00 e calamidade no último dia do mês 22:00.\n"
                 "`rank` / `rank global` - Mostra a nata dos jogadores e quem tem mais dinheiro/poder."
             ),

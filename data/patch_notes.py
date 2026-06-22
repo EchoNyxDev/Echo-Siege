@@ -4,6 +4,21 @@ UPDATE_THUMB_URL = ""
 
 PATCH_NOTES = [
     {
+        "id": "patch_20",
+        "title": "Patch 20: Echo Cup com chuteira nova",
+        "subtitle": "TutoriUAU: futebol de anime, agora com menos bug de vestiario e mais ficha funcionando.",
+        "rows": [
+            ("Echo Cup", "`echo copa` agora usa a imagem tutoricopa na thumb e o banner esportivo aceita Ticket de Invocacao antes de cobrar Gold."),
+            ("Premiacao", "O bonus de etapa da Copa deixou de acumular: voce recebe somente a recompensa da fase onde a campanha parar."),
+            ("Simulacao", "Habilidades da Copa agora interpretam ataque, defesa e suporte pela ficha do personagem, em vez de virar gol automatico ou parede absoluta toda hora."),
+            ("Times da Copa", "Formacoes, posicoes, aliases antigos e IDs dos adversarios foram auditados. Nada de time tropeçando em jogador fantasma."),
+            ("Catalogo", "`echo heroi <nome>` mostra a ficha base pelo nome e `echo anime <obra>` lista personagens de uma origem especifica."),
+            ("Personagens", "O catalogo carregou 525 personagens; os novos do fim da lista foram revisados, sem outliers de status e sem habilidades faltando."),
+            ("Ajuda", "`echo ajuda`, `echo tutorial` e `echo eventos` receberam as novas explicacoes. Sim, documentacao. Estamos amadurecendo. Assustador."),
+        ],
+        "footer": "TutoriUAU: se o Patch 20 fosse uma partida, eu diria que vencemos por 2x1 com gol chorado aos 90+4.",
+    },
+    {
         "id": "patch_19",
         "title": "Patch 19: Muita coisa, baby!",
         "subtitle": "Simplesmente muita coisa mesmooooo",
