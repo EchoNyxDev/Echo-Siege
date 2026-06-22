@@ -1295,8 +1295,10 @@ class Copa(commands.Cog):
             """, (p_pts, p_gf, p_ga, opp1_p, opp1_gf, opp1_ga, opp2_p, opp2_gf, opp2_ga, opp3_p, opp3_gf, opp3_ga, str(user_id)))
             
             cursor.execute("SELECT * FROM world_cup_progress WHERE user_id = ?", (str(user_id),))
-            progress = cursor.fetchone()
-            match_num = progress["group_match_num"]
+            row = cursor.fetchone()
+            if row:
+                progress = dict(row)
+            match_num = progress.get("group_match_num", 0)
 
             # Safe get for opponent names
             nome1 = WORLD_CUP_OPPONENTS.get(o1, {}).get("nome", "Inimigo 1")
@@ -1304,10 +1306,10 @@ class Copa(commands.Cog):
             nome3 = WORLD_CUP_OPPONENTS.get(o3, {}).get("nome", "Inimigo 3")
 
             group_data = [
-                {"nome": state["team_name"], "pontos": progress["p_points"], "gf": progress["p_gf"], "ga": progress["p_ga"]},
-                {"nome": nome1, "pontos": progress["opp1_points"], "gf": progress["opp1_gf"], "ga": progress["opp1_ga"]},
-                {"nome": nome2, "pontos": progress["opp2_points"], "gf": progress["opp2_gf"], "ga": progress["opp2_ga"]},
-                {"nome": nome3, "pontos": progress["opp3_points"], "gf": progress["opp3_gf"], "ga": progress["opp3_ga"]}
+                {"nome": state["team_name"], "pontos": progress.get("p_points", 0), "gf": progress.get("p_gf", 0), "ga": progress.get("p_ga", 0)},
+                {"nome": nome1, "pontos": progress.get("opp1_points", 0), "gf": progress.get("opp1_gf", 0), "ga": progress.get("opp1_ga", 0)},
+                {"nome": nome2, "pontos": progress.get("opp2_points", 0), "gf": progress.get("opp2_gf", 0), "ga": progress.get("opp2_ga", 0)},
+                {"nome": nome3, "pontos": progress.get("opp3_points", 0), "gf": progress.get("opp3_gf", 0), "ga": progress.get("opp3_ga", 0)}
             ]
             group_data.sort(key=lambda t: (t["pontos"], t["gf"] - t["ga"], t["gf"]), reverse=True)
             
