@@ -111,7 +111,7 @@ ROLE_WEIGHTS = {
 EVENT_TEMPLATES = {
     "gol": [
         "⚽ **GOOOL!** {player} recebe um passe açucarado e fuzila no canto sem dar chances!",
-        "⚽ **GOOOL!** {player} aciona sua técnica especial e manda uma bomba que estufa as redes!",
+        "⚽ **GOOOL!** {player} manda uma bomba de longe que estufa as redes!",
         "⚽ **GOOOL!** Após rebote caótico na área, {player} se estica todo e empurra para o fundo!"
     ],
     "defesa": [
@@ -143,9 +143,6 @@ EVENT_TEMPLATES = {
     ],
     "falha_bizarra": [
         "🫠 **FALHA BIZARRA!** {player} tenta recuar com o calcanhar, fura a bola e passa vergonha mundial!"
-    ],
-    "substituicao": [
-        "🔄 **MUDANÇA TÁTICA!** {player} altera seu posicionamento para tentar surpreender a defesa."
     ]
 }
 
@@ -255,6 +252,66 @@ def ensure_extra_tables(cursor):
 
 
 # ==========================================
+# COMPONENTES DE PAGINAÇÃO DE HERÓIS
+# ==========================================
+class CopaHeroisPaginator(discord.ui.View):
+    def __init__(self, ctx, rows):
+        super().__init__(timeout=180)
+        self.ctx = ctx
+        self.rows = rows
+        self.page = 0
+        self.items_per_page = 15
+        self.update_buttons()
+
+    def update_buttons(self):
+        for child in self.children:
+            if isinstance(child, discord.ui.Button):
+                if child.custom_id == "btn_prev":
+                    child.disabled = self.page == 0
+                elif child.custom_id == "btn_next":
+                    child.disabled = (self.page + 1) * self.items_per_page >= len(self.rows)
+
+    def generate_embed(self):
+        embed = discord.Embed(
+            title=f"Catálogo de Heróis da Copa - {self.ctx.author.display_name}",
+            color=discord.Color.green()
+        )
+        start = self.page * self.items_per_page
+        chunk = self.rows[start: start + self.items_per_page]
+        
+        txt = ""
+        for row in chunk:
+            h_data = WORLD_CUP_PLAYERS.get(row["hero_id"], {})
+            nome = h_data.get("nome", row["hero_id"])
+            emoji = HEROES.get(row["hero_id"], {}).get("emoji", "⚽")
+            
+            # Obtém a lista de posições formatadas
+            pos_list = [p[0] for p in h_data.get("posicoes", [])]
+            pos_str = ", ".join(pos_list) if pos_list else "ND"
+            
+            txt += f"`ID {row['instance_id']:<4}` {emoji} **{nome}** | Pos: `{pos_str}` | Lvl {row['level']} | {'⭐'*row['stars']}\n"
+            
+        embed.description = txt or "Você não tem nenhum herói da Copa. Mova-se para a loja ou use `echo copa summon`."
+        total_pages = max(1, (len(self.rows) + self.items_per_page - 1) // self.items_per_page)
+        embed.set_footer(text=f"Página {self.page + 1}/{total_pages} • TutoriUAU: Organização é tudo.")
+        return embed
+
+    @discord.ui.button(label="Anterior", style=discord.ButtonStyle.primary, emoji="◀️", custom_id="btn_prev")
+    async def btn_prev(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.ctx.author.id: return
+        self.page -= 1
+        self.update_buttons()
+        await interaction.response.edit_message(embed=self.generate_embed(), view=self)
+
+    @discord.ui.button(label="Próximo", style=discord.ButtonStyle.primary, emoji="▶️", custom_id="btn_next")
+    async def btn_next(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.ctx.author.id: return
+        self.page += 1
+        self.update_buttons()
+        await interaction.response.edit_message(embed=self.generate_embed(), view=self)
+
+
+# ==========================================
 # PAINEL DA PRANCHETA (ESCALAÇÃO)
 # ==========================================
 class TeamNameModal(discord.ui.Modal, title="Nome da Equipe"):
@@ -286,7 +343,6 @@ class EditCopaSlotSelect(discord.ui.Select):
         ]
         
         pos = self.builder.get_slot_position(slot_num)
-        # Classifica para trazer os melhores de acordo com a posição
         heroes.sort(key=lambda r: builder.cog.player_position_score(r["hero_id"], pos) + r["level"], reverse=True)
 
         for row in heroes[:24]:
@@ -603,6 +659,9 @@ class CopaTeamBuilderView(discord.ui.View):
         self.stop()
 
 
+# ==========================================
+# PAINEL DE SUBSTITUIÇÕES NO INTERVALO
+# ==========================================
 class MatchFormationSelect(discord.ui.Select):
     def __init__(self, view):
         options = [
@@ -617,19 +676,93 @@ class MatchFormationSelect(discord.ui.Select):
         await interaction.response.edit_message(embed=self.view_ref.first_half_embed(), view=self.view_ref)
 
 
-class SubstitutionModal(discord.ui.Modal, title="Substituição da Copa"):
-    slot = discord.ui.TextInput(label="Slot a trocar", placeholder="1 a 11", min_length=1, max_length=2)
-    hero_instance_id = discord.ui.TextInput(label="Novo ID do herói", placeholder="ID do banco", min_length=1, max_length=12)
+class MatchSubSlotSelect(discord.ui.Select):
+    def __init__(self, match_view):
+        self.match_view = match_view
+        options = []
+        for slot in range(1, 12):
+            pos = match_view.cog.get_formation_positions(match_view.formation)[slot - 1] if slot <= len(match_view.cog.get_formation_positions(match_view.formation)) else "ATA"
+            item = match_view.lineup.get(slot)
+            if item:
+                hero_data = WORLD_CUP_PLAYERS.get(item["hero_id"], {})
+                name = hero_data.get("nome", item["hero_id"])
+                options.append(discord.SelectOption(
+                    label=f"Slot {slot:02d} ({pos})", 
+                    value=str(slot), 
+                    description=f"Substituir: {name}"
+                ))
+        super().__init__(placeholder="Escolha quem vai sair do campo...", options=options, min_values=1, max_values=1)
 
-    def __init__(self, view):
-        super().__init__()
-        self.view_ref = view
+    async def callback(self, interaction):
+        slot = int(self.values[0])
+        view = MatchSubHeroView(self.match_view, slot)
+        embed = self.match_view.first_half_embed()
+        
+        pos = self.match_view.cog.get_formation_positions(self.match_view.formation)[slot - 1] if slot <= len(self.match_view.cog.get_formation_positions(self.match_view.formation)) else "ATA"
+        embed.add_field(name="Substituição (Vestiário)", value=f"Escolhendo um jogador para o **Slot {slot:02d} ({pos})**.", inline=False)
+        
+        await interaction.response.edit_message(embed=embed, view=view)
 
-    async def on_submit(self, interaction):
-        ok, message = self.view_ref.substitute(str(self.slot.value), str(self.hero_instance_id.value))
+
+class MatchSubSlotView(discord.ui.View):
+    def __init__(self, match_view):
+        super().__init__(timeout=180)
+        self.match_view = match_view
+        self.add_item(MatchSubSlotSelect(match_view))
+
+    @discord.ui.button(label="Cancelar Subs", style=discord.ButtonStyle.danger, emoji="⬅️")
+    async def btn_back(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.edit_message(embed=self.match_view.first_half_embed(), view=self.match_view)
+
+
+class MatchSubHeroSelect(discord.ui.Select):
+    def __init__(self, match_view, slot):
+        self.match_view = match_view
+        self.slot = slot
+        options = []
+        owned = match_view.cog.owned_copa_heroes(match_view.ctx.author.id)
+        current_instances = [item["instance_id"] for item in match_view.lineup.values()]
+
+        pos = match_view.cog.get_formation_positions(match_view.formation)[slot - 1] if slot <= len(match_view.cog.get_formation_positions(match_view.formation)) else "ATA"
+        owned.sort(key=lambda r: match_view.cog.player_position_score(r["hero_id"], pos) + r["level"], reverse=True)
+
+        for row in owned:
+            if row["instance_id"] in current_instances: continue
+            hero_data = WORLD_CUP_PLAYERS.get(row["hero_id"], {})
+            options.append(discord.SelectOption(
+                label=f"{hero_data.get('nome', row['hero_id'])} (ID: {row['instance_id']})",
+                value=str(row["instance_id"]),
+                description=f"Lv {row['level']} | {'★' * row['stars']}",
+                emoji=HEROES.get(row["hero_id"], {}).get("emoji", "⚽")
+            ))
+            if len(options) == 24: break
+
+        if not options:
+            options.append(discord.SelectOption(label="Nenhum reserva disponível", value="0", description="Seu banco está vazio."))
+
+        super().__init__(placeholder="Escolha quem vai entrar...", options=options, min_values=1, max_values=1)
+
+    async def callback(self, interaction):
+        if self.values[0] == "0":
+            return await interaction.response.send_message("Você não tem reservas disponíveis para trocar.", ephemeral=True)
+        
+        instance_id = int(self.values[0])
+        ok, msg = self.match_view.substitute(self.slot, instance_id)
         if not ok:
-            return await interaction.response.send_message(message, ephemeral=True)
-        await interaction.response.edit_message(embed=self.view_ref.first_half_embed(), view=self.view_ref)
+            return await interaction.response.send_message(msg, ephemeral=True)
+        
+        await interaction.response.edit_message(embed=self.match_view.first_half_embed(), view=self.match_view)
+
+
+class MatchSubHeroView(discord.ui.View):
+    def __init__(self, match_view, slot):
+        super().__init__(timeout=180)
+        self.match_view = match_view
+        self.add_item(MatchSubHeroSelect(match_view, slot))
+
+    @discord.ui.button(label="Cancelar Subs", style=discord.ButtonStyle.danger, emoji="⬅️")
+    async def btn_back(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.edit_message(embed=self.match_view.first_half_embed(), view=self.match_view)
 
 
 class CopaMatchView(discord.ui.View):
@@ -661,7 +794,7 @@ class CopaMatchView(discord.ui.View):
         )
         embed.add_field(
             name="Vestiário",
-            value="Antes do segundo tempo você pode mudar a formação ou fazer uma substituição por ID.",
+            value="Antes do segundo tempo você pode mudar a formação ou fazer uma substituição interativa.",
             inline=False,
         )
         return embed
@@ -689,7 +822,8 @@ class CopaMatchView(discord.ui.View):
 
     @discord.ui.button(label="Substituir", style=discord.ButtonStyle.secondary, row=2)
     async def substitute_button(self, interaction, button):
-        await interaction.response.send_modal(SubstitutionModal(self))
+        view = MatchSubSlotView(self)
+        await interaction.response.edit_message(embed=self.first_half_embed(), view=view)
 
     @discord.ui.button(label="Segundo tempo", style=discord.ButtonStyle.success, row=2)
     async def second_half_button(self, interaction, button):
@@ -712,7 +846,6 @@ class CopaMatchView(discord.ui.View):
         await interaction.response.edit_message(content="Você abandonou a partida no intervalo (W.O). TutoriUAU anotou a derrota automática.", embed=None, view=None)
         
         conn = self.cog._connect()
-        cursor = conn.cursor()
         self.cog._advance_progress(
             self.ctx.author.id, self.state["stage"], self.state, "D", 0, 3, 0, []
         )
@@ -1028,7 +1161,7 @@ class Copa(commands.Cog):
                 weights = [0.35, 0.15, 0.02, 0.08, 0.08, 0.15, 0.05, 0.07, 0.05]
                 event_type = rng.choices(other_events, weights=weights)[0]
 
-            # Atribuição Inteligente de Papéis (Atores e Defensores baseados na Posição real)
+            # Atribuição Inteligente de Papéis
             if event_type in ["gol", "falta_perigosa", "virada_heroica"]:
                 actor = get_actor(actor_lineup, ["PE", "PD", "ATA", "MC", "MEI", "VOL"])
                 defender = get_actor(defender_lineup, ["GOL", "ZAG", "LAT"])
@@ -1042,12 +1175,33 @@ class Copa(commands.Cog):
                 actor = get_actor(actor_lineup, ["GOL", "ZAG", "LAT", "VOL", "MC", "MEI", "PE", "PD", "ATA"])
                 defender = get_actor(defender_lineup, ["GOL", "ZAG", "LAT", "VOL", "MC", "MEI", "PE", "PD", "ATA"])
 
-            actor_name = WORLD_CUP_PLAYERS.get(actor["hero_id"], {}).get("nome", actor["hero_id"])
+            actor_data = WORLD_CUP_PLAYERS.get(actor["hero_id"], {})
+            actor_name = actor_data.get("nome", actor["hero_id"])
             defender_name = WORLD_CUP_PLAYERS.get(defender["hero_id"], {}).get("nome", defender["hero_id"])
             
             tag_actor = f"🟢 **[SEU TIME] {actor_name}**" if side_user else f"🔴 **[ADVERSÁRIO] {actor_name}**"
             tag_defender = f"🟢 **[SEU TIME] {defender_name}**" if not side_user else f"🔴 **[ADVERSÁRIO] {defender_name}**"
             
+            # --- MOTOR DE HABILIDADES TÁTICAS (25% DE CHANCE) ---
+            skill = actor_data.get("habilidade")
+            if skill and rng.random() < 0.25:
+                skill_name = skill.get("nome", "Habilidade Secreta")
+                skill_eff = skill.get("efeito", "Demonstrou sua maestria em campo!")
+                
+                is_offensive = actor.get("position") in ["ATA", "PE", "PD", "MEI", "MC"]
+                
+                if is_offensive:
+                    if side_user: score_user += 1
+                    else: score_opp += 1
+                    scorers.append(actor["hero_id"])
+                    log_line = f"`{minute:02d}'` 🌟 **HABILIDADE ATIVADA!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\n⚽ **GOOOL do {team_name.upper()}!**"
+                else:
+                    log_line = f"`{minute:02d}'` 🌟 **DEFESA ABSOLUTA!** {tag_actor} usou **{skill_name}**!\n*{skill_eff}*\n🛡️ A jogada do {opp_team_name.upper()} foi completamente anulada!"
+                
+                log.append(log_line)
+                continue
+            # ----------------------------------------------------
+
             if event_type in ["gol", "penalti_gol"]:
                 if side_user: score_user += 1
                 else: score_opp += 1
@@ -1446,6 +1600,15 @@ class Copa(commands.Cog):
             return await ctx.send(error)
         view = CopaMatchView(self, ctx, state)
         await ctx.send(embed=view.first_half_embed(), view=view)
+
+    @copa_group.command(name="herois", aliases=["heróis", "heroes"])
+    async def copa_herois_cmd(self, ctx):
+        owned = self.owned_copa_heroes(ctx.author.id)
+        if not owned:
+            return await ctx.send("Você não tem nenhum herói da Copa. Use `echo copa summon` para tentar a sorte.")
+            
+        view = CopaHeroisPaginator(ctx, owned)
+        await ctx.send(embed=view.generate_embed(), view=view)
 
     @copa_group.command(name="loja", aliases=["shop"])
     async def copa_loja(self, ctx):
