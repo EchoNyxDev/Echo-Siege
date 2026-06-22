@@ -28,7 +28,6 @@ except Exception:
     def get_hero_attachment(hero_id, prefix="hero"):
         return None, None
 
-
 POSITIONS = {
     "GOL": "Goleiro",
     "ZAG": "Zagueiro",
@@ -117,12 +116,12 @@ EVENT_TEMPLATES = {
     ],
     "defesa": [
         "🧤 **DEFESAÇA!** {defender} voa no ângulo para espalmar o chute perigoso de {attacker}!",
-        "🧤 **PAREDE!** {defender} antecipa a jogada perfeitamente e rouba a bola de {attacker}!",
+        "🧤 **PAREDE!** {defender} antecipa a jogada perfeitamente e desarma {attacker}!",
         "🧤 **MILAGRE!** {defender} salva em cima da linha o que seria o gol certo de {attacker}!"
     ],
     "amarelo": [
         "🟨 **CARTÃO AMARELO!** {player} chega atrasado na dividida e recebe a punição administrativa.",
-        "🟨 **CARTÃO AMARELO!** {player} impede o contra-ataque puxando a túnica do adversário."
+        "🟨 **CARTÃO AMARELO!** {player} impede o contra-ataque puxando a camisa do adversário."
     ],
     "vermelho": [
         "🟥 **CARTÃO VERMELHO!** {player} entra de carrinho por trás com violência excessiva e é EXPULSO!"
@@ -143,7 +142,7 @@ EVENT_TEMPLATES = {
         "🔥 **MOMENTO ÉPICO!** {player} inflama seus companheiros na base do grito e do carisma!"
     ],
     "falha_bizarra": [
-        "🫠 **FALHA BIZARRA!** {player} tenta recuar com o calcanhar, fura a bola e passa vergonha!"
+        "🫠 **FALHA BIZARRA!** {player} tenta recuar com o calcanhar, fura a bola e passa vergonha mundial!"
     ],
     "substituicao": [
         "🔄 **MUDANÇA TÁTICA!** {player} altera seu posicionamento para tentar surpreender a defesa."
@@ -286,8 +285,8 @@ class EditCopaSlotSelect(discord.ui.Select):
             discord.SelectOption(label="[ Esvaziar Slot ]", value="0", description="Deixa a posição vaga", emoji="🗑️")
         ]
         
-        # Pega apenas os 24 melhores heróis do usuário por Score na Posição ou Nível para não estourar o Discord
         pos = self.builder.get_slot_position(slot_num)
+        # Classifica para trazer os melhores de acordo com a posição
         heroes.sort(key=lambda r: builder.cog.player_position_score(r["hero_id"], pos) + r["level"], reverse=True)
 
         for row in heroes[:24]:
@@ -485,7 +484,6 @@ class CopaTeamBuilderView(discord.ui.View):
         if instance_id not in owned_dict:
             return False, "Este herói não pertence à sua conta para o torneio."
         
-        # Remove clones de outros slots
         for s, item in list(self.lineup.items()):
             if item["instance_id"] == instance_id and s != slot_num:
                 self.lineup.pop(s, None)
@@ -622,14 +620,13 @@ class MatchFormationSelect(discord.ui.Select):
 class SubstitutionModal(discord.ui.Modal, title="Substituição da Copa"):
     slot = discord.ui.TextInput(label="Slot a trocar", placeholder="1 a 11", min_length=1, max_length=2)
     hero_instance_id = discord.ui.TextInput(label="Novo ID do herói", placeholder="ID do banco", min_length=1, max_length=12)
-    position = discord.ui.TextInput(label="Posição", placeholder="Opcional: GOL/ZAG/LAT/VOL/MC/MEI/PE/PD/ATA", required=False, max_length=3)
 
     def __init__(self, view):
         super().__init__()
         self.view_ref = view
 
     async def on_submit(self, interaction):
-        ok, message = self.view_ref.substitute(str(self.slot.value), str(self.hero_instance_id.value), str(self.position.value or ""))
+        ok, message = self.view_ref.substitute(str(self.slot.value), str(self.hero_instance_id.value))
         if not ok:
             return await interaction.response.send_message(message, ephemeral=True)
         await interaction.response.edit_message(embed=self.view_ref.first_half_embed(), view=self.view_ref)
@@ -669,7 +666,7 @@ class CopaMatchView(discord.ui.View):
         )
         return embed
 
-    def substitute(self, raw_slot, raw_instance, raw_position):
+    def substitute(self, raw_slot, raw_instance):
         try:
             slot = int(raw_slot)
             instance_id = int(raw_instance)
@@ -685,15 +682,10 @@ class CopaMatchView(discord.ui.View):
             return False, "Esse herói já está em campo."
             
         pos_map = self.cog.get_formation_positions(self.formation)
-        position = str(raw_position or "").upper().strip()
-        if not position:
-            position = pos_map[slot - 1] if slot <= len(pos_map) else "ATA"
-            
-        if position not in POSITIONS:
-            return False, f"Posição inválida. Use: {', '.join(POSITIONS)}."
+        position = pos_map[slot - 1] if slot <= len(pos_map) else "ATA"
             
         self.lineup[slot] = {"instance_id": instance_id, "hero_id": row["hero_id"], "position": position}
-        return True, "Substituição realizada."
+        return True, "Substituição realizada com sucesso."
 
     @discord.ui.button(label="Substituir", style=discord.ButtonStyle.secondary, row=2)
     async def substitute_button(self, interaction, button):
@@ -706,8 +698,12 @@ class CopaMatchView(discord.ui.View):
         self.finished = True
         for child in self.children:
             child.disabled = True
-        embed = self.cog.finish_match(self.ctx.author, self.state, self.lineup, self.formation)
-        await interaction.response.edit_message(embed=embed, view=self)
+            
+        try:
+            embed = self.cog.finish_match(self.ctx.author, self.state, self.lineup, self.formation)
+            await interaction.response.edit_message(embed=embed, view=self)
+        except Exception as e:
+            await interaction.response.send_message(f"Ocorreu um erro ao processar o 2º tempo: {e}", ephemeral=True)
         self.stop()
 
     @discord.ui.button(label="Sair (Abandonar)", style=discord.ButtonStyle.danger, row=2)
@@ -715,7 +711,6 @@ class CopaMatchView(discord.ui.View):
         self.finished = True
         await interaction.response.edit_message(content="Você abandonou a partida no intervalo (W.O). TutoriUAU anotou a derrota automática.", embed=None, view=None)
         
-        # Penaliza como derrota no banco de dados
         conn = self.cog._connect()
         cursor = conn.cursor()
         self.cog._advance_progress(
@@ -807,7 +802,15 @@ class Copa(commands.Cog):
         data = WORLD_CUP_PLAYERS.get(hero_id, {})
         weights = ROLE_WEIGHTS.get(position, ROLE_WEIGHTS["ATA"])
         score = sum(float(data.get(stat, 50)) * weight for stat, weight in weights.items())
-        preferred = {pos[0] for pos in data.get("posicoes", [])}
+        
+        pos_list = data.get("posicoes", [])
+        preferred = []
+        for pos in pos_list:
+            if isinstance(pos, list) and len(pos) > 0:
+                preferred.append(pos[0])
+            elif isinstance(pos, str):
+                preferred.append(pos)
+                
         if position not in preferred:
             score *= 0.85
         return score
@@ -843,7 +846,7 @@ class Copa(commands.Cog):
         if formation in FORMATIONS:
             for position, required in FORMATIONS[formation].items():
                 if positions[position] != required:
-                    errors.append(f"A formação {formation} exige exatamente {required}x {position} (Atualmente: {positions[position]}).")
+                    errors.append(f"A formação {formation} exige {required}x {position} (Atualmente: {positions[position]}).")
         return (not errors), errors
 
     def save_team(self, user_id, team_name, formation, captain_id, lineup):
@@ -1002,24 +1005,18 @@ class Copa(commands.Cog):
         log = []
         scorers = []
 
+        def get_actor(lineup, roles):
+            cands = [v for v in lineup.values() if v.get("position") in roles]
+            return rng.choice(cands) if cands else rng.choice(list(lineup.values()))
+
         for minute in events:
             side_user = rng.random() <= user_share
             actor_lineup = user_lineup if side_user else opponent_lineup
             defender_lineup = opponent_lineup if side_user else user_lineup
             
-            actor = rng.choice(list(actor_lineup.values()))
-            defender = rng.choice(list(defender_lineup.values()))
-            
-            actor_name = WORLD_CUP_PLAYERS.get(actor["hero_id"], {}).get("nome", actor["hero_id"])
-            defender_name = WORLD_CUP_PLAYERS.get(defender["hero_id"], {}).get("nome", defender["hero_id"])
-            
-            tag_actor = f"🟢 **[SEU TIME] {actor_name}**" if side_user else f"🔴 **[ADVERSÁRIO] {actor_name}**"
-            tag_defender = f"🟢 **[SEU TIME] {defender_name}**" if not side_user else f"🔴 **[ADVERSÁRIO] {defender_name}**"
-            
             team_name = user["team_name"] if side_user else opponent["nome"]
             opp_team_name = opponent["nome"] if side_user else user["team_name"]
             
-            # Ajuste de Probabilidades (Maior chance de gol se a diferença de poder for grande)
             goal_chance = 0.35 + (user_share - 0.5) * (0.30 if side_user else -0.30)
             
             event_roll = rng.random()
@@ -1031,6 +1028,26 @@ class Copa(commands.Cog):
                 weights = [0.35, 0.15, 0.02, 0.08, 0.08, 0.15, 0.05, 0.07, 0.05]
                 event_type = rng.choices(other_events, weights=weights)[0]
 
+            # Atribuição Inteligente de Papéis (Atores e Defensores baseados na Posição real)
+            if event_type in ["gol", "falta_perigosa", "virada_heroica"]:
+                actor = get_actor(actor_lineup, ["PE", "PD", "ATA", "MC", "MEI", "VOL"])
+                defender = get_actor(defender_lineup, ["GOL", "ZAG", "LAT"])
+            elif event_type in ["defesa", "penalti_defendido"]:
+                actor = get_actor(actor_lineup, ["PE", "PD", "ATA", "MC", "MEI"])
+                defender = get_actor(defender_lineup, ["GOL"])
+            elif event_type == "penalti_gol":
+                actor = get_actor(actor_lineup, ["PE", "PD", "ATA"])
+                defender = get_actor(defender_lineup, ["GOL"])
+            else:
+                actor = get_actor(actor_lineup, ["GOL", "ZAG", "LAT", "VOL", "MC", "MEI", "PE", "PD", "ATA"])
+                defender = get_actor(defender_lineup, ["GOL", "ZAG", "LAT", "VOL", "MC", "MEI", "PE", "PD", "ATA"])
+
+            actor_name = WORLD_CUP_PLAYERS.get(actor["hero_id"], {}).get("nome", actor["hero_id"])
+            defender_name = WORLD_CUP_PLAYERS.get(defender["hero_id"], {}).get("nome", defender["hero_id"])
+            
+            tag_actor = f"🟢 **[SEU TIME] {actor_name}**" if side_user else f"🔴 **[ADVERSÁRIO] {actor_name}**"
+            tag_defender = f"🟢 **[SEU TIME] {defender_name}**" if not side_user else f"🔴 **[ADVERSÁRIO] {defender_name}**"
+            
             if event_type in ["gol", "penalti_gol"]:
                 if side_user: score_user += 1
                 else: score_opp += 1
@@ -1043,8 +1060,11 @@ class Copa(commands.Cog):
 
     def _simular_partida_cpu(self, opp_a_key, opp_b_key, seed):
         rng = random.Random(seed)
-        opp_a = WORLD_CUP_OPPONENTS[opp_a_key]
-        opp_b = WORLD_CUP_OPPONENTS[opp_b_key]
+        opp_a = WORLD_CUP_OPPONENTS.get(opp_a_key)
+        opp_b = WORLD_CUP_OPPONENTS.get(opp_b_key)
+        
+        if not opp_a or not opp_b:
+            return rng.choices([0, 1, 2, 3], weights=[0.3, 0.4, 0.2, 0.1])[0], rng.choices([0, 1, 2, 3], weights=[0.3, 0.4, 0.2, 0.1])[0]
         
         lineup_a, form_a = self._opponent_lineup(opp_a)
         lineup_b, form_b = self._opponent_lineup(opp_b)
@@ -1107,7 +1127,16 @@ class Copa(commands.Cog):
             conn.close()
             _, _, progress = self.load_team(user.id)
 
-        opponent_key = progress[f"opp{match_num + 1}_id"] if stage == "grupos" else None
+        # Prevenção extra para o caso de algum erro anterior deixar o BD NULL
+        o1 = progress["opp1_id"] if progress and progress["opp1_id"] else opponents[0]
+        o2 = progress["opp2_id"] if progress and progress["opp2_id"] else opponents[1]
+        o3 = progress["opp3_id"] if progress and progress["opp3_id"] else opponents[2]
+
+        if stage == "grupos":
+            opponent_key = [o1, o2, o3][match_num % 3]
+        else:
+            opponent_key = None
+            
         opponent = WORLD_CUP_OPPONENTS.get(opponent_key) if opponent_key else self._stage_opponent(user.id, progress, stage)
         
         opponent_lineup, opponent_formation = self._opponent_lineup(opponent)
@@ -1227,23 +1256,28 @@ class Copa(commands.Cog):
             opp2_p, opp2_gf, opp2_ga = 0, 0, 0
             opp3_p, opp3_gf, opp3_ga = 0, 0, 0
             
+            opps = list(WORLD_CUP_OPPONENTS.keys())
+            o1 = progress.get("opp1_id") if progress.get("opp1_id") else opps[0]
+            o2 = progress.get("opp2_id") if progress.get("opp2_id") else opps[1]
+            o3 = progress.get("opp3_id") if progress.get("opp3_id") else opps[2]
+            
             cpu_seed = f"copa:{user_id}:{run_id}:cpu:{match_num}"
             if match_num == 0:
-                o2_g, o3_g = self._simular_partida_cpu(progress["opp2_id"], progress["opp3_id"], cpu_seed)
+                o2_g, o3_g = self._simular_partida_cpu(o2, o3, cpu_seed)
                 opp2_p = 3 if o2_g > o3_g else 1 if o2_g == o3_g else 0
                 opp3_p = 3 if o3_g > o2_g else 1 if o2_g == o3_g else 0
                 opp2_gf, opp2_ga = o2_g, o3_g
                 opp3_gf, opp3_ga = o3_g, o2_g
                 opp1_p, opp1_gf, opp1_ga = 0, goals_against, goals_for
             elif match_num == 1:
-                o1_g, o3_g = self._simular_partida_cpu(progress["opp1_id"], progress["opp3_id"], cpu_seed)
+                o1_g, o3_g = self._simular_partida_cpu(o1, o3, cpu_seed)
                 opp1_p = 3 if o1_g > o3_g else 1 if o1_g == o3_g else 0
                 opp3_p = 3 if o3_g > o1_g else 1 if o1_g == o3_g else 0
                 opp1_gf, opp1_ga = o1_g, o3_g
                 opp3_gf, opp3_ga = o3_g, o1_g
                 opp2_p, opp2_gf, opp2_ga = 0, goals_against, goals_for
             elif match_num == 2:
-                o1_g, o2_g = self._simular_partida_cpu(progress["opp1_id"], progress["opp2_id"], cpu_seed)
+                o1_g, o2_g = self._simular_partida_cpu(o1, o2, cpu_seed)
                 opp1_p = 3 if o1_g > o2_g else 1 if o1_g == o2_g else 0
                 opp2_p = 3 if o2_g > o1_g else 1 if o1_g == o2_g else 0
                 opp1_gf, opp1_ga = o1_g, o2_g
@@ -1264,11 +1298,16 @@ class Copa(commands.Cog):
             progress = cursor.fetchone()
             match_num = progress["group_match_num"]
 
+            # Safe get for opponent names
+            nome1 = WORLD_CUP_OPPONENTS.get(o1, {}).get("nome", "Inimigo 1")
+            nome2 = WORLD_CUP_OPPONENTS.get(o2, {}).get("nome", "Inimigo 2")
+            nome3 = WORLD_CUP_OPPONENTS.get(o3, {}).get("nome", "Inimigo 3")
+
             group_data = [
                 {"nome": state["team_name"], "pontos": progress["p_points"], "gf": progress["p_gf"], "ga": progress["p_ga"]},
-                {"nome": WORLD_CUP_OPPONENTS[progress["opp1_id"]]["nome"], "pontos": progress["opp1_points"], "gf": progress["opp1_gf"], "ga": progress["opp1_ga"]},
-                {"nome": WORLD_CUP_OPPONENTS[progress["opp2_id"]]["nome"], "pontos": progress["opp2_points"], "gf": progress["opp2_gf"], "ga": progress["opp2_ga"]},
-                {"nome": WORLD_CUP_OPPONENTS[progress["opp3_id"]]["nome"], "pontos": progress["opp3_points"], "gf": progress["opp3_gf"], "ga": progress["opp3_ga"]}
+                {"nome": nome1, "pontos": progress["opp1_points"], "gf": progress["opp1_gf"], "ga": progress["opp1_ga"]},
+                {"nome": nome2, "pontos": progress["opp2_points"], "gf": progress["opp2_gf"], "ga": progress["opp2_ga"]},
+                {"nome": nome3, "pontos": progress["opp3_points"], "gf": progress["opp3_gf"], "ga": progress["opp3_ga"]}
             ]
             group_data.sort(key=lambda t: (t["pontos"], t["gf"] - t["ga"], t["gf"]), reverse=True)
             
@@ -1415,23 +1454,20 @@ class Copa(commands.Cog):
         points = cursor.fetchone()["points"]
         conn.close()
         
-        # Import local to access SHOP_ITEMS if not global, wait, we have to define SHOP_ITEMS globally
-        from data.world_cup_players import WORLD_CUP_PLAYERS # Import for safety if needed
-        # We need SHOP_ITEMS defined in the file
         SHOP_ITEMS = {
             1: {"name": "Tema: Arquibancada Lotada", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_arquibancada_lotada"},
             2: {"name": "Tema: Gramado Noturno", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_gramado_noturno"},
             3: {"name": "Tema: Sala de Imprensa", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_sala_de_imprensa"},
-            4: {"name": "Tema: Taca Mundial", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_taca_mundial"},
-            5: {"name": "Titulo: Campeao de Lugnica", "cost": 160, "kind": "cosmetic", "type": "title", "item": "token_titulo_campeao_de_lugnica"},
+            4: {"name": "Tema: Taça Mundial", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_taca_mundial"},
+            5: {"name": "Titulo: Campeão de Lugnica", "cost": 160, "kind": "cosmetic", "type": "title", "item": "token_titulo_campeao_de_lugnica"},
             6: {"name": "Titulo: Lenda da Echo Cup", "cost": 220, "kind": "cosmetic", "type": "title", "item": "token_titulo_lenda_echo_cup"},
             7: {"name": "Titulo: Rei dos Ecos", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_rei_dos_ecos"},
-            8: {"name": "Titulo: Maior Tecnico de Lugnica", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_maior_tecnico_de_lugnica"},
-            9: {"name": "3 Tickets de Invocacao", "cost": 120, "kind": "tickets", "amount": 3},
+            8: {"name": "Titulo: Maior Técnico de Lugnica", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_maior_tecnico_de_lugnica"},
+            9: {"name": "3 Tickets de Invocação", "cost": 120, "kind": "tickets", "amount": 3},
             10: {"name": "25 Gems", "cost": 220, "kind": "gems", "amount": 25},
             11: {"name": "Maple, Pet Alce", "cost": 1000, "kind": "pet", "pet_id": "maple_alce", "pet_name": "Maple", "rarity": 5},
-            12: {"name": "Zayu, Pet Onca-Pintada", "cost": 1000, "kind": "pet", "pet_id": "zayu_onca", "pet_name": "Zayu", "rarity": 5},
-            13: {"name": "Clutch, Pet Aguia", "cost": 1000, "kind": "pet", "pet_id": "clutch_aguia", "pet_name": "Clutch", "rarity": 5},
+            12: {"name": "Zayu, Pet Onça-Pintada", "cost": 1000, "kind": "pet", "pet_id": "zayu_onca", "pet_name": "Zayu", "rarity": 5},
+            13: {"name": "Clutch, Pet Águia", "cost": 1000, "kind": "pet", "pet_id": "clutch_aguia", "pet_name": "Clutch", "rarity": 5},
         }
         
         embed = discord.Embed(
@@ -1446,21 +1482,20 @@ class Copa(commands.Cog):
 
     @copa_group.command(name="resgatar", aliases=["comprar", "buy"])
     async def copa_resgatar(self, ctx, item_id: int = None):
-        # We need SHOP_ITEMS defined here too
         SHOP_ITEMS = {
             1: {"name": "Tema: Arquibancada Lotada", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_arquibancada_lotada"},
             2: {"name": "Tema: Gramado Noturno", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_gramado_noturno"},
             3: {"name": "Tema: Sala de Imprensa", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_sala_de_imprensa"},
-            4: {"name": "Tema: Taca Mundial", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_taca_mundial"},
-            5: {"name": "Titulo: Campeao de Lugnica", "cost": 160, "kind": "cosmetic", "type": "title", "item": "token_titulo_campeao_de_lugnica"},
+            4: {"name": "Tema: Taça Mundial", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_taca_mundial"},
+            5: {"name": "Titulo: Campeão de Lugnica", "cost": 160, "kind": "cosmetic", "type": "title", "item": "token_titulo_campeao_de_lugnica"},
             6: {"name": "Titulo: Lenda da Echo Cup", "cost": 220, "kind": "cosmetic", "type": "title", "item": "token_titulo_lenda_echo_cup"},
             7: {"name": "Titulo: Rei dos Ecos", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_rei_dos_ecos"},
-            8: {"name": "Titulo: Maior Tecnico de Lugnica", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_maior_tecnico_de_lugnica"},
-            9: {"name": "3 Tickets de Invocacao", "cost": 120, "kind": "tickets", "amount": 3},
+            8: {"name": "Titulo: Maior Técnico de Lugnica", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_maior_tecnico_de_lugnica"},
+            9: {"name": "3 Tickets de Invocação", "cost": 120, "kind": "tickets", "amount": 3},
             10: {"name": "25 Gems", "cost": 220, "kind": "gems", "amount": 25},
             11: {"name": "Maple, Pet Alce", "cost": 1000, "kind": "pet", "pet_id": "maple_alce", "pet_name": "Maple", "rarity": 5},
-            12: {"name": "Zayu, Pet Onca-Pintada", "cost": 1000, "kind": "pet", "pet_id": "zayu_onca", "pet_name": "Zayu", "rarity": 5},
-            13: {"name": "Clutch, Pet Aguia", "cost": 1000, "kind": "pet", "pet_id": "clutch_aguia", "pet_name": "Clutch", "rarity": 5},
+            12: {"name": "Zayu, Pet Onça-Pintada", "cost": 1000, "kind": "pet", "pet_id": "zayu_onca", "pet_name": "Zayu", "rarity": 5},
+            13: {"name": "Clutch, Pet Águia", "cost": 1000, "kind": "pet", "pet_id": "clutch_aguia", "pet_name": "Clutch", "rarity": 5},
         }
         
         if item_id not in SHOP_ITEMS:
@@ -1477,11 +1512,12 @@ class Copa(commands.Cog):
             return await ctx.send(f"Echobet insuficiente. Voce tem **{points:,}** e precisa de **{item['cost']:,}**.")
             
         if item["kind"] == "cosmetic":
-            cursor.execute("SELECT id FROM inventory WHERE user_id = ? AND item_name = ?", (user_id, item["item"]))
+            cursor.execute("SELECT 1 FROM player_cosmetics WHERE user_id = ? AND cosmetic_id = ?", (user_id, item["item"]))
             if cursor.fetchone():
-                cursor.execute("UPDATE inventory SET quantity = quantity + 1 WHERE user_id = ? AND item_name = ?", (user_id, item["item"]))
-            else:
-                cursor.execute("INSERT INTO inventory (user_id, item_name, quantity) VALUES (?, ?, 1)", (user_id, item["item"]))
+                conn.close()
+                return await ctx.send("❌ Você já possui esse cosmético! Não desperdice seus preciosos echobets.")
+                
+            cursor.execute("INSERT INTO inventory (user_id, item_name, quantity) VALUES (?, ?, 1)", (user_id, item["item"]))
             cursor.execute(
                 "INSERT OR IGNORE INTO player_cosmetics(user_id, cosmetic_id, type, active, purchased_at) VALUES (?, ?, ?, 0, ?)",
                 (user_id, item["item"], item["type"], now_ts()),
@@ -1609,7 +1645,6 @@ class Copa(commands.Cog):
         results = []
         stats = Counter()
         
-        # Local random logic
         def roll_copa_rarity(pity_4, pity_5):
             if pity_5 >= HARD_PITY_5: return 5
             if pity_4 >= HARD_PITY_4: return 4
@@ -1694,7 +1729,7 @@ class Copa(commands.Cog):
     async def copa_heroi(self, ctx, *, query: str = None):
         if not query: return await ctx.send("Use `echo copa heroi <nome ou id>`.")
         hero_id = self._resolve_hero_id(query)
-        if not hero_id: return await ctx.send("Nao encontrei esse heroi na ficha da Copa.")
+        if not hero_id: return await ctx.send("Não encontrei esse herói na ficha da Copa.")
         
         data = WORLD_CUP_PLAYERS[hero_id]
         hero = HEROES.get(hero_id, {})
@@ -1704,11 +1739,11 @@ class Copa(commands.Cog):
             color=discord.Color.green(),
         )
         positions = ", ".join(f"{pos[0]} ({pos[1]})" for pos in data.get("posicoes", []))
-        embed.add_field(name="Posicoes", value=positions or "Sem posicao", inline=False)
+        embed.add_field(name="Posições", value=positions or "Sem posição", inline=False)
         stats = ["ataque", "defesa", "passe", "velocidade", "finalizacao", "goleiro", "mental"]
         embed.add_field(name="Atributos", value="\n".join(f"**{stat.title()}**: {data.get(stat, 0)}" for stat in stats), inline=True)
         skill = data.get("habilidade", {})
-        embed.add_field(name=skill.get("nome", "Habilidade"), value=skill.get("efeito", "Sem descricao."), inline=False)
+        embed.add_field(name=skill.get("nome", "Habilidade"), value=skill.get("efeito", "Sem descrição."), inline=False)
         
         path, filename = get_hero_attachment(hero_id, "copa_heroi")
         hero_file = discord.File(path, filename=filename) if path else None
@@ -1744,12 +1779,12 @@ class Copa(commands.Cog):
         embed = discord.Embed(title="Hall da Echo Cup", color=discord.Color.purple())
         if champions:
             embed.add_field(
-                name="Campeoes anteriores",
+                name="Campeões anteriores",
                 value="\n".join(f"**{row['team_name']}** - <t:{row['created_at']}:d>" for row in champions),
                 inline=False,
             )
         else:
-            embed.add_field(name="Campeoes anteriores", value="Nenhum campeao registrado ainda.", inline=False)
+            embed.add_field(name="Campeões anteriores", value="Nenhum campeão registrado ainda.", inline=False)
             
         if scorer:
             hero = WORLD_CUP_PLAYERS.get(scorer["hero_id"], {})
