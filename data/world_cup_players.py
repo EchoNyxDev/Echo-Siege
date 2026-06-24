@@ -4945,5 +4945,2105 @@ WORLD_CUP_PLAYERS = {
             "nome": "Braço de Gigante",
             "efeito": "Atrai o foco dos ataques adversários e reduz o dano sofrido em 45%."
         }
+    },
+
+    # =========================526
+    'tatsumaki': {
+        "nome": 'Tatsumaki',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 92, "defesa": 70, "passe": 96, "velocidade": 94, "finalizacao": 96, "goleiro": 18, "mental": 96,
+        "afinidades": ['One Punch Man', 'Criador'],
+        "habilidade": {
+            "nome": 'Tornado de Telecinese',
+            "efeito": 'Converte Tornado de Telecinese em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================527
+    'fubuki': {
+        "nome": 'Fubuki',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 84, "defesa": 63, "passe": 96, "velocidade": 83, "finalizacao": 88, "goleiro": 16, "mental": 89,
+        "afinidades": ['One Punch Man', 'Criador'],
+        "habilidade": {
+            "nome": 'Nevasca do Inferno',
+            "efeito": 'Converte Nevasca do Inferno em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================528
+    'zombie_man': {
+        "nome": 'Zombie Man',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 73, "defesa": 96, "passe": 69, "velocidade": 72, "finalizacao": 69, "goleiro": 34, "mental": 91,
+        "afinidades": ['One Punch Man', 'Defensor'],
+        "habilidade": {
+            "nome": 'Fogo de Regeneração',
+            "efeito": 'Adapta Fogo de Regeneração para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================529
+    'amai_mask': {
+        "nome": 'Amai Mask',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 95, "defesa": 60, "passe": 77, "velocidade": 96, "finalizacao": 95, "goleiro": 16, "mental": 79,
+        "afinidades": ['One Punch Man', 'Driblador'],
+        "habilidade": {
+            "nome": 'Corte de Justiça Fria',
+            "efeito": 'Usa Corte de Justiça Fria para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================530
+    'flashy_flash': {
+        "nome": 'Flashy Flash',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 66, "passe": 84, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ['One Punch Man', 'Driblador'],
+        "habilidade": {
+            "nome": 'Corte na Velocidade da Luz',
+            "efeito": 'Usa Corte na Velocidade da Luz para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================531
+    'metal_bat': {
+        "nome": 'Metal Bat',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 72, "defesa": 96, "passe": 66, "velocidade": 69, "finalizacao": 68, "goleiro": 33, "mental": 87,
+        "afinidades": ['One Punch Man', 'Defensor'],
+        "habilidade": {
+            "nome": 'Balanço Selvagem',
+            "efeito": 'Adapta Balanço Selvagem para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================532
+    'watchdog_man': {
+        "nome": 'Watchdog-Man',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 68, "passe": 75, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 85,
+        "afinidades": ['One Punch Man', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Guarda Feral Canina',
+            "efeito": 'Leva Guarda Feral Canina para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================533
+    'pig_god': {
+        "nome": 'Pig God',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 68, "defesa": 96, "passe": 65, "velocidade": 64, "finalizacao": 64, "goleiro": 34, "mental": 87,
+        "afinidades": ['One Punch Man', 'Defensor'],
+        "habilidade": {
+            "nome": 'Absorção de Gordura',
+            "efeito": 'Adapta Absorção de Gordura para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================534
+    'doutei': {
+        "nome": 'Doutei (Kid Emperor)',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 64, "defesa": 86, "passe": 96, "velocidade": 85, "finalizacao": 64, "goleiro": 22, "mental": 96,
+        "afinidades": ['One Punch Man', 'Suporte'],
+        "habilidade": {
+            "nome": 'Drones de Suporte',
+            "efeito": 'Usa Drones de Suporte como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================535
+    'atomic_samurai': {
+        "nome": 'Atomic Samurai',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 70, "passe": 78, "velocidade": 96, "finalizacao": 96, "goleiro": 19, "mental": 90,
+        "afinidades": ['One Punch Man', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Corte Atômico',
+            "efeito": 'Leva Corte Atômico para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================536
+    'silver_fang': {
+        "nome": 'Silver Fang',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 71, "passe": 78, "velocidade": 96, "finalizacao": 96, "goleiro": 19, "mental": 90,
+        "afinidades": ['One Punch Man', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Punho de Água Corrente',
+            "efeito": 'Leva Punho de Água Corrente para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================537
+    'blast': {
+        "nome": 'Blast',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 93, "defesa": 88, "passe": 96, "velocidade": 93, "finalizacao": 93, "goleiro": 21, "mental": 96,
+        "afinidades": ['One Punch Man', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Dobra Espacial',
+            "efeito": 'Comanda o time com Dobra Espacial: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================538
+    'nami': {
+        "nome": 'Nami',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 84, "defesa": 62, "passe": 96, "velocidade": 81, "finalizacao": 88, "goleiro": 16, "mental": 89,
+        "afinidades": ['One Piece', 'Criador'],
+        "habilidade": {
+            "nome": 'Thunderbolt Tempo',
+            "efeito": 'Converte Thunderbolt Tempo em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================539
+    'nico_robin': {
+        "nome": 'Nico Robin',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 62, "passe": 83, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['One Piece', 'Driblador'],
+        "habilidade": {
+            "nome": 'Cien Fleur: Clutch',
+            "efeito": 'Usa Cien Fleur: Clutch para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================540
+    'trafalgar_law': {
+        "nome": 'Trafalgar D Water Law',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 70, "defesa": 89, "passe": 96, "velocidade": 90, "finalizacao": 70, "goleiro": 23, "mental": 96,
+        "afinidades": ['One Piece', 'Suporte'],
+        "habilidade": {
+            "nome": 'ROOM: Shambles',
+            "efeito": 'Usa ROOM: Shambles como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================541
+    'franky': {
+        "nome": 'Franky',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 71, "defesa": 96, "passe": 65, "velocidade": 66, "finalizacao": 67, "goleiro": 32, "mental": 87,
+        "afinidades": ['One Piece', 'Defensor'],
+        "habilidade": {
+            "nome": 'Carga de Ferro',
+            "efeito": 'Adapta Carga de Ferro para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================542
+    'brook': {
+        "nome": 'Brook',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 62, "defesa": 81, "passe": 96, "velocidade": 80, "finalizacao": 62, "goleiro": 20, "mental": 95,
+        "afinidades": ['One Piece', 'Suporte'],
+        "habilidade": {
+            "nome": 'Sinfonia do Sono',
+            "efeito": 'Usa Sinfonia do Sono como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================543
+    'aigis': {
+        "nome": 'Aigis',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 67, "passe": 88, "velocidade": 93, "finalizacao": 96, "goleiro": 17, "mental": 87,
+        "afinidades": ['Persona', 'Chutador'],
+        "habilidade": {
+            "nome": 'Metralhadora nos Dedos',
+            "efeito": 'Transforma Metralhadora nos Dedos em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================544
+    'junpei_hiori': {
+        "nome": 'Junpei Hiori',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 91, "defesa": 58, "passe": 70, "velocidade": 89, "finalizacao": 95, "goleiro": 15, "mental": 77,
+        "afinidades": ['Persona', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Rebatida Perfeita',
+            "efeito": 'Leva Rebatida Perfeita para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================545
+    'mitsuru_kirijo': {
+        "nome": 'Mitsuru Kirijo',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 88, "defesa": 82, "passe": 96, "velocidade": 92, "finalizacao": 88, "goleiro": 19, "mental": 96,
+        "afinidades": ['Persona', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Artemisia: Mabufudyne',
+            "efeito": 'Comanda o time com Artemisia: Mabufudyne: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================546
+    'chie_satonaka': {
+        "nome": 'Chie Satonaka',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 91, "defesa": 57, "passe": 69, "velocidade": 95, "finalizacao": 95, "goleiro": 15, "mental": 77,
+        "afinidades": ['Persona', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Chute Galáctico',
+            "efeito": 'Leva Chute Galáctico para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================547
+    'yukiko_amagi': {
+        "nome": 'Yukiko Amagi',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 60, "defesa": 81, "passe": 96, "velocidade": 79, "finalizacao": 60, "goleiro": 20, "mental": 95,
+        "afinidades": ['Persona', 'Suporte'],
+        "habilidade": {
+            "nome": 'Diarahan de Chamas',
+            "efeito": 'Usa Diarahan de Chamas como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================548
+    'rise_kujiwara': {
+        "nome": 'Rise Kujiwara',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 59, "defesa": 81, "passe": 96, "velocidade": 80, "finalizacao": 59, "goleiro": 20, "mental": 95,
+        "afinidades": ['Persona', 'Suporte'],
+        "habilidade": {
+            "nome": 'Análise de Frestas',
+            "efeito": 'Usa Análise de Frestas como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================549
+    'ryuji_sakamoto': {
+        "nome": 'Ryuji Sakamoto',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 94, "defesa": 65, "passe": 84, "velocidade": 88, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['Persona', 'Chutador'],
+        "habilidade": {
+            "nome": 'Captain Kidd: Charge',
+            "efeito": 'Transforma Captain Kidd: Charge em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================550
+    'futaba_sakura': {
+        "nome": 'Futaba Sakura',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 63, "defesa": 85, "passe": 96, "velocidade": 85, "finalizacao": 64, "goleiro": 21, "mental": 96,
+        "afinidades": ['Persona', 'Suporte'],
+        "habilidade": {
+            "nome": 'Necronomicon Scan',
+            "efeito": 'Usa Necronomicon Scan como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================551
+    'makoto_nijima': {
+        "nome": 'Makoto Nijima',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 67, "passe": 88, "velocidade": 95, "finalizacao": 96, "goleiro": 18, "mental": 87,
+        "afinidades": ['Persona', 'Chutador'],
+        "habilidade": {
+            "nome": 'Mafreidyne de Johanna',
+            "efeito": 'Transforma Mafreidyne de Johanna em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================552
+    'ann_takamaki': {
+        "nome": 'Ann Takamaki',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 84, "defesa": 62, "passe": 96, "velocidade": 83, "finalizacao": 88, "goleiro": 16, "mental": 89,
+        "afinidades": ['Persona', 'Criador'],
+        "habilidade": {
+            "nome": 'Chamas de Carmen',
+            "efeito": 'Converte Chamas de Carmen em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================553
+    'renji_abarai': {
+        "nome": 'Renji Abarai',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 63, "passe": 84, "velocidade": 91, "finalizacao": 96, "goleiro": 16, "mental": 83,
+        "afinidades": ['Bleach', 'Chutador'],
+        "habilidade": {
+            "nome": 'Zabimaru: Uive!',
+            "efeito": 'Transforma Zabimaru: Uive! em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================554
+    'byakuya_kuchiki': {
+        "nome": 'Byakuya Kuchiki',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 96, "defesa": 87, "passe": 96, "velocidade": 96, "finalizacao": 96, "goleiro": 21, "mental": 96,
+        "afinidades": ['Bleach', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Senbonzakura Kageyoshi',
+            "efeito": 'Comanda o time com Senbonzakura Kageyoshi: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================555
+    'toushirou_hitsugaya': {
+        "nome": 'Toushirou Hitsugaya',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 93, "defesa": 70, "passe": 96, "velocidade": 93, "finalizacao": 96, "goleiro": 18, "mental": 96,
+        "afinidades": ['Bleach', 'Criador'],
+        "habilidade": {
+            "nome": 'Hyōrinmaru',
+            "efeito": 'Converte Hyōrinmaru em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================556
+    'mio_akiyama': {
+        "nome": 'Mio Akiyama',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 52, "defesa": 74, "passe": 89, "velocidade": 71, "finalizacao": 51, "goleiro": 17, "mental": 86,
+        "afinidades": ['K-On!', 'Suporte'],
+        "habilidade": {
+            "nome": 'Baixo Elizabeth',
+            "efeito": 'Usa Baixo Elizabeth como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================557
+    'ritsu_tainaka': {
+        "nome": 'Ritsu Tainaka',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 77, "defesa": 74, "passe": 95, "velocidade": 80, "finalizacao": 76, "goleiro": 17, "mental": 96,
+        "afinidades": ['K-On!', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Presidente do Clube',
+            "efeito": 'Comanda o time com Presidente do Clube: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================558
+    'tsumugi_kotobuki': {
+        "nome": 'Tsumugi Kotobuki',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 88, "defesa": 60, "passe": 80, "velocidade": 84, "finalizacao": 96, "goleiro": 15, "mental": 79,
+        "afinidades": ['K-On!', 'Chutador'],
+        "habilidade": {
+            "nome": 'Teclado Blindado',
+            "efeito": 'Transforma Teclado Blindado em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================559
+    'azusa_nakano': {
+        "nome": 'Azusa Nakano',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 88, "defesa": 53, "passe": 67, "velocidade": 88, "finalizacao": 93, "goleiro": 13, "mental": 72,
+        "afinidades": ['K-On!', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Solo de Guitarra Focado',
+            "efeito": 'Leva Solo de Guitarra Focado para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================560
+    'nijika_ijichi': {
+        "nome": 'Nijika Ijichi',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 73, "defesa": 72, "passe": 92, "velocidade": 78, "finalizacao": 72, "goleiro": 16, "mental": 96,
+        "afinidades": ['Bocchi the Rock!', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Bateria de Kessoku Band',
+            "efeito": 'Comanda o time com Bateria de Kessoku Band: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================561
+    'ryo_yamada': {
+        "nome": 'Ryo Yamada',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 88, "defesa": 52, "passe": 73, "velocidade": 96, "finalizacao": 90, "goleiro": 14, "mental": 70,
+        "afinidades": ['Bocchi the Rock!', 'Driblador'],
+        "habilidade": {
+            "nome": 'Groove Solitário',
+            "efeito": 'Usa Groove Solitário para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================562
+    'ikuyo_kita': {
+        "nome": 'Ikuyo Kita',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 84, "defesa": 54, "passe": 78, "velocidade": 84, "finalizacao": 96, "goleiro": 13, "mental": 74,
+        "afinidades": ['Bocchi the Rock!', 'Chutador'],
+        "habilidade": {
+            "nome": 'Canto Extrovertido',
+            "efeito": 'Transforma Canto Extrovertido em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================563
+    'hitori_goto': {
+        "nome": 'Hitori Goto',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 62, "defesa": 83, "passe": 96, "velocidade": 77, "finalizacao": 62, "goleiro": 21, "mental": 95,
+        "afinidades": ['Bocchi the Rock!', 'Suporte'],
+        "habilidade": {
+            "nome": 'Guitar Hero Solitária',
+            "efeito": 'Usa Guitar Hero Solitária como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================564
+    'akiha_tohno': {
+        "nome": 'Akiha Tohno',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 89, "defesa": 67, "passe": 96, "velocidade": 88, "finalizacao": 95, "goleiro": 17, "mental": 93,
+        "afinidades": ['Tsukihime', 'Criador'],
+        "habilidade": {
+            "nome": 'Plunder',
+            "efeito": 'Converte Plunder em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================565
+    'ciel': {
+        "nome": 'Ciel',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 67, "passe": 90, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 87,
+        "afinidades": ['Tsukihime', 'Chutador'],
+        "habilidade": {
+            "nome": 'Sétima Escritura Sagrada',
+            "efeito": 'Transforma Sétima Escritura Sagrada em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================566
+    'nanaya_shiki': {
+        "nome": 'Nanaya Shiki',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 66, "passe": 85, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ['Tsukihime', 'Driblador'],
+        "habilidade": {
+            "nome": 'Corte de Dezoito Partes',
+            "efeito": 'Usa Corte de Dezoito Partes para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================567
+    'neco_arc': {
+        "nome": 'Neco-Arc',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 92, "defesa": 69, "passe": 96, "velocidade": 94, "finalizacao": 96, "goleiro": 18, "mental": 96,
+        "afinidades": ['Tsukihime', 'Criador'],
+        "habilidade": {
+            "nome": 'Buru-Nyuu Beam',
+            "efeito": 'Converte Buru-Nyuu Beam em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================568
+    'padoru_padoru': {
+        "nome": 'Padoru Padoru',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 67, "passe": 93, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 92,
+        "afinidades": ['Fate', 'Chutador'],
+        "habilidade": {
+            "nome": 'Hashire Sori Yo!',
+            "efeito": 'Transforma Hashire Sori Yo! em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================569
+    'takt_asahine': {
+        "nome": 'Takt Asahine',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 86, "defesa": 83, "passe": 96, "velocidade": 89, "finalizacao": 85, "goleiro": 20, "mental": 96,
+        "afinidades": ['Takt Op. Destiny', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Batuta do Maestro',
+            "efeito": 'Comanda o time com Batuta do Maestro: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================570
+    'destiny': {
+        "nome": 'Destiny',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 69, "passe": 85, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 90,
+        "afinidades": ['Takt Op. Destiny', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Lâmina da 5ª Sinfonia',
+            "efeito": 'Leva Lâmina da 5ª Sinfonia para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================571
+    'heaven_takt': {
+        "nome": 'Heaven',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 65, "passe": 90, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 87,
+        "afinidades": ['Takt Op. Destiny', 'Chutador'],
+        "habilidade": {
+            "nome": 'Artilharia Celeste de Penas',
+            "efeito": 'Transforma Artilharia Celeste de Penas em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================572
+    'titan_takt': {
+        "nome": 'Titan',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 76, "defesa": 96, "passe": 71, "velocidade": 68, "finalizacao": 72, "goleiro": 34, "mental": 91,
+        "afinidades": ['Takt Op. Destiny', 'Defensor'],
+        "habilidade": {
+            "nome": 'Muralha Musical',
+            "efeito": 'Adapta Muralha Musical para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================573
+    'hisui': {
+        "nome": 'Hisui',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 62, "passe": 75, "velocidade": 96, "finalizacao": 96, "goleiro": 16, "mental": 81,
+        "afinidades": ['Takt Op. Destiny', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Ataque Verde de Vento',
+            "efeito": 'Leva Ataque Verde de Vento para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================574
+    'rias_gremory': {
+        "nome": 'Rias Gremory',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 93, "defesa": 86, "passe": 96, "velocidade": 93, "finalizacao": 94, "goleiro": 20, "mental": 96,
+        "afinidades": ['High School DxD', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Poder da Destruição (Bael)',
+            "efeito": 'Comanda o time com Poder da Destruição (Bael): organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================575
+    'himejima_akeno': {
+        "nome": 'Himejima Akeno',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 89, "defesa": 66, "passe": 96, "velocidade": 88, "finalizacao": 95, "goleiro": 17, "mental": 93,
+        "afinidades": ['High School DxD', 'Criador'],
+        "habilidade": {
+            "nome": 'Relâmpago Sádico',
+            "efeito": 'Converte Relâmpago Sádico em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================576
+    'toujou_koneko': {
+        "nome": 'Toujou Koneko',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 74, "defesa": 96, "passe": 69, "velocidade": 69, "finalizacao": 70, "goleiro": 32, "mental": 87,
+        "afinidades": ['High School DxD', 'Defensor'],
+        "habilidade": {
+            "nome": 'Defesa Nekomata Bruta',
+            "efeito": 'Adapta Defesa Nekomata Bruta para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================577
+    'xenovia_quarta': {
+        "nome": 'Xenovia Quarta',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 66, "passe": 78, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 85,
+        "afinidades": ['High School DxD', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Excalibur Destruction',
+            "efeito": 'Leva Excalibur Destruction para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================578
+    'issei_hyoudou': {
+        "nome": 'Issei Hyoudou',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 83, "defesa": 96, "passe": 78, "velocidade": 78, "finalizacao": 80, "goleiro": 36, "mental": 96,
+        "afinidades": ['High School DxD', 'Defensor'],
+        "habilidade": {
+            "nome": 'Boosted Gear: Absorção',
+            "efeito": 'Adapta Boosted Gear: Absorção para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================579
+    'yuuto_kiba': {
+        "nome": 'Yuuto Kiba',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 58, "passe": 81, "velocidade": 96, "finalizacao": 96, "goleiro": 16, "mental": 79,
+        "afinidades": ['High School DxD', 'Driblador'],
+        "habilidade": {
+            "nome": 'Sword Birth Rápido',
+            "efeito": 'Usa Sword Birth Rápido para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================580
+    'nacht_faust': {
+        "nome": 'Nacht Faust',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 67, "passe": 91, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ['Black Clover', 'Driblador'],
+        "habilidade": {
+            "nome": 'União Demoníaca das Sombras',
+            "efeito": 'Usa União Demoníaca das Sombras para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================581
+    'finral_roulacase': {
+        "nome": 'Finral Roulacase',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 60, "defesa": 81, "passe": 96, "velocidade": 80, "finalizacao": 60, "goleiro": 20, "mental": 95,
+        "afinidades": ['Black Clover', 'Suporte'],
+        "habilidade": {
+            "nome": 'Portal de Fuga Rápido',
+            "efeito": 'Usa Portal de Fuga Rápido como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================582
+    'vanessa_enoteca': {
+        "nome": 'Vanessa Enoteca',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 64, "defesa": 85, "passe": 96, "velocidade": 85, "finalizacao": 64, "goleiro": 21, "mental": 96,
+        "afinidades": ['Black Clover', 'Suporte'],
+        "habilidade": {
+            "nome": 'Magia de Fios: Costura',
+            "efeito": 'Usa Magia de Fios: Costura como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================583
+    'gauche_adlai': {
+        "nome": 'Gauche Adlai',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 94, "defesa": 60, "passe": 87, "velocidade": 90, "finalizacao": 96, "goleiro": 16, "mental": 83,
+        "afinidades": ['Black Clover', 'Chutador'],
+        "habilidade": {
+            "nome": 'Magia de Espelho: Raio',
+            "efeito": 'Transforma Magia de Espelho: Raio em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================584
+    'gordon_agrippa': {
+        "nome": 'Gordon Agrippa',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 84, "defesa": 62, "passe": 96, "velocidade": 77, "finalizacao": 88, "goleiro": 16, "mental": 89,
+        "afinidades": ['Black Clover', 'Criador'],
+        "habilidade": {
+            "nome": 'Magia de Veneno Sussurrado',
+            "efeito": 'Converte Magia de Veneno Sussurrado em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================585
+    'grey': {
+        "nome": 'Grey',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 59, "defesa": 81, "passe": 96, "velocidade": 78, "finalizacao": 59, "goleiro": 20, "mental": 95,
+        "afinidades": ['Black Clover', 'Suporte'],
+        "habilidade": {
+            "nome": 'Transmutação Mágica',
+            "efeito": 'Usa Transmutação Mágica como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================586
+    'henry_legolant': {
+        "nome": 'Henry Legolant',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 74, "defesa": 96, "passe": 74, "velocidade": 68, "finalizacao": 72, "goleiro": 37, "mental": 91,
+        "afinidades": ['Black Clover', 'Defensor'],
+        "habilidade": {
+            "nome": 'Castelo Dinâmico dos Touros',
+            "efeito": 'Adapta Castelo Dinâmico dos Touros para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================587
+    'secre_swallowtail': {
+        "nome": 'Secre Swallowtail (Nero)',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 63, "defesa": 85, "passe": 96, "velocidade": 85, "finalizacao": 64, "goleiro": 21, "mental": 96,
+        "afinidades": ['Black Clover', 'Suporte'],
+        "habilidade": {
+            "nome": 'Magia de Selamento e Desbloqueio',
+            "efeito": 'Usa Magia de Selamento e Desbloqueio como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================588
+    'zora_ideale': {
+        "nome": 'Zora Ideale',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 90, "defesa": 67, "passe": 96, "velocidade": 88, "finalizacao": 95, "goleiro": 17, "mental": 93,
+        "afinidades": ['Black Clover', 'Criador'],
+        "habilidade": {
+            "nome": 'Armadilha de Cinzas',
+            "efeito": 'Converte Armadilha de Cinzas em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================589
+    'tenya_iida': {
+        "nome": 'Tenya Iida',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 94, "defesa": 62, "passe": 72, "velocidade": 96, "finalizacao": 96, "goleiro": 16, "mental": 81,
+        "afinidades": ['My Hero Academia', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Recipro Burst Turbo',
+            "efeito": 'Leva Recipro Burst Turbo para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================590
+    'ochako_uraraka': {
+        "nome": 'Ochako Uraraka',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 60, "defesa": 81, "passe": 96, "velocidade": 80, "finalizacao": 59, "goleiro": 20, "mental": 95,
+        "afinidades": ['My Hero Academia', 'Suporte'],
+        "habilidade": {
+            "nome": 'Gravidade Zero',
+            "efeito": 'Usa Gravidade Zero como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================591
+    'denki_kiminari': {
+        "nome": 'Denki Kiminari',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 93, "defesa": 60, "passe": 85, "velocidade": 89, "finalizacao": 96, "goleiro": 16, "mental": 83,
+        "afinidades": ['My Hero Academia', 'Chutador'],
+        "habilidade": {
+            "nome": 'Choque de 1.3M de Volts',
+            "efeito": 'Transforma Choque de 1.3M de Volts em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================592
+    'fumikage_tokoyami': {
+        "nome": 'Fumikage Tokoyami',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 66, "passe": 78, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 85,
+        "afinidades": ['My Hero Academia', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Dark Shadow Slash',
+            "efeito": 'Leva Dark Shadow Slash para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================593
+    'shota_aizawa': {
+        "nome": 'Shota Aizawa',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 92, "defesa": 88, "passe": 96, "velocidade": 94, "finalizacao": 92, "goleiro": 21, "mental": 96,
+        "afinidades": ['My Hero Academia', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Apagar Individualidade (Eraser)',
+            "efeito": 'Comanda o time com Apagar Individualidade (Eraser): organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================594
+    'muhammad_avdol': {
+        "nome": 'Muhammad Avdol',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 89, "defesa": 68, "passe": 96, "velocidade": 82, "finalizacao": 95, "goleiro": 17, "mental": 93,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Criador'],
+        "habilidade": {
+            "nome": "Magician's Red: Cross Fire Hurricane",
+            "efeito": "Converte Magician's Red: Cross Fire Hurricane em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa."
+        }
+    },
+
+    # =========================595
+    'noriaki_kakyoin': {
+        "nome": 'Noriaki Kakyoin',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 64, "passe": 88, "velocidade": 94, "finalizacao": 96, "goleiro": 17, "mental": 87,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Chutador'],
+        "habilidade": {
+            "nome": 'Hierophant Green: Emerald Splash',
+            "efeito": 'Transforma Hierophant Green: Emerald Splash em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================596
+    'jean_pierre_polnareff': {
+        "nome": 'Jean Pierre Polnareff',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 67, "passe": 75, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 85,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Finalizador'],
+        "habilidade": {
+            "nome": 'Chariot: Estocadas',
+            "efeito": 'Leva Chariot: Estocadas para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================597
+    'iggy': {
+        "nome": 'Iggy',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 71, "defesa": 96, "passe": 69, "velocidade": 68, "finalizacao": 67, "goleiro": 33, "mental": 87,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Defensor'],
+        "habilidade": {
+            "nome": 'The Fool: Cúpula de Areia',
+            "efeito": 'Adapta The Fool: Cúpula de Areia para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================598
+    'koichi_hirose': {
+        "nome": 'Koichi Hirose',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 60, "defesa": 81, "passe": 96, "velocidade": 79, "finalizacao": 60, "goleiro": 20, "mental": 95,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Suporte'],
+        "habilidade": {
+            "nome": 'Echoes Act 1 & 2',
+            "efeito": 'Usa Echoes Act 1 & 2 como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================599
+    'okuyasu_nijimura': {
+        "nome": 'Okuyasu Nijimura',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 69, "passe": 74, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 85,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Finalizador'],
+        "habilidade": {
+            "nome": 'The Hand: Raspagem de Espaço',
+            "efeito": 'Leva The Hand: Raspagem de Espaço para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================600
+    'rohan_kishibe': {
+        "nome": 'Rohan Kishibe',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 68, "defesa": 89, "passe": 96, "velocidade": 89, "finalizacao": 68, "goleiro": 23, "mental": 96,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Suporte'],
+        "habilidade": {
+            "nome": "Heaven's Door: Leitura Viva",
+            "efeito": "Usa Heaven's Door: Leitura Viva como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados."
+        }
+    },
+
+    # =========================601
+    'yoshikage_kira': {
+        "nome": 'Yoshikage {Kira}',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 66, "passe": 87, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Driblador'],
+        "habilidade": {
+            "nome": 'Killer Queen: Primeira Bomba',
+            "efeito": 'Usa Killer Queen: Primeira Bomba para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================602
+    'bruno_bucciarati': {
+        "nome": 'Bruno Bucciarati',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 90, "defesa": 84, "passe": 96, "velocidade": 88, "finalizacao": 88, "goleiro": 20, "mental": 96,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Lideranca'],
+        "habilidade": {
+            "nome": 'Sticky Fingers: Zíperes',
+            "efeito": 'Comanda o time com Sticky Fingers: Zíperes: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================603
+    'leone_abbacchio': {
+        "nome": 'Leone Abbacchio',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 61, "defesa": 83, "passe": 96, "velocidade": 77, "finalizacao": 61, "goleiro": 21, "mental": 95,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Suporte'],
+        "habilidade": {
+            "nome": 'Moody Blues Replay',
+            "efeito": 'Usa Moody Blues Replay como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================604
+    'narancia_ghirga': {
+        "nome": 'Narancia Ghirga',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 94, "defesa": 60, "passe": 84, "velocidade": 92, "finalizacao": 96, "goleiro": 16, "mental": 83,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Chutador'],
+        "habilidade": {
+            "nome": 'Aerosmith Vola Vola',
+            "efeito": 'Transforma Aerosmith Vola Vola em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================605
+    'trish_una': {
+        "nome": 'Trish Una',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 62, "defesa": 80, "passe": 96, "velocidade": 80, "finalizacao": 62, "goleiro": 20, "mental": 95,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Suporte'],
+        "habilidade": {
+            "nome": 'Spice Girl: Amolecer',
+            "efeito": 'Usa Spice Girl: Amolecer como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================606
+    'pannacotta_fugo': {
+        "nome": 'Pannacotta Fugo',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 88, "defesa": 66, "passe": 96, "velocidade": 82, "finalizacao": 93, "goleiro": 17, "mental": 93,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Criador'],
+        "habilidade": {
+            "nome": 'Purple Haze Vírus',
+            "efeito": 'Converte Purple Haze Vírus em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================607
+    'diavolo': {
+        "nome": 'Diavolo',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 66, "passe": 87, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Driblador'],
+        "habilidade": {
+            "nome": 'King Crimson: Tempo Apagado',
+            "efeito": 'Usa King Crimson: Tempo Apagado para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================608
+    'jolyne_cujoh': {
+        "nome": 'Jolyne Cujoh',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 70, "passe": 81, "velocidade": 96, "finalizacao": 96, "goleiro": 19, "mental": 90,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Finalizador'],
+        "habilidade": {
+            "nome": 'Stone Free ORA ORA',
+            "efeito": 'Leva Stone Free ORA ORA para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================609
+    'ermes_costello': {
+        "nome": 'Ermes Costello',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 65, "passe": 77, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 85,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Finalizador'],
+        "habilidade": {
+            "nome": 'Adesivo Kiss',
+            "efeito": 'Leva Adesivo Kiss para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================610
+    'emporio_alnino': {
+        "nome": 'Emporio Alniño',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 55, "defesa": 77, "passe": 93, "velocidade": 75, "finalizacao": 55, "goleiro": 18, "mental": 91,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Suporte'],
+        "habilidade": {
+            "nome": 'Quarto Fantasma',
+            "efeito": 'Usa Quarto Fantasma como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================611
+    'weather_report': {
+        "nome": 'Weather Report',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 92, "defesa": 70, "passe": 96, "velocidade": 88, "finalizacao": 96, "goleiro": 18, "mental": 96,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Criador'],
+        "habilidade": {
+            "nome": 'Controle Atmosférico',
+            "efeito": 'Converte Controle Atmosférico em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================612
+    'narciso_anasui': {
+        "nome": 'Narciso Anasui',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 78, "defesa": 96, "passe": 72, "velocidade": 71, "finalizacao": 74, "goleiro": 34, "mental": 91,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Defensor'],
+        "habilidade": {
+            "nome": 'Diver Down: Mergulho',
+            "efeito": 'Adapta Diver Down: Mergulho para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================613
+    'enrico_pucci': {
+        "nome": 'Enrico Pucci',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 94, "defesa": 71, "passe": 96, "velocidade": 93, "finalizacao": 96, "goleiro": 18, "mental": 96,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Criador'],
+        "habilidade": {
+            "nome": 'Whitesnake: Discos de Alma',
+            "efeito": 'Converte Whitesnake: Discos de Alma em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================614
+    'gyro_zeppeli': {
+        "nome": 'Gyro Julius Caesar Zeppeli',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 68, "passe": 92, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 92,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Chutador'],
+        "habilidade": {
+            "nome": 'Esferas de Aço',
+            "efeito": 'Transforma Esferas de Aço em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================615
+    'mountain_tim': {
+        "nome": 'Mountain Tim',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 93, "defesa": 61, "passe": 84, "velocidade": 90, "finalizacao": 96, "goleiro": 16, "mental": 83,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Chutador'],
+        "habilidade": {
+            "nome": 'Laço Oh! Lonesome Me',
+            "efeito": 'Transforma Laço Oh! Lonesome Me em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================616
+    'diego_brando': {
+        "nome": 'Diego "Dio" Brando',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 66, "passe": 87, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Driblador'],
+        "habilidade": {
+            "nome": 'Scary Monsters: Dinossauro',
+            "efeito": 'Usa Scary Monsters: Dinossauro para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================617
+    'funny_valentine': {
+        "nome": 'Funny Valentine',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 95, "defesa": 88, "passe": 96, "velocidade": 93, "finalizacao": 94, "goleiro": 21, "mental": 96,
+        "afinidades": ["JoJo's Bizarre Adventure", 'Lideranca'],
+        "habilidade": {
+            "nome": 'D4C: Viagem de Clones',
+            "efeito": 'Comanda o time com D4C: Viagem de Clones: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================618
+    'yuichiro_hyakuya': {
+        "nome": 'Yuichiro Hyakuya',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 70, "passe": 81, "velocidade": 96, "finalizacao": 96, "goleiro": 19, "mental": 90,
+        "afinidades": ['Owari no Seraph', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Asuramaru: Fúria de Espada',
+            "efeito": 'Leva Asuramaru: Fúria de Espada para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================619
+    'mikaela_hyakuya': {
+        "nome": 'Mikaela Hyakuya',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 78, "defesa": 96, "passe": 72, "velocidade": 72, "finalizacao": 74, "goleiro": 34, "mental": 91,
+        "afinidades": ['Owari no Seraph', 'Defensor'],
+        "habilidade": {
+            "nome": 'Escudo Vampírico de Sangue',
+            "efeito": 'Adapta Escudo Vampírico de Sangue para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================620
+    'shinoa_hiragi': {
+        "nome": 'Shinoa Hiragi',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 90, "defesa": 82, "passe": 96, "velocidade": 88, "finalizacao": 89, "goleiro": 19, "mental": 96,
+        "afinidades": ['Owari no Seraph', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Shikama Doji: Foice',
+            "efeito": 'Comanda o time com Shikama Doji: Foice: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================621
+    'guren_ichinose': {
+        "nome": 'Guren Ichinose',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 95, "defesa": 87, "passe": 96, "velocidade": 93, "finalizacao": 94, "goleiro": 21, "mental": 96,
+        "afinidades": ['Owari no Seraph', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Mahiru-No-Yo Flamejante',
+            "efeito": 'Comanda o time com Mahiru-No-Yo Flamejante: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================622
+    'krul_tepes': {
+        "nome": 'Krul Tepes',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 96, "defesa": 88, "passe": 96, "velocidade": 94, "finalizacao": 96, "goleiro": 21, "mental": 96,
+        "afinidades": ['Owari no Seraph', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Presença Vampírica Superior',
+            "efeito": 'Comanda o time com Presença Vampírica Superior: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================623
+    'ferid_bathory': {
+        "nome": 'Ferid Bathory',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 63, "passe": 83, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['Owari no Seraph', 'Driblador'],
+        "habilidade": {
+            "nome": 'Estocada Elegante',
+            "efeito": 'Usa Estocada Elegante para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================624
+    'atalanta_fate': {
+        "nome": 'Atalanta (FATE)',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 64, "passe": 89, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 87,
+        "afinidades": ['Fate', 'Chutador'],
+        "habilidade": {
+            "nome": 'Phoebus Catastrophe',
+            "efeito": 'Transforma Phoebus Catastrophe em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================625
+    'ereshkigal': {
+        "nome": 'Ereshkigal',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 80, "defesa": 96, "passe": 79, "velocidade": 76, "finalizacao": 78, "goleiro": 36, "mental": 96,
+        "afinidades": ['Fate', 'Defensor'],
+        "habilidade": {
+            "nome": 'Kur Kigal Irkalla',
+            "efeito": 'Adapta Kur Kigal Irkalla para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================626
+    'ozymandias': {
+        "nome": 'Ozymandias',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 96, "defesa": 88, "passe": 96, "velocidade": 93, "finalizacao": 96, "goleiro": 21, "mental": 96,
+        "afinidades": ['Fate', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Ramesseum Tentyris',
+            "efeito": 'Comanda o time com Ramesseum Tentyris: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================627
+    'alexander': {
+        "nome": 'Alexander (Rider - FATE)',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 95, "defesa": 88, "passe": 96, "velocidade": 93, "finalizacao": 93, "goleiro": 21, "mental": 96,
+        "afinidades": ['Fate', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Ionioi Hetairoi',
+            "efeito": 'Comanda o time com Ionioi Hetairoi: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================628
+    'baobham_sith': {
+        "nome": 'Baobham Sith',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 64, "passe": 91, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 87,
+        "afinidades": ['Fate', 'Chutador'],
+        "habilidade": {
+            "nome": 'Fairy Knight Tristan',
+            "efeito": 'Transforma Fairy Knight Tristan em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================629
+    'enkidu': {
+        "nome": 'Enkidu',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 70, "passe": 94, "velocidade": 96, "finalizacao": 96, "goleiro": 19, "mental": 92,
+        "afinidades": ['Fate', 'Chutador'],
+        "habilidade": {
+            "nome": 'Enuma Elish',
+            "efeito": 'Transforma Enuma Elish em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================630
+    'illyasviel': {
+        "nome": 'Illyasviel Von Einzbern',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 89, "defesa": 66, "passe": 96, "velocidade": 82, "finalizacao": 94, "goleiro": 17, "mental": 93,
+        "afinidades": ['Fate', 'Criador'],
+        "habilidade": {
+            "nome": 'Pássaros de Prata Mágicos',
+            "efeito": 'Converte Pássaros de Prata Mágicos em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================631
+    'cu_chulainn': {
+        "nome": 'Cu Chulainn',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 69, "passe": 82, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 90,
+        "afinidades": ['Fate', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Gae Bolg: Lança Espinho',
+            "efeito": 'Leva Gae Bolg: Lança Espinho para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================632
+    'luxuria': {
+        "nome": 'Luxúria (FMA)',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 62, "passe": 83, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['Fullmetal Alchemist', 'Driblador'],
+        "habilidade": {
+            "nome": 'Lança Suprema',
+            "efeito": 'Usa Lança Suprema para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================633
+    'preguica': {
+        "nome": 'Preguiça (FMA)',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 76, "defesa": 96, "passe": 68, "velocidade": 68, "finalizacao": 71, "goleiro": 34, "mental": 91,
+        "afinidades": ['Fullmetal Alchemist', 'Defensor'],
+        "habilidade": {
+            "nome": 'Corpo de Pedra',
+            "efeito": 'Adapta Corpo de Pedra para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================634
+    'gula': {
+        "nome": 'Gula (FMA)',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 73, "defesa": 96, "passe": 68, "velocidade": 65, "finalizacao": 69, "goleiro": 32, "mental": 87,
+        "afinidades": ['Fullmetal Alchemist', 'Defensor'],
+        "habilidade": {
+            "nome": 'Vazio Estomacal',
+            "efeito": 'Adapta Vazio Estomacal para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================635
+    'ganancia': {
+        "nome": 'Ganância (FMA)',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 81, "defesa": 96, "passe": 72, "velocidade": 76, "finalizacao": 76, "goleiro": 38, "mental": 96,
+        "afinidades": ['Fullmetal Alchemist', 'Defensor'],
+        "habilidade": {
+            "nome": 'Escudo de Carbono Definitivo',
+            "efeito": 'Adapta Escudo de Carbono Definitivo para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================636
+    'ira': {
+        "nome": 'Ira (FMA)',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 93, "defesa": 88, "passe": 96, "velocidade": 96, "finalizacao": 91, "goleiro": 21, "mental": 96,
+        "afinidades": ['Fullmetal Alchemist', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Olho Supremo do Bradley',
+            "efeito": 'Comanda o time com Olho Supremo do Bradley: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================637
+    'orgulho': {
+        "nome": 'Orgulho (FMA)',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 70, "passe": 96, "velocidade": 96, "finalizacao": 96, "goleiro": 19, "mental": 92,
+        "afinidades": ['Fullmetal Alchemist', 'Chutador'],
+        "habilidade": {
+            "nome": 'Sombras de Selene',
+            "efeito": 'Transforma Sombras de Selene em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================638
+    'eugeo': {
+        "nome": 'Eugeo',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 89, "defesa": 68, "passe": 96, "velocidade": 82, "finalizacao": 95, "goleiro": 17, "mental": 93,
+        "afinidades": ['Sword Art Online', 'Criador'],
+        "habilidade": {
+            "nome": 'Blue Rose de Gelo',
+            "efeito": 'Converte Blue Rose de Gelo em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================639
+    'yuuki_kono': {
+        "nome": 'Yuuki Kono',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 68, "passe": 82, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 90,
+        "afinidades": ['Sword Art Online', 'Finalizador'],
+        "habilidade": {
+            "nome": "Mother's Rosario",
+            "efeito": "Leva Mother's Rosario para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas."
+        }
+    },
+
+    # =========================640
+    'leafa': {
+        "nome": 'Leafa',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 63, "defesa": 85, "passe": 96, "velocidade": 84, "finalizacao": 64, "goleiro": 21, "mental": 96,
+        "afinidades": ['Sword Art Online', 'Suporte'],
+        "habilidade": {
+            "nome": 'Magia de Sylph: Vento',
+            "efeito": 'Usa Magia de Sylph: Vento como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================641
+    'lisbeth': {
+        "nome": 'Lisbeth',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 71, "defesa": 96, "passe": 68, "velocidade": 66, "finalizacao": 67, "goleiro": 32, "mental": 87,
+        "afinidades": ['Sword Art Online', 'Defensor'],
+        "habilidade": {
+            "nome": 'Escudo de Forja',
+            "efeito": 'Adapta Escudo de Forja para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================642
+    'silica': {
+        "nome": 'Silica',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 60, "defesa": 81, "passe": 96, "velocidade": 80, "finalizacao": 60, "goleiro": 20, "mental": 95,
+        "afinidades": ['Sword Art Online', 'Suporte'],
+        "habilidade": {
+            "nome": 'Cura de Pina',
+            "efeito": 'Usa Cura de Pina como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================643
+    'klein': {
+        "nome": 'Klein',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 85, "defesa": 80, "passe": 96, "velocidade": 83, "finalizacao": 83, "goleiro": 19, "mental": 96,
+        "afinidades": ['Sword Art Online', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Guilda dos Amigos Leais',
+            "efeito": 'Comanda o time com Guilda dos Amigos Leais: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================644
+    'seiya_de_pegasus': {
+        "nome": 'Seiya de Pegasus',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 71, "passe": 82, "velocidade": 96, "finalizacao": 96, "goleiro": 19, "mental": 90,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Meteoro de Pégaso',
+            "efeito": 'Leva Meteoro de Pégaso para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================645
+    'shun_de_andromeda': {
+        "nome": 'Shun de Andromeda',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 75, "defesa": 96, "passe": 75, "velocidade": 72, "finalizacao": 73, "goleiro": 34, "mental": 91,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Defensor'],
+        "habilidade": {
+            "nome": 'Corrente de Defesa Absoluta',
+            "efeito": 'Adapta Corrente de Defesa Absoluta para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================646
+    'shiryu_de_dragao': {
+        "nome": 'Shiryu de Dragão',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 79, "defesa": 96, "passe": 72, "velocidade": 71, "finalizacao": 75, "goleiro": 35, "mental": 91,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Defensor'],
+        "habilidade": {
+            "nome": 'Escudo de Cólera do Dragão',
+            "efeito": 'Adapta Escudo de Cólera do Dragão para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================647
+    'ikki_de_fenix': {
+        "nome": 'Ikki de Fênix',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 66, "passe": 89, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Driblador'],
+        "habilidade": {
+            "nome": 'Ave Fênix Divina',
+            "efeito": 'Usa Ave Fênix Divina para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================648
+    'hyoga_de_cisne': {
+        "nome": 'Hyoga de Cisne',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 91, "defesa": 69, "passe": 96, "velocidade": 85, "finalizacao": 96, "goleiro": 17, "mental": 93,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Criador'],
+        "habilidade": {
+            "nome": 'Pó de Diamante do Cisne',
+            "efeito": 'Converte Pó de Diamante do Cisne em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================649
+    'mu_de_aries': {
+        "nome": 'Mu de Aries',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 69, "defesa": 89, "passe": 96, "velocidade": 85, "finalizacao": 69, "goleiro": 23, "mental": 96,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Suporte'],
+        "habilidade": {
+            "nome": 'Muralha de Cristal de Áries',
+            "efeito": 'Usa Muralha de Cristal de Áries como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================650
+    'aldebaran_de_touro': {
+        "nome": 'Aldebaran de Touro',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 83, "defesa": 96, "passe": 75, "velocidade": 72, "finalizacao": 79, "goleiro": 40, "mental": 96,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Defensor'],
+        "habilidade": {
+            "nome": 'Grande Chifre Touro',
+            "efeito": 'Adapta Grande Chifre Touro para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================651
+    'saga_de_gemeos': {
+        "nome": 'Saga de Gêmeos',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 96, "defesa": 87, "passe": 96, "velocidade": 93, "finalizacao": 96, "goleiro": 21, "mental": 96,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Explosão Galáctica',
+            "efeito": 'Comanda o time com Explosão Galáctica: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================652
+    'mascara_da_morte_de_cancer': {
+        "nome": 'Mascara da Morte de Câncer',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 65, "passe": 90, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Driblador'],
+        "habilidade": {
+            "nome": 'Ondas do Inferno',
+            "efeito": 'Usa Ondas do Inferno para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================653
+    'aoiolia_de_leao': {
+        "nome": 'Aoiolia de Leão',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 70, "passe": 81, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 90,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Cápsula do Poder Elétrica',
+            "efeito": 'Leva Cápsula do Poder Elétrica para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================654
+    'shaka_de_virgem': {
+        "nome": 'Shaka de Virgem',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 94, "defesa": 73, "passe": 96, "velocidade": 86, "finalizacao": 96, "goleiro": 19, "mental": 96,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Criador'],
+        "habilidade": {
+            "nome": 'Tesouro do Céu',
+            "efeito": 'Converte Tesouro do Céu em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================655
+    'dohko_de_libra': {
+        "nome": 'Dohko de Libra',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 96, "defesa": 88, "passe": 96, "velocidade": 93, "finalizacao": 94, "goleiro": 21, "mental": 96,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Cólera dos Cem Dragões',
+            "efeito": 'Comanda o time com Cólera dos Cem Dragões: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================656
+    'milo_de_escorpiao': {
+        "nome": 'Milo de Escorpião',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 66, "passe": 88, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Driblador'],
+        "habilidade": {
+            "nome": 'Agulha Escarlate',
+            "efeito": 'Usa Agulha Escarlate para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================657
+    'aiolos_de_sagitario': {
+        "nome": 'Aiolos de Sagitário',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 69, "passe": 92, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 92,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Chutador'],
+        "habilidade": {
+            "nome": 'Flecha de Ouro da Justiça',
+            "efeito": 'Transforma Flecha de Ouro da Justiça em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================658
+    'shura_de_capricornio': {
+        "nome": 'Shura de Capricórnio',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 66, "passe": 87, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Driblador'],
+        "habilidade": {
+            "nome": 'Excalibur Divina',
+            "efeito": 'Usa Excalibur Divina para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================659
+    'camus_de_aquario': {
+        "nome": 'Camus de Aquário',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 93, "defesa": 72, "passe": 96, "velocidade": 86, "finalizacao": 96, "goleiro": 18, "mental": 96,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Criador'],
+        "habilidade": {
+            "nome": 'Pó de Diamante do Cisne',
+            "efeito": 'Converte Pó de Diamante do Cisne em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================660
+    'afrodite_de_peixes': {
+        "nome": 'Afrodite de Peixes',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 67, "passe": 93, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 92,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Chutador'],
+        "habilidade": {
+            "nome": 'Rosas Venenosas Reais',
+            "efeito": 'Transforma Rosas Venenosas Reais em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================661
+    'hades': {
+        "nome": 'Hades',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 96, "defesa": 90, "passe": 96, "velocidade": 93, "finalizacao": 96, "goleiro": 22, "mental": 96,
+        "afinidades": ['Cavaleiros do Zodíaco', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Grande Eclipse Sombrio',
+            "efeito": 'Comanda o time com Grande Eclipse Sombrio: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================662
+    'osamu_dazai_bsd': {
+        "nome": 'Osamu Dazai',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 70, "defesa": 91, "passe": 96, "velocidade": 89, "finalizacao": 70, "goleiro": 24, "mental": 96,
+        "afinidades": ['Bungo Stray Dogs', 'Suporte'],
+        "habilidade": {
+            "nome": 'Não Mais Humano',
+            "efeito": 'Usa Não Mais Humano como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================663
+    'atsushi_nakajima': {
+        "nome": 'Atsushi Nakajima',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 70, "passe": 76, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 85,
+        "afinidades": ['Bungo Stray Dogs', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Garras da Besta do Luar',
+            "efeito": 'Leva Garras da Besta do Luar para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================664
+    'chuya_nakahara': {
+        "nome": 'Chuya Nakahara',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 84, "defesa": 96, "passe": 78, "velocidade": 78, "finalizacao": 81, "goleiro": 38, "mental": 96,
+        "afinidades": ['Bungo Stray Dogs', 'Defensor'],
+        "habilidade": {
+            "nome": 'Gravidade Destrutiva',
+            "efeito": 'Adapta Gravidade Destrutiva para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================665
+    'ranpo_edogawa': {
+        "nome": 'Ranpo Edogawa',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 91, "defesa": 68, "passe": 96, "velocidade": 84, "finalizacao": 96, "goleiro": 17, "mental": 93,
+        "afinidades": ['Bungo Stray Dogs', 'Criador'],
+        "habilidade": {
+            "nome": 'Super Dedução',
+            "efeito": 'Converte Super Dedução em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================666
+    'doppo_kunikida': {
+        "nome": 'Doppo Kunikida',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 66, "passe": 89, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 87,
+        "afinidades": ['Bungo Stray Dogs', 'Chutador'],
+        "habilidade": {
+            "nome": 'Poeta Doppo: Fuzil',
+            "efeito": 'Transforma Poeta Doppo: Fuzil em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================667
+    'yumeko_jabami': {
+        "nome": 'Yumeko Jabami',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 65, "defesa": 85, "passe": 96, "velocidade": 85, "finalizacao": 65, "goleiro": 22, "mental": 96,
+        "afinidades": ['Kakegurui', 'Suporte'],
+        "habilidade": {
+            "nome": 'Aposta Compulsiva',
+            "efeito": 'Usa Aposta Compulsiva como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================668
+    'kenji_miyazawa': {
+        "nome": 'Kenji Miyazawa',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 66, "passe": 70, "velocidade": 92, "finalizacao": 96, "goleiro": 17, "mental": 81,
+        "afinidades": ['Bungo Stray Dogs', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Poder da Terra Rústica',
+            "efeito": 'Leva Poder da Terra Rústica para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================669
+    'yukichi_fukuzawa': {
+        "nome": 'Yukichi Fukuzawa',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 96, "defesa": 92, "passe": 96, "velocidade": 96, "finalizacao": 96, "goleiro": 22, "mental": 96,
+        "afinidades": ['Bungo Stray Dogs', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Corte de Katana Mestre',
+            "efeito": 'Comanda o time com Corte de Katana Mestre: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================670
+    'nice': {
+        "nome": 'Nice',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 65, "passe": 87, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 83,
+        "afinidades": ['To Be Hero X', 'Driblador'],
+        "habilidade": {
+            "nome": 'Confiança do Público',
+            "efeito": 'Usa Confiança do Público para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================671
+    'lin_ling': {
+        "nome": 'Lin Ling',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 92, "defesa": 82, "passe": 96, "velocidade": 96, "finalizacao": 91, "goleiro": 19, "mental": 96,
+        "afinidades": ['To Be Hero X', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Herói Comum',
+            "efeito": 'Comanda o time com Herói Comum: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================672
+    'new_esoul': {
+        "nome": 'New E-Soul',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 62, "passe": 84, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['To Be Hero X', 'Driblador'],
+        "habilidade": {
+            "nome": 'Vingança Inacabada',
+            "efeito": 'Usa Vingança Inacabada para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================673
+    'old_esoul': {
+        "nome": 'Old E-Soul',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 67, "passe": 74, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 85,
+        "afinidades": ['To Be Hero X', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Último Herói',
+            "efeito": 'Leva Último Herói para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================674
+    'loli': {
+        "nome": 'Loli',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 64, "passe": 83, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 87,
+        "afinidades": ['To Be Hero X', 'Chutador'],
+        "habilidade": {
+            "nome": 'Não Brinca Comigo!',
+            "efeito": 'Transforma Não Brinca Comigo! em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================675
+    'hero_x': {
+        "nome": 'Hero X',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 99, "defesa": 99, "passe": 99, "velocidade": 99, "finalizacao": 99, "goleiro": 35, "mental": 99,
+        "afinidades": ['To Be Hero X', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Salto Entre Dimensões',
+            "efeito": 'Comanda o time com Salto Entre Dimensões: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================676
+    'queen': {
+        "nome": 'Queen',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 92, "defesa": 86, "passe": 96, "velocidade": 93, "finalizacao": 92, "goleiro": 21, "mental": 96,
+        "afinidades": ['To Be Hero X', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Xeque-Mate',
+            "efeito": 'Comanda o time com Xeque-Mate: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================677
+    'dragon_boy': {
+        "nome": 'Dragon Boy',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 77, "defesa": 96, "passe": 73, "velocidade": 70, "finalizacao": 74, "goleiro": 34, "mental": 91,
+        "afinidades": ['To Be Hero X', 'Defensor'],
+        "habilidade": {
+            "nome": 'Escamas de Retaliação',
+            "efeito": 'Adapta Escamas de Retaliação para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================678
+    'ghostblade': {
+        "nome": 'Ghostblade',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 62, "passe": 85, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['To Be Hero X', 'Driblador'],
+        "habilidade": {
+            "nome": 'Corte Fantasma',
+            "efeito": 'Usa Corte Fantasma para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================679
+    'joao_joao': {
+        "nome": 'Joãozinho e Joãozão',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 56, "defesa": 78, "passe": 92, "velocidade": 75, "finalizacao": 55, "goleiro": 19, "mental": 91,
+        "afinidades": ['To Be Hero X', 'Suporte'],
+        "habilidade": {
+            "nome": 'Confusão Organizada',
+            "efeito": 'Usa Confusão Organizada como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================680
+    'ciano_sorte': {
+        "nome": 'Ciano da Sorte',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 88, "defesa": 66, "passe": 96, "velocidade": 86, "finalizacao": 94, "goleiro": 17, "mental": 93,
+        "afinidades": ['To Be Hero X', 'Criador'],
+        "habilidade": {
+            "nome": 'Milagre Estatístico',
+            "efeito": 'Converte Milagre Estatístico em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================681
+    'ahu': {
+        "nome": 'Ahu',
+        "posicoes": [['MC', 'Meio-Campo'], ['VOL', 'Volante']],
+        "ataque": 62, "defesa": 83, "passe": 96, "velocidade": 80, "finalizacao": 62, "goleiro": 21, "mental": 95,
+        "afinidades": ['To Be Hero X', 'Suporte'],
+        "habilidade": {
+            "nome": 'Não Vou Te Deixar Cair',
+            "efeito": 'Usa Não Vou Te Deixar Cair como apoio tatico: melhora passes, remove pressao e recupera o ritmo dos aliados.'
+        }
+    },
+
+    # =========================682
+    'blair': {
+        "nome": 'Blair',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 85, "defesa": 64, "passe": 96, "velocidade": 83, "finalizacao": 90, "goleiro": 16, "mental": 89,
+        "afinidades": ['Soul Eater', 'Criador'],
+        "habilidade": {
+            "nome": 'Canhão de Abóbora',
+            "efeito": 'Converte Canhão de Abóbora em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================683
+    'black_star': {
+        "nome": 'Black Star',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 63, "passe": 84, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['Soul Eater', 'Driblador'],
+        "habilidade": {
+            "nome": 'Onda de Impacto da Alma',
+            "efeito": 'Usa Onda de Impacto da Alma para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================684
+    'crona': {
+        "nome": 'Crona',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 65, "passe": 86, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 83,
+        "afinidades": ['Soul Eater', 'Driblador'],
+        "habilidade": {
+            "nome": 'Grito de Ragnarok',
+            "efeito": 'Usa Grito de Ragnarok para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================685
+    'yuuna_yunohana': {
+        "nome": 'Yuuna Yunohana',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 89, "defesa": 67, "passe": 96, "velocidade": 88, "finalizacao": 94, "goleiro": 17, "mental": 93,
+        "afinidades": ['Yuragi-sou', 'Criador'],
+        "habilidade": {
+            "nome": 'Ataque Poltergeist',
+            "efeito": 'Converte Ataque Poltergeist em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================686
+    'nonko_arahabaki': {
+        "nome": 'Nonko Arahabaki',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 91, "defesa": 69, "passe": 96, "velocidade": 82, "finalizacao": 96, "goleiro": 18, "mental": 93,
+        "afinidades": ['Yuragi-sou', 'Criador'],
+        "habilidade": {
+            "nome": 'Soco Embriagado',
+            "efeito": 'Converte Soco Embriagado em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================687
+    'violet_evergarden': {
+        "nome": 'Violet Evergarden',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 67, "passe": 83, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 87,
+        "afinidades": ['Violet Evergarden', 'Chutador'],
+        "habilidade": {
+            "nome": 'Braços Mecânicos',
+            "efeito": 'Transforma Braços Mecânicos em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================688
+    'kasane_teto': {
+        "nome": 'Kasane Teto',
+        "posicoes": [['MEI', 'Meio-Campista Ofensivo'], ['MC', 'Meio-Campo']],
+        "ataque": 88, "defesa": 68, "passe": 96, "velocidade": 82, "finalizacao": 93, "goleiro": 17, "mental": 93,
+        "afinidades": ['Vocaloid', 'Criador'],
+        "habilidade": {
+            "nome": 'Baguete de Ferro',
+            "efeito": 'Converte Baguete de Ferro em leitura magica de campo: cria passes improvaveis e reduz a reacao da defesa.'
+        }
+    },
+
+    # =========================689
+    'kaiman': {
+        "nome": 'Kaiman',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 76, "defesa": 96, "passe": 69, "velocidade": 72, "finalizacao": 72, "goleiro": 36, "mental": 91,
+        "afinidades": ['Dorohedoro', 'Defensor'],
+        "habilidade": {
+            "nome": 'Boca de Jacaré',
+            "efeito": 'Adapta Boca de Jacaré para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================690
+    'nikaido': {
+        "nome": 'Nikaido',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 62, "passe": 84, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['Dorohedoro', 'Driblador'],
+        "habilidade": {
+            "nome": 'Chute de Gyoza',
+            "efeito": 'Usa Chute de Gyoza para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================691
+    'shin': {
+        "nome": 'Shin',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 64, "passe": 83, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 83,
+        "afinidades": ['Dorohedoro', 'Driblador'],
+        "habilidade": {
+            "nome": 'Martelada Sanguinária',
+            "efeito": 'Usa Martelada Sanguinária para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================692
+    'noi': {
+        "nome": 'Noi',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 83, "defesa": 96, "passe": 78, "velocidade": 76, "finalizacao": 80, "goleiro": 38, "mental": 96,
+        "afinidades": ['Dorohedoro', 'Defensor'],
+        "habilidade": {
+            "nome": 'Músculo de Demônio',
+            "efeito": 'Adapta Músculo de Demônio para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================693
+    'lancelot': {
+        "nome": 'Lancelot',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 68, "passe": 89, "velocidade": 96, "finalizacao": 96, "goleiro": 19, "mental": 88,
+        "afinidades": ['Mokushiroko', 'Driblador'],
+        "habilidade": {
+            "nome": 'Corte de Fada Oculto',
+            "efeito": 'Usa Corte de Fada Oculto para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================694
+    'percival': {
+        "nome": 'Percival',
+        "posicoes": [['MC', 'Meio-Campo'], ['MEI', 'Meio-Campista Ofensivo']],
+        "ataque": 94, "defesa": 89, "passe": 96, "velocidade": 93, "finalizacao": 94, "goleiro": 21, "mental": 96,
+        "afinidades": ['Mokushiroko', 'Lideranca'],
+        "habilidade": {
+            "nome": 'Magia da Esperança',
+            "efeito": 'Comanda o time com Magia da Esperança: organiza a formacao, eleva a moral e abre linhas de passe.'
+        }
+    },
+
+    # =========================695
+    'tristan': {
+        "nome": 'Tristan',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 68, "passe": 79, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 85,
+        "afinidades": ['Mokushiroko', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Luz e Trevas',
+            "efeito": 'Leva Luz e Trevas para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
+    },
+
+    # =========================696
+    'gawain': {
+        "nome": 'Gawain',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 82, "defesa": 96, "passe": 76, "velocidade": 73, "finalizacao": 78, "goleiro": 38, "mental": 96,
+        "afinidades": ['Mokushiroko', 'Defensor'],
+        "habilidade": {
+            "nome": 'Sol da Manhã',
+            "efeito": 'Adapta Sol da Manhã para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================697
+    'vergil': {
+        "nome": 'Vergil',
+        "posicoes": [['PE', 'Ponta Esquerda'], ['PD', 'Ponta Direita']],
+        "ataque": 96, "defesa": 67, "passe": 90, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 88,
+        "afinidades": ['Devil May Cry', 'Driblador'],
+        "habilidade": {
+            "nome": 'Judgement Cut',
+            "efeito": 'Usa Judgement Cut para infiltrar pelas pontas: acelera dribles e rompe marcacao individual.'
+        }
+    },
+
+    # =========================698
+    'enjin': {
+        "nome": 'Enjin',
+        "posicoes": [['ZAG', 'Zagueiro'], ['VOL', 'Volante']],
+        "ataque": 76, "defesa": 96, "passe": 71, "velocidade": 68, "finalizacao": 72, "goleiro": 36, "mental": 91,
+        "afinidades": ['Gachiakuta', 'Defensor'],
+        "habilidade": {
+            "nome": 'Guarda-Chuva de Aço',
+            "efeito": 'Adapta Guarda-Chuva de Aço para fechar espacos: aumenta a defesa da linha e bloqueia finalizacoes frontais.'
+        }
+    },
+
+    # =========================699
+    'riyo': {
+        "nome": 'Riyo',
+        "posicoes": [['PD', 'Ponta Direita'], ['ATA', 'Atacante']],
+        "ataque": 96, "defesa": 64, "passe": 88, "velocidade": 96, "finalizacao": 96, "goleiro": 17, "mental": 87,
+        "afinidades": ['Gachiakuta', 'Chutador'],
+        "habilidade": {
+            "nome": 'Tesouras do Lixeiro',
+            "efeito": 'Transforma Tesouras do Lixeiro em chute de precisao: aumenta a finalizacao e pune goleiros mal posicionados.'
+        }
+    },
+
+    # =========================700
+    'zanka': {
+        "nome": 'Zanka',
+        "posicoes": [['ATA', 'Atacante'], ['PE', 'Ponta Esquerda']],
+        "ataque": 96, "defesa": 67, "passe": 77, "velocidade": 96, "finalizacao": 96, "goleiro": 18, "mental": 85,
+        "afinidades": ['Gachiakuta', 'Finalizador'],
+        "habilidade": {
+            "nome": 'Bastão Rúnico do Varredor',
+            "efeito": 'Leva Bastão Rúnico do Varredor para a area: pressiona a zaga e aumenta a chance de gol em jogadas decisivas.'
+        }
     }
 }

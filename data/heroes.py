@@ -4651,9 +4651,9 @@ HEROES = {
 "osamu_dazai": {
     "nome": "Osamu Dazai",
     "origem": "Bungo Stray Dogs",
-    "emoji": "📚",
+    "emoji": "🩹",
     "imagem": "",
-    "classe": "Líder",
+    "classe": "Suporte",
     "raridade": 4,
     "max_star": 7,
     "hp": 85, "atk": 35, "matk": 0, "def": 20, "spd": 40, "crt": 20,
@@ -6488,7 +6488,7 @@ HEROES = {
     # =========================246
     "okita_souji": {
         "nome": "Okita Souji",
-        "origem": "Fate/Grand Order",
+        "origem": "Record of Ragnarok",
         "emoji": "⚔️",
         "imagem": "",
         "classe": "assassino",
@@ -14214,9 +14214,3930 @@ HEROES = {
                 "descricao": "Seu braço esquerdo canaliza poder de ataque bruto num contra-ataque. Seu bloqueio seguido pode arremessar as linhas de choque, quebrando defesas passivas."
             }
         }
+    },
+    # =========================526
+    "tatsumaki": {
+        "nome": "Tatsumaki",
+        "origem": "One Punch Man",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 95, "atk": 10, "matk": 62, "def": 22, "spd": 48, "crt": 15,
+        "habilidade": {
+            "nome": "Tornado de Telecinese",
+            "descricao": "Esmaga o espaço ao redor do alvo. Causa 180% de MATK e reduz a SPD do alvo em 30% por 2 turnos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Terror do Tornado",
+                "descricao": "Ganha um escudo psíquico que reduz o dano mágico sofrido em 40% e ignora 30% da DEF mágica oponente."
+            }
+        }
+    },
+
+    # =========================527
+    "fubuki": {
+        "nome": "Fubuki",
+        "origem": "One Punch Man",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 85, "atk": 8, "matk": 44, "def": 18, "spd": 32, "crt": 12,
+        "habilidade": {
+            "nome": "Nevasca do Inferno",
+            "descricao": "Lança detritos e pedras psíquicas. Causa 140% de MATK e reduz o ATK físico do oponente em 25%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Líder do Grupo Blizzard",
+                "descricao": "Invoca a força da união. Concede +20% de MATK e um pequeno escudo de mana para os magos aliados."
+            }
+        }
+    },
+
+    # =========================528
+    "zombie_man": {
+        "nome": "Zombie Man",
+        "origem": "One Punch Man",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 130, "atk": 38, "matk": 0, "def": 42, "spd": 22, "crt": 10,
+        "habilidade": {
+            "nome": "Fogo de Regeneração",
+            "descricao": "Atrai a fúria do oponente (Taunt). Cura a si mesmo em 15% de seu HP máximo ao início de cada rodada."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Imortalidade Biológica",
+                "descricao": "Ao sofrer dano fatal, ressuscita instantaneamente com 35% de seu HP máximo e remove debuffs ativos. 1 vez por combate"
+            }
+        }
+    },
+
+    # =========================529
+    "amai_mask": {
+        "nome": "Amai Mask",
+        "origem": "One Punch Man",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 90, "atk": 52, "matk": 0, "def": 20, "spd": 44, "crt": 20,
+        "habilidade": {
+            "nome": "Corte de Justiça Fria",
+            "descricao": "Foca no oponente mais debilitado. Causa 150% de ATK e aplica Sangramento por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Forma Oculta de Monstro",
+                "descricao": "Aumenta o próprio ATK em 30% se a batalha durar mais de 3 turnos, ignorando 20% da DEF física."
+            }
+        }
+    },
+
+    # =========================530
+    "flashy_flash": {
+        "nome": "Flashy Flash",
+        "origem": "One Punch Man",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 100, "atk": 62, "matk": 0, "def": 18, "spd": 60, "crt": 25,
+        "habilidade": {
+            "nome": "Corte na Velocidade da Luz",
+            "descricao": "Ataca antes que o inimigo pisque. Causa 180% de ATK e concede +40% de evasão ativa por 1 turno."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Fúria do Ninja Supremo",
+                "descricao": "Seus ataques críticos ignoram escudos físicos e garantem a ele um turno extra imediato."
+            }
+        }
+    },
+
+    # =========================531
+    "metal_bat": {
+        "nome": "Metal Bat",
+        "origem": "One Punch Man",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 125, "atk": 45, "matk": 0, "def": 42, "spd": 24, "crt": 15,
+        "habilidade": {
+            "nome": "Balanço Selvagem",
+            "descricao": "Bate com toda a força do bastão. Causa 140% de ATK. O dano aumenta proporcionalmente ao HP perdido."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Espírito de Luta Inquebrável",
+                "descricao": "Ganha +10% de ATK e DEF a cada ataque sofrido na rodada de combate."
+            }
+        }
+    },
+
+    # =========================532
+    "watchdog_man": {
+        "nome": "Watchdog-Man",
+        "origem": "One Punch Man",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115, "atk": 58, "matk": 0, "def": 28, "spd": 35, "crt": 15,
+        "habilidade": {
+            "nome": "Guarda Feral Canina",
+            "descricao": "Defende o território com patadas em velocidade. Causa 170% de ATK e ganha +30% de SPD por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Sentinela de City Q",
+                "descricao": "Fica imune a debuffs de lentidão ou Stun, e seus ataques ignoram 30% da armadura oponente."
+            }
+        }
+    },
+
+    # =========================533
+    "pig_god": {
+        "nome": "Pig God",
+        "origem": "One Punch Man",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 140, "atk": 30, "matk": 0, "def": 48, "spd": 12, "crt": 5,
+        "habilidade": {
+            "nome": "Absorção de Gordura",
+            "descricao": "Engole o impacto inimigo (Taunt). Cura a si próprio em 15% de seu HP máximo ao agir."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Digestão Absoluta",
+                "descricao": "Executa instantaneamente inimigos normais que atacarem se estiverem com menos de 20% de HP."
+            }
+        }
+    },
+
+    # =========================534
+    "doutei": {
+        "nome": "Doutei (Kid Emperor)",
+        "origem": "One Punch Man",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 15, "matk": 45, "def": 22, "spd": 28, "crt": 12,
+        "habilidade": {
+            "nome": "Drones de Suporte",
+            "descricao": "Lança robôs que restauram 25% de HP para a equipe e removem debuffs de queima e sangramento."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Mochila Brave Giant",
+                "descricao": "Ativa a armadura mecânica. Concede escudo de terra de 20% de HP e aumenta o MATK do grupo em 30%."
+            }
+        }
+    },
+
+    # =========================535
+    "atomic_samurai": {
+        "nome": "Atomic Samurai",
+        "origem": "One Punch Man",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 62, "matk": 0, "def": 24, "spd": 38, "crt": 20,
+        "habilidade": {
+            "nome": "Corte Atômico",
+            "descricao": "Retalha o oponente em segundos. Causa 220% de ATK e quebra 40% da DEF oponente de forma definitiva."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Lâmina Divina Imparável",
+                "descricao": "Seus ataques de espada nunca erram. Seus críticos aplicam Sangramento que zera curas inimigas."
+            }
+        }
+    },
+
+    # =========================536
+    "silver_fang": {
+        "nome": "Silver Fang",
+        "origem": "One Punch Man",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115, "atk": 60, "matk": 0, "def": 26, "spd": 35, "crt": 20,
+        "habilidade": {
+            "nome": "Punho de Água Corrente",
+            "descricao": "Desvia os golpes e contra-ataca com fluidez. Causa 180% de ATK e reflete 40% do dano físico."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Redemoinho Esmagador",
+                "descricao": "Ignora 100% das armaduras físicas. Seus golpes têm 30% de chance de atordoar (Stun)."
+            }
+        }
+    },
+
+    # =========================537
+    "blast": {
+        "nome": "Blast",
+        "origem": "One Punch Man",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120, "atk": 45, "matk": 45, "def": 30, "spd": 30, "crt": 15,
+        "habilidade": {
+            "nome": "Dobra Espacial",
+            "descricao": "Abre fendas de gravidade na arena. Causa 190% de MATK em área e reduz a SPD inimiga em 30%."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Monarca do Vácuo Cósmico",
+                "descricao": "Cria uma barreira cósmica que anula uma habilidade inimiga causada contra si, ficando imune por 1 turno, CD de 1 turno"
+            }
+        }
+    },
+
+    # =========================538
+    "nami": {
+        "nome": "Nami",
+        "origem": "One Piece",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 85, "atk": 10, "matk": 44, "def": 15, "spd": 26, "crt": 12,
+        "habilidade": {
+            "nome": "Thunderbolt Tempo",
+            "descricao": "Dispara raios na retaguarda oponente. Causa 140% de MATK e 30% de chance de causar Stun."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Mirage Tempo",
+                "descricao": "Cria ilusões de calor que aumentam a evasão da sua party em 30% por 2 rodadas."
+            }
+        }
+    },
+
+    # =========================539
+    "nico_robin": {
+        "nome": "Nico Robin",
+        "origem": "One Piece",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 50, "matk": 20, "def": 18, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Cien Fleur: Clutch",
+            "descricao": "Brota braços no alvo para quebrar os ossos. Causa 150% de ATK e imobiliza por 1 turno."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Demônio Fleur Gigante",
+                "descricao": "Assume forma gigante. Causa 180% de ATK em área e destrói escudos físicos da zaga."
+            }
+        }
+    },
+
+    # =========================540
+    "trafalgar_law": {
+        "nome": "Trafalgar D Water Law",
+        "origem": "One Piece",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 30, "matk": 48, "def": 22, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "ROOM: Shambles",
+            "descricao": "Troca a posição de aliados e inimigos, remove debuffs e concede esquiva."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Cirurgião da Morte: Kroom",
+                "descricao": "Descarga de choque que destrói as barreiras. Ignora 100% da DEF (Def = 0) e aplica Sangramento."
+            }
+        }
+    },
+
+    # =========================541
+    "franky": {
+        "nome": "Franky",
+        "origem": "One Piece",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 135, "atk": 42, "matk": 0, "def": 38, "spd": 16, "crt": 10,
+        "habilidade": {
+            "nome": "Carga de Ferro",
+            "descricao": "Protege os aliados (Taunt). Dispara socos pesados causando 130% de ATK físico."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Radical Beam Cósmico",
+                "descricao": "Dispara um feixe laser de seus braços de aço. Causa dano massivo em área e quebra escudos."
+            }
+        }
+    },
+
+    # =========================542
+    "brook": {
+        "nome": "Brook",
+        "origem": "One Piece",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 90, "atk": 35, "matk": 38, "def": 18, "spd": 42, "crt": 15,
+        "habilidade": {
+            "nome": "Sinfonia do Sono",
+            "descricao": "Toca acordes na sua rabeca de ossos. Dorme (Stun) oponentes por 1 turno e cura aliados."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Alma Gélida das Profundezas",
+                "descricao": "Sua música aplica congelamento e revive a si mesmo com 15% de HP após sofrer dano fatal."
+            }
+        }
+    },
+
+    # =========================543
+    "aigis": {
+        "nome": "Aigis",
+        "origem": "Persona",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 52, "matk": 15, "def": 25, "spd": 25, "crt": 20,
+        "habilidade": {
+            "nome": "Metralhadora nos Dedos",
+            "descricao": "Dispara projéteis em altíssima cadência. Causa 150% de ATK e reduz a armadura do alvo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Orgia Mode",
+                "descricao": "Aumenta ATK em 80%, mas fica atordoada (Stun) na rodada seguinte por superaquecimento."
+            }
+        }
+    },
+
+    # =========================544
+    "junpei_hiori": {
+        "nome": "Junpei Hiori",
+        "origem": "Persona",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 85, "atk": 38, "matk": 10, "def": 18, "spd": 24, "crt": 10,
+        "habilidade": {
+            "nome": "Rebatida Perfeita",
+            "descricao": "Bate com força usando o taco. Causa 120% de ATK e aplica uma pequena queimadura de fogo."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Apoio de Hermes",
+                "descricao": "Ganha +15% de ATK físico e aumenta a sua própria velocidade de ação em 10%."
+            },
+            5: {
+                "nome": "Determinação de Trismegistus",
+                "descricao": "Ganha regeneração de 15% do HP no início do seu turno e aumenta a força crítica."
+            }
+        }
+    },
+
+    # =========================545
+    "mitsuru_kirijo": {
+        "nome": "Mitsuru Kirijo",
+        "origem": "Persona",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105, "atk": 30, "matk": 48, "def": 20, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "Artemisia: Mabufudyne",
+            "descricao": "Comanda uma tempestade de gelo. Causa 160% de MATK em área com chance de congelar."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Execução Elegante da Imperatriz",
+                "descricao": "Sua presença afiada e imponente aumenta a precisão e taxa crítica da party em 30%."
+            }
+        }
+    },
+
+    # =========================546
+    "chie_satonaka": {
+        "nome": "Chie Satonaka",
+        "origem": "Persona",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 90, "atk": 42, "matk": 0, "def": 15, "spd": 35, "crt": 15,
+        "habilidade": {
+            "nome": "Chute Galáctico",
+            "descricao": "Chuta o oponente para fora do cenário. Causa 140% de ATK com chance de atordoar (Stun)."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Espírito de Tomoe",
+                "descricao": "Ganha +20% de SPD e velocidade de ataque física."
+            },
+            5: {
+                "nome": "Dragão do Kung Fu",
+                "descricao": "Seus ataques ignoram defesa física. Se derrotar um oponente, ganha ataque extra imediato."
+            }
+        }
+    },
+
+    # =========================547
+    "yukiko_amagi": {
+        "nome": "Yukiko Amagi",
+        "origem": "Persona",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 95, "atk": 10, "matk": 45, "def": 15, "spd": 22, "crt": 10,
+        "habilidade": {
+            "nome": "Diarahan de Chamas",
+            "descricao": "Foca energia para fechar feridas. Cura 35% de HP de toda a equipe e remove debuffs ativos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Agidyne do Leque",
+                "descricao": "Sempre que for atacada, revida passivamente com magia de fogo causando 140% de MATK."
+            }
+        }
+    },
+
+    # =========================548
+    "rise_kujiwara": {
+        "nome": "Rise Kujiwara",
+        "origem": "Persona",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 85, "atk": 5, "matk": 40, "def": 12, "spd": 28, "crt": 5,
+        "habilidade": {
+            "nome": "Análise de Frestas",
+            "descricao": "Verifica os pontos fracos dos oponentes. Garante acerto crítico para o próximo ataque aliado."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Hino da Ídolo (Himiko)",
+                "descricao": "Sua música restaura estamina e fôlego. Reduz o cooldown das habilidades aliadas em 1 turno."
+            }
+        }
+    },
+
+    # =========================549
+    "ryuji_sakamoto": {
+        "nome": "Ryuji Sakamoto",
+        "origem": "Persona",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 120, "atk": 45, "matk": 10, "def": 30, "spd": 22, "crt": 15,
+        "habilidade": {
+            "nome": "Captain Kidd: Charge",
+            "descricao": "Invoca relâmpagos ao redor do campo. Causa 150% de ATK e aplica Choque por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Captain Kidd: Thunder Reig",
+                "descricao": "Aumenta o ataque em 40% e aplica choque que reduz a defesa do oponente."
+            }
+        }
+    },
+
+    # =========================550
+    "futaba_sakura": {
+        "nome": "Futaba Sakura",
+        "origem": "Persona",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 5, "matk": 42, "def": 18, "spd": 35, "crt": 10,
+        "habilidade": {
+            "nome": "Necronomicon Scan",
+            "descricao": "Hackeia os sistemas da arena. Revela a vida exata dos oponentes e reduz a precisão deles em 30%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Position Hack Absoluto",
+                "descricao": "Pode anular completamente 1 ataque fatal contra a party, jogando o golpe pro vazio."
+            }
+        }
+    },
+
+    # =========================551
+    "makoto_nijima": {
+        "nome": "Makoto Nijima",
+        "origem": "Persona",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 52, "matk": 32, "def": 25, "spd": 30, "crt": 15,
+        "habilidade": {
+            "nome": "Mafreidyne de Johanna",
+            "descricao": "Causa dano nuclear em área montada em seu Persona. Causa 170% de ATK/MATK e quebra escudos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Punhos de Bronze da Queen",
+                "descricao": "Ganha lifesteal nos seus golpes de punho e aumenta a SPD de toda a sua party em 30%."
+            }
+        }
+    },
+
+    # =========================552
+    "ann_takamaki": {
+        "nome": "Ann Takamaki",
+        "origem": "Persona",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 95, "atk": 12, "matk": 44, "def": 15, "spd": 32, "crt": 12,
+        "habilidade": {
+            "nome": "Chamas de Carmen",
+            "descricao": "Evoca uma queimação massiva de fogo em área (Agidyne). Causa 150% de MATK e aplica Queimadura."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Sedução Lullaby de Pantera",
+                "descricao": "Seu olhar de carisma adormece (Stun) oponentes mais fortes com 40% de chance."
+            }
+        }
+    },
+
+    # =========================553
+    "renji_abarai": {
+        "nome": "Renji Abarai",
+        "origem": "Bleach",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 110, "atk": 55, "matk": 10, "def": 22, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Zabimaru: Uive!",
+            "descricao": "Estende sua espada chicote para perfurar a retaguarda. Causa 140% de ATK e aplica Sangramento."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Bankai: Hihio Zabimaru",
+                "descricao": "Invoca o Rei Babuíno de Osso. Dispara um canhão de reatsu (MATK) em área, destruindo barreiras."
+            }
+        }
+    },
+
+    # =========================554
+    "byakuya_kuchiki": {
+        "nome": "Byakuya Kuchiki",
+        "origem": "Bleach",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115, "atk": 62, "matk": 45, "def": 25, "spd": 40, "crt": 18,
+        "habilidade": {
+            "nome": "Senbonzakura Kageyoshi",
+            "descricao": "Chuva de milhares de lâminas rosa. Causa 210% de Dano Híbrido em toda a equipe inimiga."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Hakuteiken",
+                "descricao": "Condensa todas as lâminas em um ataque de 300% que ignora qualquer barreira física ou mágica."
+            }
+        }
+    },
+
+    # =========================555
+    "toushirou_hitsugaya": {
+        "nome": "Toushirou Hitsugaya",
+        "origem": "Bleach",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 15, "matk": 62, "def": 20, "spd": 35, "crt": 20,
+        "habilidade": {
+            "nome": "Hyōrinmaru",
+            "descricao": "Invoca um dragão de gelo colossal. Causa 180% de MATK em área e congela (Stun) 3 inimigos aleatórios"
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Daiguren Hyōrinmaru",
+                "descricao": "Atinge a maturidade. Congela instantaneamente, dando Instakill se o alvo estiver com HP < 30%."
+            }
+        }
+    },
+
+    # =========================556
+    "mio_akiyama": {
+        "nome": "Mio Akiyama",
+        "origem": "K-On!",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 1,
+        "max_star": 7,
+        "hp": 85, "atk": 10, "matk": 20, "def": 15, "spd": 18, "crt": 5,
+        "habilidade": {
+            "nome": "Baixo Elizabeth",
+            "descricao": "Acordes tímidos, mas firmes. Concede +15% de DEF para a equipe inteira na rodada."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Susto de Palco",
+                "descricao": "Quando atacada, grita e aumenta a sua própria evasão em 50% de puro pânico."
+            },
+            5: {
+                "nome": "Vocal Confiante",
+                "descricao": "Aumenta o MATK dos aliados curadores, dobrando o efeito das curas do grupo."
+            }
+        }
+    },
+
+    # =========================557
+    "ritsu_tainaka": {
+        "nome": "Ritsu Tainaka",
+        "origem": "K-On!",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 90, "atk": 15, "matk": 10, "def": 18, "spd": 22, "crt": 8,
+        "habilidade": {
+            "nome": "Presidente do Clube",
+            "descricao": "Anima o grupo. Aumenta a velocidade de ataque (SPD) do esquadrão inteiro em 15%."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Batida Rápida",
+                "descricao": "Concede +10% de ATK extra para todos os aliados do tipo Atacante ou Assassino."
+            },
+            5: {
+                "nome": "Esquecimento de Planos",
+                "descricao": "Sua falta de foco ignora debuffs. A equipe fica imune a atordoamento por 2 rodadas."
+            }
+        }
+    },
+
+    # =========================558
+    "tsumugi_kotobuki": {
+        "nome": "Tsumugi Kotobuki",
+        "origem": "K-On!",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 110, "atk": 30, "matk": 20, "def": 25, "spd": 12, "crt": 5,
+        "habilidade": {
+            "nome": "Teclado Blindado",
+            "descricao": "Dispara notas pesadas de teclado de longe. Causa 120% de ATK e quebra defesas."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Tea Time",
+                "descricao": "Serve chá e doces. Recupera HP dos aliados e aumenta DEF por 2 turnos."
+            },
+            5: {
+                "nome": "Fortuna dos Kotobuki",
+                "descricao": "Financia o grupo inteiro. Concede escudo equivalente a 35% do HP máximo dos aliados."
+            }
+        }
+    },
+
+    # =========================559
+    "azusa_nakano": {
+        "nome": "Azusa Nakano",
+        "origem": "K-On!",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 1,
+        "max_star": 7,
+        "hp": 80, "atk": 35, "matk": 10, "def": 12, "spd": 25, "crt": 15,
+        "habilidade": {
+            "nome": "Solo de Guitarra Focado",
+            "descricao": "Ataca o oponente com riffs precisos. Causa 120% de ATK e ganha +10% de crítico."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Azu-nyan",
+                "descricao": "Sua timidez fofa atordoa o atacante de menor defesa inimigo por 1 turno."
+            },
+            5: {
+                "nome": "Treino de Clube",
+                "descricao": "Seus ataques ignoram 30% da armadura física do oponente e ganham +25% de velocidade."
+            }
+        }
+    },
+
+    # =========================560
+    "nijika_ijichi": {
+        "nome": "Nijika Ijichi",
+        "origem": "Bocchi the Rock!",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 1,
+        "max_star": 7,
+        "hp": 90, "atk": 12, "matk": 15, "def": 18, "spd": 24, "crt": 8,
+        "habilidade": {
+            "nome": "Bateria de Kessoku Band",
+            "descricao": "Mantém o tempo da banda. O grupo não erra ataques nessa rodada (100% de Precisão)."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Gerente de Show",
+                "descricao": "Sua organização impede o silenciamento das magias aliadas em campo."
+            },
+            5: {
+                "nome": "O Anjo de Shimokitazawa",
+                "descricao": "Cura e anima. Recupera 25% de HP de todos os aliados e limpa debuffs de medo."
+            }
+        }
+    },
+
+    # =========================561
+    "ryo_yamada": {
+        "nome": "Ryo Yamada",
+        "origem": "Bocchi the Rock!",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 1,
+        "max_star": 7,
+        "hp": 85, "atk": 40, "matk": 10, "def": 15, "spd": 32, "crt": 20,
+        "habilidade": {
+            "nome": "Groove Solitário",
+            "descricao": "Toca uma linha de baixo hipnótica. Reduz SPD dos inimigos e aumenta o crítico dos aliados."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Extorsão Descarada",
+                "descricao": "Drena o bolso e o HP de outros. Causa 130% de ATK e cura sua própria vida."
+            },
+            5: {
+                "nome": "Ocultação Solitária do Palco",
+                "descricao": "Fica invisível na arena, os oponentes perdem a mira, e ela ataca com +50% de ATK crítico."
+            }
+        }
+    },
+
+    # =========================562
+    "ikuyo_kita": {
+        "nome": "Ikuyo Kita",
+        "origem": "Bocchi the Rock!",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 1,
+        "max_star": 7,
+        "hp": 80, "atk": 30, "matk": 30, "def": 14, "spd": 26, "crt": 12,
+        "habilidade": {
+            "nome": "Canto Extrovertido",
+            "descricao": "Dispara notas de energia. Causa 120% de Dano Misto à distância."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Kita-Aura Ofuscante",
+                "descricao": "Seu brilho excessivo cega o atacante mais próximo, reduzindo a precisão dele em 40%."
+            },
+            5: {
+                "nome": "Brilho Extremo de Palco",
+                "descricao": "Sua simpatia divina ofusca a arena. Seus ataques normais passam a causar dano de luz de bônus."
+            }
+        }
+    },
+
+    # =========================563
+    "hitori_goto": {
+        "nome": "Hitori Goto",
+        "origem": "Bocchi the Rock!",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 110, "atk": 35, "matk": 35, "def": 25, "spd": 12, "crt": 20,
+        "habilidade": {
+            "nome": "Guitar Hero Solitária",
+            "descricao": "Sola de olhos fechados. Cura toda a equipe em 25% do MATK e limpa debuffs, aumenta ATK, MATK e Precisão de todos da equipe"
+        },
+
+        "evolucoes": {
+            3: {
+                "nome": "Meltdown Social",
+                "descricao": "Entra em colapso e derrete, esquivando-se completamente do próximo ataque inimigo."
+            },
+            5: {
+                "nome": "Caixa de Papelão",
+                "descricao": "Se esconde do público. Concede um escudo de 30% do HP para os aliados da retaguarda."
+            }
+        }
+    },
+
+    # =========================564
+    "akiha_tohno": {
+        "nome": "Akiha Tohno",
+        "origem": "Tsukihime",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 20, "matk": 55, "def": 20, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "Plunder",
+            "descricao": "Seus cabelos de sangue agarram e queimam. Causa 150% de MATK e rouba vida (Lifesteal) do alvo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Fúria do Sangue Demoníaco",
+                "descricao": "Aumenta o MATK em 40%. Todos os oponentes sofrem queimaduras que deterioram sua defesa em 35%."
+            }
+        }
+    },
+
+    # =========================565
+    "ciel": {
+        "nome": "Ciel",
+        "origem": "Tsukihime",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 52, "matk": 40, "def": 25, "spd": 35, "crt": 20,
+        "habilidade": {
+            "nome": "Sétima Escritura Sagrada",
+            "descricao": "Dispara lanças e mísseis abençoados. Causa 170% de ATK e destrói escudos do inimigo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Corpo Imortal",
+                "descricao": "Sua imortalidade desafia as leis. Ressuscita uma vez na batalha com 30% do HP e zera recargas."
+            }
+        }
+    },
+
+    # =========================566
+    "nanaya_shiki": {
+        "nome": "Nanaya Shiki",
+        "origem": "Tsukihime",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 95, "atk": 65, "matk": 0, "def": 18, "spd": 55, "crt": 35,
+        "habilidade": {
+            "nome": "Corte de Dezoito Partes",
+            "descricao": "Fatias e golpes rápidos na nuca. Causa 220% de ATK de precisão absoluta (ignora esquivas)."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Olhos Místicos da Morte",
+                "descricao": "Enxerga a morte do alvo. Seus acertos críticos têm 20% de chance de causar morte instantânea."
+            }
+        }
+    },
+
+    # =========================567
+    "neco_arc": {
+        "nome": "Neco-Arc",
+        "origem": "Tsukihime",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 75, "atk": 15, "matk": 32, "def": 18, "spd": 50, "crt": 20,
+        "habilidade": {
+            "nome": "Buru-Nyuu Beam",
+            "descricao": "Lasers caóticos disparam de seus olhos. Causa 130% de MATK e confunde/atordoa o alvo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Física Toon de Esquiva",
+                "descricao": "Ganha esquiva de 45% ao rir dos oponentes, ignorando completamente ataques físicos."
+            },
+            7: {
+                "nome": "O Caos do Meme Ancestral",
+                "descricao": "Invoca clones de si mesma de pura zoeira que revivem aliados abatidos com 10% de HP. Quantidade de clones iguais de oponentes abatidos"
+            }
+        }
+    },
+
+    # =========================568
+    "padoru_padoru": {
+        "nome": "Padoru Padoru",
+        "origem": "Fate",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 85, "atk": 35, "matk": 35, "def": 18, "spd": 42, "crt": 15,
+        "habilidade": {
+            "nome": "Hashire Sori Yo!",
+            "descricao": "Atropela os oponentes cantando e jogando presentes. Causa 140% de dano Misto em área."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Neve do Polo Norte",
+                "descricao": "Congela e desacelera o time oponente, reduzindo a SPD de todos à metade."
+            },
+            7: {
+                "nome": "O Terror de Dezembro",
+                "descricao": "Ganha bônus de 50% de ATK e cura toda a sua party."
+            }
+        }
+    },
+
+    # =========================569
+    "takt_asahine": {
+        "nome": "Takt Asahine",
+        "origem": "Takt Op. Destiny",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 35, "matk": 22, "def": 24, "spd": 28, "crt": 12,
+        "habilidade": {
+            "nome": "Batuta do Maestro",
+            "descricao": "Rege as Musicarts em campo. Aumenta a eficácia de magias e MATK de sua party em 40%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Sinfonia do Destino (Sinfonia)",
+                "descricao": "Zera as recargas (cooldowns) das habilidades da party e limpa silêncios do grupo."
+            }
+        }
+    },
+
+    # =========================570
+    "destiny": {
+        "nome": "Destiny",
+        "origem": "Takt Op. Destiny",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 62, "matk": 35, "def": 24, "spd": 40, "crt": 20,
+        "habilidade": {
+            "nome": "Lâmina da 5ª Sinfonia",
+            "descricao": "Corte de alta velocidade com raios de notas musicais. Causa 210% de ATK e quebra escudos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "A Partitura Escarlate",
+                "descricao": "Gasta 20% do HP para ganhar acertos críticos garantidos que sugam a vida (Lifesteal) do alvo."
+            }
+        }
+    },
+
+    # =========================571
+    "heaven_takt": {
+        "nome": "Heaven",
+        "origem": "Takt Op. Destiny",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 55, "matk": 40, "def": 20, "spd": 32, "crt": 22,
+        "habilidade": {
+            "nome": "Artilharia Celeste de Penas",
+            "descricao": "Dispara penas cortantes e mísseis. Causa 160% de ATK/MATK e drena mana da retaguarda."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Voo Estratégico",
+                "descricao": "Ganha esquiva ativa de 40% contra ataques normais e reduz a precisão inimiga."
+            }
+        }
+    },
+
+    # =========================572
+    "titan_takt": {
+        "nome": "Titan",
+        "origem": "Takt Op. Destiny",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 135, "atk": 42, "matk": 10, "def": 42, "spd": 15, "crt": 10,
+        "habilidade": {
+            "nome": "Muralha Musical",
+            "descricao": "Protege todos os aliados. Recebe 50% do dano que seria causado à equipe."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "O Titã Alegre",
+                "descricao": "Recebe todo dano direcionado aos aliados por 2 turnos."
+            }
+        }
+    },
+
+    # =========================573
+    "hisui": {
+        "nome": "Hisui",
+        "origem": "Takt Op. Destiny",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100, "atk": 50, "matk": 20, "def": 20, "spd": 30, "crt": 15,
+        "habilidade": {
+            "nome": "Ataque Verde de Vento",
+            "descricao": "Um corte físico rápido que causa 140% de ATK e cura feridas dos aliados mais fracos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Dança das Folhas de Vento",
+                "descricao": "Seus ataques reduzem o dano que sua party recebe em 25% por 2 rodadas completas."
+            }
+        }
+    },
+
+    # =========================574
+    "rias_gremory": {
+        "nome": "Rias Gremory",
+        "origem": "High School DxD",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 100, "atk": 30, "matk": 65, "def": 25, "spd": 26, "crt": 15,
+        "habilidade": {
+            "nome": "Poder da Destruição (Bael)",
+            "descricao": "Oblitera quem se opuser com sua aura vermelha. Causa 230% de MATK e remove escudos do alvo."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "O Rei da Nobreza Gremory",
+                "descricao": "Aumenta todos os atributos de sua nobreza (equipe) em 35% de forma duradoura."
+            }
+        }
+    },
+
+    # =========================575
+    "himejima_akeno": {
+        "nome": "Himejima Akeno",
+        "origem": "High School DxD",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 15, "matk": 55, "def": 18, "spd": 32, "crt": 20,
+        "habilidade": {
+            "nome": "Relâmpago Sádico",
+            "descricao": "Dispara trovões e raios com um sorriso sádico. Causa 170% de MATK e paralisa (Stun) o alvo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Aura de Anjo Caído",
+                "descricao": "Absorve magias elementais do inimigo para restaurar a própria vida e mana na arena."
+            }
+        }
+    },
+
+    # =========================576
+    "toujou_koneko": {
+        "nome": "Toujou Koneko",
+        "origem": "High School DxD",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 120, "atk": 45, "matk": 10, "def": 35, "spd": 22, "crt": 15,
+        "habilidade": {
+            "nome": "Defesa Nekomata Bruta",
+            "descricao": "Sua força física e espiritual tanca o dano. Recebe o dano de aliados e ignora knockbacks."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Senjutsu Desperto de Gata",
+                "descricao": "Aumenta a DEF e o ATK quando sua vida cai. Seus punhos adquirem Lifesteal."
+            }
+        }
+    },
+
+    # =========================577
+    "xenovia_quarta": {
+        "nome": "Xenovia Quarta",
+        "origem": "High School DxD",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105, "atk": 58, "matk": 15, "def": 22, "spd": 32, "crt": 18,
+        "habilidade": {
+            "nome": "Excalibur Destruction",
+            "descricao": "Seu corte com a espada de peso insano causa 160% de ATK e destrói escudos físicos e mágicos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Empunhando a Durandal",
+                "descricao": "Seu ATK aumenta em 40% com penetração de 50% de defesa física inimiga."
+            }
+        }
+    },
+
+    # =========================578
+    "issei_hyoudou": {
+        "nome": "Issei Hyoudou",
+        "origem": "High School DxD",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135, "atk": 55, "matk": 30, "def": 45, "spd": 28, "crt": 20,
+        "habilidade": {
+            "nome": "Boosted Gear: Absorção",
+            "descricao": "Sua armadura vermelha absorve e drena o dano recebido. Concede Taunt e reflete impactos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Juggernaut Drive Dragon",
+                "descricao": "Ao atingir menos de 20% do HP, ativa fúria do dragão, dobrando todos os atributos."
+            }
+        }
+    },
+
+    # =========================579
+    "yuuto_kiba": {
+        "nome": "Yuuto Kiba",
+        "origem": "High School DxD",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 90, "atk": 50, "matk": 15, "def": 16, "spd": 44, "crt": 25,
+        "habilidade": {
+            "nome": "Sword Birth Rápido",
+            "descricao": "Invoca lâminas do solo para fatiar o inimigo de menor DEF. Causa 150% de ATK rápido."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Lâmina Sagrada e Demoníaca",
+                "descricao": "Dano híbrido que reduz a eficácia de curas do alvo atingido à metade (Sangramento)."
+            }
+        }
+    },
+
+    # =========================580
+    "nacht_faust": {
+        "nome": "Nacht Faust",
+        "origem": "Black Clover",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 62, "matk": 40, "def": 22, "spd": 45, "crt": 25,
+        "habilidade": {
+            "nome": "União Demoníaca das Sombras",
+            "descricao": "Mergulha na escuridão e fatia o inimigo pelas costas. Causa 220% de ATK e ignora esquiva."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Monument of Atonement",
+                "descricao": "Prende o alvo em sombras densas. Aplica atordoamento por 2 turnos e drena mana."
+            }
+        }
+    },
+
+    # =========================581
+    "finral_roulacase": {
+        "nome": "Finral Roulacase",
+        "origem": "Black Clover",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 95, "atk": 10, "matk": 38, "def": 16, "spd": 42, "crt": 10,
+        "habilidade": {
+            "nome": "Portal de Fuga Rápido",
+            "descricao": "Teleporta toda a equipe. Remove efeitos de controle e aumenta a evasão em 50% por 1 turno."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Portal de Manobra",
+                "descricao": "Escolhe um aliado. Ele recebe turno imediato."
+            }
+        }
+    },
+
+    # =========================582
+    "vanessa_enoteca": {
+        "nome": "Vanessa Enoteca",
+        "origem": "Black Clover",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 12, "matk": 42, "def": 18, "spd": 35, "crt": 12,
+        "habilidade": {
+            "nome": "Magia de Fios: Costura",
+            "descricao": "Sua magia de fios costura as feridas de combate. Cura 35% de HP e remove Veneno."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Fio Vermelho do Destino (Rouge)",
+                "descricao": "O gato de destino altera a realidade. Salva o líder aliado de levar 1 golpe fatal."
+            }
+        }
+    },
+
+    # =========================583
+    "gauche_adlai": {
+        "nome": "Gauche Adlai",
+        "origem": "Black Clover",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 90, "atk": 18, "matk": 45, "def": 14, "spd": 26, "crt": 18,
+        "habilidade": {
+            "nome": "Magia de Espelho: Raio",
+            "descricao": "Dispara lasers de seu olho espelho. Causa 140% de MATK em fendas e perfura armaduras."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Reflexão Real de Espelhos",
+                "descricao": "Seus ataques mágicos ganham +30% de poder e refletem projéteis menores inimigos."
+            }
+        }
+    },
+
+    # =========================584
+    "gordon_agrippa": {
+        "nome": "Gordon Agrippa",
+        "origem": "Black Clover",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 95, "atk": 8, "matk": 46, "def": 15, "spd": 15, "crt": 10,
+        "habilidade": {
+            "nome": "Magia de Veneno Sussurrado",
+            "descricao": "Sussurra maldições químicas ácidas. Reduz a vida da oposição em 5% por turno (DoT)."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Maldição da Família Agrippa",
+                "descricao": "Aplica uma maldição que reduz ATK, MATK e cura recebida do alvo por 2 turnos."
+            }
+        }
+    },
+
+    # =========================585
+    "grey": {
+        "nome": "Grey",
+        "origem": "Black Clover",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 95, "atk": 8, "matk": 40, "def": 16, "spd": 20, "crt": 5,
+        "habilidade": {
+            "nome": "Transmutação Mágica",
+            "descricao": "Muda a matéria elemental. Converte o próximo grande ataque inimigo em fumaça inofensiva."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Reconstituição Tecidual",
+                "descricao": "Sua verdadeira magia cura de verdade. Recuperar 40% do HP de aliados feridos em apuros."
+            }
+        }
+    },
+
+    # =========================586
+    "henry_legolant": {
+        "nome": "Henry Legolant",
+        "origem": "Black Clover",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 140, "atk": 20, "matk": 38, "def": 55, "spd": 10, "crt": 5,
+        "habilidade": {
+            "nome": "Castelo Dinâmico dos Touros",
+            "descricao": "Move as pedras da base criando um robô gigante. Protege a equipe, recebendo todo dano em área."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Dreno de Mana de Touros",
+                "descricao": "Absorve energia do ar. Silencia a magia de atacantes que tentarem lhe bater."
+            }
+        }
+    },
+
+    # =========================587
+    "secre_swallowtail": {
+        "nome": "Secre Swallowtail (Nero)",
+        "origem": "Black Clover",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 8, "matk": 45, "def": 18, "spd": 28, "crt": 10,
+        "habilidade": {
+            "nome": "Magia de Selamento e Desbloqueio",
+            "descricao": "Desbloqueia amarras físicas. Remove todos os debuffs do time e cura o líder aliado."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Pássaro Nero do Selo Real",
+                "descricao": "Aplica selos de aprisionamento total. Silencia e imobiliza o mago inimigo mais forte."
+            }
+        }
+    },
+
+    # =========================588
+    "zora_ideale": {
+        "nome": "Zora Ideale",
+        "origem": "Black Clover",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 32, "matk": 48, "def": 20, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "Armadilha de Cinzas",
+            "descricao": "Desenha círculos de reflexão. Reflete 150% do próximo dano mágico recebido de volta."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Corte de Cinzas Vingador",
+                "descricao": "Suas armadilhas reduzem a defesa oponente em 40% e dão dano crítico físico."
+            }
+        }
+    },
+
+    # =========================589
+    "tenya_iida": {
+        "nome": "Tenya Iida",
+        "origem": "My Hero Academia",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100, "atk": 45, "matk": 0, "def": 20, "spd": 44, "crt": 12,
+        "habilidade": {
+            "nome": "Recipro Burst Turbo",
+            "descricao": "Gira seus motores ao extremo. Causa 150% de ATK e ganha +30% de SPD por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Chute de Eixo Traseiro",
+                "descricao": "Quebra as defesas de Tanks inimigos ignorando escudos, com alta chance de Stun."
+            }
+        }
+    },
+
+    # =========================590
+    "ochako_uraraka": {
+        "nome": "Ochako Uraraka",
+        "origem": "My Hero Academia",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 90, "atk": 15, "matk": 25, "def": 18, "spd": 24, "crt": 10,
+        "habilidade": {
+            "nome": "Gravidade Zero",
+            "descricao": "Faz aliados levitarem. Concede +30% de evasão ativa (Dodge), Reduz SPD dos inimigos em 40% e aumenta SPD dos aliados em 20%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Chuva de Destroços",
+                "descricao": "Joga pedras flutuantes nos oponentes, cegando-os e causando pequeno dano de área."
+            }
+        }
+    },
+
+    # =========================591
+    "denki_kiminari": {
+        "nome": "Denki Kiminari",
+        "origem": "My Hero Academia",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 85, "atk": 40, "matk": 32, "def": 14, "spd": 25, "crt": 15,
+        "habilidade": {
+            "nome": "Choque de 1.3M de Volts",
+            "descricao": "Dispara descargas indiscriminadas em área. Causa 170% de MATK mas atordoa a si mesmo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Foco do Atirador de Raios",
+                "descricao": "Remove a penalidade de Stun próprio. Seus relâmpagos causam acerto crítico garantido."
+            }
+        }
+    },
+
+    # =========================592
+    "fumikage_tokoyami": {
+        "nome": "Fumikage Tokoyami",
+        "origem": "My Hero Academia",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 56, "matk": 20, "def": 24, "spd": 30, "crt": 12,
+        "habilidade": {
+            "nome": "Dark Shadow Slash",
+            "descricao": "A sombra defende e ataca ao mesmo tempo. Causa 160% de ATK e bloqueia o próximo golpe."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Anjo Negro do Abismo",
+                "descricao": "Ganha +40% de ATK e velocidade de ação quando luta na retaguarda."
+            }
+        }
+    },
+
+    # =========================593
+    "shota_aizawa": {
+        "nome": "Shota Aizawa",
+        "origem": "My Hero Academia",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115, "atk": 48, "matk": 20, "def": 30, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "Apagar Individualidade (Eraser)",
+            "descricao": "Seu olhar de silêncio limpa a área. Silencia magias inimigas e habilidades ativas por 2 turnos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Captura com Fitas de Aço",
+                "descricao": "Prende e asfixia os atacantes principais. Reduz a precisão e evasão deles em 50%."
+            }
+        }
+    },
+
+    # =========================594
+    "muhammad_avdol": {
+        "nome": "Muhammad Avdol",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105, "atk": 20, "matk": 58, "def": 22, "spd": 22, "crt": 12,
+        "habilidade": {
+            "nome": "Magician's Red: Cross Fire Hurricane",
+            "descricao": "Dispara rajadas flamejantes do pássaro de fogo. Causa 180% de MATK e aplica queimadura contínua."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Detecção de Calor Solar",
+                "descricao": "Seus ataques derretem escudos e removem furtividades e camuflagens arcanas."
+            }
+        }
+    },
+
+    # =========================595
+    "noriaki_kakyoin": {
+        "nome": "Noriaki Kakyoin",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 48, "matk": 30, "def": 18, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Hierophant Green: Emerald Splash",
+            "descricao": "Dispara uma rajada de esmeraldas espirituais. Causa 150% de MATK e afasta o alvo na ordem."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Barreira de Fios de 20 Metros",
+                "descricao": "Prende o pátio em teias verdes. Paralisa os inimigos e causa dano de armadilha."
+            }
+        }
+    },
+
+    # =========================596
+    "jean_pierre_polnareff": {
+        "nome": "Jean Pierre Polnareff",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 58, "matk": 0, "def": 25, "spd": 35, "crt": 15,
+        "habilidade": {
+            "nome": "Chariot: Estocadas",
+            "descricao": "Desfere golpes rápidos de rapieira. Causa 4 hits seguidos de 50% de ATK em um único alvo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Lançamento da Lâmina de Prata",
+                "descricao": "Arremessa a lâmina do florete. Causa acerto crítico massivo e ignora defesa."
+            }
+        }
+    },
+
+    # =========================597
+    "iggy": {
+        "nome": "Iggy",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 125, "atk": 35, "matk": 10, "def": 42, "spd": 28, "crt": 8,
+        "habilidade": {
+            "nome": "The Fool: Cúpula de Areia",
+            "descricao": "Cria barreiras e cúpulas de areia (Taunt). Reduz a precisão e visão oponente."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Mordida do Cão de Nova York",
+                "descricao": "Surpreende o alvo saindo debaixo da areia, aplicando atordoamento (Stun) no líder rival."
+            }
+        }
+    },
+
+    # =========================598
+    "koichi_hirose": {
+        "nome": "Koichi Hirose",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 90, "atk": 15, "matk": 40, "def": 18, "spd": 22, "crt": 10,
+        "habilidade": {
+            "nome": "Echoes Act 1 & 2",
+            "descricao": "Gera ondas sonoras de letras. Cura um aliado em 30% do MATK e aumenta o ataque dele."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Echoes Act 3: Freeze",
+                "descricao": "Aplica peso de gravidade sonora extrema. Paralisa e congela a ação de 1 inimigo."
+            }
+        }
+    },
+
+    # =========================599
+    "okuyasu_nijimura": {
+        "nome": "Okuyasu Nijimura",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 120, "atk": 56, "matk": 0, "def": 30, "spd": 16, "crt": 10,
+        "habilidade": {
+            "nome": "The Hand: Raspagem de Espaço",
+            "descricao": "Apaga o ar aproximando o oponente. Causa 180% de ATK e ignora 100% de escudos e barreiras."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Burrice Resiliente Protetora",
+                "descricao": "Ignora magias inimigas arremessadas contra ele por pura falta de percepção (imunidade)."
+            }
+        }
+    },
+
+    # =========================600
+    "rohan_kishibe": {
+        "nome": "Rohan Kishibe",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 100, "atk": 20, "matk": 62, "def": 22, "spd": 32, "crt": 10,
+        "habilidade": {
+            "nome": "Heaven's Door: Leitura Viva",
+            "descricao": "Lê o inimigo como papel. Impede o oponente de curar ou desviar por 2 turnos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Escrita Absoluta",
+                "descricao": "Escreve comandos na alma de toda a sua party, concedendo imunidade total a danos por 1 turno."
+            }
+        }
+    },
+
+    # =========================601
+    "yoshikage_kira": {
+        "nome": "Yoshikage {Kira}",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 95, "atk": 62, "matk": 25, "def": 18, "spd": 28, "crt": 20,
+        "habilidade": {
+            "nome": "Killer Queen: Primeira Bomba",
+            "descricao": "Transforma o oponente em uma bomba de reishi. Causa 200% de dano explosivo e aplica queimadura."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Bites the Dust",
+                "descricao": "Se sofrer dano fatal, ressurge com vida cheia e explode o assassino responsável causando MATK"
+            }
+        }
+    },
+
+    # =========================602
+    "bruno_bucciarati": {
+        "nome": "Bruno Bucciarati",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115, "atk": 52, "matk": 15, "def": 28, "spd": 26, "crt": 12,
+        "habilidade": {
+            "nome": "Sticky Fingers: Zíperes",
+            "descricao": "Abre zíperes no espaço para mover o grupo. Concede +40% de esquiva à party por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Espírito Resoluto Máfia",
+                "descricao": "Seu corpo continua lutando após a morte. Fica imune a danos por 2 turnos mesmo com 0 HP."
+            }
+        }
+    },
+
+    # =========================603
+    "leone_abbacchio": {
+        "nome": "Leone Abbacchio",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100, "atk": 35, "matk": 28, "def": 22, "spd": 18, "crt": 8,
+        "habilidade": {
+            "nome": "Moody Blues Replay",
+            "descricao": "Repete os lances e ações de cura passadas. Cura 30% do HP do aliado mais fraco."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Julgamento de Ex-Policial",
+                "descricao": "Desliga e silencia magos e assassinos inimigos revelando suas táticas por 2 turnos."
+            }
+        }
+    },
+
+    # =========================604
+    "narancia_ghirga": {
+        "nome": "Narancia Ghirga",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 85, "atk": 48, "matk": 15, "def": 12, "spd": 30, "crt": 15,
+        "habilidade": {
+            "nome": "Aerosmith Vola Vola",
+            "descricao": "Seu avião teleguiado metralha de cima. Causa 130% de ATK e aplica sangramento."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Radar de CO2 Silencioso",
+                "descricao": "Ignora camuflagem e fura escudos mágicos. Seus tiros causam crítico garantido por 1 turno."
+            }
+        }
+    },
+
+    # =========================605
+    "trish_una": {
+        "nome": "Trish Una",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 80, "atk": 35, "matk": 32, "def": 14, "spd": 30, "crt": 10,
+        "habilidade": {
+            "nome": "Spice Girl: Amolecer",
+            "descricao": "Amolece a matéria. Reduz a defesa do alvo em 40% e dá escudo elástico aos aliados."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Determinação de Una",
+                "descricao": "Aumenta o MATK de toda a party em 30% e limpa efeitos de paralisia na rodada."
+            }
+        }
+    },
+
+    # =========================606
+    "pannacotta_fugo": {
+        "nome": "Pannacotta Fugo",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 90, "atk": 15, "matk": 55, "def": 18, "spd": 22, "crt": 10,
+        "habilidade": {
+            "nome": "Purple Haze Vírus",
+            "descricao": "Libera vírus assassinos de cápsula. Causa 170% de MATK em área e aplica veneno extremo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Fúria do Vírus Descontrolado",
+                "descricao": "O vírus corrói a armadura inimiga. Reduz a DEF e SPD dos envenenados pela metade."
+            }
+        }
+    },
+
+    # =========================607
+    "diavolo": {
+        "nome": "Diavolo",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 100, "atk": 65, "matk": 20, "def": 20, "spd": 42, "crt": 20,
+        "habilidade": {
+            "nome": "King Crimson: Tempo Apagado",
+            "descricao": "Apaga segundos do tempo para se mover livre. Esquiva de ataques e causa 200% de ATK."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Epitaph Profético",
+                "descricao": "Prevê perfeitamente as jogadas. Imune a stun, silêncio e ganha +40% de Crt."
+            }
+        }
+    },
+
+    # =========================608
+    "jolyne_cujoh": {
+        "nome": "Jolyne Cujoh",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 62, "matk": 10, "def": 25, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "Stone Free ORA ORA",
+            "descricao": "Causa 220% de ATK físico com combos de fios de aço, aplicando sangramento pesado."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Cinta de Möbius Corporal",
+                "descricao": "Seu corpo de fios finta as frestas físicas. Ganha +40% de evasão ativa e reflete danos."
+            }
+        }
+    },
+
+    # =========================609
+    "ermes_costello": {
+        "nome": "Ermes Costello",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 56, "matk": 15, "def": 20, "spd": 26, "crt": 12,
+        "habilidade": {
+            "nome": "Adesivo Kiss",
+            "descricao": "Cola selos que duplicam matéria. Causa 150% de ATK e quebra escudos de terra."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Punição Prisional",
+                "descricao": "Os adesivos se fundem, causando dano crítico massivo e atordoamento."
+            }
+        }
+    },
+
+    # =========================610
+    "emporio_alnino": {
+        "nome": "Emporio Alniño",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 85, "atk": 5, "matk": 25, "def": 12, "spd": 22, "crt": 5,
+        "habilidade": {
+            "nome": "Quarto Fantasma",
+            "descricao": "Oculta a party em sua fenda secreta. Cura 20% do HP e remove debuffs do líder."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Miras do Vazio",
+                "descricao": "Aumenta a precisão de sua party em 20% por 3 turnos."
+            },
+            5: {
+                "nome": "Disco de Weather Report",
+                "descricao": "Invoca o poder das nuvens. Seus disparos e passes causam dano elétrico crítico."
+            }
+        }
+    },
+
+    # =========================611
+    "weather_report": {
+        "nome": "Weather Report",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 15, "matk": 62, "def": 20, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Controle Atmosférico",
+            "descricao": "Lança nuvens pesadas e raios. Causa 180% de MATK e reduz a SPD do oponente."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Heavy Weather: Caracol",
+                "descricao": "Distorce a luz gerando ilusões. Aplica Stun eterno e dano contínuo na retaguarda."
+            }
+        }
+    },
+
+    # =========================612
+    "narciso_anasui": {
+        "nome": "Narciso Anasui",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 130, "atk": 52, "matk": 15, "def": 42, "spd": 20, "crt": 10,
+        "habilidade": {
+            "nome": "Diver Down: Mergulho",
+            "descricao": "Mergulha seu Stand nos aliados. Atrai provocações (Taunt) e reduz danos sofridos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Reconstrução Corporal",
+                "descricao": "Seu corpo se refaz sob impacto. Converte 30% do dano recebido em HP para os aliados."
+            }
+        }
+    },
+
+    # =========================613
+    "enrico_pucci": {
+        "nome": "Enrico Pucci",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 25, "matk": 60, "def": 22, "spd": 42, "crt": 10,
+        "habilidade": {
+            "nome": "Whitesnake: Discos de Alma",
+            "descricao": "Rouba discos da alma inimiga. Silencia (Silence) magos inimigos e drena mana."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Made in Heaven: Fim do Tempo",
+                "descricao": "Acelera a gravidade e o tempo. Aumenta a velocidade de toda a aliança em 100%."
+            }
+        }
+    },
+
+    # =========================614
+    "gyro_zeppeli": {
+        "nome": "Gyro Julius Caesar Zeppeli",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 62, "matk": 35, "def": 20, "spd": 32, "crt": 20,
+        "habilidade": {
+            "nome": "Esferas de Aço",
+            "descricao": "Lança esferas usando a proporção áurea. Causa 180% de ATK ignorando escudos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Ball Breaker de Ouro",
+                "descricao": "A rotação perfeita. Causa dano verdadeiro e paralisa o inimigo atingido."
+            }
+        }
+    },
+
+    # =========================615
+    "mountain_tim": {
+        "nome": "Mountain Tim",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 95, "atk": 42, "matk": 10, "def": 16, "spd": 26, "crt": 12,
+        "habilidade": {
+            "nome": "Laço Oh! Lonesome Me",
+            "descricao": "Lança cordas para puxar e realocar. Concede +30% de esquiva à party na rodada."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Rastreador Veloz do Oeste",
+                "descricao": "Remove silenciamento e paralisia dos aliados com seu senso de justiça."
+            }
+        }
+    },
+
+    # =========================616
+    "diego_brando": {
+        "nome": "Diego \"Dio\" Brando",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 64, "matk": 10, "def": 18, "spd": 38, "crt": 20,
+        "habilidade": {
+            "nome": "Scary Monsters: Dinossauro",
+            "descricao": "Transforma-se e ataca brutalmente. Causa 180% de ATK e aplica sangramento."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "The World Dinossauro",
+                "descricao": "Para o tempo temporariamente. Causa dano crítico duplo inevitável."
+            }
+        }
+    },
+
+    # =========================617
+    "funny_valentine": {
+        "nome": "Funny Valentine",
+        "origem": "JoJo's Bizarre Adventure",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120, "atk": 55, "matk": 45, "def": 28, "spd": 24, "crt": 10,
+        "habilidade": {
+            "nome": "D4C: Viagem de Clones",
+            "descricao": "Traz cópias alternativas de si do vazio para morrer no seu lugar caso sofra dano fatal."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "D4C: Love Train",
+                "descricao": "Distorce a sorte. Todos os danos e efeitos negativos recebidos são enviados aos inimigos."
+            }
+        }
+    },
+
+    # =========================618
+    "yuichiro_hyakuya": {
+        "nome": "Yuichiro Hyakuya",
+        "origem": "Owari no Seraph",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 62, "matk": 15, "def": 24, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Asuramaru: Fúria de Espada",
+            "descricao": "Cortes demoníacos brutais de energia. Causa 160% de ATK e drena vida."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Rei do Sal",
+                "descricao": "Asas de sal emergem. Transforma o HP do inimigo em pó por MATK verdadeiro."
+            }
+        }
+    },
+
+    # =========================619
+    "mikaela_hyakuya": {
+        "nome": "Mikaela Hyakuya",
+        "origem": "Owari no Seraph",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 130, "atk": 52, "matk": 15, "def": 42, "spd": 30, "crt": 10,
+        "habilidade": {
+            "nome": "Escudo Vampírico de Sangue",
+            "descricao": "Protege os aliados recebendo a punição. Concede Taunt e recupera vida."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Sede de Sangue Real",
+                "descricao": "Seus bloqueios normais passam a absorver de volta HP e a curar a si mesmo."
+            }
+        }
+    },
+
+    # =========================620
+    "shinoa_hiragi": {
+        "nome": "Shinoa Hiragi",
+        "origem": "Owari no Seraph",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 45, "matk": 45, "def": 22, "spd": 24, "crt": 10,
+        "habilidade": {
+            "nome": "Shikama Doji: Foice",
+            "descricao": "Sua foice de demônio corta almas. Causa 140% de MATK e reduz o ataque inimigo em 25%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Liderança Moon Demon",
+                "descricao": "Aumenta o ataque físico de toda a party em 30% por 3 turnos inteiros."
+            }
+        }
+    },
+
+    # =========================621
+    "guren_ichinose": {
+        "nome": "Guren Ichinose",
+        "origem": "Owari no Seraph",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115, "atk": 58, "matk": 35, "def": 25, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Mahiru-No-Yo Flamejante",
+            "descricao": "Saca sua katana do demônio. Causa 170% de ATK e aplica queimadura contínua."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Comando Moon Demon",
+                "descricao": "Sua ordem eleva o front. Concede +35% de ATK e SPD para todo o grupo."
+            }
+        }
+    },
+
+    # =========================622
+    "krul_tepes": {
+        "nome": "Krul Tepes",
+        "origem": "Owari no Seraph",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 125, "atk": 60, "matk": 50, "def": 28, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "Presença Vampírica Superior",
+            "descricao": "Sua aura de rainha paralisa corações. Reduz o ataque (ATK) oponente à metade."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Imortalidade Protetora",
+                "descricao": "Cura e protege os aliados. Concede regeneração de HP e limpa todos os debuffs do time."
+            }
+        }
+    },
+
+    # =========================623
+    "ferid_bathory": {
+        "nome": "Ferid Bathory",
+        "origem": "Owari no Seraph",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105, "atk": 60, "matk": 20, "def": 20, "spd": 34, "crt": 18,
+        "habilidade": {
+            "nome": "Estocada Elegante",
+            "descricao": "Foca no oponente com menor HP. Causa 180% de ATK e drena 30% de HP."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Nobreza Vampírica Sádica",
+                "descricao": "Imune a ataques normais. Seus golpes críticos aplicam veneno mortal no alvo."
+            }
+        }
+    },
+
+    # =========================624
+    "atalanta_fate": {
+        "nome": "Atalanta (FATE)",
+        "origem": "Fate",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 55, "matk": 25, "def": 15, "spd": 35, "crt": 18,
+        "habilidade": {
+            "nome": "Phoebus Catastrophe",
+            "descricao": "Chuva de flechas de luz. Causa 150% de ATK de área com alta precisão."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Agrius Metamorphosis",
+                "descricao": "Assume a forma de javali selvagem, ganhando +40% de ATK e ignorando defesa."
+            }
+        }
+    },
+
+    # =========================625
+    "ereshkigal": {
+        "nome": "Ereshkigal",
+        "origem": "Fate",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135, "atk": 40, "matk": 55, "def": 42, "spd": 24, "crt": 10,
+        "habilidade": {
+            "nome": "Kur Kigal Irkalla",
+            "descricao": "Lança o portal do submundo nos oponentes. Causa 180% de MATK e silencia habilidades."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Proteção de Deusa do Submundo",
+                "descricao": "Seus ataques restauram HP do time em 15% e dão escudo de almas."
+            }
+        }
+    },
+
+    # =========================626
+    "ozymandias": {
+        "nome": "Ozymandias",
+        "origem": "Fate",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120, "atk": 56, "matk": 56, "def": 28, "spd": 22, "crt": 15,
+        "habilidade": {
+            "nome": "Ramesseum Tentyris",
+            "descricao": "Esmaga o inimigo com seu palácio de luz. Causa 220% de MATK e remove buffs."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Proteção do Rei do Sol",
+                "descricao": "Aumenta o ataque e a velocidade da party em 35% de forma duradoura."
+            }
+        }
+    },
+
+    # =========================627
+    "iskandar": {
+        "nome": "Iskandar",
+        "origem": "Fate",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 125, "atk": 60, "matk": 20, "def": 28, "spd": 25, "crt": 10,
+        "habilidade": {
+            "nome": "Ionioi Hetairoi",
+            "descricao": "Invoca seu exército lendário na arena. Aumenta o ATK da equipa em 60%."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Búcefalo Veloz",
+                "descricao": "Atropela a oposição. Remove todos os debuffs do líder aliado."
+            }
+        }
+    },
+
+    # =========================628
+    "baobham_sith": {
+        "nome": "Baobham Sith",
+        "origem": "Fate",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 58, "matk": 45, "def": 18, "spd": 32, "crt": 18,
+        "habilidade": {
+            "nome": "Fairy Knight Tristan",
+            "descricao": "Usa fios sangrentos de longo alcance. Causa 160% de ATK e suga vida."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Bênção de Morgan",
+                "descricao": "Dano de lixeiro absoluto. Seus ataques normais passam a ignorar escudos."
+            }
+        }
+    },
+
+    # =========================629
+    "enkidu": {
+        "nome": "Enkidu",
+        "origem": "Fate",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115, "atk": 62, "matk": 50, "def": 25, "spd": 28, "crt": 18,
+        "habilidade": {
+            "nome": "Enuma Elish",
+            "descricao": "Prende o oponente em correntes de terra. Causa 280% de ATK e Stun garantido."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Transmutação Perfeita",
+                "descricao": "Cura-se totalmente caso sofro dano fatal."
+            }
+        }
+    },
+
+    # =========================630
+    "illyasviel": {
+        "nome": "Illyasviel Von Einzbern",
+        "origem": "Fate",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 90, "atk": 10, "matk": 62, "def": 15, "spd": 20, "crt": 10,
+        "habilidade": {
+            "nome": "Pássaros de Prata Mágicos",
+            "descricao": "Conjura feitiços em forma de aves velozes. Causa 150% de MATK na retaguarda."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Graal Menor Desperto",
+                "descricao": "Magia amaldiçoada em área que corta a regeneração do inimigo e cura a si própria."
+            }
+        }
+    },
+
+    # =========================631
+    "cu_chulainn": {
+        "nome": "Cu Chulainn",
+        "origem": "Fate",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 64, "matk": 15, "def": 22, "spd": 38, "crt": 18,
+        "habilidade": {
+            "nome": "Gae Bolg: Lança Espinho",
+            "descricao": "Perfura o peito do alvo inevitavelmente. Causa 190% de ATK e ignora 40% de DEF."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Proteção das Flechas Divinas",
+                "descricao": "Ganha +50% de esquiva e contra-ataca oponentes."
+            }
+        }
+    },
+
+    # =========================632
+    "luxuria": {
+        "nome": "Luxúria (FMA)",
+        "origem": "Fullmetal Alchemist",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 58, "matk": 10, "def": 18, "spd": 30, "crt": 15,
+        "habilidade": {
+            "nome": "Lança Suprema",
+            "descricao": "Dedos cortantes perfuram o alvo. Causa 160% de ATK e ignora 50% de DEF física."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Regeneração de Homúnculo",
+                "descricao": "Revive uma vez com 30% de HP caso sofra um ataque letal na rodada."
+            }
+        }
+    },
+
+    # =========================633
+    "preguica": {
+        "nome": "Preguiça (FMA)",
+        "origem": "Fullmetal Alchemist",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 140, "atk": 52, "matk": 0, "def": 42, "spd": 10, "crt": 5,
+        "habilidade": {
+            "nome": "Corpo de Pedra",
+            "descricao": "O gigante tanca de forma passiva (Taunt). Reduz em 40% danos físicos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Arrancada Silenciosa",
+                "descricao": "Quando incomodado corre rápido, quebrando escudos inimigos."
+            }
+        }
+    },
+
+    # =========================634
+    "gula": {
+        "nome": "Gula (FMA)",
+        "origem": "Fullmetal Alchemist",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 130, "atk": 45, "matk": 20, "def": 38, "spd": 14, "crt": 5,
+        "habilidade": {
+            "nome": "Vazio Estomacal",
+            "descricao": "Sua barriga abre criando um vácuo. Absorve danos e atordoa o atacante."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Portal Falso Devorador",
+                "descricao": "Suga a moral oponente, reduzindo o ATK do inimigo mais forte pela metade."
+            }
+        }
+    },
+
+    # =========================635
+    "ganancia": {
+        "nome": "Ganância (FMA)",
+        "origem": "Fullmetal Alchemist",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135, "atk": 58, "matk": 0, "def": 60, "spd": 24, "crt": 12,
+        "habilidade": {
+            "nome": "Escudo de Carbono Definitivo",
+            "descricao": "Corpo vira diamante negro (Taunt). Reduz danos a 1 por 1 turno."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Ambição Suprema",
+                "descricao": "Ganha imunidade completa a debuffs de controle de grupo."
+            }
+        }
+    },
+
+    # =========================636
+    "ira": {
+        "nome": "Ira (FMA)",
+        "origem": "Fullmetal Alchemist",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120, "atk": 65, "matk": 0, "def": 28, "spd": 35, "crt": 20,
+        "habilidade": {
+            "nome": "Olho Supremo do Bradley",
+            "descricao": "Lê os movimentos oponentes. Ganha esquiva total e causa 200% de ATK em contra-ataques."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Fúria do Rei Homúnculo",
+                "descricao": "Seus ataques normais passam a triturar 100% da armadura do inimigo."
+            }
+        }
+    },
+
+    # =========================637
+    "orgulho": {
+        "nome": "Orgulho (FMA)",
+        "origem": "Fullmetal Alchemist",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 62, "matk": 62, "def": 25, "spd": 30, "crt": 15,
+        "habilidade": {
+            "nome": "Sombras de Selene",
+            "descricao": "Sombras com dentes atacam à distância. Causa 170% de ATK/MATK e drena vida."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Devorar e Assimilar",
+                "descricao": "Ganha o ATK e a mana de inimigos que forem mortos na sua rodada de tiro."
+            }
+        }
+    },
+
+    # =========================638
+    "eugeo": {
+        "nome": "Eugeo",
+        "origem": "Sword Art Online",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 20, "matk": 58, "def": 22, "spd": 22, "crt": 10,
+        "habilidade": {
+            "nome": "Blue Rose de Gelo",
+            "descricao": "Magia de gelo que congela as pernas do inimigo, aplicando lentidão."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Release Recollection",
+                "descricao": "Congela toda a área do inimigo. Causa dano massivo e drena HP."
+            }
+        }
+    },
+
+    # =========================639
+    "yuuki_kono": {
+        "nome": "Yuuki Kono",
+        "origem": "Sword Art Online",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 95, "atk": 64, "matk": 15, "def": 18, "spd": 38, "crt": 20,
+        "habilidade": {
+            "nome": "Mother's Rosario",
+            "descricao": "Desfere 11 estocadas rápidas. Causa 220% de ATK e ignora esquiva."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Espada de Vontade Absoluta",
+                "descricao": "Sua força e velocidade perfuram tudo. Ignora 100% de DEF oponente."
+            }
+        }
+    },
+
+    # =========================640
+    "leafa": {
+        "nome": "Leafa",
+        "origem": "Sword Art Online",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 10, "matk": 44, "def": 20, "spd": 26, "crt": 10,
+        "habilidade": {
+            "nome": "Magia de Sylph: Vento",
+            "descricao": "Cura e aumenta a velocidade do grupo. Restaura 30% do HP do aliado mais ferido."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Bênção de Terraria",
+                "descricao": "Sua cura divina de terra concede imunidade a efeitos de sangramento e fogo."
+            }
+        }
+    },
+
+    # =========================641
+    "lisbeth": {
+        "nome": "Lisbeth",
+        "origem": "Sword Art Online",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 115, "atk": 35, "matk": 15, "def": 32, "spd": 16, "crt": 8,
+        "habilidade": {
+            "nome": "Escudo de Forja",
+            "descricao": "Martela a armadura dos aliados (Taunt). Cura em 20% e aumenta a DEF."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Martelo de Impacto Guardião",
+                "descricao": "Bate de frente aplicando atordoamento (Stun) e quebrando escudos."
+            }
+        }
+    },
+
+    # =========================642
+    "silica": {
+        "nome": "Silica",
+        "origem": "Sword Art Online",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 85, "atk": 12, "matk": 32, "def": 14, "spd": 24, "crt": 10,
+        "habilidade": {
+            "nome": "Cura de Pina",
+            "descricao": "Seu pequeno dragão azul de estimação cura os aliados em 25% de HP."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Fada Domadora",
+                "descricao": "Seu dragão concede um bônus permanente de velocidade (+20% SPD) à party."
+            }
+        }
+    },
+
+    # =========================643
+    "klein": {
+        "nome": "Klein",
+        "origem": "Sword Art Online",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 110, "atk": 45, "matk": 10, "def": 25, "spd": 20, "crt": 10,
+        "habilidade": {
+            "nome": "Guilda dos Amigos Leais",
+            "descricao": "Tanca o dano para salvar o time. Concede 30% de DEF para a retaguarda."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Ataque do Samurai de Fogo",
+                "descricao": "Saca sua katana de fogo. Causa 150% de ATK e aplica queimadura."
+            }
+        }
+    },
+
+    # =========================644
+    "seiya_de_pegasus": {
+        "nome": "Seiya de Pegasus",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120, "atk": 62, "matk": 30, "def": 25, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Meteoro de Pégaso",
+            "descricao": "Chuva de 100 socos por segundo. Causa 220% de ATK físico de área."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Cometa de Pégaso Dourado",
+                "descricao": "Foca toda a força em um único golpe, ignorando a DEF mágica e física do alvo."
+            }
+        }
+    },
+
+    # =========================645
+    "shun_de_andromeda": {
+        "nome": "Shun de Andromeda",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115, "atk": 32, "matk": 50, "def": 42, "spd": 22, "crt": 10,
+        "habilidade": {
+            "nome": "Corrente de Defesa Absoluta",
+            "descricao": "Protege os aliados (Taunt). Suas correntes barram impactos físicos oponentes."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Tempestade Nebulosa de Shun",
+                "descricao": "Tira as correntes e libera ventos. Causa 180% de MATK em área e paralisia."
+            }
+        }
+    },
+
+    # =========================646
+    "shiryu_de_dragao": {
+        "nome": "Shiryu de Dragão",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 120, "atk": 58, "matk": 15, "def": 50, "spd": 20, "crt": 12,
+        "habilidade": {
+            "nome": "Escudo de Cólera do Dragão",
+            "descricao": "Sua defesa de dragão lhe protege de golpes em área de bosses. Mitiga danos em 50% contra oponentes mais fortes"
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Cólera dos Cem Dragões",
+                "descricao": "Retira o escudo para desferir 180% de ATK em área aos inimigos"
+            }
+        }
+    },
+
+    # =========================647
+    "ikki_de_fenix": {
+        "nome": "Ikki de Fênix",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 65, "matk": 35, "def": 20, "spd": 32, "crt": 18,
+        "habilidade": {
+            "nome": "Ave Fênix Divina",
+            "descricao": "Chamas purificadoras cobrem o pátio. Causa 190% de ATK/MATK e queima."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Golpe Fantasma de Fênix",
+                "descricao": "Esmaga a mente do inimigo. Causa confusão extrema (inimigo ataca aliados)."
+            }
+        }
+    },
+
+    # =========================648
+    "hyoga_de_cisne": {
+        "nome": "Hyoga de Cisne",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 25, "matk": 60, "def": 25, "spd": 26, "crt": 15,
+        "habilidade": {
+            "nome": "Pó de Diamante do Cisne",
+            "descricao": "Congela e paralisa a frente de zaga oponente. Causa 150% de MATK."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Execução Aurora de Camus",
+                "descricao": "Zero Absoluto. Atordoa completamente e executa alvos < 30% HP."
+            }
+        }
+    },
+
+    # =========================649
+    "mu_de_aries": {
+        "nome": "Mu de Aries",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 28, "matk": 62, "def": 18, "spd": 24, "crt": 8,
+        "habilidade": {
+            "nome": "Muralha de Cristal de Áries",
+            "descricao": "Reflete magias e atiradores inimigos de volta ao mestre, curando a party."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Extinção Estelar do Cosmo",
+                "descricao": "Luz estelar dissolve a oposição. Remove todos os debuffs do time."
+            }
+        }
+    },
+
+    # =========================650
+    "aldebaran_de_touro": {
+        "nome": "Aldebaran de Touro",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 150, "atk": 60, "matk": 10, "def": 65, "spd": 10, "crt": 8,
+        "habilidade": {
+            "nome": "Grande Chifre Touro",
+            "descricao": "Parede impenetrável (Taunt absoluto). Reduz todo dano recebido em 50%."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Chifre de Ouro Inquebrável",
+                "descricao": "Imunidade completa a Stuns, contra-atacando instantaneamente com um ataque base sempre que levar dano."
+            }
+        }
+    },
+
+    # =========================651
+    "saga_de_gemeos": {
+        "nome": "Saga de Gêmeos",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 65, "matk": 60, "def": 28, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Explosão Galáctica",
+            "descricao": "Destruição estelar em massa. Causa 220% de MATK em área (AOE)."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Outra Dimensão Sombria",
+                "descricao": "Lança mentes para o vácuo, aplicando confusão total e Stun geral."
+            }
+        }
+    },
+
+    # =========================652
+    "mascara_da_morte_de_cancer": {
+        "nome": "Mascara da Morte de Câncer",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 85, "atk": 60, "matk": 40, "def": 18, "spd": 26, "crt": 15,
+        "habilidade": {
+            "nome": "Ondas do Inferno",
+            "descricao": "Lança o oponente ao Yomotsu. Causa 180% de MATK e silencia por 2 turnos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Poder das Almas Abatidas",
+                "descricao": "Drena vida das almas. Ganha bônus de ATK e SPD para cada herói abatido."
+            }
+        }
+    },
+
+    # =========================653
+    "aiolia_de_leao": {
+        "nome": "Aiolia de Leão",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 65, "matk": 15, "def": 25, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "Cápsula do Poder Elétrica",
+            "descricao": "Soco elétrico do leão dourado. Causa 200% de ATK e atordoa o alvo."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Relâmpago de Plasma Dourado",
+                "descricao": "Feixes de luz fatiam a retaguarda em 250% de ATK em área (AOE)."
+            }
+        }
+    },
+
+    # =========================654
+    "shaka_de_virgem": {
+        "nome": "Shaka de Virgem",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 100,
+        "atk": 20,
+        "matk": 70,
+        "def": 30,
+        "spd": 20, "crt": 10,
+        "habilidade": {
+            "nome": "Tesouro do Céu",
+            "descricao": "Remove sentidos e apaga deuses. Causa 180% de MATK, reduz a precisão dos inimigos em 25%"
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Buda de Virgem",
+                "descricao": "Imune a silêncio e debuffs. Mitiga e compartilha danos do time."
+            }
+        }
+    },
+
+    # =========================655
+    "dohko_de_libra": {
+        "nome": "Dohko de Libra",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 120, "atk": 65, "matk": 28, "def": 30, "spd": 25, "crt": 12,
+        "habilidade": {
+            "nome": "Cólera dos Cem Dragões",
+            "descricao": "Libera dragões dourados que esmagam o oponente. Causa 180% de MATK."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Armas Sagradas de Libra",
+                "descricao": "Distribui armas divinas à party: +50% de DEF e dano crítico brutal."
+            }
+        }
+    },
+
+    # =========================656
+    "milo_de_escorpiao": {
+        "nome": "Milo de Escorpião",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 95, "atk": 62, "matk": 28, "def": 20, "spd": 34, "crt": 18,
+        "habilidade": {
+            "nome": "Agulha Escarlate",
+            "descricao": "Dispara agulhas causando sangramento e lentidão por 3 turnos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Estrela Antares do Fim",
+                "descricao": "O 10º golpe Executa fatalmente o inimigo se já estiver com sangramento."
+            }
+        }
+    },
+
+    # =========================657
+    "aiolos_de_sagitario": {
+        "nome": "Aiolos de Sagitário",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 100, "atk": 65, "matk": 20, "def": 22, "spd": 30, "crt": 15,
+        "habilidade": {
+            "nome": "Flecha de Ouro da Justiça",
+            "descricao": "Flecha dourada de precisão absoluta (nunca erra) de 230% de ATK."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Trovão Atômico Dinâmico",
+                "descricao": "Feixes de luz destroem em área. Causa 200% de MATK e quebra escudos."
+            }
+        }
+    },
+
+    # =========================658
+    "shura_de_capricornio": {
+        "nome": "Shura de Capricórnio",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 95, "atk": 68, "matk": 10, "def": 18, "spd": 32, "crt": 18,
+        "habilidade": {
+            "nome": "Excalibur Divina",
+            "descricao": "Mão vira espada de corte espacial. Causa 220% de ATK ignorando defesa."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Lâmina Divina de Capricórnio",
+                "descricao": "Ignora esquiva e possui 20% de chance de aplicar insta-kill."
+            }
+        }
+    },
+
+    # =========================659
+    "camus_de_aquario": {
+        "nome": "Camus de Aquário",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 100, "atk": 18, "matk": 65, "def": 25, "spd": 22, "crt": 12,
+        "habilidade": {
+            "nome": "Pó de Diamante do Cisne",
+            "descricao": "Sopra frio congelante. Causa 150% de MATK e reduz a SPD oponente."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Execução Aurora do Mestre",
+                "descricao": "Zero Absoluto. Atordoa completamente e executa alvos < 30% HP."
+            }
+        }
+    },
+
+    # =========================660
+    "afrodite_de_peixes": {
+        "nome": "Afrodite de Peixes",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 90, "atk": 52, "matk": 45, "def": 16, "spd": 25, "crt": 12,
+        "habilidade": {
+            "nome": "Rosas Venenosas Reais",
+            "descricao": "Lança rosas envenenadas causando 140% de MATK e cegando (precisão)."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Rosa Sangrenta de Peixes",
+                "descricao": "A rosa branca suga o sangue do alvo passivamente até a derrota."
+            }
+        }
+    },
+
+    # =========================661
+    "hades": {
+        "nome": "Hades",
+        "origem": "Cavaleiros do Zodíaco",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 135, "atk": 65, "matk": 65, "def": 32, "spd": 26, "crt": 15,
+        "habilidade": {
+            "nome": "Grande Eclipse Sombrio",
+            "descricao": "As trevas do submundo caem na terra. Debuff de HP máximo por turno."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Rei do Submundo de CDZ",
+                "descricao": "Abates normais são permanentes; os inimigos derrotados não revivem."
+            }
+        }
+    },
+
+    # =========================662
+    "tet": {
+       "nome": "Tet",
+       "origem": "No Game No Life",
+       "emoji": "📚",
+       "imagem": "",
+       "classe": "lider",
+       "raridade": 5,
+       "max_star": 7,
+       "hp": 110,
+       "atk": 20,
+       "matk": 55,
+       "def": 22,
+       "spd": 42,
+       "crt": 15,
+
+       "habilidade": {
+           "nome": "Dez Regras",
+           "descricao": "Tet impõe as regras absolutas de Disboard. Remove todos os debuffs da equipe e concede imunidade a controle por 2 turnos. Além disso, aumenta a SPD dos aliados em 25%."
+       },
+
+       "evolucoes": {
+           7: {
+               "nome": "Deus dos Jogos",
+               "descricao": "No início da batalha, reduz a precisão (ACC) dos inimigos em 25% e aumenta o CRT da equipe em 20%."
+           }
+       }
+    },
+    # =========================663
+    "atsushi_nakajima": {
+        "nome": "Atsushi Nakajima",
+        "origem": "Bungo Stray Dogs",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 135, "atk": 82, "matk": 0, "def": 30, "spd": 44, "crt": 18,
+        "habilidade": {
+            "nome": "Garras da Besta do Luar",
+            "descricao": "Garras de tigre causam 160% de ATK e curam a party em 25%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Tigre Branco Silencioso",
+                "descricao": "Ganha velocidade (+40% SPD) e imunidade a Stun e medo."
+            }
+        }
+    },
+
+    # =========================664
+    "chuya_nakahara": {
+        "nome": "Chuya Nakahara",
+        "origem": "Bungo Stray Dogs",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 155, "atk": 88, "matk": 30, "def": 55, "spd": 35, "crt": 20,
+        "habilidade": {
+            "nome": "Gravidade Destrutiva",
+            "descricao": "Controla a gravidade na arena (Taunt). Reduz o ATK dos oponentes."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Corrupção de Gravidade",
+                "descricao": "Ganha +100% de ATK e destrói escudos, mas perde HP por turno."
+            }
+        }
+    },
+
+    # =========================665
+    "ranpo_edogawa": {
+        "nome": "Ranpo Edogawa",
+        "origem": "Bungo Stray Dogs",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105, "atk": 10, "matk": 85, "def": 22, "spd": 25, "crt": 15,
+        "habilidade": {
+            "nome": "Super Dedução",
+            "descricao": "Verifica os erros oponentes. Causa 150% de MATK e reduz a DEF delas."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Lógica Absoluta",
+                "descricao": "Imunidade a cegueira e silêncio. Aumenta a própria evasão."
+            }
+        }
+    },
+
+    # =========================666
+    "doppo_kunikida": {
+        "nome": "Doppo Kunikida",
+        "origem": "Bungo Stray Dogs",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 70, "matk": 35, "def": 22, "spd": 35, "crt": 15,
+        "habilidade": {
+            "nome": "Poeta Doppo: Fuzil",
+            "descricao": "Cria um fuzil e atira (150% de ATK). Ignora escudos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Idealista Focado",
+                "descricao": "Ganha bônus de precisão (+40% ACC) e seus disparos dão crítico."
+            }
+        }
+    },
+
+    # =========================667
+    "yumeko_jabami": {
+        "nome": "Yumeko Jabami",
+        "origem": "Kakegurui",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 20, "matk": 45, "def": 20, "spd": 38, "crt": 25,
+        "habilidade": {
+            "nome": "Aposta Compulsiva",
+            "descricao": "Yumeko força o campo de batalha a entrar em um jogo de risco. 50% de chance de aumentar ATK, MATK e CRT da equipe em 35% por 2 turnos; 50% de chance de reduzir ATK, MATK e DEF dos inimigos em 25% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Êxtase do Risco",
+                "descricao": "Sempre que um efeito aleatório for ativado com sucesso, Yumeko cura a equipe em 20% do HP máximo e aumenta a SPD dos aliados em 20% por 2 turnos."
+            }
+        }
+    },
+    # =========================668
+    "kenji_miyazawa": {
+        "nome": "Kenji Miyazawa",
+        "origem": "Bungo Stray Dogs",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 125, "atk": 74, "matk": 0, "def": 30, "spd": 22, "crt": 12,
+        "habilidade": {
+            "nome": "Poder da Terra Rústica",
+            "descricao": "Arremessa móveis do cenário. Causa 150% de ATK e quebra barreiras."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Inocência Camponesa",
+                "descricao": "Ganha imunidade a dores de veneno e restaura HP ao ser ferido."
+            }
+        }
+    },
+
+    # =========================669
+    "yukichi_fukuzawa": {
+        "nome": "Yukichi Fukuzawa",
+        "origem": "Bungo Stray Dogs",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 140, "atk": 85, "matk": 20, "def": 38, "spd": 40, "crt": 20,
+        "habilidade": {
+            "nome": "Corte de Katana Mestre",
+            "descricao": "Saca sua katana (170% de ATK). Apaga buffs inimigos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Todos os Homens São Iguais",
+                "descricao": "Liderança exemplar. Aumenta a DEF e taxa de crítico dos aliados."
+            }
+        }
+    },
+
+    # =========================670
+    "nice": {
+        "nome": "Nice",
+        "origem": "To Be Hero X",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115, "atk": 35, "matk": 35, "def": 24, "spd": 48, "crt": 12,
+        "habilidade": {
+            "nome": "Confiança do Público",
+            "descricao": "O poder de Nice cresce conforme a fé das pessoas. Aumenta o ATK, MATK e SPD de toda a equipe em 25% por 3 turnos"
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Herói Perfeito",
+                "descricao": "Ao entrar em combate, concede imunidade a controle por 2 turnos para toda a equipe e restaura 20% do HP dos aliados."
+            }
+        }
+    },
+
+    # =========================671
+    "lin_ling": {
+        "nome": "Lin Ling",
+        "origem": "To Be Hero X",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 58, "matk": 10, "def": 18, "spd": 44, "crt": 20,
+        "habilidade": {
+            "nome": "Herói Comum",
+            "descricao": "Lin Ling nunca desiste. Causa 150% de ATK e aumenta seu próprio ATK e SPD em 10% (acumulável até 5 vezes)."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Além dos Limites",
+                "descricao": "Ao derrotar um inimigo, recebe imediatamente um turno extra e recupera 20% do HP máximo."
+            }
+        }
+    },
+
+    # =========================672
+    "new_esoul": {
+        "nome": "New E-Soul",
+        "origem": "To Be Hero X",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 90, "atk": 54, "matk": 15, "def": 16, "spd": 40, "crt": 18,
+        "habilidade": {
+            "nome": "Vingança Inacabada",
+            "descricao": "Causa 150% de ATK. Se o alvo estiver abaixo de 50% do HP, o dano aumenta para 220%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Assassino de Heróis",
+                "descricao": "Após eliminar um inimigo, recebe imediatamente um turno extra e aumenta seu crítico em 30%."
+            }
+        }
+    },
+
+    # =========================673
+    "old_esoul": {
+        "nome": "Old E-Soul",
+        "origem": "To Be Hero X",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115, "atk": 52, "matk": 0, "def": 24, "spd": 22, "crt": 12,
+        "habilidade": {
+            "nome": "Último Herói",
+            "descricao": "Old E-Soul relembra seus dias de glória. Causa 170% de ATK e aumenta sua DEF e resistência a controle em 25% por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Lenda de Outra Era",
+                "descricao": "Ao cair abaixo de 50% de HP, recebe +35% de ATK, DEF e crítico até o fim da batalha."
+            }
+        }
+    },
+
+    # =========================674
+    "loli": {
+        "nome": "Loli",
+        "origem": "To Be Hero X",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 90, "atk": 56, "matk": 0, "def": 15, "spd": 30, "crt": 25,
+        "habilidade": {
+            "nome": "Não Brinca Comigo!",
+            "descricao": "Ataca aleatoriamente entre 1 e 3 vezes, causando 100% de ATK por acerto."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Ídolo Problemática",
+                "descricao": "Seus ataques possuem 100% de chance de aplicar Sangramento, Queimadura ou Atordoamento, escolhe aleatoriamente um desses efeitos."
+            }
+        }
+    },
+
+    # =========================675
+    "hero_x": {
+        "nome": "Hero X",
+        "origem": "To Be Hero X",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 7,
+        "max_star": 7,
+        "hp": 620, "atk": 180, "matk": 180, "def": 55, "spd": 45, "crt": 35,
+        "habilidade": {
+            "nome": "Salto Entre Dimensões",
+            "descricao": "Hero X alterna entre os planos 2D e 3D. Ganha 100% de esquiva por 2 turno e desfere um ataque surpresa de 350% de dano híbrido."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Espada X: Ruptura da Realidade",
+                "descricao": "Hero X corta a própria estrutura do campo de batalha. Causa 600% de dano híbrido ao alvo principal, ignora imunidades e remove todos os buffs do inimigo atingido."
+            }
+        }
+    },
+
+    # =========================676
+    "queen": {
+        "nome": "Queen",
+        "origem": "To Be Hero X",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 110, "atk": 35, "matk": 50, "def": 22, "spd": 26, "crt": 12,
+"habilidade": {
+    "nome": "Xeque-Mate",
+    "descricao": "Reduz a SPD dos inimigos em 25% e aumenta a SPD dos aliados em 25% por 3 turnos."
+},
+
+"evolucoes": {
+    7: {
+        "nome": "Tabuleiro da Rainha",
+        "descricao": "No início da luta, concede um escudo equivalente a 25% do HP máximo para toda a equipe."
     }
 }
+    },
 
+    # =========================677
+    "dragon_boy": {
+        "nome": "Dragon Boy",
+        "origem": "To Be Hero X",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 135, "atk": 45, "matk": 25, "def": 42, "spd": 18, "crt": 10,
+"habilidade": {
+    "nome": "Escamas de Retaliação",
+    "descricao": "Entra em postura defensiva (Taunt) por 2 turnos. Armazena 50% do dano recebido."
+},
+
+"evolucoes": {
+    5: {
+        "nome": "Fúria do Dragão",
+        "descricao": "Libera toda a energia acumulada, causando até 250% de ATK proporcional ao dano armazenado."
+    }
+}
+    },
+
+    # =========================678
+    "ghostblade": {
+        "nome": "Ghostblade",
+        "origem": "To Be Hero X",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 60, "matk": 10, "def": 18, "spd": 46, "crt": 25,
+"habilidade": {
+    "nome": "Corte Fantasma",
+    "descricao": "Avança pelas sombras e causa 170% de ATK. Possui 50% de chance de não ser alvo no próximo turno."
+},
+
+"evolucoes": {
+    5: {
+        "nome": "Ceifador Invisível",
+        "descricao": "Se eliminar um alvo, recebe imediatamente 100% de esquiva até seu próximo turno."
+    }
+}
+    },
+
+    # =========================679
+    "joao_joao": {
+        "nome": "Joãozinho e Joãozão",
+        "origem": "To Be Hero X",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 2,
+        "max_star": 7,
+        "hp": 100, "atk": 24, "matk": 10, "def": 18, "spd": 20, "crt": 5,
+"habilidade": {
+    "nome": "Confusão Organizada",
+    "descricao": "Atrapalham os inimigos e curam o aliado com menos HP em 30%."
+},
+
+"evolucoes": {
+    3: {
+        "nome": "Bagunça Generalizada",
+        "descricao": "Reduz o ATK dos inimigos em 15% por 2 turnos."
+    },
+
+    5: {
+        "nome": "Dupla Imparável",
+        "descricao": "Remove um debuff aleatório de todos os aliados e restaura 15% do HP da equipe."
+    }
+}
+    },
+
+    # =========================680
+    "ciano_sorte": {
+        "nome": "Ciano da Sorte",
+        "origem": "To Be Hero X",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 90, "atk": 12, "matk": 46, "def": 16, "spd": 28, "crt": 20,
+"habilidade": {
+    "nome": "Milagre Estatístico",
+    "descricao": "Causa 180% de MATK. Possui 25% de chance de causar dano triplo, 25% de chance de recuperar o HP utilizado e 25% de chance de agir novamente."
+},
+
+"evolucoes": {
+    5: {
+        "nome": "Favorecida pela sorte",
+        "descricao": "Uma vez por combate, evita automaticamente um golpe fatal e recupera 30% do HP."
+    }
+}
+    },
+
+    # =========================681
+    "ahu": {
+        "nome": "Ahu",
+        "origem": "To Be Hero X",
+        "emoji": "🩹",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 105, "atk": 25, "matk": 38, "def": 20, "spd": 32, "crt": 10,
+"habilidade": {
+    "nome": "Não Vou Te Deixar Cair",
+    "descricao": "Ahu protege o aliado mais ferido. Concede um escudo equivalente a 35% do HP máximo e recupera 20% do HP dele."
+},
+
+"evolucoes": {
+    5: {
+        "nome": "Última Linha de Defesa",
+        "descricao": "Uma vez por combate, quando um aliado receber dano fatal, sobrevive com 1 HP e recebe um escudo equivalente a 30% da vida máxima."
+    }
+}
+    },
+
+    # =========================682
+    "blair": {
+        "nome": "Blair",
+        "origem": "Soul Eater",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 3,
+        "max_star": 7,
+        "hp": 100, "atk": 15, "matk": 48, "def": 18, "spd": 34, "crt": 15,
+        "habilidade": {
+            "nome": "Canhão de Abóbora",
+            "descricao": "Dispara abóboras de chamas mágicas explosivas. Causa 140% de MATK e aplica Queimadura por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Nove Vidas de Gato",
+                "descricao": "Sua alma de felino engana a morte. Ao sofrer dano fatal, revive uma vez com 30% de HP máximo."
+            }
+        }
+    },
+
+    # =========================683
+    "black_star": {
+        "nome": "Black Star",
+        "origem": "Soul Eater",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105, "atk": 62, "matk": 12, "def": 20, "spd": 44, "crt": 20,
+        "habilidade": {
+            "nome": "Onda de Impacto da Alma",
+            "descricao": "Desfere um soco direto concentrando a alma. Causa 150% de ATK e atordoa (Stun) o alvo por 1 turno."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Modo Espada Demoníaca",
+                "descricao": "Ganha fúria total. Seus ataques normais passam a causar dano físico em área e ignoram 30% de defesa física."
+            }
+        }
+    },
+
+    # =========================684
+    "crona": {
+        "nome": "Crona",
+        "origem": "Soul Eater",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 58, "matk": 38, "def": 24, "spd": 28, "crt": 12,
+        "habilidade": {
+            "nome": "Grito de Ragnarok",
+            "descricao": "A espada emite vibrações de perturbação mental. Causa 140% de MATK e silencia habilidades inimigas por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Manto de Sangue Negro",
+                "descricao": "Cria uma blindagem viscosa que reduz danos físicos recebidos em 30% e reflete sangramentos nos agressores."
+            }
+        }
+    },
+
+    # =========================685
+    "yuuna_yunohana": {
+        "nome": "Yuuna Yunohana",
+        "origem": "Yuragi-sou",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 12, "matk": 56, "def": 20, "spd": 32, "crt": 15,
+        "habilidade": {
+            "nome": "Ataque Poltergeist",
+            "descricao": "Manipula objetos do cenário de forma assustadora. Causa 150% de MATK em área e reduz a SPD do time inimigo."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Aparência Fantasmagórica",
+                "descricao": "Sua natureza etérea a protege. Ganha imunidade completa contra ataques normais por 2 turnos seguidos."
+            }
+        }
+    },
+
+    # =========================686
+    "nonko_arahabaki": {
+        "nome": "Nonko Arahabaki",
+        "origem": "Yuragi-sou",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 115, "atk": 35, "matk": 58, "def": 24, "spd": 22, "crt": 15,
+        "habilidade": {
+            "nome": "Soco Embriagado",
+            "descricao": "Ginga de forma confusa e desfere um soco de grande impacto. Causa 160% de MATK ignorando a esquiva inimiga."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Taça de Saquê Sagrado",
+                "descricao": "Fica mais forte conforme bebe. Aumenta sua taxa de crítico em 35% e seu dano em 30% por toda a luta."
+            }
+        }
+    },
+
+    # =========================687
+    "violet_evergarden": {
+        "nome": "Violet Evergarden",
+        "origem": "Violet Evergarden",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 62, "matk": 0, "def": 24, "spd": 32, "crt": 20,
+        "habilidade": {
+            "nome": "Braços Mecânicos",
+            "descricao": "Dispara e ataca com suas próteses metálicas de precisão militar. Causa 150% de ATK e destrói escudos físicos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Carta do Sentimento",
+                "descricao": "Sua escrita traz esperança. Concede +30% de ATK e precisão para toda a sua equipe por 3 turnos."
+            }
+        }
+    },
+
+    # =========================688
+    "kasane_teto": {
+        "nome": "Kasane Teto",
+        "origem": "Vocaloid",
+        "emoji": "🔥",
+        "imagem": "",
+        "classe": "mago",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 105, "atk": 15, "matk": 52, "def": 22, "spd": 22, "crt": 10,
+        "habilidade": {
+            "nome": "Baguete de Ferro",
+            "descricao": "Lança pães tão duros que parecem minérios. Causa 140% de MATK e reduz a SPD do oponente em 30%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Diva Quimera",
+                "descricao": "Sua melodia limpa a alma da equipe. Cura toda a sua party em 20% do MATK e remove debuffs de Stun."
+            }
+        }
+    },
+
+    # =========================689
+    "kaiman": {
+        "nome": "Kaiman",
+        "origem": "Dorohedoro",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 145, "atk": 62, "matk": 0, "def": 52, "spd": 26, "crt": 10,
+        "habilidade": {
+            "nome": "Boca de Jacaré",
+            "descricao": "Prende o rosto do alvo em suas mandíbulas (Taunt). Fica imune a debuffs e magias por 2 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Gyoza de Força",
+                "descricao": "Come uma marmita de gyoza no meio da luta. Cura a si mesmo em 25% de HP e aumenta seu ATK em 20%."
+            }
+        }
+    },
+
+    # =========================690
+    "nikaido": {
+        "nome": "Nikaido",
+        "origem": "Dorohedoro",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 100, "atk": 68, "matk": 15, "def": 18, "spd": 42, "crt": 20,
+        "habilidade": {
+            "nome": "Chute de Gyoza",
+            "descricao": "Um salto acrobático com chutes rápidos que quebram as defesas. Causa 150% de ATK ignorando escudos frontais."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Dobra Temporal",
+                "descricao": "Usa sua magia proibida para desfazer seu próprio ferimento. Cura 30% do HP ao desviar de ataques."
+            }
+        }
+    },
+
+    # =========================691
+    "shin": {
+        "nome": "Shin",
+        "origem": "Dorohedoro",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 72, "matk": 25, "def": 20, "spd": 34, "crt": 18,
+        "habilidade": {
+            "nome": "Martelada Sanguinária",
+            "descricao": "Corta os alvos com seu martelo. Causa 160% de ATK e quebra a armadura física oponente em 40%."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Fumaça de Desmembramento",
+                "descricao": "Sua fumaça mágica remove partes. Silencia magos e reduz o ATK físico oponente à metade por 2 turnos."
+            }
+        }
+    },
+
+    # =========================692
+    "noi": {
+        "nome": "Noi",
+        "origem": "Dorohedoro",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 160, "atk": 55, "matk": 35, "def": 55, "spd": 24, "crt": 10,
+        "habilidade": {
+            "nome": "Músculo de Demônio",
+            "descricao": "Seu corpo forte absorve o dano do grupo (Taunt). Cura a si mesma e aos aliados em 15% ao final de cada turno."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Cura Sanguínea Máxima",
+                "descricao": "Ganha lifesteal massivo de 40% em todos os seus golpes físicos e fica totalmente imune a queimaduras."
+            }
+        }
+    },
+
+    # =========================693
+    "lancelot": {
+        "nome": "Lancelot",
+        "origem": "Mokushiroko",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 115, "atk": 82, "matk": 30, "def": 24, "spd": 52, "crt": 25,
+        "habilidade": {
+            "nome": "Corte de Fada Oculto",
+            "descricao": "Golpes ágeis que ultrapassam defesas de forma invisível. Causa 190% de ATK ignorando 50% de defesa física do alvo."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Mestre da Leitura Mental",
+                "descricao": "Prevê com antecedência as fintas e desarmes do inimigo. Ganha +50% de evasão ativa e contra-ataca com precisão."
+            }
+        }
+    },
+
+    # =========================694
+    "percival": {
+        "nome": "Percival",
+        "origem": "Mokushiroko",
+        "emoji": "📚",
+        "imagem": "",
+        "classe": "líder",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 125, "atk": 50, "matk": 50, "def": 32, "spd": 26, "crt": 12,
+        "habilidade": {
+            "nome": "Magia da Esperança",
+            "descricao": "Sua força aumenta conforme seus aliados lutam ao seu redor. Cura e dá buffs de +20% de ATK para o time."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "O Cavaleiro da Morte do Apocalipse",
+                "descricao": "Sua força atinge o limite do fim. Se um aliado for derrotado, ganha imunidade e causa 250% de dano em área."
+            }
+        }
+    },
+
+    # =========================695
+    "tristan": {
+        "nome": "Tristan",
+        "origem": "Mokushiroko",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 120, "atk": 75, "matk": 25, "def": 25, "spd": 38, "crt": 15,
+        "habilidade": {
+            "nome": "Luz e Trevas",
+            "descricao": "Espadas de luz/escuridão causam 160% de ATK e quebram escudos mágicos inimigos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Forma Demoníaca Mazoku",
+                "descricao": "As marcas negras tomam seu corpo. Seus ataques normais herdam lifesteal de 30% e dão crítico."
+            }
+        }
+    },
+
+    # =========================696
+    "gawain": {
+        "nome": "Gawain",
+        "origem": "Mokushiroko",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 165, "atk": 52, "matk": 30, "def": 52, "spd": 18, "crt": 10,
+        "habilidade": {
+            "nome": "Sol da Manhã",
+            "descricao": "Suas armaduras brilham com calor intenso (Taunt). Reduz todo dano recebido em 50% por 2 turnos."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Sol de Meio-Dia",
+                "descricao": "No ápice do calor, seu corpo é inabalável. Fica imune a Stuns e fendas de gelo oponentes."
+            }
+        }
+    },
+
+    # =========================697
+    "vergil": {
+        "nome": "Vergil",
+        "origem": "Devil May Cry",
+        "emoji": "⚔️",
+        "imagem": "",
+        "classe": "assassino",
+        "raridade": 5,
+        "max_star": 7,
+        "hp": 105, "atk": 92, "matk": 30, "def": 22, "spd": 54, "crt": 28,
+        "habilidade": {
+            "nome": "Judgement Cut",
+            "descricao": "A Yamato abre fendas dimensionais em mil cortes rápidos. Causa 220% de ATK de área e ignora 50% da defesa."
+        },
+        "evolucoes": {
+            7: {
+                "nome": "Sin Devil Trigger",
+                "descricao": "Desperta seu demônio interno supremo. Ganha regeneração constante, +40% de ATK e lifesteal de 30%."
+            }
+        }
+    },
+
+    # =========================698
+    "enjin": {
+        "nome": "Enjin",
+        "origem": "Gachiakuta",
+        "emoji": "🛡️",
+        "imagem": "",
+        "classe": "tank",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 155, "atk": 42, "matk": 10, "def": 52, "spd": 15, "crt": 5,
+        "habilidade": {
+            "nome": "Guarda-Chuva de Aço",
+            "descricao": "Sua Jinki cria uma muralha impenetrável de lixo metálico (Taunt). Protege de chuvas ácidas oponentes."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Varredor de Detritos",
+                "descricao": "Aumenta as defesas físicas (DEF) a cada golpe sofrido de forma acumulativa ao longo da luta."
+            }
+        }
+    },
+
+    # =========================699
+    "riyo": {
+        "nome": "Riyo",
+        "origem": "Gachiakuta",
+        "emoji": "🏹",
+        "imagem": "",
+        "classe": "atirador",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 95, "atk": 58, "matk": 15, "def": 18, "spd": 32, "crt": 18,
+        "habilidade": {
+            "nome": "Tesouras do Lixeiro",
+            "descricao": "Arremessa jinkis afiadas e velozes. Causa 150% de ATK e aplica sangramento contínuo por 3 turnos."
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Garras Cortantes",
+                "descricao": "Extrai força da destruição de itens. Aumenta o dano crítico em 35% contra inimigos da classe Suporte."
+            }
+        }
+    },
+
+    # =========================700
+    "zanka": {
+        "nome": "Zanka",
+        "origem": "Gachiakuta",
+        "emoji": "👊",
+        "imagem": "",
+        "classe": "atacante",
+        "raridade": 4,
+        "max_star": 7,
+        "hp": 110, "atk": 62, "matk": 10, "def": 25, "spd": 28, "crt": 15,
+        "habilidade": {
+            "nome": "Bastão Rúnico do Varredor",
+            "descricao": "Desfere golpes pesados com seu bastão de metal. Causa 170% de ATK físico e quebra escudos"
+        },
+        "evolucoes": {
+            5: {
+                "nome": "Determinação do Guerreiro",
+                "descricao": "Sua força de vontade destrói armaduras. Seus ataques críticos têm 30% de chance de atordoar (Stun) o alvo."
+            }
+        }
+    }
+}
 CLASS_EMOJIS = {
     "atacante": "👊",
     "assassino": "⚔️",
@@ -14241,6 +18162,7 @@ DIVINE_HERO_IDS = {
     "jin_mori",
     "ryougi_shiki",
     "lambdadelta",
+    "hero_x",
 }
 
 ORIGIN_ALIASES = {
