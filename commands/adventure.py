@@ -4,7 +4,6 @@ import sqlite3
 import random
 import os
 import sys
-import json
 import time
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -19,9 +18,29 @@ try:
     from utils.combat import simular_combate_tatico
     from utils.xp_system import dar_xp_jogador, dar_xp_heroi
     from utils.rewards import scale_combat_rewards
+    from utils.adventure_catalog import load_adventure_catalog
+    from utils.affinity import apply_affinity_bonus
+    from utils.equipment import get_equipment_bonus
+    from utils.hero_stats import calculate_hero_stats, normalize_class
+    from utils.player_bonuses import apply_battle_hp_bonus
+    from utils.skills import get_hero_skill_ids
 except ModuleNotFoundError:
     HEROES, ENEMIES, EQUIPAMENTOS = {}, {}, {}
     def scale_combat_rewards(gold=0, xp=0, progress=1, reference=50): return gold, xp
+    def load_adventure_catalog(): return {}
+    def apply_affinity_bonus(party_data, heroes): return party_data
+    def get_equipment_bonus(cursor, user_id, item_name, equipamentos): return {}
+    def calculate_hero_stats(hero_data, stars=1, level=1, equipment_bonuses=None):
+        return {
+            "hp": hero_data.get("hp", 100), "atk": hero_data.get("atk", 10),
+            "matk": hero_data.get("matk", 10), "def": hero_data.get("def", 5),
+            "spd": hero_data.get("spd", 10), "crt": hero_data.get("crt", 5),
+        }
+    def normalize_class(value): return str(value or "neutro").lower()
+    def apply_battle_hp_bonus(cursor, user_id, party_data): return party_data
+    def get_hero_skill_ids(hero_data, stars=1, rarity=None):
+        skill_id = hero_data.get("habilidade")
+        return [skill_id] if skill_id else []
 
 COOLDOWN_HORAS = 2
 COOLDOWN_SEGUNDOS = COOLDOWN_HORAS * 3600
@@ -31,12 +50,38 @@ def cortar_texto(texto, limite=1000):
     return texto if len(texto) <= limite else texto[: limite - 3] + "..."
 
 def carregar_aventuras():
-    caminho = os.path.join(root_dir, "data", "adventures.json")
-    try:
-        with open(caminho, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
+    return load_adventure_catalog()
+
+
+def _combat_power(member):
+    stats = member.get("stats", member)
+    hp = float(stats.get("hp", member.get("hp", 1)) or 1)
+    atk = float(stats.get("atk", member.get("atk", 0)) or 0)
+    matk = float(stats.get("matk", member.get("matk", 0)) or 0)
+    defense = float(stats.get("def", member.get("def", 0)) or 0)
+    speed = float(stats.get("spd", member.get("spd", 0)) or 0)
+    critical = float(stats.get("crt", member.get("crt", 0)) or 0)
+    return hp * 0.45 + max(atk, matk) * 3 + defense * 2 + speed + critical
+
+
+def balance_adventure_encounter(enemies, party, tier):
+    if not enemies or not party:
+        return enemies
+
+    party_power = sum(_combat_power(member) for member in party)
+    enemy_power = sum(_combat_power(member) for member in enemies)
+    target_ratio = {1: 0.82, 2: 0.96, 3: 1.08, 4: 1.22}.get(int(tier or 1), 0.96)
+    target_power = party_power * target_ratio * random.uniform(0.94, 1.06)
+    scale = max(0.25, min(2.25, target_power / max(1.0, enemy_power)))
+
+    for enemy in enemies:
+        stats = enemy["stats"]
+        for stat in ("hp", "atk", "matk", "def"):
+            minimum = 1 if stat == "hp" else 0
+            stats[stat] = max(minimum, int(round(stats.get(stat, 0) * scale)))
+        enemy.update({key: stats[key] for key in ("hp", "atk", "matk", "def")})
+
+    return enemies
 
 def puxar_party_para_combate(user_id, user_name):
     conn = sqlite3.connect("players.db")
@@ -60,40 +105,34 @@ def puxar_party_para_combate(user_id, user_name):
             h_id, stars, level, e_atk, e_def, e_livre = hero
             h_data = HEROES.get(h_id, {})
             
-            base_hp = h_data.get("hp", 100); base_atk = h_data.get("atk", 10); base_matk = h_data.get("matk", 10)
-            base_def = h_data.get("def", 5); base_spd = max(1, h_data.get("spd", 10)); base_crt = h_data.get("crt", 5)
-
-            mult = 1.0 + (0.15 * (stars - 1))
-            
-            hp = int((base_hp * mult) + (base_hp * 0.15 * (level - 1)))
-            atk = int((base_atk * mult) + (base_atk * 0.15 * (level - 1)))
-            matk = int((base_matk * mult) + (base_matk * 0.15 * (level - 1)))
-            df = int((base_def * mult) + (base_def * 0.15 * (level - 1)))
-            spd = int(base_spd + (base_spd * 0.02 * (level - 1))) 
-            crt = base_crt + (level // 10)
-
-            cl = h_data.get("classe", "neutro").lower()
-            if cl == "atacante": atk += (level - 1) * 3
-            elif cl == "mago": matk += (level - 1) * 3
-            elif cl == "suporte": hp += (level - 1) * 10
-            elif cl == "tank": df += (level - 1) * 5
-            elif cl == "atirador": crt += (level - 1) * 1
-            elif cl == "assassino": spd += (level - 1) * 1
-            elif cl in ["lider", "líder"]:
-                atk += (level - 1); matk += (level - 1); df += (level - 1); spd += (level - 1); hp += (level - 1) * 5
-            
+            equipment_bonuses = []
             for eq_name in [e_atk, e_def, e_livre]:
                 if eq_name and eq_name in EQUIPAMENTOS:
-                    eq = EQUIPAMENTOS[eq_name]
-                    atk += eq.get("atk", 0); matk += eq.get("matk", 0); df += eq.get("def", 0); hp += eq.get("hp", 0)
+                    equipment_bonuses.append(
+                        get_equipment_bonus(cursor, user_id, eq_name, EQUIPAMENTOS)
+                    )
+
+            stats = calculate_hero_stats(h_data, stars, level, equipment_bonuses)
+            hp, atk, matk = stats["hp"], stats["atk"], stats["matk"]
+            df, spd, crt = stats["def"], stats["spd"], stats["crt"]
+            cl = normalize_class(h_data.get("classe", "neutro"))
+            skills = get_hero_skill_ids(h_data, stars, h_data.get("raridade", 0))
 
             party_data.append({
-                "id": str(hid), "nome": f"{h_data.get('nome', 'Herói')} ({user_name})", "classe": cl,
+                "id": str(hid), "hero_id": h_id,
+                "nome": f"{h_data.get('nome', 'Herói')} ({user_name})", "classe": cl,
+                "level": level,
                 "hp": hp, "atk": atk, "matk": matk, "def": df, "spd": spd, "crt": crt,
-                "stats": {"hp": hp, "atk": atk, "matk": matk, "def": df, "spd": spd, "crt": crt},
-                "habilidades": [h_data.get("habilidade")] if h_data.get("habilidade") else []
+                "stats": {
+                    "hp": hp, "atk": atk, "matk": matk, "def": df,
+                    "spd": spd, "crt": crt, "level": level,
+                },
+                "habilidades": skills,
             })
-            
+
+    party_data = apply_affinity_bonus(party_data, HEROES)
+    party_data = apply_battle_hp_bonus(cursor, user_id, party_data)
+    conn.commit()
     conn.close()
     return party_data
 
@@ -134,6 +173,7 @@ class AdventureSession(discord.ui.View):
         self.party_data = party_data
         self.progress_level = progress_level
         self.nodos = aventura_data.get("nodos", {})
+        self.tier = int(aventura_data.get("_meta", {}).get("tier", 1))
         self.nodo_atual_id = "start"
         self.moral = 100
         self.perigo = 0
@@ -185,13 +225,12 @@ class AdventureSession(discord.ui.View):
         team_b = []
         for idx, i_id in enumerate(inimigos_ids):
             ini_base = ENEMIES.get(i_id, {})
-            # Escalonamento básico para as aventuras mais a penalidade de perigo
-            lvl_multi = 1.3 + (self.perigo / 200)
+            danger_mult = 1.0 + (self.perigo / 500)
             b_stats = {
-                "hp": int(ini_base.get("hp", 200) * lvl_multi),
-                "atk": int(ini_base.get("atk", 30) * lvl_multi),
-                "def": int(ini_base.get("def", 10) * lvl_multi),
-                "matk": int(ini_base.get("matk", 0) * lvl_multi),
+                "hp": int(ini_base.get("hp", 200) * danger_mult),
+                "atk": int(ini_base.get("atk", 30) * danger_mult),
+                "def": int(ini_base.get("def", 10) * danger_mult),
+                "matk": int(ini_base.get("matk", 0) * danger_mult),
                 "spd": ini_base.get("spd", 15), "crt": 5, 
                 "habilidades": [ini_base.get("habilidade")] if ini_base.get("habilidade") else [],
                 "classe": ini_base.get("tipo", "comum")
@@ -201,6 +240,7 @@ class AdventureSession(discord.ui.View):
                 "hp": b_stats["hp"], "stats": b_stats, "habilidades": b_stats["habilidades"]
             })
 
+        balance_adventure_encounter(team_b, self.party_data, self.tier)
         await interaction.response.edit_message(content="⚔️ **O combate começou! A vida pisca diante dos teus olhos...**", embed=None, view=None)
         
         vitoria, log_batalha = simular_combate_tatico(self.party_data, team_b)

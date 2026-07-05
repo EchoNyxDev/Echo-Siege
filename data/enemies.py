@@ -255,6 +255,7 @@ ENEMIES = {
     # Bestas e Monstros Comuns
     "slime": {"nome": "Slime", "tipo": "comum", "hp": 250, "atk": 50, "def": 20, "matk": 0, "spd": 15, "crt": 5},
     "slime_toxico": {"nome": "Slime Tóxico", "tipo": "comum", "hp": 400, "atk": 70, "def": 30, "matk": 0, "spd": 20, "crt": 5},
+    "slime_gigante": {"nome": "Slime Gigante Mutante", "tipo": "boss", "hp": 1800, "atk": 170, "def": 90, "matk": 60, "spd": 18, "crt": 5},
     "rato_mutante": {"nome": "Rato Mutante", "tipo": "comum", "hp": 300, "atk": 80, "def": 20, "matk": 0, "spd": 40, "crt": 10},
     "aranha_gigante": {"nome": "Aranha Gigante", "tipo": "comum", "hp": 600, "atk": 100, "def": 50, "matk": 0, "spd": 35, "crt": 15},
     "lagarto_gigante": {"nome": "Lagarto Gigante", "tipo": "comum", "hp": 1000, "atk": 120, "def": 70, "matk": 0, "spd": 30, "crt": 10},

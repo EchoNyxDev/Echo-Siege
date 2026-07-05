@@ -886,7 +886,7 @@
         ]
       },
       "combate_wyvern": {"tipo": "combate", "texto": "A fera de escamas elétricas mergulha em rasante mortal!", "inimigos": ["wyvern_tempestuoso"], "win_next": "vitoria_wyvern", "lose_next": "derrota"},
-      "combate_mercenarios": {"tipo": "combate", "texto": "Os bandidos estão no acampamento vizinho!", "inimigos": ["lider_bandido", "mago_mercenario", "mercenario"], "win_next": "vitoria_ovo", "lose_next": "derrota"},
+      "combate_mercenarios": {"tipo": "combate", "texto": "Os bandidos estão no acampamento vizinho!", "inimigos": ["lider_bandido", "mercenario_mago", "mercenario"], "win_next": "vitoria_ovo", "lose_next": "derrota"},
       "domar": {"tipo": "recompensa", "texto": "Tentou abraçar um réptil furioso que cospe raios. Ótima ideia. Acabaram tostados.", "gold": 0, "xp": 100, "moral_change": -10},
       "vitoria_wyvern": {"tipo": "recompensa", "texto": "Ficaram com as escamas caríssimas, mas a tempestade triste no topo nunca vai passar.", "gold": 2500, "xp": 1500, "moral_change": -20, "drops": {"escama_tempestuosa": 1.0}},
       "vitoria_ovo": {"tipo": "recompensa", "texto": "Devolveram a cria recém-chocada e ganharam os despojos dos bandidos. O dragão menor rugiu de gratidão e voou para as nuvens.", "gold": 3000, "xp": 2000, "moral_change": 50, "drops": {"escama_tempestuosa": 0.4}},

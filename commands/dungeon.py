@@ -29,15 +29,17 @@ try:
     from data.enemies import ENEMIES
     from data.heroes import HEROES
     from data.equipamentos import EQUIPAMENTOS
-    from data.habilidades import SKILLS
+    from data.habilidades import SKILLS as HERO_SKILLS
+    from data.habmonsters import MONSTER_SKILLS
     from utils.combat import CombatEntity, apply_on_hit_statuses, apply_status_effects, apply_status_protection, choose_combat_skill
     from utils.xp_system import dar_xp_jogador, dar_xp_heroi
     from utils.skills import get_hero_skill_ids, resolve_skill_list
     from utils.hero_stats import calculate_hero_stats, normalize_class
-    from utils.rewards import scale_combat_rewards
+    from utils.rewards import scale_dungeon_rewards
     from utils.equipment import get_equipment_bonus
     from utils.affinity import apply_affinity_bonus
     from utils.player_bonuses import apply_reward_bonuses, apply_battle_hp_bonus
+    SKILLS = {**HERO_SKILLS, **MONSTER_SKILLS}
 except Exception: # Usando Exception para capturar tanto ModuleNotFound quanto ImportError
     DUNGEONS, ENEMIES, HEROES, EQUIPAMENTOS, SKILLS = {}, {}, {}, {}, {}
     def get_hero_skill_ids(hero_data, stars=1, rarity=None):
@@ -66,7 +68,7 @@ except Exception: # Usando Exception para capturar tanto ModuleNotFound quanto I
         return {"hp": 100, "atk": 10, "matk": 10, "def": 5, "spd": 10, "crt": 5, "level": level}
     def normalize_class(value):
         return str(value or "neutro").lower()
-    def scale_combat_rewards(gold=0, xp=0, progress=1, reference=50):
+    def scale_dungeon_rewards(gold=0, xp=0, progress=1, reference=50):
         return gold, xp
 
 def choose_ai_combat_skill(actor, skills=None, allies=None, enemies=None, skill_chance=0.62):
@@ -119,6 +121,59 @@ def build_dungeon_enemy_raw(enemy_id, index, dungeon_id, area, party_data, is_bo
         "stats": scale_dungeon_enemy_stats(enemy_data, dungeon_id, area, party_data, is_boss=is_boss),
         "habilidades": [enemy_data.get("habilidade")] if enemy_data.get("habilidade") else [],
     }
+
+
+def _dungeon_member_power(member):
+    if hasattr(member, "get_stat"):
+        hp = float(getattr(member, "max_hp", member.get_stat("hp")) or 1)
+        atk = float(member.get_stat("atk") or 0)
+        matk = float(member.get_stat("matk") or 0)
+        defense = float(member.get_stat("def") or 0)
+        speed = float(member.get_stat("spd") or 0)
+        critical = float(member.get_stat("crt") or 0)
+    else:
+        stats = member.get("stats", member)
+        hp = float(stats.get("hp", member.get("hp", 1)) or 1)
+        atk = float(stats.get("atk", member.get("atk", 0)) or 0)
+        matk = float(stats.get("matk", member.get("matk", 0)) or 0)
+        defense = float(stats.get("def", member.get("def", 0)) or 0)
+        speed = float(stats.get("spd", member.get("spd", 0)) or 0)
+        critical = float(stats.get("crt", member.get("crt", 0)) or 0)
+    return hp * 0.45 + max(atk, matk) * 3 + defense * 2 + speed + critical
+
+
+def balance_dungeon_enemy_group(
+    enemies,
+    party,
+    dungeon_id,
+    area,
+    is_boss=False,
+    target_ratio_override=None,
+):
+    if not enemies or not party:
+        return enemies
+
+    progress = max(1, ((int(dungeon_id) - 1) * 5) + int(area))
+    party_power = sum(_dungeon_member_power(member) for member in party)
+    enemy_power = sum(_dungeon_member_power(member) for member in enemies)
+    target_ratio = target_ratio_override
+    if target_ratio is None:
+        target_ratio = (
+            1.0 + progress * 0.02
+            if is_boss
+            else 0.75 + progress * 0.018
+        )
+    target_power = party_power * target_ratio * random.uniform(0.94, 1.06)
+    scale = max(0.20, min(2.25, target_power / max(1.0, enemy_power)))
+
+    for enemy in enemies:
+        stats = enemy["stats"]
+        for stat in ("hp", "atk", "matk", "def"):
+            minimum = 1 if stat == "hp" else 0
+            stats[stat] = max(minimum, int(round(stats.get(stat, 0) * scale)))
+
+    return enemies
+
 
 def puxar_party_para_combate(user_id, user_name):
     conn = sqlite3.connect("players.db")
@@ -217,7 +272,14 @@ class DungeonBattleView(discord.ui.View):
         return max(1, int(amount * random.uniform(low, high)))
 
     def _summon_enemies(self, actor, effect):
-        enemy_id = effect.get("invoca_inimigo") or effect.get("summon_enemy")
+        summon_data = effect.get("invocar", {})
+        if not isinstance(summon_data, dict):
+            summon_data = {}
+        enemy_id = (
+            effect.get("invoca_inimigo")
+            or effect.get("summon_enemy")
+            or summon_data.get("id")
+        )
         if not actor.is_enemy or not enemy_id:
             return []
 
@@ -225,9 +287,10 @@ class DungeonBattleView(discord.ui.View):
         if len(alive_enemies) >= 8:
             return []
 
-        amount = min(3, max(1, int(effect.get("quantidade_invocada", 1) or 1)))
+        amount = effect.get("quantidade_invocada", summon_data.get("quantidade", 1))
+        amount = min(3, max(1, int(amount or 1)))
         amount = min(amount, 8 - len(alive_enemies))
-        summoned = []
+        summoned_raw = []
         for _ in range(amount):
             raw = build_dungeon_enemy_raw(
                 enemy_id,
@@ -238,6 +301,18 @@ class DungeonBattleView(discord.ui.View):
                 is_boss=False,
                 summoned=True,
             )
+            summoned_raw.append(raw)
+
+        balance_dungeon_enemy_group(
+            summoned_raw,
+            self.team_a,
+            self.dungeon_id,
+            self.andar,
+            target_ratio_override=min(0.42, 0.16 * amount),
+        )
+
+        summoned = []
+        for raw in summoned_raw:
             entity = CombatEntity(raw["id"], raw["nome"], raw["stats"], True)
             entity.habilidades = resolve_skill_list(raw.get("habilidades", []))
             self.team_b.append(entity)
@@ -602,6 +677,14 @@ class BossEncounterView(discord.ui.View):
                 team_b_raw.append(build_dungeon_enemy_raw(in_id, c, self.dungeon_id, self.andar, self.team_a, is_boss=False))
                 c += 1
 
+        balance_dungeon_enemy_group(
+            team_b_raw,
+            self.team_a,
+            self.dungeon_id,
+            self.andar,
+            is_boss=True,
+        )
+
         # Cria a view do combate interativo agora contra o boss
         view_boss = DungeonBattleView(self.ctx, [], team_b_raw, self.boss_id, self.andar_data, self.dungeon_id, self.andar, self.moral, self.prosp, self.d_cog, is_boss_phase=True)
         view_boss.team_a = self.team_a # Passa o time do jogador já surrado/curado
@@ -612,7 +695,7 @@ class BossEncounterView(discord.ui.View):
     async def btn_recuar(self, interaction: discord.Interaction, button: discord.ui.Button):
         base_gold = int(self.andar_data.get("loot_gold", 0) * 0.3)
         progress = max(1, ((int(self.dungeon_id) - 1) * 10) + (int(self.andar) * 2))
-        base_gold, _ = scale_combat_rewards(base_gold, 0, progress)
+        base_gold, _ = scale_dungeon_rewards(base_gold, 0, progress)
         conn = sqlite3.connect("players.db")
         cursor = conn.cursor()
         cursor.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?", (base_gold, str(self.user_id)))
@@ -658,12 +741,12 @@ class Dungeon(commands.Cog):
         final_xp_main = int(base_xp_main * mult_cidade)
         final_xp_party = int(base_xp_party * mult_cidade)
         progress = max(1, ((int(d_id) - 1) * 10) + (int(a_id) * 2))
-        final_gold, final_xp_main = scale_combat_rewards(
+        final_gold, final_xp_main = scale_dungeon_rewards(
             final_gold,
             final_xp_main,
             progress,
         )
-        _, final_xp_party = scale_combat_rewards(
+        _, final_xp_party = scale_dungeon_rewards(
             0,
             final_xp_party,
             progress,
@@ -788,6 +871,14 @@ class Dungeon(commands.Cog):
             for _ in range(quantidade):
                 team_b_raw.append(build_dungeon_enemy_raw(in_id, c, dungeon_id, andar, team_a_data))
                 c += 1
+
+        balance_dungeon_enemy_group(
+            team_b_raw,
+            team_a_data,
+            dungeon_id,
+            andar,
+            is_boss=False,
+        )
 
         boss_id = andar_data.get("mini_boss") or andar_data.get("boss")
         

@@ -1,10 +1,8 @@
 import discord
 from discord.ext import commands
 import sqlite3
-import random
 import os
 import sys
-import json
 from datetime import datetime, timezone, timedelta
 
 BRT = timezone(timedelta(hours=-3))
@@ -14,51 +12,41 @@ root_dir = os.path.abspath(os.path.join(current_dir, '..'))
 if root_dir not in sys.path:
     sys.path.append(root_dir)
 
+from utils.adventure_catalog import (
+    CATALOG_VERSION,
+    TIER_INFO,
+    load_adventure_catalog,
+    select_daily_contracts,
+)
+
+
 def carregar_chaves_aventuras():
-    caminho = os.path.join(root_dir, "data", "adventures.json")
-    try:
-        with open(caminho, 'r', encoding='utf-8') as f:
-            advs = json.load(f)
-            return list(advs.keys()), advs
-    except FileNotFoundError:
-        return [], {}
+    adventures = load_adventure_catalog()
+    return list(adventures.keys()), adventures
 
 def cortar(texto, limite=180):
     texto = str(texto or "").replace("\n", " ").strip()
     return texto if len(texto) <= limite else texto[: limite - 1] + "..."
 
 def obter_tier_aventura(adv):
-    nodos = adv.get("nodos", {})
-    recompensas = [n for n in nodos.values() if n.get("tipo") == "recompensa"]
-    ouro = max([n.get("gold", 0) for n in recompensas] or [0])
-    
-    if ouro < 600: return 1      # Comum
-    elif ouro < 1500: return 2   # Rara
-    elif ouro < 5000: return 3   # Épica
-    else: return 4               # Lendária
+    return int(adv.get("_meta", {}).get("tier", 1))
 
 def resumo_aventura(adv_id, adv):
     nodos = adv.get("nodos", {})
     start = nodos.get("start", {})
-    combates = [n for n in nodos.values() if n.get("tipo") == "combate"]
-    recompensas = [n for n in nodos.values() if n.get("tipo") == "recompensa"]
-    inimigos = sum(len(n.get("inimigos", [])) for n in combates)
-    ouro = max([n.get("gold", 0) for n in recompensas] or [0])
-    xp = max([n.get("xp", 0) for n in recompensas] or [0])
-    
-    if ouro >= 5000:
-        risco = "Calamidade 🟣 (Lendário)"
-    elif ouro >= 1500:
-        risco = "Extremo 🔴 (Épico)"
-    elif ouro >= 600 or inimigos >= 3:
-        risco = "Alto 🟠 (Raro)"
-    elif ouro >= 300 or inimigos >= 1:
-        risco = "Médio 🟡 (Incomum)"
-    else:
-        risco = "Baixo 🟢 (Comum)"
-        
+    meta = adv.get("_meta", {})
+    tier = obter_tier_aventura(adv)
+    tier_data = TIER_INFO[tier]
+    ouro = int(meta.get("max_gold", 0))
+    xp = int(meta.get("max_xp", 0))
+    level_max = tier_data["nivel_max"]
+    faixa = f"{tier_data['nivel_min']}+" if level_max is None else f"{tier_data['nivel_min']}-{level_max}"
+    origem = "Missão da Guilda" if meta.get("source") == "missions" else "Aventura narrativa"
     gancho = cortar(start.get("texto", adv.get("nome", adv_id)), 150)
-    return f"Risco: **{risco}** | Pagamento Base: **{ouro:,} Gold / {xp:,} XP**\n{gancho}"
+    return (
+        f"Risco: **{tier_data['nome']}** | Nível recomendado: **{faixa}**\n"
+        f"Até **{ouro:,} Gold / {xp:,} XP** | {origem}\n{gancho}"
+    )
 
 class GuildBoardView(discord.ui.View):
     def __init__(self, ctx, m1, m2, m3, m1_st, m2_st, m3_st, adv_data):
@@ -123,6 +111,9 @@ class Work(commands.Cog):
             active_mission TEXT DEFAULT NULL
         )
         """)
+        columns = {row[1] for row in cursor.execute("PRAGMA table_info(daily_quests)")}
+        if "catalog_version" not in columns:
+            cursor.execute("ALTER TABLE daily_quests ADD COLUMN catalog_version INTEGER DEFAULT 1")
         conn.commit()
         conn.close()
 
@@ -138,54 +129,36 @@ class Work(commands.Cog):
         conn = sqlite3.connect("players.db")
         cursor = conn.cursor()
         
-        cursor.execute("SELECT date_str, m1_id, m1_status, m2_id, m2_status, m3_id, m3_status, active_mission FROM daily_quests WHERE user_id = ?", (uid,))
+        cursor.execute("SELECT date_str, m1_id, m1_status, m2_id, m2_status, m3_id, m3_status, active_mission, catalog_version FROM daily_quests WHERE user_id = ?", (uid,))
         dados = cursor.fetchone()
 
         cursor.execute("SELECT level FROM players WHERE user_id = ?", (uid,))
         p_lvl_data = cursor.fetchone()
         player_level = p_lvl_data[0] if p_lvl_data else 1
 
-        # Roda os contratos diários se for um dia novo ou não tiver registo
-        if not dados or dados[0] != hoje_str:
-            
-            # Filtro inteligente de Tiers Baseado no Nível da Conta
-            if player_level <= 10:
-                allowed_tiers = [1]
-            elif player_level <= 25:
-                allowed_tiers = [1, 2]
-            elif player_level <= 45:
-                allowed_tiers = [2, 3]
-            else:
-                allowed_tiers = [3, 4]
-                
-            pool = [k for k in keys if obter_tier_aventura(all_advs[k]) in allowed_tiers]
-            
-            # Se por acaso a pool não tiver 3 missões por falta de escrita, expande o range
-            if len(pool) < 3:
-                if player_level > 25:
-                    pool = [k for k in keys if obter_tier_aventura(all_advs[k]) >= 2]
-                else:
-                    pool = [k for k in keys if obter_tier_aventura(all_advs[k]) <= 2]
-                    
-            if len(pool) < 3:
-                pool = keys # Fallback absoluto para não quebrar o jogo
-                
-            sorteadas = random.sample(pool, 3)
+        needs_catalog_refresh = dados and int(dados[8] or 1) < CATALOG_VERSION and not dados[7]
+        if not dados or dados[0] != hoje_str or needs_catalog_refresh:
+            anteriores = [mission_id for mission_id in (dados[1], dados[3], dados[5])] if dados else []
+            sorteadas = select_daily_contracts(all_advs, player_level, anteriores)
             cursor.execute("""
-                INSERT INTO daily_quests (user_id, date_str, m1_id, m1_status, m2_id, m2_status, m3_id, m3_status, active_mission)
-                VALUES (?, ?, ?, 0, ?, 0, ?, 0, NULL)
+                INSERT INTO daily_quests (
+                    user_id, date_str, m1_id, m1_status, m2_id, m2_status,
+                    m3_id, m3_status, active_mission, catalog_version
+                )
+                VALUES (?, ?, ?, 0, ?, 0, ?, 0, NULL, ?)
                 ON CONFLICT(user_id) DO UPDATE SET
                 date_str=excluded.date_str, m1_id=excluded.m1_id, m1_status=0,
-                m2_id=excluded.m2_id, m2_status=0, m3_id=excluded.m3_id, m3_status=0, active_mission=NULL
-            """, (uid, hoje_str, sorteadas[0], sorteadas[1], sorteadas[2]))
+                m2_id=excluded.m2_id, m2_status=0, m3_id=excluded.m3_id,
+                m3_status=0, active_mission=NULL, catalog_version=excluded.catalog_version
+            """, (uid, hoje_str, sorteadas[0], sorteadas[1], sorteadas[2], CATALOG_VERSION))
             conn.commit()
             
-            cursor.execute("SELECT date_str, m1_id, m1_status, m2_id, m2_status, m3_id, m3_status, active_mission FROM daily_quests WHERE user_id = ?", (uid,))
+            cursor.execute("SELECT date_str, m1_id, m1_status, m2_id, m2_status, m3_id, m3_status, active_mission, catalog_version FROM daily_quests WHERE user_id = ?", (uid,))
             dados = cursor.fetchone()
 
         conn.close()
 
-        _, m1, m1_st, m2, m2_st, m3, m3_st, ativa = dados
+        _, m1, m1_st, m2, m2_st, m3, m3_st, ativa, _ = dados
 
         concluidas = sum(1 for st in [m1_st, m2_st, m3_st] if st != 0)
         embed = discord.Embed(
