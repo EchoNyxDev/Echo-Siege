@@ -213,7 +213,7 @@ class Ajuda(commands.Cog):
             value=(
                 "`eventos` - Lista os eventos sazonais rolando no momento.\n"
                 "`evento lutar|boss|dungeon|resgatar` - Interage com as atividades da season.\n"
-                "`copa` - Painel da Echo Cup / Copa do Mundo de Lugnica.\n"
+                "`copa` - Painel da Echo Cup / Copa do Mundo de Wolford.\n"
                 "`copa iniciar|time|jogar` - Cria o time, consulta a escalação e joga partidas.\n"
                 "`copa loja|resgatar|ranking|hall` - Troca echobet e acompanha a classificação.\n"
                 "`copa banner|summon|heroi|historico` - Banner esportivo, fichas da Copa e últimas partidas. O summon usa ticket antes de cobrar ouro.\n"
@@ -227,14 +227,14 @@ class Ajuda(commands.Cog):
         e4 = self._base_embed(
             user,
             "TutoriUAU // Loja, Forja e Equipamentos",
-            "O pilar econômico de Lugnica. Fique forte ou fique pobre tentando.",
+            "O pilar econômico de Wolford. Fique forte ou fique pobre tentando.",
             4,
             total,
         )
         e4.add_field(
             name="Economia e Itens",
             value=(
-                "`cidade` - Vê se a capital de Lugnica está inteira ou em chamas.\n"
+                "`cidade` - Vê se a capital de Wolford está inteira ou em chamas.\n"
                 "`loja` / `comprar <ID> <qtd>` - Gasta Ouro no comércio local.\n"
                 "`gemshop` / `gemcomprar <ID>` - A loja VIP (comprada com Gemas).\n"
                 "`forja` - Onde você transforma o lixo dos monstros em armas, consumíveis e tickets mágicos.\n"

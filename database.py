@@ -223,7 +223,7 @@ cursor.execute("INSERT OR IGNORE INTO city_stats (id) VALUES (1)")
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS cidades(
     guild_id TEXT PRIMARY KEY,
-    nome TEXT DEFAULT 'Capital de Lugnica',
+    nome TEXT DEFAULT 'Capital de Wolford',
     hp INTEGER DEFAULT 100000,
     max_hp INTEGER DEFAULT 100000,
     moral INTEGER DEFAULT 100,
@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS cidades(
 )
 """)
 add_column(cursor, "cidades", "guild_id", "TEXT")
-add_column(cursor, "cidades", "nome", "TEXT DEFAULT 'Capital de Lugnica'")
+add_column(cursor, "cidades", "nome", "TEXT DEFAULT 'Capital de Wolford'")
 add_column(cursor, "cidades", "hp", "INTEGER DEFAULT 100000")
 add_column(cursor, "cidades", "max_hp", "INTEGER DEFAULT 100000")
 add_column(cursor, "cidades", "moral", "INTEGER DEFAULT 100")

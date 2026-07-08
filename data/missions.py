@@ -357,7 +357,7 @@ MISSIONS = {
             "texto": "O Rei Feiticeiro suspende o orbe escuro no ar. O eclipse está quase completo.",
             "opcoes": {
                 "A": {"label": "Atacar Licht", "sucesso": False, "texto": "Barreira perfeita. O feitiço de ricochete obliterou a party.", "loot_mult": 0},
-                "B": {"label": "Destruir o Orbe", "sucesso": True, "texto": "O orbe quebrou, o sol voltou e Licht fugiu. Lugnica está salva.", "loot_mult": 1.0},
+                "B": {"label": "Destruir o Orbe", "sucesso": True, "texto": "O orbe quebrou, o sol voltou e Licht fugiu. Wolford está salva.", "loot_mult": 1.0},
                 "C": {"label": "Absorver o Orbe", "sucesso": True, "texto": "Loucura total! O Líder absorveu a energia, destruiu a barreira e ainda ficou com poderes sombrios residuais!", "loot_mult": 2.8}
             }
         }

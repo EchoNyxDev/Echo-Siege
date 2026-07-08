@@ -38,11 +38,11 @@ SHOP_ITEMS = {
     12: {"nome": "Escudo do Guardião", "desc": "+30 DEF", "preco": 2500, "nivel": 3, "db_name": "escudo_do_guardiao", "emoji": "🛡️"},
     13: {"nome": "Ticket de Pet", "desc": "Sorteia um pet aleatório", "preco": 2000, "nivel": 3, "db_name": "ticket_pet", "emoji": "🐾"},
     
-    # NÍVEL 4 (LUGNICA DOURADA)
+    # NÍVEL 4 (WOLFORD DOURADA)
     14: {"nome": "Espada Imperial", "desc": "+75 ATK", "preco": 10000, "nivel": 4, "db_name": "espada_imperial", "emoji": "👑"},
     15: {"nome": "Coroa Arcana", "desc": "+75 MATK", "preco": 10000, "nivel": 4, "db_name": "coroa_arcana", "emoji": "💠"},
     16: {"nome": "Armadura Real", "desc": "+75 DEF", "preco": 10000, "nivel": 4, "db_name": "armadura_real", "emoji": "🛡️"},
-    17: {"nome": "Relógio de Lugnica", "desc": "+20% XP e Gold Passivo", "preco": 15000, "nivel": 4, "db_name": "relogio_de_lugnica", "emoji": "⏳"},
+    17: {"nome": "Relógio de Wolford", "desc": "+20% XP e Gold Passivo", "preco": 15000, "nivel": 4, "db_name": "relogio_de_lugnica", "emoji": "⏳"},
     18: {"nome": "Bilhete Dourado", "desc": "Garante um herói 3⭐ ou superior", "preco": 10000, "nivel": 4, "db_name": "bilhete_dourado", "emoji": "🎟️"}
 }
 
@@ -85,7 +85,7 @@ class LojaPaginator(discord.ui.View):
 
     def generate_embed(self):
         embed = discord.Embed(
-            title=f"🏪 Mercado de Lugnica - {self.nome_loja}",
+            title=f"🏪 Mercado de Wolford - {self.nome_loja}",
             description=f"Bem-vindo! A prosperidade da cidade define o que os mercadores trazem.\n💰 **Seu Ouro:** {self.gold_atual:,}\n\nPara comprar digite: `echo comprar <Número do Item> <Quantidade>`\nPara vender drops digite: `echo vender <nome do item>`",
             color=discord.Color.gold()
         )
@@ -133,7 +133,7 @@ class Loja(commands.Cog):
         
         prosp = resultado[0] if resultado else 0
         
-        if prosp >= 100: return 4, "Lugnica Dourada"
+        if prosp >= 100: return 4, "Wolford Dourada"
         elif prosp >= 75: return 3, "Nível 3"
         elif prosp >= 50: return 2, "Nível 2"
         else: return 1, "Nível 1 (Básica)"
@@ -225,7 +225,7 @@ class Loja(commands.Cog):
                 cursor.execute("""
                     INSERT OR IGNORE INTO cidades
                     (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
-                    VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+                    VALUES (?, 'Capital de Wolford', 100000, 100000, 100, 0, 5000, 0)
                 """, (str(ctx.guild.id),))
                 cursor.execute(
                     "UPDATE cidades SET suprimentos = min(max_suprimentos, suprimentos + ?) WHERE guild_id = ?",

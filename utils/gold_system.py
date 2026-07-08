@@ -3,7 +3,7 @@ import random
 
 def conceder_ouro_escalavel(cursor, user_id, base_gold, player_level, guild_id=None, extra_mult=1.0):
     """
-    Motor centralizado para cálculo e injeção de Ouro em Lugnica.
+    Motor centralizado para cálculo e injeção de Ouro em Wolford.
     Leva em consideração o nível do jogador, variação de sorte (RNG),
     multiplicadores de missão, estado da cidade e buffs ativos (Pergaminhos).
     """

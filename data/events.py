@@ -48,7 +48,7 @@ EVENT_TEMPLATES = {
         "dungeon": "Jardim de Chocolate",
     },
     "dia_maes": {
-        "name": "Dia das Maes de Lugnica",
+        "name": "Dia das Maes de Wolford",
         "anchor": ("nth_weekday", 5, 6, 2),
         "before": 3,
         "after": 4,
@@ -58,7 +58,7 @@ EVENT_TEMPLATES = {
         "dungeon": "Bosque do Afeto",
     },
     "dia_pais": {
-        "name": "Dia dos Pais de Lugnica",
+        "name": "Dia dos Pais de Wolford",
         "anchor": ("nth_weekday", 8, 6, 2),
         "before": 3,
         "after": 4,

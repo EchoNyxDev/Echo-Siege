@@ -79,7 +79,7 @@ class Eventos(commands.Cog):
     def _events_embed(self):
         active = get_active_events()
         upcoming = get_next_events(limit=3)
-        embed = discord.Embed(title="Eventos de Lugnica", color=discord.Color.purple())
+        embed = discord.Embed(title="Eventos de Wolford", color=discord.Color.purple())
         if active:
             lines = [f"**{event['name']}** ate {event['end'].strftime('%d/%m/%Y')} | Item: `{event['item']}`" for event in active]
             embed.add_field(name="Ativos", value="\n".join(lines), inline=False)

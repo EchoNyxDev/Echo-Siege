@@ -17,7 +17,7 @@ class Cidade(commands.Cog):
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS cidades(
             guild_id TEXT PRIMARY KEY,
-            nome TEXT DEFAULT 'Capital de Lugnica',
+            nome TEXT DEFAULT 'Capital de Wolford',
             hp INTEGER DEFAULT 100000,
             max_hp INTEGER DEFAULT 100000,
             moral INTEGER DEFAULT 100,
@@ -58,7 +58,7 @@ class Cidade(commands.Cog):
         if not city:
             cursor.execute("""
                 INSERT INTO cidades (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
-                VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+                VALUES (?, 'Capital de Wolford', 100000, 100000, 100, 0, 5000, 0)
             """, (str(guild_id),))
             conn.commit()
 
@@ -92,7 +92,7 @@ class Cidade(commands.Cog):
         # CALCULANDO NÍVEL DA LOJA (PROSPERIDADE)
         # ==========================================
         if prosp >= 100:
-            loja_nv = "Lugnica Dourada (+20% XP/Gold)"
+            loja_nv = "Wolford Dourada (+20% XP/Gold)"
         elif prosp >= 75:
             loja_nv = "Nível 3 (+15% XP/Gold)"
         elif prosp >= 50:

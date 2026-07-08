@@ -95,7 +95,7 @@ ONLINE_PVP_BOTS = [
     ("Maga da Biblioteca", 145, 404),
     ("Cavaleiro do Gelo", 170, 505),
     ("Caçadora Carmesim", 200, 606),
-    ("Arauto de Lugnica", 235, 707),
+    ("Arauto de Wolford", 235, 707),
     ("Mercenário do Abismo", 275, 808),
     ("Guardião de Nazarick", 320, 909),
     ("Espadachim Sem Nome", 370, 1010),

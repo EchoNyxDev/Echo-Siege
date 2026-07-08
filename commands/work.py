@@ -162,7 +162,7 @@ class Work(commands.Cog):
 
         concluidas = sum(1 for st in [m1_st, m2_st, m3_st] if st != 0)
         embed = discord.Embed(
-            title="📋 Quadro de Contratos de Lugnica",
+            title="📋 Quadro de Contratos de Wolford",
             description=(
                 f"**TutoriUAU:** \"Aqui estão os trabalhos disponíveis pro teu nível ({player_level}). Leia pelo menos duas linhas e depois finja que foi estratégia.\"\n"
                 f"Contratos concluídos hoje: **{concluidas}/3**"

@@ -1298,7 +1298,7 @@ class Adm(commands.Cog):
             cursor.execute("""
             CREATE TABLE IF NOT EXISTS cidades(
                 guild_id TEXT PRIMARY KEY,
-                nome TEXT DEFAULT 'Capital de Lugnica',
+                nome TEXT DEFAULT 'Capital de Wolford',
                 hp INTEGER DEFAULT 100000, max_hp INTEGER DEFAULT 100000,
                 moral INTEGER DEFAULT 100, suprimentos INTEGER DEFAULT 0,
                 max_suprimentos INTEGER DEFAULT 5000, prosperidade INTEGER DEFAULT 0
@@ -1307,7 +1307,7 @@ class Adm(commands.Cog):
             cursor.execute("""
                 INSERT OR IGNORE INTO cidades
                 (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
-                VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+                VALUES (?, 'Capital de Wolford', 100000, 100000, 100, 0, 5000, 0)
             """, (str(ctx.guild.id),))
             cursor.execute("SELECT prosperidade FROM cidades WHERE guild_id = ?", (str(ctx.guild.id),))
             prosperidade_atual = cursor.fetchone()[0] or 0
@@ -1327,7 +1327,7 @@ class Adm(commands.Cog):
 
         if nivel_atual >= 4:
             conn.close()
-            return await ctx.send("A loja já está no nível máximo: **4 (Lugnica Dourada)**.")
+            return await ctx.send("A loja já está no nível máximo: **4 (Wolford Dourada)**.")
 
         novo_nivel = nivel_atual + 1
         nova_prosperidade = self._prosperidade_para_nivel_loja(novo_nivel)
@@ -1363,7 +1363,7 @@ class Adm(commands.Cog):
         conn.close()
         
         if banned:
-            await ctx.send("🚫 **EXILADO!** Você foi banido de Lugnica pelos Deuses e suas invocações não têm mais poder aqui.")
+            await ctx.send("🚫 **EXILADO!** Você foi banido de Wolford pelos Deuses e suas invocações não têm mais poder aqui.")
             return False
         return True
 
@@ -1645,7 +1645,7 @@ class Adm(commands.Cog):
                            "`echo adm criar banner` (Editor do banner especial por 7 dias)\n"
                            "`echo adm copa iniciar|encerrar|reset @user|echobet @user <qtd>` (Controle da Echo Cup)\n"
                            "`echo adm melhorar loja` (Sobe a loja em 1 nível para testes)\n"
-                           "`echo adm reset cidade` (Reseta Lugnica)\n"
+                           "`echo adm reset cidade` (Reseta Wolford)\n"
                            "`echo adm hack @usuário <id_do_heroi>` (Nível Max + 7 Estrelas)\n"
                            "`echo adm give @usuário <id_heroi_ou_item>` (Dá um herói ou item)\n"
                            "`echo adm deletar item @usuário <item>` (Remove item bugado da mochila)\n"
@@ -1987,7 +1987,7 @@ class Adm(commands.Cog):
                 cursor.execute("""
                     INSERT OR IGNORE INTO cidades
                     (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
-                    VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+                    VALUES (?, 'Capital de Wolford', 100000, 100000, 100, 0, 5000, 0)
                 """, (str(ctx.guild.id),))
                 cursor.execute("""
                     UPDATE cidades
@@ -1997,7 +1997,7 @@ class Adm(commands.Cog):
                 """, (str(ctx.guild.id),))
             conn.commit()
             conn.close()
-            await ctx.send("♻️ **LUGNICA RESETADA!** A muralha voltou ao zero.")
+            await ctx.send("♻️ **WOLFORD RESETADA!** A muralha voltou ao zero.")
 
         elif action == "hack":
             if not target_id or not arg2: 

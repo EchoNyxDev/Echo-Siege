@@ -24,7 +24,7 @@ try:
     from utils.equipment import get_equipment_bonus
     from utils.hero_stats import calculate_hero_stats, normalize_class
     from utils.player_bonuses import apply_battle_hp_bonus
-    from utils.rewards import average_party_level, scale_combat_rewards
+    from utils.rewards import average_party_level
     from utils.skills import get_hero_skill_ids, resolve_skill_list
     from utils.xp_system import dar_xp_heroi, dar_xp_jogador
 except ModuleNotFoundError:
@@ -61,9 +61,6 @@ except ModuleNotFoundError:
     def resolve_skill_list(habilidades):
         return habilidades or []
 
-    def scale_combat_rewards(gold=0, xp=0, progress=1, reference=50):
-        return gold, xp
-
 
 BRT = datetime.timezone(datetime.timedelta(hours=-3))
 ROLE_INVOCADOR_ID = 1512228151382511748
@@ -94,7 +91,7 @@ INVASION_TYPES = {
         "damage_moral": 2,
         "victory_moral": 2,
         "prosperity": 2,
-        "reward": (210, 70),
+        "reward": (340, 130),
         "color": discord.Color.orange(),
         "description": "Monstros das dungeons avançam em ondas contra a muralha.",
         "defeat_title": "Raid rompeu a defesa!",
@@ -108,7 +105,7 @@ INVASION_TYPES = {
         "damage_moral": 5,
         "victory_moral": 10,
         "prosperity": 5,
-        "reward": (520, 170),
+        "reward": (850, 330),
         "color": discord.Color.red(),
         "description": "Um chefe de dungeon aparece para testar a cidade, porque paz era aparentemente opcional.",
         "defeat_title": "Boss venceu a defesa!",
@@ -122,9 +119,9 @@ INVASION_TYPES = {
         "damage_moral": 10,
         "victory_moral": 20,
         "prosperity": 10,
-        "reward": (1100, 360),
+        "reward": (1800, 750),
         "color": discord.Color.dark_purple(),
-        "description": "Uma ameaça mensal tenta transformar Lugnica em nota de rodapé histórica.",
+        "description": "Uma ameaça mensal tenta transformar Wolford em nota de rodapé histórica.",
         "defeat_title": "Calamidade devastou a muralha!",
         "victory_title": "Calamidade contida!",
     },
@@ -233,7 +230,7 @@ def ensure_invasion_db(cursor):
         """
         CREATE TABLE IF NOT EXISTS cidades (
             guild_id TEXT PRIMARY KEY,
-            nome TEXT DEFAULT 'Capital de Lugnica',
+            nome TEXT DEFAULT 'Capital de Wolford',
             hp INTEGER DEFAULT 100000,
             max_hp INTEGER DEFAULT 100000,
             moral INTEGER DEFAULT 100,
@@ -245,7 +242,7 @@ def ensure_invasion_db(cursor):
     )
     for column, ddl in {
         "guild_id": "TEXT",
-        "nome": "TEXT DEFAULT 'Capital de Lugnica'",
+        "nome": "TEXT DEFAULT 'Capital de Wolford'",
         "hp": "INTEGER DEFAULT 100000",
         "max_hp": "INTEGER DEFAULT 100000",
         "moral": "INTEGER DEFAULT 100",
@@ -291,7 +288,7 @@ def _ensure_city(cursor, guild_id):
         """
         INSERT OR IGNORE INTO cidades
         (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
-        VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+        VALUES (?, 'Capital de Wolford', 100000, 100000, 100, 0, 5000, 0)
         """,
         (str(guild_id),),
     )
@@ -323,7 +320,8 @@ def _enemy_skills(enemy_data):
     return resolve_skill_list(skills)
 
 
-def _party_metrics(team_a):
+def _party_metrics(team_a, defenders=1):
+    defenders = max(1, int(defenders or 1))
     total_hp = sum(int(hero.get("stats", {}).get("hp", 100) or 100) for hero in team_a)
     total_offense = sum(
         max(
@@ -335,34 +333,72 @@ def _party_metrics(team_a):
     total_def = sum(int(hero.get("stats", {}).get("def", 5) or 5) for hero in team_a)
     count = max(1, len(team_a))
     return {
+        "defenders": defenders,
         "count": count,
         "total_hp": max(100, total_hp),
+        "avg_hp": max(100, total_hp / count),
         "total_offense": max(40, total_offense),
         "avg_def": max(5, total_def / count),
         "avg_level": max(1, int(average_party_level(team_a) or 1)),
     }
 
 
-def _scale_enemy_stats(enemy_data, invasion_type, metrics, enemy_count=1):
+def _split_scaled_offense(enemy_data, offense):
+    template_atk = max(0, int(enemy_data.get("atk", 0) or 0))
+    template_matk = max(0, int(enemy_data.get("matk", 0) or 0))
+    offense = max(12, int(offense or 12))
+
+    if template_atk <= 0 and template_matk <= 0:
+        return offense, 0
+
+    primary = "matk" if template_matk > template_atk else "atk"
+    secondary = 0
+    if template_atk > 0 and template_matk > 0:
+        low = min(template_atk, template_matk)
+        high = max(template_atk, template_matk, 1)
+        secondary = int(offense * min(0.45, low / high * 0.45))
+
+    if primary == "matk":
+        return secondary, offense
+    return offense, secondary
+
+
+def _scale_enemy_stats(enemy_data, invasion_type, metrics, enemy_count=1, strength=1.0):
     enemy_count = max(1, int(enemy_count or 1))
-    kind = INVASION_TYPES[invasion_type]
-    hp_factor = {"raid": 4.8, "boss": 12.0, "calamidade": 20.0}[invasion_type]
-    damage_factor = {"raid": 0.08, "boss": 0.11, "calamidade": 0.14}[invasion_type]
-    defense_factor = {"raid": 0.75, "boss": 1.00, "calamidade": 1.20}[invasion_type]
+    strength = max(0.15, float(strength or 1.0))
+    defenders = max(1, int(metrics.get("defenders", 1) or 1))
+    hp_factor = {"raid": 3.7, "boss": 4.7, "calamidade": 7.4}[invasion_type]
+    damage_factor = {"raid": 0.050, "boss": 0.045, "calamidade": 0.060}[invasion_type]
+    defense_factor = {"raid": 0.58, "boss": 0.62, "calamidade": 0.74}[invasion_type]
+    hp_pressure = {
+        "raid": 1.0 + min(0.25, (defenders - 1) * 0.04),
+        "boss": 1.0 + min(0.55, (defenders - 1) * 0.07),
+        "calamidade": 1.0 + min(0.85, (defenders - 1) * 0.09),
+    }[invasion_type]
+    damage_pressure = {
+        "raid": 1.0 + min(0.12, (defenders - 1) * 0.02),
+        "boss": 1.0 + min(0.20, (defenders - 1) * 0.03),
+        "calamidade": 1.0 + min(0.28, (defenders - 1) * 0.035),
+    }[invasion_type]
+    hp_group_relief = defenders ** {"raid": 0.48, "boss": 0.42, "calamidade": 0.38}[invasion_type]
+    action_pool_relief = defenders ** 0.78
 
-    jitter = random.uniform(0.94, 1.10)
-    hp = int((metrics["total_offense"] * hp_factor / enemy_count) * jitter)
-    offense = int((metrics["total_hp"] * damage_factor / enemy_count) * jitter)
-    defense = int((metrics["avg_def"] * defense_factor) + (metrics["avg_level"] * 1.4))
-
-    template_atk = int(enemy_data.get("atk", 0) or 0)
-    template_matk = int(enemy_data.get("matk", 0) or 0)
-    uses_magic = template_matk > template_atk
+    jitter = random.uniform(0.94, 1.08)
+    hp = int((metrics["total_offense"] * hp_factor / enemy_count) * jitter * strength * hp_pressure / hp_group_relief)
+    offense = int(
+        (metrics["total_hp"] * damage_factor / enemy_count)
+        * jitter
+        * max(0.55, strength)
+        * damage_pressure
+        / action_pool_relief
+    )
+    defense = int((metrics["avg_def"] * defense_factor * (0.85 + strength * 0.15)) + (metrics["avg_level"] * 1.35))
+    atk, matk = _split_scaled_offense(enemy_data, offense)
 
     return {
         "hp": max(80, hp),
-        "atk": 0 if uses_magic else max(12, offense),
-        "matk": max(12, offense) if uses_magic else max(0, int(template_matk * 0.35)),
+        "atk": atk,
+        "matk": matk,
         "def": max(5, min(650, defense)),
         "spd": max(5, min(55, int(enemy_data.get("spd", 12) or 12))),
         "crt": max(0, min(45, int(enemy_data.get("crt", 5) or 5))),
@@ -370,16 +406,32 @@ def _scale_enemy_stats(enemy_data, invasion_type, metrics, enemy_count=1):
     }
 
 
-def _entity_from_enemy(enemy_id, enemy_data, invasion_type, metrics, enemy_count, suffix=""):
+def _entity_from_enemy(enemy_id, enemy_data, invasion_type, metrics, enemy_count, suffix="", strength=1.0):
     name = enemy_data.get("nome", enemy_id)
     config = INVASION_TYPES[invasion_type]
     return {
         "id": f"{enemy_id}{suffix}",
         "nome": f"{name} ({config['label']})",
         "classe": enemy_data.get("tipo", "monstro"),
-        "stats": _scale_enemy_stats(enemy_data, invasion_type, metrics, enemy_count),
+        "stats": _scale_enemy_stats(enemy_data, invasion_type, metrics, enemy_count, strength),
         "habilidades": _enemy_skills(enemy_data),
     }
+
+
+def _scale_invasion_rewards(invasion_type, avg_level, defenders):
+    base_gold, base_xp = INVASION_TYPES[invasion_type]["reward"]
+    avg_level = max(1.0, float(avg_level or 1))
+    level_mult = 0.70 + min(1.30, (avg_level / 60) ** 0.75)
+    defender_mult = 1.0 + min(0.25, max(0, int(defenders or 1) - 1) * 0.03)
+    return max(1, int(base_gold * level_mult * defender_mult)), max(1, int(base_xp * level_mult * defender_mult))
+
+
+def _invasion_turn_limit(invasion_type, defenders):
+    defenders = max(1, int(defenders or 1))
+    base = {"raid": 170, "boss": 240, "calamidade": 300}[invasion_type]
+    per_defender = {"raid": 18, "boss": 35, "calamidade": 45}[invasion_type]
+    cap = {"raid": 320, "boss": 560, "calamidade": 760}[invasion_type]
+    return min(cap, base + defenders * per_defender)
 
 
 def _dungeon_candidates_for_level(avg_level):
@@ -393,8 +445,8 @@ def _dungeon_candidates_for_level(avg_level):
 
 
 def build_invasion_enemies(invasion_type, team_a, participants):
-    metrics = _party_metrics(team_a)
     participants = max(1, int(participants or 1))
+    metrics = _party_metrics(team_a, participants)
 
     if invasion_type == "raid":
         dungeons = _dungeon_candidates_for_level(metrics["avg_level"])
@@ -407,7 +459,7 @@ def build_invasion_enemies(invasion_type, team_a, participants):
         ]
         if not pool:
             pool = [enemy_id for enemy_id, data in ENEMIES.items() if data.get("tipo") == "comum"]
-        enemy_count = max(2, min(6, participants + 2))
+        enemy_count = max(3, min(7, participants + 3))
         selected_ids = random.choices(pool, k=enemy_count)
         return [
             _entity_from_enemy(enemy_id, ENEMIES[enemy_id], "raid", metrics, enemy_count, f"_{index}")
@@ -415,16 +467,43 @@ def build_invasion_enemies(invasion_type, team_a, participants):
         ]
 
     if invasion_type == "boss":
-        boss_ids = []
+        boss_entries = []
         for dungeon in DUNGEONS.values():
             for floor in (dungeon.get("andares") or {}).values():
                 boss_id = floor.get("boss")
                 if boss_id in ENEMIES:
-                    boss_ids.append(boss_id)
-        if not boss_ids:
-            boss_ids = [enemy_id for enemy_id, data in ENEMIES.items() if data.get("tipo") == "boss"]
-        boss_id = random.choice(boss_ids)
-        return [_entity_from_enemy(boss_id, ENEMIES[boss_id], "boss", metrics, 1)]
+                    boss_entries.append((boss_id, floor))
+        if boss_entries:
+            boss_id, floor = random.choice(boss_entries)
+        else:
+            boss_id = random.choice([enemy_id for enemy_id, data in ENEMIES.items() if data.get("tipo") == "boss"])
+            floor = {}
+
+        enemies = [_entity_from_enemy(boss_id, ENEMIES[boss_id], "boss", metrics, 1)]
+        escort_pool = [
+            enemy_id
+            for enemy_id in (floor.get("boss_minions") or {}).keys()
+            if enemy_id in ENEMIES
+        ] or [
+            enemy_id
+            for enemy_id in (floor.get("inimigos") or {}).keys()
+            if enemy_id in ENEMIES
+        ]
+        if escort_pool:
+            escort_count = max(1, min(4, (participants + 2) // 3))
+            for index, enemy_id in enumerate(random.choices(escort_pool, k=escort_count), start=1):
+                enemies.append(
+                    _entity_from_enemy(
+                        enemy_id,
+                        ENEMIES[enemy_id],
+                        "boss",
+                        metrics,
+                        escort_count + 4,
+                        f"_guarda_{index}",
+                        strength=0.16,
+                    )
+                )
+        return enemies
 
     calamity_pool = [
         (boss_id, data)
@@ -432,7 +511,30 @@ def build_invasion_enemies(invasion_type, team_a, participants):
         if data.get("tipo") in {"mensal", "calamidade"}
     ] or list(RAID_BOSSES.items())
     boss_id, boss_data = random.choice(calamity_pool)
-    return [_entity_from_enemy(boss_id, boss_data, "calamidade", metrics, 1)]
+    enemies = [_entity_from_enemy(boss_id, boss_data, "calamidade", metrics, 1, strength=0.82)]
+    dungeons = _dungeon_candidates_for_level(metrics["avg_level"])
+    escort_pool = []
+    for dungeon in dungeons:
+        for floor in (dungeon.get("andares") or {}).values():
+            escort_pool.extend(enemy_id for enemy_id in (floor.get("inimigos") or {}).keys() if enemy_id in ENEMIES)
+            mini_boss = floor.get("mini_boss")
+            if mini_boss in ENEMIES:
+                escort_pool.append(mini_boss)
+    if escort_pool:
+        escort_count = max(2, min(5, (participants + 2) // 2))
+        for index, enemy_id in enumerate(random.choices(escort_pool, k=escort_count), start=1):
+            enemies.append(
+                _entity_from_enemy(
+                    enemy_id,
+                    ENEMIES[enemy_id],
+                    "calamidade",
+                    metrics,
+                    escort_count + 7,
+                    f"_pressagio_{index}",
+                    strength=0.15,
+                )
+            )
+    return enemies
 
 
 def puxar_party_para_combate(user_id, user_name):
@@ -754,13 +856,14 @@ class Invasoes(commands.Cog):
             return
 
         team_b = build_invasion_enemies(tipo_raid, team_a, len(registrados))
-        vitoria, log_batalha = simular_combate_tatico(team_a, team_b)
+        turn_limit = _invasion_turn_limit(tipo_raid, len(registrados))
+        vitoria, log_batalha = simular_combate_tatico(team_a, team_b, turn_limit=turn_limit)
         config = INVASION_TYPES[tipo_raid]
 
         embed = discord.Embed(color=discord.Color.green() if vitoria else discord.Color.red())
         if vitoria:
-            base_gold, base_xp = config["reward"]
-            gold_ganho, xp_ganho = scale_combat_rewards(base_gold, base_xp, average_party_level(team_a))
+            avg_level = average_party_level(team_a)
+            gold_ganho, xp_ganho = _scale_invasion_rewards(tipo_raid, avg_level, len(registrados))
             for user_id in registrados:
                 cursor.execute("UPDATE players SET gold = gold + ? WHERE user_id = ?", (gold_ganho, user_id))
                 dar_xp_jogador(cursor, user_id, xp_ganho)
@@ -786,6 +889,8 @@ class Invasoes(commands.Cog):
             )
 
         enemies_text = "\n".join(f"• {enemy['nome']}" for enemy in team_b)
+        embed.add_field(name="Defensores registrados", value=f"**{len(registrados)}** jogador(es)", inline=True)
+        embed.add_field(name="Escala da batalha", value=f"Até **{turn_limit}** turnos táticos", inline=True)
         embed.add_field(name="Ameaça", value=enemies_text[:1024], inline=False)
         embed.add_field(name="Log tático", value=log_batalha[:1024], inline=False)
         embed.set_footer(text="TutoriUAU: relatório entregue. A matemática sobreviveu, por enquanto.")
@@ -828,6 +933,14 @@ class Invasoes(commands.Cog):
             try:
                 await self.iniciar_fase_registro(channel, tipo_raid, is_manual=False, duration=600)
             except (discord.HTTPException, ValueError):
+                cursor.execute(
+                    """
+                    DELETE FROM invasion_schedule_runs
+                    WHERE guild_id = ? AND raid_type = ? AND scheduled_key = ?
+                    """,
+                    (str(guild_id), tipo_raid, scheduled_key),
+                )
+                conn.commit()
                 continue
 
         conn.commit()
@@ -836,7 +949,7 @@ class Invasoes(commands.Cog):
     @tasks.loop(minutes=1)
     async def invasion_scheduler(self):
         now = datetime.datetime.now(BRT)
-        if now.minute != 0:
+        if now.minute > 5:
             return
 
         if now.hour == 13:

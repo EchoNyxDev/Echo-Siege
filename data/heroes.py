@@ -5370,7 +5370,7 @@ HEROES = {
         "spd": 16,
         "crt": 5,
         "habilidade": {
-            "nome": "Fluxo Curativo de Lugnica",
+            "nome": "Fluxo Curativo de Wolford",
             "descricao": "Usa água pura para curar a equipe. Cura 15% do HP máximo de todos e remove queimaduras e sangramentos."
         },
         "evolucoes": {
@@ -11713,7 +11713,7 @@ HEROES = {
         "crt": 15,
         "habilidade": {
             "nome": "Racionalidade Mecânica Fria",
-            "descricao": "Apenas o poder lógico importa na guerra de Lugnica. Concede +50% de ATK para toda a equipe e os torna imunes a efeitos de controle (CC)."
+            "descricao": "Apenas o poder lógico importa na guerra de Wolford. Concede +50% de ATK para toda a equipe e os torna imunes a efeitos de controle (CC)."
         },
         "evolucoes": {
             7: {
@@ -12532,7 +12532,7 @@ HEROES = {
         "evolucoes": {
             5: {
                 "nome": "Estratégia Camuflagem Nível Boss Mestre do Teclado",
-                "descricao": "Atribui códigos bônus de furtividade hacker ao grupo aliado ignorado pelas bestas de Lugnica. Concede Evasão aprimorada (+Dodge) para manter seu teclado limpo de poeira cósmica."
+                "descricao": "Atribui códigos bônus de furtividade hacker ao grupo aliado ignorado pelas bestas de Wolford. Concede Evasão aprimorada (+Dodge) para manter seu teclado limpo de poeira cósmica."
             }
         }
     },
@@ -12590,7 +12590,7 @@ HEROES = {
             },
             5: {
                 "nome": "A Limpeza Espiritual Silenciosa Rara de Pés Descalços Heróicos",
-                "descricao": "Sua persistência desfaz magias de silêncio e atordoamentos passivamente, libertando as pedras do controle arcano bruto impiedoso em Lugnica suja."
+                "descricao": "Sua persistência desfaz magias de silêncio e atordoamentos passivamente, libertando as pedras do controle arcano bruto impiedoso em Wolford suja."
             }
         }
     },

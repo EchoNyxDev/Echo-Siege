@@ -40,10 +40,10 @@ def cosmetic_label(cosmetic_id):
         "token_moldura_gramado_noturno": "Tema Gramado Noturno",
         "token_moldura_sala_de_imprensa": "Tema Sala de Imprensa",
         "token_moldura_taca_mundial": "Tema Taça Mundial",
-        "token_titulo_campeao_de_lugnica": "Campeão de Lugnica",
+        "token_titulo_campeao_de_lugnica": "Campeão de Wolford",
         "token_titulo_lenda_echo_cup": "Lenda da Echo Cup",
         "token_titulo_rei_dos_ecos": "Rei dos Ecos",
-        "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Lugnica",
+        "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Wolford",
         "token_titulo_campeao_do_mundo": "Campeão do Mundo",
     }
     return labels.get(cosmetic_id, str(cosmetic_id or "").replace("token_", "").replace("_", " ").title())
@@ -176,7 +176,7 @@ class Mochila(commands.Cog):
         cursor.execute("SELECT gold FROM players WHERE user_id = ?", (str(user.id),))
         if not cursor.fetchone():
             conn.close()
-            return f"❌ {user.mention}, você nem nasceu em Lugnica ainda. Dá `echo iniciar`."
+            return f"❌ {user.mention}, você nem nasceu em Wolford ainda. Dá `echo iniciar`."
 
         cursor.execute("SELECT item_name, quantity FROM inventory WHERE user_id = ? AND quantity > 0", (str(user.id),))
         itens = cursor.fetchall()
@@ -308,6 +308,7 @@ class Mochila(commands.Cog):
             "bilhete_dourado": "bilhete_dourado",
             "kit_de_reparos": "kit_reparos", "kit_reparos": "kit_reparos",
             "relogio_de_lugnica": "relogio_de_lugnica", "relogio_lugnica": "relogio_de_lugnica",
+            "relogio_de_wolford": "relogio_de_lugnica", "relogio_wolford": "relogio_de_lugnica",
             "passe_contrabandista": "passe_contrabandista",
             "amuleto_hibrido_eterno": "amuleto_hibrido_eterno", "pingente_dos_ecos_eternos": "amuleto_hibrido_eterno"
         }
@@ -319,7 +320,7 @@ class Mochila(commands.Cog):
             return await ctx.send("🛡️ Isso é um equipamento (Arma/Armadura/Relíquia)! Você não pode consumi-lo. Use `echo equipar <ID_Heroi> <Nome_do_Item>`.")
             
         if db_name == "relogio_de_lugnica":
-            return await ctx.send("⏳ O Relógio de Lugnica é um item passivo! Apenas tê-lo na mochila já te garante os bônus.")
+            return await ctx.send("⏳ O Relógio de Wolford é um item passivo! Apenas tê-lo na mochila já te garante os bônus.")
 
         user_id = str(ctx.author.id)
         conn = sqlite3.connect("players.db")
@@ -355,7 +356,7 @@ class Mochila(commands.Cog):
                 cursor.execute("""
                     INSERT OR IGNORE INTO cidades
                     (guild_id, nome, hp, max_hp, moral, suprimentos, max_suprimentos, prosperidade)
-                    VALUES (?, 'Capital de Lugnica', 100000, 100000, 100, 0, 5000, 0)
+                    VALUES (?, 'Capital de Wolford', 100000, 100000, 100, 0, 5000, 0)
                 """, (str(ctx.guild.id),))
                 cursor.execute(
                     "UPDATE cidades SET suprimentos = min(max_suprimentos, suprimentos + 50) WHERE guild_id = ?",
@@ -364,7 +365,7 @@ class Mochila(commands.Cog):
             except Exception:
                 pass
             cursor.execute("UPDATE city_stats SET suprimentos = min(max_suprimentos, suprimentos + 50) WHERE id = 1")
-            msg_sucesso = "🔨 Você enviou um Kit de Reparos para Lugnica! +50 Suprimentos adicionados às defesas."
+            msg_sucesso = "🔨 Você enviou um Kit de Reparos para Wolford! +50 Suprimentos adicionados às defesas."
 
         elif db_name == "pergaminho_de_xp":
             try: cursor.execute("ALTER TABLE players ADD COLUMN buff_xp INTEGER DEFAULT 0")

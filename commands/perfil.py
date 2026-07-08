@@ -237,10 +237,10 @@ def cosmetic_label(cosmetic_id):
         "token_titulo_bug_ambulante": "Bug Ambulante",
         "token_titulo_tutoriuau_aprovou": "TutoriUAU Aprovou",
         "token_titulo_patrocinador": "Patrocinador",
-        "token_titulo_campeao_de_lugnica": "Campeão de Lugnica",
+        "token_titulo_campeao_de_lugnica": "Campeão de Wolford",
         "token_titulo_lenda_echo_cup": "Lenda da Echo Cup",
         "token_titulo_rei_dos_ecos": "Rei dos Ecos",
-        "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Lugnica",
+        "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Wolford",
         "token_titulo_campeao_do_mundo": "Campeão do Mundo",
     }
     return labels.get(cosmetic_id, str(cosmetic_id or "").replace("token_", "").replace("_", " ").title())

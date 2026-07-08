@@ -57,7 +57,7 @@ SHOP_CONFIGS = {
     1: {"name": "Loja 1", "rates": BASE_RATES, "pity_4": 15, "hard_pity_4": 30, "pity_5": 30, "hard_pity_5": 100},
     2: {"name": "Loja 2", "rates": BASE_RATES, "pity_4": 15, "hard_pity_4": 30, "pity_5": 30, "hard_pity_5": 100},
     3: {"name": "Loja 3", "rates": BASE_RATES, "pity_4": 15, "hard_pity_4": 30, "pity_5": 30, "hard_pity_5": 100},
-    4: {"name": "Lugnica Dourada", "rates": BASE_RATES, "pity_4": 15, "hard_pity_4": 30, "pity_5": 30, "hard_pity_5": 100},
+    4: {"name": "Wolford Dourada", "rates": BASE_RATES, "pity_4": 15, "hard_pity_4": 30, "pity_5": 30, "hard_pity_5": 100},
 }
 
 
@@ -183,7 +183,7 @@ class Summon(commands.Cog):
             else "gerado automaticamente com classes diversificadas"
         )
         embed = discord.Embed(
-            title="Banners de Lugnica",
+            title="Banners de Wolford",
             description="Tem o banner comum e tem o especial ativo. A diferença? Um é esperança comum, o outro é esperança com glitter.",
             color=discord.Color.gold(),
         )
@@ -333,7 +333,7 @@ class Summon(commands.Cog):
             spent.append("nada, e isso é suspeito")
 
         embed = discord.Embed(
-            title=f"Summon de Lugnica - {banner['name']}",
+            title=f"Summon de Wolford - {banner['name']}",
             description=f"{user.mention} usou **{' e '.join(spent)}**.\nBanner: **{banner['type']}**\n\n",
             color=discord.Color.magenta() if banner_type == "especial" else discord.Color.gold(),
         )

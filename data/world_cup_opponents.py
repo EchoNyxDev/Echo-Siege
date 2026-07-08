@@ -135,9 +135,9 @@ WORLD_CUP_OPPONENTS = {
         ]
     },
 
-    # ========================= 9. OS ONZES DE LUGNICA (INAZUMA)
+    # ========================= 9. OS ONZES DE WOLFORD (INAZUMA)
     "onzes_lugnica": {
-        "nome": "Os Onzes de Lugnica",
+        "nome": "Os Onzes de Wolford",
         "formacao": "4-4-2",
         "capitao": "endou_mamoru_in",
         "titulares": [
@@ -475,9 +475,9 @@ WORLD_CUP_OPPONENTS = {
         ]
     },
 
-    # ========================= 29. LENDAS DE LUGNICA
+    # ========================= 29. LENDAS DE WOLFORD
     "lendas_de_lugnica": {
-        "nome": "Lendas de Lugnica",
+        "nome": "Lendas de Wolford",
         "formacao": "4-4-2",
         "capitao": "barba_branca",
         "titulares": [

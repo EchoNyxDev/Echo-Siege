@@ -37,7 +37,7 @@ ACHIEVEMENTS = [
     {"id": "mochila_25", "name": "Guarda-Treco Licenciado", "desc": "Tenha 25 itens somados na mochila.", "metric": "inventory_items", "target": 25, "reward": {"gold": 2500}},
     {"id": "mochila_100", "name": "Depósito Humano", "desc": "Tenha 100 itens somados na mochila.", "metric": "inventory_items", "target": 100, "reward": {"gems": 120}},
     {"id": "itens_unicos_20", "name": "Eu Vou Usar Depois", "desc": "Tenha 20 tipos diferentes de itens.", "metric": "inventory_unique", "target": 20, "reward": {"items": {"token_moldura_flores_cerejeira": 1}}},
-    {"id": "rico_10k", "name": "Pequeno Burguês de Lugnica", "desc": "Tenha 10.000 Gold na carteira.", "metric": "gold_wallet", "target": 10000, "reward": {"gems": 30}},
+    {"id": "rico_10k", "name": "Pequeno Burguês de Wolford", "desc": "Tenha 10.000 Gold na carteira.", "metric": "gold_wallet", "target": 10000, "reward": {"gems": 30}},
     {"id": "rico_100k", "name": "Banqueiro do Isekai", "desc": "Tenha 100.000 Gold na carteira.", "metric": "gold_wallet", "target": 100000, "reward": {"gems": 180}},
     {"id": "gems_500", "name": "Brilho no Bolso", "desc": "Tenha 500 Gems.", "metric": "gems_wallet", "target": 500, "reward": {"gold": 5000}},
     {"id": "errou_comando_1", "name": "Digitação Criativa", "desc": "Erre 1 comando. Parabéns, você achou a parede invisível da interface.", "metric": "invalid_commands", "target": 1, "reward": {"gold": 100}, "secret": True},

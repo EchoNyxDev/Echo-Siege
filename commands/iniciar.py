@@ -45,7 +45,7 @@ class Iniciar(commands.Cog):
                 title="TUTORIUAU // SISTEMA",
                 description=(
                     f"Ei, {user.mention}...\n\n"
-                    "Você já iniciou sua jornada em Lugnica.\n"
+                    "Você já iniciou sua jornada em Wolford.\n"
                     "Eu lembro de você.\n"
                     "Infelizmente."
                 ),
@@ -107,7 +107,7 @@ class Iniciar(commands.Cog):
             description=(
                 f"**Um TutoriUau selvagem apareceu!**\n\n"
                 f"Olá {user.mention}\n\n"
-                "Bem-vindo a **Lugnica**!\n\n"
+                "Bem-vindo a **Wolford**!\n\n"
                 "Eu sou o TutoriUau,\n"
                 "uma entidade tutorial extremamente qualificada e não remunerada.\n\n"
                 "━━━━━━━━━━━━━━━━━━━━\n\n"
@@ -118,7 +118,7 @@ class Iniciar(commands.Cog):
                 "*tosse em modo profissional questionável*\n\n"
                 "━━━━━━━━━━━━━━━━━━━━\n\n"
                 "LORE (VERSÃO QUE EU FUI OBRIGADO A RESUMIR)\n\n"
-                "Este reino chamado Lugnica é uma fronteira instável entre dimensões.\n"
+                "Este reino chamado Wolford é uma fronteira instável entre dimensões.\n"
                 "Ecos de outras realidades vazam constantemente aqui.\n\n"
                 "Heróis são invocados para conter isso.\n"
                 "Ou piorar tudo. Depende muito de quem puxa o summon.\n\n"
@@ -126,7 +126,7 @@ class Iniciar(commands.Cog):
                 "━━━━━━━━━━━━━━━━━━━━\n\n"
                 "RESUMO IMPORTANTE (LEIA ISSO OU SOFRA DEPOIS)\n\n"
                 "• Você agora é um Invocador\n"
-                "• Vai proteger Lugnica de invasões\n"
+                "• Vai proteger Wolford de invasões\n"
                 "• Vai perder bastante antes de entender qualquer coisa\n"
                 "• E mesmo assim vai continuar jogando (motivo desconhecido)\n\n"
                 "━━━━━━━━━━━━━━━━━━━━\n\n"
@@ -163,7 +163,7 @@ class Iniciar(commands.Cog):
     # SLASH
     @app_commands.command(
         name="iniciar",
-        description="Comece sua aventura em Lugnica"
+        description="Comece sua aventura em Wolford"
     )
     async def iniciar_slash(self, interaction):
         sucesso, mensagem = await self.iniciar_jogador(interaction.user)

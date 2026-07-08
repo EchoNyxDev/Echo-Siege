@@ -83,7 +83,7 @@ def gerar_embed_party(user: discord.User):
 
     embed = discord.Embed(
         title=f"⚔️ Esquadrão de {user.name}",
-        description=("Sua linha de frente para as Dungeons de Lugnica.\n"
+        description=("Sua linha de frente para as Dungeons de Wolford.\n"
                      "*Use os botões abaixo para colocar ou tirar membros do grupo.*"),
         color=discord.Color.dark_theme()
     )

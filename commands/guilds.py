@@ -84,7 +84,7 @@ GUILD_MISSIONS = {
 }
 
 GUILD_HUNT_BOSSES = [
-    {"name": "Behemoth de Lugnica", "hp": 18000, "cost": 2500, "reward_bank": 5000, "reward_member": 850, "score": 1600},
+    {"name": "Behemoth de Wolford", "hp": 18000, "cost": 2500, "reward_bank": 5000, "reward_member": 850, "score": 1600},
     {"name": "Hidra da Fronteira", "hp": 26000, "cost": 4200, "reward_bank": 8500, "reward_member": 1300, "score": 2800},
     {"name": "Arconte do Eclipse", "hp": 38000, "cost": 7000, "reward_bank": 14000, "reward_member": 2100, "score": 4600},
 ]
@@ -330,7 +330,7 @@ class GuildListPaginator(discord.ui.View):
                     child.disabled = (self.page + 1) * self.items_per_page >= len(self.guilds)
 
     def generate_embed(self):
-        embed = discord.Embed(title="🔍 Guildas de Lugnica", color=discord.Color.blue(), description="Encontre uma guilda para chamar de sua e ganhar acesso à loja exclusiva.")
+        embed = discord.Embed(title="🔍 Guildas de Wolford", color=discord.Color.blue(), description="Encontre uma guilda para chamar de sua e ganhar acesso à loja exclusiva.")
         start = self.page * self.items_per_page
         end = start + self.items_per_page
         chunk = self.guilds[start:end]
@@ -487,7 +487,7 @@ class Guilds(commands.Cog):
         conn.close()
         
         if not guilds:
-            return await ctx.send("Nenhuma guilda foi fundada em Lugnica ainda. Seja o primeiro a dominar esse mercado!")
+            return await ctx.send("Nenhuma guilda foi fundada em Wolford ainda. Seja o primeiro a dominar esse mercado!")
             
         view = GuildListPaginator(ctx, guilds)
         await ctx.send(embed=view.generate_embed(), view=view)

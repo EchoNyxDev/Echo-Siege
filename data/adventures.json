@@ -760,7 +760,7 @@
     "nome": "O Sequestro do Mago Aprendiz",
     "nodos": {
       "start": {
-        "tipo": "historia", "texto": "O arquimago de Lugnica oferece riqueza brutal a quem resgatar o seu pupilo Eryon das figuras encapuzadas da floresta. O desespero dele parece exagerado.",
+        "tipo": "historia", "texto": "O arquimago de Wolford oferece riqueza brutal a quem resgatar o seu pupilo Eryon das figuras encapuzadas da floresta. O desespero dele parece exagerado.",
         "opcoes": [
           {"label": "Interrogar o Arquimago", "emoji": "🗣️", "next": "revelacao"},
           {"label": "Seguir os rastros", "emoji": "🐾", "next": "combate_capuz"}
@@ -952,7 +952,7 @@
     "nome": "A Prisão Flutuante de Magos",
     "nodos": {
       "start": {
-        "tipo": "historia", "texto": "Uma estrutura colossal de obsidiana paira acima de Lugnica, abduzindo magos locais em feixes trator.",
+        "tipo": "historia", "texto": "Uma estrutura colossal de obsidiana paira acima de Wolford, abduzindo magos locais em feixes trator.",
         "opcoes": [
           {"label": "Teletransportar a força", "emoji": "🪄", "next": "combate_defesas"},
           {"label": "Acessar via túnel de Arquivos", "emoji": "📖", "next": "revelacao"}
@@ -1048,7 +1048,7 @@
           {"label": "Dinamitar cristais problemáticos", "emoji": "⛏️", "next": "dinamitar"}
         ]
       },
-      "selar": {"tipo": "recompensa", "texto": "Sacrifício arcano severo, o grupo desmaiou de estresse mágico. A lava arrefeceu e Lugnica está segura.", "gold": 3500, "xp": 2800, "moral_change": 30},
+      "selar": {"tipo": "recompensa", "texto": "Sacrifício arcano severo, o grupo desmaiou de estresse mágico. A lava arrefeceu e Wolford está segura.", "gold": 3500, "xp": 2800, "moral_change": 30},
       "dinamitar": {"tipo": "recompensa", "texto": "Bomba nas pedras mágicas. O Titã ressonou e voltou a dormir de exaustão de mana. Serviço bruto.", "gold": 4000, "xp": 1500, "moral_change": -5},
       "combate_titan": {"tipo": "combate", "texto": "Titã de trezentas toneladas de enxofre emerge punhos em punho!", "inimigos": ["tita_magma"], "win_next": "vitoria_titan", "lose_next": "derrota"},
       "vitoria_titan": {"tipo": "recompensa", "texto": "A besta resfriou numa casca oca imensa, deixando no peito uma fornalha portátil pura.", "gold": 4500, "xp": 3500, "moral_change": 10, "drops": {"coracao_de_magma": 0.8}},
@@ -1085,10 +1085,10 @@
     }
   },
   "fenda_dimensional": {
-    "nome": "A Fenda Dimensional de Lugnica",
+    "nome": "A Fenda Dimensional de Wolford",
     "nodos": {
       "start": {
-        "tipo": "historia", "texto": "O céu de Lugnica rasgou-se num corte purpura massivo. Pedaços de universos com ilhas de magma e neve invadem os telhados. Todos os arquimagos estão nocauteados.",
+        "tipo": "historia", "texto": "O céu de Wolford rasgou-se num corte purpura massivo. Pedaços de universos com ilhas de magma e neve invadem os telhados. Todos os arquimagos estão nocauteados.",
         "opcoes": [
           {"label": "Mergulhar Direto no Núcleo do Ceu", "emoji": "🌀", "next": "combate_vazio"},
           {"label": "Proteger Portões Principais primeiro", "emoji": "🛡️", "next": "combate_horda"}
@@ -1153,11 +1153,11 @@
       "combate_elite": {"tipo": "combate", "texto": "Generais das antigas frentes esmagam vocês antes da entrada!", "inimigos": ["rei_demonio", "lorde_cavaleiro_negro"], "win_next": "revelacao", "lose_next": "derrota"},
       "revelacao": {
         "tipo": "historia",
-        "texto": "No coração da bagunça universal dita O Arquivista, guardião do tempo. Ele afirma: 'Destruo Lugnica para impedir o fim de 9 milhões de outros reinos felizes'. Matemática fria da imortalidade.",
+        "texto": "No coração da bagunça universal dita O Arquivista, guardião do tempo. Ele afirma: 'Destruo Wolford para impedir o fim de 9 milhões de outros reinos felizes'. Matemática fria da imortalidade.",
         "opcoes": [
           {"label": "Aceitar o Sacrifício, matar o Arquivista (Condenar os outros mundos)", "emoji": "⚔️", "next": "combate_arquivista"},
           {"label": "Reescrever Código e virar poeira cósmica juntos", "emoji": "📖", "next": "reescrever"},
-          {"label": "Aliar ao Arquivista (Lugnica Desaba, vós virais Deuses)", "emoji": "🤝", "next": "aliar"}
+          {"label": "Aliar ao Arquivista (Wolford Desaba, vós virais Deuses)", "emoji": "🤝", "next": "aliar"}
         ]
       },
       "reescrever": {"tipo": "recompensa", "texto": "Tiveram os ossos reduzidos a nada arcano, mas equilibraram as realidades, viraram um mito apagado, um conto inominável sem recompensas brutas. Glória etérea.", "gold": 0, "xp": 50000, "moral_change": 100},

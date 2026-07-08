@@ -974,11 +974,11 @@ def apply_on_hit_statuses(actor, target, critical=False):
 # CÉREBRO DE COMBATE (O MOTOR)
 # ==========================================
 class CombatEngine:
-    def __init__(self, team_a_data, team_b_data):
+    def __init__(self, team_a_data, team_b_data, turn_limit=150):
         self.team_a = [CombatEntity(f"A{i}", d["nome"], d, False) for i, d in enumerate(team_a_data)]
         self.team_b = [CombatEntity(f"B{i}", d["nome"], d, True) for i, d in enumerate(team_b_data)]
         self.log = []
-        self.turn_limit = 150 
+        self.turn_limit = max(1, int(turn_limit or 150))
         self.log.extend(self._activate_initial_passives())
 
     def _get_alive(self, team):
@@ -1856,8 +1856,8 @@ class CombatEngine:
             
         return result
 
-def simular_combate_tatico(team_a_dicts, team_b_dicts, return_state=False):
-    engine = CombatEngine(team_a_dicts, team_b_dicts)
+def simular_combate_tatico(team_a_dicts, team_b_dicts, return_state=False, turn_limit=150):
+    engine = CombatEngine(team_a_dicts, team_b_dicts, turn_limit=turn_limit)
     vitoria, log_str = engine.run_battle()
     
     if return_state:

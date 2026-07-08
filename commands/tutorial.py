@@ -103,7 +103,7 @@ class Tutorial(commands.Cog):
         e2 = self._page(
             "Aula 2 // Economia, Mochila e Forja",
             (
-                "Sua vida financeira e de itens em Lugnica. Lixo vira luxo se você tiver paciência.\n\n"
+                "Sua vida financeira e de itens em Wolford. Lixo vira luxo se você tiver paciência.\n\n"
                 "`echo perfil` - Mostra quem você é, quanto tem e se seus cosméticos estão equipados.\n"
                 "O nível da conta agora dá bônus passivo de Gold/XP a cada 10 níveis. Pouco, mas constante; igual boleto, só que útil.\n"
                 "`echo mochila` - Seu inventário. Onde os pedaços de monstros e tickets mágicos ficam guardados.\n"

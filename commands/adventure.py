@@ -364,7 +364,7 @@ class AventuraRPG(commands.Cog):
         
         embed = discord.Embed(
             title=f"🏕️ Iniciando Contrato: {aventura_escolhida['nome']}",
-            description="Os portões de Lugnica fecham-se às tuas costas. O teu destino foi traçado.",
+            description="Os portões de Wolford fecham-se às tuas costas. O teu destino foi traçado.",
             color=discord.Color.dark_green()
         )
         embed.set_footer(text="A gerar o mapa mundi...")

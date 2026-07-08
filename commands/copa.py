@@ -1502,7 +1502,7 @@ class Copa(commands.Cog):
                     medals = 1
                     self._grant_champion_title(cursor, user_id)
                     cursor.execute("UPDATE world_cup_progress SET cooldown_end = ? WHERE user_id = ?", (now_ts() + MATCH_COOLDOWN, str(user_id)))
-                    note = "🏆 **CAMPEÃO DO MUNDO!** O troféu dourado é de Lugnica! Campanha vitoriosa encerrada. Cooldown ativado."
+                    note = "🏆 **CAMPEÃO DO MUNDO!** O troféu dourado é de Wolford! Campanha vitoriosa encerrada. Cooldown ativado."
                 else:
                     next_stage = STAGE_ORDER[index + 1]
                     stage_reward = STAGE_REWARDS.get(next_stage, 0)
@@ -1559,7 +1559,7 @@ class Copa(commands.Cog):
         started = cursor.fetchone()
         conn.close()
         embed = discord.Embed(
-            title="Echo Cup - Copa do Mundo de Lugnica",
+            title="Echo Cup - Copa do Mundo de Wolford",
             description=(
                 f"Status: **{'Ativa' if active else 'Fechada'}**\n"
                 "Monte 11 herois, escolha a formação e dispute grupos, mata-mata e a glória mundial.\n"
@@ -1624,10 +1624,10 @@ class Copa(commands.Cog):
             2: {"name": "Tema: Gramado Noturno", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_gramado_noturno"},
             3: {"name": "Tema: Sala de Imprensa", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_sala_de_imprensa"},
             4: {"name": "Tema: Taça Mundial", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_taca_mundial"},
-            5: {"name": "Titulo: Campeão de Lugnica", "cost": 160, "kind": "cosmetic", "type": "title", "item": "token_titulo_campeao_de_lugnica"},
+            5: {"name": "Titulo: Campeão de Wolford", "cost": 160, "kind": "cosmetic", "type": "title", "item": "token_titulo_campeao_de_lugnica"},
             6: {"name": "Titulo: Lenda da Echo Cup", "cost": 220, "kind": "cosmetic", "type": "title", "item": "token_titulo_lenda_echo_cup"},
             7: {"name": "Titulo: Rei dos Ecos", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_rei_dos_ecos"},
-            8: {"name": "Titulo: Maior Técnico de Lugnica", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_maior_tecnico_de_lugnica"},
+            8: {"name": "Titulo: Maior Técnico de Wolford", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_maior_tecnico_de_lugnica"},
             9: {"name": "3 Tickets de Invocação", "cost": 120, "kind": "tickets", "amount": 3},
             10: {"name": "25 Gems", "cost": 220, "kind": "gems", "amount": 25},
             11: {"name": "Maple, Pet Alce", "cost": 1000, "kind": "pet", "pet_id": "maple_alce", "pet_name": "Maple", "rarity": 5},
@@ -1652,10 +1652,10 @@ class Copa(commands.Cog):
             2: {"name": "Tema: Gramado Noturno", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_gramado_noturno"},
             3: {"name": "Tema: Sala de Imprensa", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_sala_de_imprensa"},
             4: {"name": "Tema: Taça Mundial", "cost": 500, "kind": "cosmetic", "type": "frame", "item": "token_moldura_taca_mundial"},
-            5: {"name": "Titulo: Campeão de Lugnica", "cost": 160, "kind": "cosmetic", "type": "title", "item": "token_titulo_campeao_de_lugnica"},
+            5: {"name": "Titulo: Campeão de Wolford", "cost": 160, "kind": "cosmetic", "type": "title", "item": "token_titulo_campeao_de_lugnica"},
             6: {"name": "Titulo: Lenda da Echo Cup", "cost": 220, "kind": "cosmetic", "type": "title", "item": "token_titulo_lenda_echo_cup"},
             7: {"name": "Titulo: Rei dos Ecos", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_rei_dos_ecos"},
-            8: {"name": "Titulo: Maior Técnico de Lugnica", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_maior_tecnico_de_lugnica"},
+            8: {"name": "Titulo: Maior Técnico de Wolford", "cost": 260, "kind": "cosmetic", "type": "title", "item": "token_titulo_maior_tecnico_de_lugnica"},
             9: {"name": "3 Tickets de Invocação", "cost": 120, "kind": "tickets", "amount": 3},
             10: {"name": "25 Gems", "cost": 220, "kind": "gems", "amount": 25},
             11: {"name": "Maple, Pet Alce", "cost": 1000, "kind": "pet", "pet_id": "maple_alce", "pet_name": "Maple", "rarity": 5},
