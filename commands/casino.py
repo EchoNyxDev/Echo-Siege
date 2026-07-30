@@ -23,7 +23,7 @@ from systems.blackjack_manager import (
     deserialize_hand,
     draw_card,
     draw_hand,
-    format_hand,
+    format_hand_visual,
     hand_value,
     is_blackjack,
     serialize_hand,
@@ -49,7 +49,7 @@ from systems.casino_manager import (
     settle_bet,
 )
 from systems.roulette_manager import normalize_bet_type, spin_roulette
-from systems.slots_manager import spin_slots
+from systems.slots_manager import format_slot_reels, slot_paytable_lines, spin_slots
 
 
 def fmt(value):
@@ -159,6 +159,85 @@ class Casino(commands.Cog):
         embed.set_footer(text="TutoriUAU: Fallen Angel, onde estatística vira entretenimento caro.")
         return embed
 
+    def _slot_help_embed(self):
+        embed = self._basic_embed(
+            "🎰 Slot do Fallen Angel",
+            (
+                "`echo cassino slot <aposta>` gira três figuras.\n"
+                "Duas figuras iguais já pagam prêmio. Três iguais pagam multiplicador alto. Três 👑 levam o jackpot."
+            ),
+            discord.Color.gold(),
+        )
+        embed.add_field(name="Tabela de Prêmios", value="\n".join(slot_paytable_lines()), inline=False)
+        embed.add_field(
+            name="Jackpot",
+            value="Cada giro coloca **2% da aposta** no jackpot. O jackpot fica acumulado até alguém acertar três 👑.",
+            inline=False,
+        )
+        return embed
+
+    def _roulette_help_embed(self):
+        embed = self._basic_embed(
+            "🎡 Roleta do Fallen Angel",
+            (
+                "`echo cassino roleta <tipo> <aposta> [número]`\n\n"
+                "A roleta usa números de **0 a 36**. O **0 é verde** e não conta como par/ímpar, baixo/alto, vermelho/preto."
+            ),
+            discord.Color.dark_red(),
+        )
+        embed.add_field(
+            name="Apostas simples - pagam 2x",
+            value=(
+                "`vermelho` ou `preto`\n"
+                "`par` ou `impar`\n"
+                "`baixo` = 1 a 18\n"
+                "`alto` = 19 a 36"
+            ),
+            inline=False,
+        )
+        embed.add_field(
+            name="Número exato - paga 36x",
+            value=(
+                "Use `numero` e escolha um número de **0 a 36**.\n"
+                "Exemplo: `echo cassino roleta numero 10 17` aposta 10 fichas no número 17."
+            ),
+            inline=False,
+        )
+        embed.add_field(
+            name="Exemplos rápidos",
+            value=(
+                "`echo cassino roleta vermelho 25`\n"
+                "`echo cassino roleta par 40`\n"
+                "`echo cassino roleta alto 15`\n"
+                "`echo cassino roleta numero 5 0`"
+            ),
+            inline=False,
+        )
+        embed.set_footer(text="TutoriUAU: 0 a 36. Se digitar 42, isso não é aposta, é pedido de socorro matemático.")
+        return embed
+
+    def _blackjack_embed(self, title, player_hand, dealer_hand, bet, status, payout=None, hide_dealer=False, color=None):
+        embed = self._basic_embed(
+            title,
+            f"Aposta: **{fmt(bet)}** fichas\n{status}",
+            color or discord.Color.dark_green(),
+        )
+        embed.add_field(
+            name=f"Sua mão ({hand_value(player_hand)})",
+            value=f"```{format_hand_visual(player_hand)}```",
+            inline=False,
+        )
+        dealer_value = "?" if hide_dealer else hand_value(dealer_hand)
+        embed.add_field(
+            name=f"Dealer ({dealer_value})",
+            value=f"```{format_hand_visual(dealer_hand, hide_first=hide_dealer)}```",
+            inline=False,
+        )
+        if payout is not None:
+            embed.add_field(name="Pagamento", value=f"**{fmt(payout)}** fichas", inline=True)
+        embed.set_footer(text="TutoriUAU: pedir, parar, dobrar ou desistir. O dealer pisca pouco, mas julga muito.")
+        return embed
+
     def _tutorial_embed(self, title, description, page, total, comment):
         embed = discord.Embed(
             title=title,
@@ -249,7 +328,7 @@ class Casino(commands.Cog):
             name="Slot",
             value=(
                 "`echo cassino slot <aposta>`.\n"
-                "Símbolos possuem pesos diferentes. Trincas pagam multiplicadores; duas iguais devolvem parte da aposta.\n"
+                "Símbolos possuem pesos diferentes. Trincas pagam multiplicadores fortes; duas iguais também pagam prêmio.\n"
                 "Cada giro alimenta o jackpot com 2% da aposta. Três **COROA** levam o jackpot."
             ),
             inline=False,
@@ -270,6 +349,7 @@ class Casino(commands.Cog):
             value=(
                 "`echo cassino roleta <tipo> <aposta> [número]`\n"
                 "Tipos: `vermelho`, `preto`, `par`, `impar`, `baixo`, `alto`, `numero`.\n"
+                "A escolha por número vai de **0 a 36**.\n"
                 "Vermelho/preto/par/ímpar/baixo/alto pagam **2x**. Número exato paga **36x**.\n"
                 "Exemplo: `echo cassino roleta numero 10 17`."
             ),
@@ -282,8 +362,8 @@ class Casino(commands.Cog):
                 "`echo cassino pedir` compra carta.\n"
                 "`echo cassino parar` enfrenta o dealer.\n"
                 "`echo cassino dobrar` dobra a aposta, compra uma carta e para.\n"
-                "`echo cassino desistir` encerra a mão perdendo a aposta.\n"
-                "Blackjack natural paga **2,5x**; vitória normal paga **2x**; empate devolve a aposta."
+                "`echo cassino desistir` encerra a mão e devolve metade da aposta.\n"
+                "Blackjack natural paga **2,5x**; vitória normal paga **2x**; empate devolve a aposta. Com 5 cartas sem estourar, você vence automaticamente."
             ),
             inline=False,
         )
@@ -566,7 +646,7 @@ class Casino(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def slot_cmd(self, ctx, aposta: int = None):
         if aposta is None:
-            return await ctx.send("Use `echo cassino slot <aposta>`. Três COROAS levam o jackpot.")
+            return await ctx.send(embed=self._slot_help_embed())
         user_id = str(ctx.author.id)
         if not await self._locked(ctx):
             return
@@ -589,17 +669,22 @@ class Casino(commands.Cog):
             payout = spin["payout"]
             if spin["jackpot_win"]:
                 claimed = claim_jackpot(cursor)
-                payout = aposta * 100 + claimed
+                payout = aposta * 150 + claimed
                 add_stat(cursor, user_id, "casino_jackpots", 1)
                 log_admin(cursor, user_id, "casino_jackpot", f"{fmt(claimed)} fichas no slot")
             settle_bet(cursor, user_id, "slot", aposta, payout, spin["result"], spin["details"], "slots_wins")
             conn.commit()
             line = JACKPOT_LINE if spin["jackpot_win"] else random.choice(WIN_LINES if payout > aposta else LOSE_LINES)
-            await ctx.send(
-                f"**[ {' | '.join(spin['reels'])} ]**\n"
-                f"Resultado: **{spin['result']}** | Pagamento: **{fmt(payout)}** fichas\n"
-                f"Jackpot recebeu **{fmt(jackpot_add)}** ficha(s).\n*{line}*"
+            embed = self._basic_embed(
+                "🎰 Slot do Fallen Angel",
+                f"```{format_slot_reels(spin['reels'])}```",
+                discord.Color.gold() if payout > aposta else discord.Color.dark_gold(),
             )
+            embed.add_field(name="Resultado", value=f"**{spin['result'].title()}**\n{spin['details']}", inline=True)
+            embed.add_field(name="Pagamento", value=f"**{fmt(payout)}** fichas", inline=True)
+            embed.add_field(name="Jackpot", value=f"Recebeu **{fmt(jackpot_add)}** ficha(s) neste giro.", inline=False)
+            embed.set_footer(text=f"TutoriUAU: {line}")
+            await ctx.send(embed=embed)
         finally:
             conn.close()
             self._unlock(user_id)
@@ -607,19 +692,18 @@ class Casino(commands.Cog):
     @cassino_group.command(name="roleta", aliases=["roulette"])
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def roleta_cmd(self, ctx, tipo: str = None, aposta: int = None, numero: int = None):
-        if not tipo or aposta is None:
-            return await ctx.send(
-                "Use `echo cassino roleta <vermelho|preto|par|impar|baixo|alto|numero> <aposta> [número]`.\n"
-                "Exemplo: `echo cassino roleta numero 10 17`."
-            )
+        if not tipo or normalize_id(tipo) in {"ajuda", "help", "regras", "tutorial", "como"}:
+            return await ctx.send(embed=self._roulette_help_embed())
+        if aposta is None:
+            return await ctx.send(embed=self._roulette_help_embed())
         tipo = normalize_bet_type(tipo)
         if tipo not in {"vermelho", "preto", "par", "impar", "baixo", "alto", "numero"}:
-            return await ctx.send("Tipo de aposta inválido. Use vermelho, preto, par, impar, baixo, alto ou numero.")
+            return await ctx.send("Tipo de aposta inválido. Use `echo cassino roleta ajuda` para ver as opções e exemplos.")
         if tipo == "numero":
             if numero is None:
-                return await ctx.send("Aposta em número exige um número de 0 a 36. Exemplo: `echo cassino roleta numero 10 17`.")
+                return await ctx.send("Aposta em número exige um número de **0 a 36**. Exemplo: `echo cassino roleta numero 10 17`.")
             if not 0 <= int(numero) <= 36:
-                return await ctx.send("O número da roleta precisa estar entre 0 e 36.")
+                return await ctx.send("O número da roleta precisa estar entre **0 e 36**.")
         user_id = str(ctx.author.id)
         if not await self._locked(ctx):
             return
@@ -641,10 +725,18 @@ class Casino(commands.Cog):
             settle_bet(cursor, user_id, "roleta", aposta, result["payout"], result["result"], result["details"], "roulette_wins")
             conn.commit()
             line = random.choice(WIN_LINES if result["won"] else LOSE_LINES)
-            await ctx.send(
-                f"A roleta caiu em **{result['number']} ({result['color']})**.\n"
-                f"Pagamento: **{fmt(result['payout'])}** fichas.\n*{line}*"
+            color_icon = {"vermelho": "🔴", "preto": "⚫", "verde": "🟢"}.get(result["color"], "⚪")
+            embed_color = discord.Color.green() if result["color"] == "verde" else (discord.Color.red() if result["color"] == "vermelho" else discord.Color.dark_grey())
+            embed = self._basic_embed(
+                "🎡 Roleta do Fallen Angel",
+                f"A bolinha caiu em **{color_icon} {result['number']} ({result['color']})**.",
+                embed_color,
             )
+            embed.add_field(name="Sua aposta", value=f"`{tipo}` {fmt(aposta)} ficha(s){f' no número {numero}' if tipo == 'numero' else ''}", inline=False)
+            embed.add_field(name="Resultado", value="**Vitória**" if result["won"] else "**Derrota**", inline=True)
+            embed.add_field(name="Pagamento", value=f"**{fmt(result['payout'])}** fichas", inline=True)
+            embed.set_footer(text=f"TutoriUAU: {line}")
+            await ctx.send(embed=embed)
         finally:
             conn.close()
             self._unlock(user_id)
@@ -675,17 +767,25 @@ class Casino(commands.Cog):
                     payout = aposta
                     result = "push"
                     details = "Blackjack natural dos dois lados."
+                    status = "Blackjack natural dos dois lados. Empate elegante, daqueles que fingem profundidade."
                 else:
                     payout = int(aposta * 2.5)
                     result = "blackjack"
                     details = "Blackjack natural do jogador."
+                    status = "Blackjack natural. Você entrou, sentou e humilhou a mesa antes do dealer terminar a pose."
                     add_stat(cursor, user_id, "casino_blackjack_natural", 1)
                 settle_bet(cursor, user_id, "blackjack", aposta, payout, result, details, "blackjack_wins")
                 conn.commit()
-                return await ctx.send(
-                    f"Sua mão: **{format_hand(player_hand)}**\nDealer: **{format_hand(dealer_hand)}**\n"
-                    f"Pagamento: **{fmt(payout)}** fichas.\n*{random.choice(WIN_LINES) if payout > aposta else 'Empate elegante. Ninguém ganhou, mas todos perderam tempo.'}*"
-                )
+                return await ctx.send(embed=self._blackjack_embed(
+                    "🃏 Blackjack - Resultado",
+                    player_hand,
+                    dealer_hand,
+                    aposta,
+                    status,
+                    payout,
+                    hide_dealer=False,
+                    color=discord.Color.green() if payout > aposta else discord.Color.light_grey(),
+                ))
             cursor.execute(
                 """
                 INSERT INTO casino_blackjack_sessions (user_id, bet, player_hand, dealer_hand, status, created_at)
@@ -694,11 +794,20 @@ class Casino(commands.Cog):
                 (user_id, aposta, serialize_hand(player_hand), serialize_hand(dealer_hand), now_ts()),
             )
             conn.commit()
-            await ctx.send(
-                f"Blackjack iniciado por **{fmt(aposta)}** fichas.\n"
-                f"Sua mão: **{format_hand(player_hand)}**\nDealer: **{format_hand(dealer_hand, hide_first=True)}**\n"
-                "`echo cassino pedir`, `parar`, `dobrar` ou `desistir`."
+            embed = self._blackjack_embed(
+                "🃏 Blackjack do Fallen Angel",
+                player_hand,
+                dealer_hand,
+                aposta,
+                "Mesa aberta. Chegue em 21, vença o dealer ou consiga 5 cartas sem estourar.",
+                hide_dealer=True,
             )
+            embed.add_field(
+                name="Ações",
+                value="`echo cassino pedir` | `parar` | `dobrar` | `desistir`",
+                inline=False,
+            )
+            await ctx.send(embed=embed)
         finally:
             conn.close()
             self._unlock(user_id)
@@ -724,10 +833,16 @@ class Casino(commands.Cog):
             win_stat = None
         settle_bet(cursor, user_id, "blackjack", bet, payout, result, f"Jogador {player_value} vs Dealer {dealer_value}", win_stat)
         cursor.execute("DELETE FROM casino_blackjack_sessions WHERE user_id = ?", (str(user_id),))
-        await ctx.send(
-            f"Sua mão: **{format_hand(player_hand)}**\nDealer: **{format_hand(dealer_hand)}**\n"
-            f"Resultado: **{result}** | Pagamento: **{fmt(payout)}** fichas.\n*{line}*"
-        )
+        await ctx.send(embed=self._blackjack_embed(
+            "🃏 Blackjack - Resultado",
+            player_hand,
+            dealer_hand,
+            bet,
+            f"Resultado: **{result}**. {line}",
+            payout,
+            hide_dealer=False,
+            color=discord.Color.green() if payout > bet else (discord.Color.light_grey() if payout == bet else discord.Color.red()),
+        ))
 
     async def _blackjack_action(self, ctx, action):
         user_id = str(ctx.author.id)
@@ -754,10 +869,20 @@ class Casino(commands.Cog):
             dealer_hand = deserialize_hand(dealer_raw)
 
             if action == "desistir":
-                settle_bet(cursor, user_id, "blackjack", bet, 0, "desistiu", "Jogador desistiu da mão.")
+                payout = bet // 2
+                settle_bet(cursor, user_id, "blackjack", bet, payout, "desistiu", "Jogador desistiu da mão e recuperou metade da aposta.")
                 cursor.execute("DELETE FROM casino_blackjack_sessions WHERE user_id = ?", (user_id,))
                 conn.commit()
-                return await ctx.send("Você desistiu da mão. O dealer agradeceu sem expressão facial, que é o jeito dele sorrir.")
+                return await ctx.send(embed=self._blackjack_embed(
+                    "🃏 Blackjack - Desistência",
+                    player_hand,
+                    dealer_hand,
+                    bet,
+                    "Você desistiu da mão e recuperou metade da aposta. O dealer agradeceu sem expressão facial, que é o jeito dele sorrir.",
+                    payout,
+                    hide_dealer=True,
+                    color=discord.Color.light_grey(),
+                ))
 
             if action == "dobrar":
                 if len(player_hand) != 2:
@@ -770,7 +895,16 @@ class Casino(commands.Cog):
                     settle_bet(cursor, user_id, "blackjack", bet, 0, "bust", f"Estourou com {hand_value(player_hand)}.")
                     cursor.execute("DELETE FROM casino_blackjack_sessions WHERE user_id = ?", (user_id,))
                     conn.commit()
-                    return await ctx.send(f"Sua mão: **{format_hand(player_hand)}**\n**Estourou.**\n*{BUST_LINE}*")
+                    return await ctx.send(embed=self._blackjack_embed(
+                        "🃏 Blackjack - Estourou",
+                        player_hand,
+                        dealer_hand,
+                        bet,
+                        BUST_LINE,
+                        0,
+                        hide_dealer=False,
+                        color=discord.Color.red(),
+                    ))
                 await self._finish_blackjack(ctx, cursor, user_id, player_hand, dealer_hand, bet)
                 conn.commit()
                 return
@@ -781,13 +915,44 @@ class Casino(commands.Cog):
                     settle_bet(cursor, user_id, "blackjack", bet, 0, "bust", f"Estourou com {hand_value(player_hand)}.")
                     cursor.execute("DELETE FROM casino_blackjack_sessions WHERE user_id = ?", (user_id,))
                     conn.commit()
-                    return await ctx.send(f"Sua mão: **{format_hand(player_hand)}**\n**Estourou.**\n*{BUST_LINE}*")
+                    return await ctx.send(embed=self._blackjack_embed(
+                        "🃏 Blackjack - Estourou",
+                        player_hand,
+                        dealer_hand,
+                        bet,
+                        BUST_LINE,
+                        0,
+                        hide_dealer=False,
+                        color=discord.Color.red(),
+                    ))
+                if len(player_hand) >= 5:
+                    payout = bet * 2
+                    settle_bet(cursor, user_id, "blackjack", bet, payout, "five_card", "Cinco cartas sem estourar.")
+                    cursor.execute("DELETE FROM casino_blackjack_sessions WHERE user_id = ?", (user_id,))
+                    conn.commit()
+                    return await ctx.send(embed=self._blackjack_embed(
+                        "🃏 Blackjack - 5 Cartas",
+                        player_hand,
+                        dealer_hand,
+                        bet,
+                        "Cinco cartas sem estourar. Vitória automática, porque até a banca respeita esse malabarismo.",
+                        payout,
+                        hide_dealer=True,
+                        color=discord.Color.green(),
+                    ))
                 cursor.execute(
                     "UPDATE casino_blackjack_sessions SET player_hand = ? WHERE user_id = ?",
                     (serialize_hand(player_hand), user_id),
                 )
                 conn.commit()
-                return await ctx.send(f"Sua mão: **{format_hand(player_hand)}**\nDealer: **{format_hand(dealer_hand, hide_first=True)}**")
+                return await ctx.send(embed=self._blackjack_embed(
+                    "🃏 Blackjack - Sua vez",
+                    player_hand,
+                    dealer_hand,
+                    bet,
+                    "Carta comprada. Pode pedir de novo, parar, dobrar ou desistir.",
+                    hide_dealer=True,
+                ))
 
             if action == "parar":
                 await self._finish_blackjack(ctx, cursor, user_id, player_hand, dealer_hand, bet)
