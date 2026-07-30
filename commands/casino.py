@@ -70,6 +70,40 @@ def period_start(period):
     return 0
 
 
+class CasinoTutorialView(discord.ui.View):
+    def __init__(self, user, embeds):
+        super().__init__(timeout=240)
+        self.user = user
+        self.embeds = embeds
+        self.page = 0
+        self.update_buttons()
+
+    def update_buttons(self):
+        self.btn_prev.disabled = self.page == 0
+        self.btn_next.disabled = self.page >= len(self.embeds) - 1
+
+    async def interaction_check(self, interaction):
+        if interaction.user.id != self.user.id:
+            await interaction.response.send_message(
+                "Esse tutorial foi aberto por outra pessoa. Use `echo cassino tutorial` e ganhe sua própria apostila com julgamento embutido.",
+                ephemeral=True,
+            )
+            return False
+        return True
+
+    @discord.ui.button(label="Anterior", style=discord.ButtonStyle.secondary)
+    async def btn_prev(self, interaction, button):
+        self.page -= 1
+        self.update_buttons()
+        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
+
+    @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary)
+    async def btn_next(self, interaction, button):
+        self.page += 1
+        self.update_buttons()
+        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
+
+
 class Casino(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -124,6 +158,199 @@ class Casino(commands.Cog):
         embed = discord.Embed(title=title, description=description, color=color)
         embed.set_footer(text="TutoriUAU: Fallen Angel, onde estatística vira entretenimento caro.")
         return embed
+
+    def _tutorial_embed(self, title, description, page, total, comment):
+        embed = discord.Embed(
+            title=title,
+            description=description,
+            color=discord.Color.gold(),
+        )
+        embed.set_footer(text=f"TutoriUAU • Cassino {page}/{total} • {comment}")
+        return embed
+
+    def _casino_tutorial_pages(self):
+        total = 6
+        pages = []
+
+        e1 = self._tutorial_embed(
+            "Fallen Angel // Aula 1: O que é isso?",
+            (
+                f"O **{CASINO_NAME}** é o cassino oficial de Wolford.\n\n"
+                f"A moeda daqui é **{CASINO_CURRENCY}**, separada do Gold. Você compra fichas com Gold, aposta fichas, "
+                "ganha ou perde fichas, e só depois decide se vende de volta.\n\n"
+                "Comando principal: `echo cassino`.\n"
+                "Tutorial completo: `echo cassino tutorial`."
+            ),
+            1,
+            total,
+            "A casa sempre ganha, mas pelo menos agora ela explica o contrato.",
+        )
+        e1.add_field(
+            name="Comandos básicos",
+            value=(
+                "`echo cassino saldo` - Mostra fichas, jackpot e estatísticas.\n"
+                "`echo cassino comprar <fichas>` - Compra fichas com Gold.\n"
+                "`echo cassino vender <fichas>` - Vende fichas por Gold.\n"
+                "`echo cassino historico` - Mostra suas últimas apostas.\n"
+                "`echo cassino ranking [categoria]` - Ranking da banca."
+            ),
+            inline=False,
+        )
+        e1.add_field(
+            name="Limites",
+            value=f"Aposta mínima: **{MIN_BET}** ficha.\nAposta máxima: **{fmt(MAX_BET)}** fichas.\nBlackjack expira em **10 minutos** se abandonar a mesa.",
+            inline=False,
+        )
+        pages.append(e1)
+
+        package_lines = [f"`{chips}` fichas = **{fmt(cost)} Gold**" for chips, cost in CHIP_PACKAGES.items()]
+        e2 = self._tutorial_embed(
+            "Fallen Angel // Aula 2: Comprar e vender fichas",
+            (
+                "Fichas são a trava de segurança da economia. Você não aposta Gold direto, porque alguém sempre tenta transformar "
+                "uma brincadeira em crise monetária.\n\n"
+                f"Taxa padrão: **100 Gold = 1 ficha**.\nVenda: **1 ficha = 50 Gold**.\nLimite diário de compra: **500 fichas**."
+            ),
+            2,
+            total,
+            "Comprar é fácil. Vender pela metade é a parte educativa.",
+        )
+        e2.add_field(name="Pacotes com desconto", value="\n".join(package_lines), inline=False)
+        e2.add_field(
+            name="Exemplos",
+            value=(
+                "`echo cassino comprar 10` - compra 10 fichas por 1.000 Gold.\n"
+                "`echo cassino comprar 110` - compra pacote de 110 fichas por 10.000 Gold.\n"
+                "`echo cassino vender 20` - vende 20 fichas por 1.000 Gold."
+            ),
+            inline=False,
+        )
+        pages.append(e2)
+
+        e3 = self._tutorial_embed(
+            "Fallen Angel // Aula 3: Jogos rápidos",
+            (
+                "Esses são os jogos de aposta imediata. Você manda o comando, a banca resolve, o histórico registra e o TutoriUAU comenta "
+                "com o tato emocional de uma máquina registradora."
+            ),
+            3,
+            total,
+            "Se você chamar isso de investimento, eu vou tossir em binário.",
+        )
+        e3.add_field(
+            name="Cara ou Coroa",
+            value=(
+                "`echo cassino cara <aposta>` ou `echo cassino coroa <aposta>`.\n"
+                "Chance 50/50. Se vencer, recebe **2x** a aposta em pagamento bruto."
+            ),
+            inline=False,
+        )
+        e3.add_field(
+            name="Slot",
+            value=(
+                "`echo cassino slot <aposta>`.\n"
+                "Símbolos possuem pesos diferentes. Trincas pagam multiplicadores; duas iguais devolvem parte da aposta.\n"
+                "Cada giro alimenta o jackpot com 2% da aposta. Três **COROA** levam o jackpot."
+            ),
+            inline=False,
+        )
+        pages.append(e3)
+
+        e4 = self._tutorial_embed(
+            "Fallen Angel // Aula 4: Roleta e Blackjack",
+            (
+                "Aqui começa a mesa com pose. Roleta é aposta seca; blackjack permite decisão no meio da partida."
+            ),
+            4,
+            total,
+            "Matemática, sorte e escolhas ruins sentaram na mesma mesa.",
+        )
+        e4.add_field(
+            name="Roleta",
+            value=(
+                "`echo cassino roleta <tipo> <aposta> [número]`\n"
+                "Tipos: `vermelho`, `preto`, `par`, `impar`, `baixo`, `alto`, `numero`.\n"
+                "Vermelho/preto/par/ímpar/baixo/alto pagam **2x**. Número exato paga **36x**.\n"
+                "Exemplo: `echo cassino roleta numero 10 17`."
+            ),
+            inline=False,
+        )
+        e4.add_field(
+            name="Blackjack",
+            value=(
+                "`echo cassino blackjack <aposta>` inicia uma mão.\n"
+                "`echo cassino pedir` compra carta.\n"
+                "`echo cassino parar` enfrenta o dealer.\n"
+                "`echo cassino dobrar` dobra a aposta, compra uma carta e para.\n"
+                "`echo cassino desistir` encerra a mão perdendo a aposta.\n"
+                "Blackjack natural paga **2,5x**; vitória normal paga **2x**; empate devolve a aposta."
+            ),
+            inline=False,
+        )
+        pages.append(e4)
+
+        e5 = self._tutorial_embed(
+            "Fallen Angel // Aula 5: Loja, histórico e ranking",
+            (
+                "Ganhar ficha e não gastar é maturidade. Gastar em cosmético é personalidade. O sistema aceita os dois, mas julga em silêncio."
+            ),
+            5,
+            total,
+            "A loja vende glamour; autocontrole ficou fora de estoque.",
+        )
+        e5.add_field(
+            name="Loja do Cassino",
+            value=(
+                "`echo cassino loja` mostra os prêmios.\n"
+                "`echo cassino comprar_item <id> [quantidade]` compra um item.\n"
+                "Tem títulos, temas de perfil, tickets, Gems, itens e pets exclusivos como **Dado Vivo** e **Mini Dealer**.\n"
+                "Itens únicos só podem ser comprados uma vez; alguns itens têm limite semanal."
+            ),
+            inline=False,
+        )
+        e5.add_field(
+            name="Controle e competição",
+            value=(
+                "`echo cassino historico [quantidade]` mostra até 15 apostas recentes.\n"
+                "`echo cassino ranking fichas` mostra quem tem mais fichas.\n"
+                "Outras categorias: `maior_vitoria`, `apostado`, `perdido`, `vitorias`."
+            ),
+            inline=False,
+        )
+        pages.append(e5)
+
+        e6 = self._tutorial_embed(
+            "Fallen Angel // Aula 6: Staff, segurança e boas práticas",
+            (
+                "O cassino tem logs, limites e comandos de controle para não virar uma máquina de imprimir caos.\n\n"
+                "Apostas entram no histórico, grandes vitórias vão para log administrativo, compras ficam registradas e o blackjack fica preso ao jogador até acabar ou expirar."
+            ),
+            6,
+            total,
+            "Parabéns. Você leu o manual. Isso já te coloca acima de 73% dos aventureiros.",
+        )
+        e6.add_field(
+            name="Comandos ADM",
+            value=(
+                "`echo adm cassino abrir` - Abre o cassino.\n"
+                "`echo adm cassino fechar` - Fecha o cassino.\n"
+                "`echo adm cassino jackpot` - Consulta o jackpot.\n"
+                "`echo adm cassino jackpot <valor>` - Define o jackpot.\n"
+                "`echo adm cassino jackpot add <valor>` - Soma fichas ao jackpot.\n"
+                "`echo adm cassino dar_fichas @user <qtd>` - Dá fichas.\n"
+                "`echo adm cassino remover_fichas @user <qtd>` - Remove fichas."
+            ),
+            inline=False,
+        )
+        e6.add_field(
+            name="Dica do TutoriUAU",
+            value=(
+                "Use apostas pequenas para testar os jogos. Se perder tudo, isso não foi azar: foi o tutorial sendo ignorado em tempo real."
+            ),
+            inline=False,
+        )
+        pages.append(e6)
+        return pages
 
     async def _expire_blackjack_if_needed(self, ctx, cursor, user_id):
         cursor.execute(
@@ -188,10 +415,16 @@ class Casino(commands.Cog):
         )
         embed.add_field(
             name="Extras",
-            value="`loja`, `comprar_item`, `historico`, `ranking`, `pedir`, `parar`, `dobrar`, `desistir`.",
+            value="`tutorial`, `loja`, `comprar_item`, `historico`, `ranking`, `pedir`, `parar`, `dobrar`, `desistir`.",
             inline=False,
         )
         await ctx.send(embed=embed)
+
+    @cassino_group.command(name="tutorial", aliases=["guia", "manual", "regras", "ajuda"])
+    async def tutorial_cmd(self, ctx):
+        embeds = self._casino_tutorial_pages()
+        view = CasinoTutorialView(ctx.author, embeds)
+        await ctx.send(embed=embeds[0], view=view)
 
     @cassino_group.command(name="saldo", aliases=["carteira", "fichas"])
     async def saldo_cmd(self, ctx):

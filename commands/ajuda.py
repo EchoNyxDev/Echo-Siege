@@ -250,6 +250,7 @@ class Ajuda(commands.Cog):
             name="Cassino Fallen Angel",
             value=(
                 "`cassino` - Painel geral do cassino e regras rápidas.\n"
+                "`cassino tutorial` - Aula completa do TutoriUAU sobre fichas, jogos, loja e blackjack.\n"
                 "`cassino saldo` - Mostra fichas, jackpot e histórico básico.\n"
                 "`cassino comprar|vender <fichas>` - Troca Gold por fichas, ou fichas por Gold pela metade.\n"
                 "`cassino cara|coroa <aposta>` - Moeda 50/50.\n"

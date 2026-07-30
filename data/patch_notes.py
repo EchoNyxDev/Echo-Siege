@@ -9,6 +9,7 @@ PATCH_NOTES = [
         "subtitle": "TutoriUAU: Wolford ganhou um cassino. A estatistica agora usa gravata e cobra entrada em fichas.",
         "rows": [
             ("Novo Modo", "`echo cassino` abre o Fallen Angel, com Ficha do Cassino separada do Gold normal."),
+            ("Tutorial", "`echo cassino tutorial` ensina fichas, compra, venda, jogos, loja, ranking e blackjack com comentários do TutoriUAU."),
             ("Carteira", "`cassino saldo`, `comprar` e `vender` controlam fichas, limite diario e conversao segura."),
             ("Jogos", "Cara ou coroa, slot com jackpot, roleta completa e blackjack persistente com pedir/parar/dobrar/desistir."),
             ("Loja", "Premios exclusivos: titulos, temas de perfil, tickets, gems, itens e pets Dado Vivo/Mini Dealer."),
