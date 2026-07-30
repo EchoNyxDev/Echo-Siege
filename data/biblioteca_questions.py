@@ -1,4 +1,5 @@
 import os
+import random
 import re
 import unicodedata
 
@@ -33,6 +34,27 @@ def _aliases(*values):
     return result
 
 
+def _stable_options(opcoes, pergunta, resposta):
+    if not opcoes:
+        return []
+    result = []
+    seen = set()
+    for option in opcoes:
+        option = str(option or "").strip()
+        key = _norm(option)
+        if option and key not in seen:
+            seen.add(key)
+            result.append(option)
+    if resposta and _norm(resposta) not in seen:
+        result.append(str(resposta).strip())
+
+    seed_text = f"{pergunta}|{resposta}|{'|'.join(result)}"
+    seed = sum((index + 1) * ord(char) for index, char in enumerate(seed_text))
+    rng = random.Random(seed)
+    rng.shuffle(result)
+    return result
+
+
 def _question(
     tipo,
     categoria,
@@ -50,7 +72,7 @@ def _question(
         "categoria": categoria,
         "dificuldade": int(dificuldade),
         "pergunta": pergunta,
-        "opcoes": opcoes or [],
+        "opcoes": _stable_options(opcoes, pergunta, resposta),
         "resposta": resposta,
         "explicacao": explicacao,
         "tags": tags or [],
@@ -520,13 +542,64 @@ def _hero_option_pool(field, fallback):
 
 def _make_options(answer, pool, seed_text, total=4):
     answer = str(answer or "").strip()
-    pool = [str(item).strip() for item in pool if str(item).strip() and _norm(item) != _norm(answer)]
+    normalized_answer = _norm(answer)
+    options_pool = []
+    seen = {normalized_answer}
+    for item in pool:
+        item = str(item or "").strip()
+        key = _norm(item)
+        if item and key not in seen:
+            seen.add(key)
+            options_pool.append(item)
     seed = sum(ord(char) for char in str(seed_text))
-    ordered = sorted(pool, key=lambda item: ((sum(ord(c) for c in item) + seed) % 997, item))
-    options = [answer] + ordered[: max(0, total - 1)]
+    rng = random.Random(seed)
+    rng.shuffle(options_pool)
+    options = [answer] + options_pool[: max(0, total - 1)]
     while len(options) < total:
         options.append(f"Arquivo Corrompido {len(options)}")
-    return sorted(options[:total], key=lambda item: ((sum(ord(c) for c in item) + seed * 3) % 991, item))
+    return options[:total]
+
+
+def _valid_hero_ids():
+    result = []
+    for hero_id, hero in HEROES.items():
+        if hero_id == "id-nome":
+            continue
+        if hero.get("divino") or hero.get("secreto"):
+            continue
+        result.append(hero_id)
+    return result
+
+
+def _skill_name(skill):
+    if isinstance(skill, dict):
+        return str(skill.get("nome", "")).strip()
+    return str(skill or "").strip()
+
+
+def _evolution_entries(hero):
+    evolutions = hero.get("evolucoes") or hero.get("evoluções") or hero.get("evolucao") or {}
+    if not isinstance(evolutions, dict):
+        return []
+    entries = []
+    for stars, data in evolutions.items():
+        try:
+            stars = int(stars)
+        except (TypeError, ValueError):
+            continue
+        name = _skill_name(data)
+        if name:
+            entries.append((stars, name, data if isinstance(data, dict) else {}))
+    return sorted(entries, key=lambda item: item[0])
+
+
+def _rarity_label(rarity):
+    return f"{max(1, min(7, int(rarity or 1)))}⭐"
+
+
+def _rarity_aliases(rarity):
+    rarity = max(1, min(7, int(rarity or 1)))
+    return _aliases(_rarity_label(rarity), str(rarity), f"{rarity} estrelas", f"{rarity} estrela")
 
 
 def _hero_has_image(hero_id):
@@ -535,15 +608,27 @@ def _hero_has_image(hero_id):
 
 def _add_echo_hero_questions():
     origin_pool = _hero_option_pool("origem", ["Naruto", "One Piece", "Bleach", "Dragon Ball"])
+    valid_ids = _valid_hero_ids()
+    name_pool = [str(HEROES[hero_id].get("nome", hero_id)) for hero_id in valid_ids]
+    skill_pool = []
+    skill_owners = {}
+    for pool_hero_id in valid_ids:
+        pool_hero = HEROES[pool_hero_id]
+        pool_name = str(pool_hero.get("nome", pool_hero_id))
+        skill_names = [_skill_name(pool_hero.get("habilidade"))]
+        skill_names.extend(name for _, name, _ in _evolution_entries(pool_hero))
+        for skill_name in skill_names:
+            if not skill_name:
+                continue
+            skill_pool.append(skill_name)
+            skill_owners.setdefault(_norm(skill_name), set()).add(pool_name)
+
     ordered_ids = []
     for hero_id in ECHO_HERO_IDS:
         if hero_id not in ordered_ids:
             ordered_ids.append(hero_id)
-    for hero_id in sorted(HEROES):
+    for hero_id in sorted(valid_ids):
         if hero_id == "id-nome" or hero_id in ordered_ids:
-            continue
-        hero = HEROES.get(hero_id, {})
-        if hero.get("divino") or hero.get("secreto"):
             continue
         ordered_ids.append(hero_id)
 
@@ -557,6 +642,8 @@ def _add_echo_hero_questions():
         rarity = int(hero.get("raridade", 1) or 1)
         image = {"tipo": "hero", "hero_id": hero_id} if _hero_has_image(hero_id) else None
         difficulty = min(5, max(1, rarity))
+        base_skill = _skill_name(hero.get("habilidade"))
+        rarity_answer = _rarity_label(rarity)
 
         if image:
             QUESTOES[f"echo_img_{index:03d}_{hero_id}"] = _question(
@@ -582,6 +669,18 @@ def _add_echo_hero_questions():
             _aliases(hero_class),
             image,
         )
+        QUESTOES[f"echo_rarity_{index:03d}_{hero_id}"] = _question(
+            "multipla_escolha",
+            "Echo Siege",
+            min(4, max(2, difficulty)),
+            f"No Echo Siege, qual é a raridade base de {name}?",
+            rarity_answer,
+            _make_options(rarity_answer, [_rarity_label(value) for value in range(1, 6)], f"rarity:{hero_id}"),
+            f"{name} é um personagem de raridade base {rarity_answer}.",
+            ["echo siege", "raridade", "personagem"],
+            _rarity_aliases(rarity),
+            image,
+        )
         QUESTOES[f"echo_origin_{index:03d}_{hero_id}"] = _question(
             "multipla_escolha",
             "Echo Siege",
@@ -594,6 +693,46 @@ def _add_echo_hero_questions():
             _aliases(origin),
             image,
         )
+        if base_skill:
+            QUESTOES[f"echo_skill_{index:03d}_{hero_id}"] = _question(
+                "multipla_escolha",
+                "Habilidades",
+                min(5, max(2, difficulty + 1)),
+                f"Qual destas é a habilidade base de {name} no Echo Siege?",
+                base_skill,
+                _make_options(base_skill, skill_pool, f"skill:{hero_id}"),
+                f"A habilidade base de {name} é {base_skill}.",
+                ["echo siege", "habilidade", "personagem"],
+                _aliases(base_skill),
+                image,
+            )
+            if len(skill_owners.get(_norm(base_skill), [])) == 1:
+                QUESTOES[f"echo_skill_owner_{index:03d}_{hero_id}"] = _question(
+                    "multipla_escolha",
+                    "Habilidades",
+                    min(5, max(3, difficulty + 1)),
+                    f"Qual personagem do Echo Siege usa a habilidade {base_skill}?",
+                    name,
+                    _make_options(name, name_pool, f"owner:{hero_id}:{base_skill}"),
+                    f"{base_skill} pertence a {name}.",
+                    ["echo siege", "habilidade", "personagem"],
+                    _aliases(name, hero_id),
+                    image,
+                )
+        for evo_stars, evo_name, _ in _evolution_entries(hero):
+            answer = _rarity_label(evo_stars)
+            QUESTOES[f"echo_evo_{index:03d}_{hero_id}_{evo_stars}"] = _question(
+                "multipla_escolha",
+                "Habilidades",
+                min(5, max(4, difficulty)),
+                f"Em qual evolução/estrela {name} desbloqueia {evo_name}?",
+                answer,
+                _make_options(answer, [_rarity_label(value) for value in [1, 3, 5, 7]], f"evo:{hero_id}:{evo_stars}"),
+                f"{name} desbloqueia {evo_name} em {answer}.",
+                ["echo siege", "evolução", "habilidade"],
+                _rarity_aliases(evo_stars),
+                image,
+            )
 
 
 _add_echo_hero_questions()

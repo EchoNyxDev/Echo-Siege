@@ -390,6 +390,19 @@ def _seen_map(cursor, user_id):
     return {row[0]: int(row[1] or 0) for row in cursor.fetchall()}
 
 
+def _difficulty_plan(mode, count):
+    plans = {
+        "diaria": [1, 2, 2, 3, 3, 3, 4, 4, 2, 3],
+        "explorar": [2, 2, 3, 3, 4, 4, 5, 3],
+        "expedicao": [2, 3, 3, 4, 4, 4, 5, 5, 3, 4, 5, 2, 3, 4, 5],
+    }
+    base = plans.get(mode, plans["explorar"])
+    result = []
+    while len(result) < count:
+        result.extend(base)
+    return result[:count]
+
+
 def select_questions(cursor, user_id, mode, count):
     questions = load_questions(cursor)
     seen = _seen_map(cursor, user_id)
@@ -399,39 +412,38 @@ def select_questions(cursor, user_id, mode, count):
         difficulty = int(question.get("dificuldade", 1) or 1)
         if mode == "diaria" and difficulty > 4:
             continue
-        if mode == "explorar" and difficulty > 4:
-            continue
-        candidates.append((question_id, question, seen.get(question_id, 0)))
+        candidates.append((question_id, question, seen.get(question_id, 0), difficulty, str(question.get("categoria", "Geral"))))
 
     if not candidates:
-        candidates = [(question_id, question, seen.get(question_id, 0)) for question_id, question in questions.items()]
+        candidates = [
+            (question_id, question, seen.get(question_id, 0), int(question.get("dificuldade", 1) or 1), str(question.get("categoria", "Geral")))
+            for question_id, question in questions.items()
+        ]
 
-    buckets = defaultdict(list)
-    for question_id, question, times_seen in candidates:
-        buckets[str(question.get("categoria", "Geral"))].append((question_id, question, times_seen))
-    for bucket in buckets.values():
-        rng.shuffle(bucket)
-        bucket.sort(key=lambda item: (item[2], int(item[1].get("dificuldade", 1) or 1)))
-
-    categories = list(buckets)
-    rng.shuffle(categories)
     selected = []
-    while len(selected) < count and categories:
-        progressed = False
-        for category in list(categories):
-            bucket = buckets[category]
-            if bucket:
-                selected.append(bucket.pop(0)[0])
-                progressed = True
-                if len(selected) >= count:
-                    break
-            else:
-                categories.remove(category)
-        if not progressed:
+    category_usage = defaultdict(int)
+    for target_difficulty in _difficulty_plan(mode, count):
+        available = [item for item in candidates if item[0] not in selected]
+        if not available:
             break
+        best = min(
+            available,
+            key=lambda item: (
+                abs(item[3] - target_difficulty) * 8,
+                item[2] * 4,
+                category_usage[item[4]] * 2,
+                rng.random(),
+            ),
+        )
+        selected.append(best[0])
+        category_usage[best[4]] += 1
 
     if len(selected) < count:
-        fallback = [item[0] for item in sorted(candidates, key=lambda item: (item[2], rng.random())) if item[0] not in selected]
+        fallback = [
+            item[0]
+            for item in sorted(candidates, key=lambda item: (item[2], category_usage[item[4]], rng.random()))
+            if item[0] not in selected
+        ]
         selected.extend(fallback[: count - len(selected)])
     return selected[:count]
 
