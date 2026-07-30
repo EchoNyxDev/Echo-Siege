@@ -3,6 +3,7 @@ import sqlite3
 from utils.db import configure_sqlite_paths
 from systems.casino_manager import ensure_casino_schema
 from systems.biblioteca_manager import ensure_biblioteca_schema
+from systems.nix_manager import ensure_nix_schema
 
 
 configure_sqlite_paths()
@@ -525,6 +526,7 @@ CREATE TABLE IF NOT EXISTS player_guild_hunt_actions(
 
 ensure_casino_schema(cursor)
 ensure_biblioteca_schema(cursor)
+ensure_nix_schema(cursor)
 
 conn.commit()
 conn.close()

@@ -206,6 +206,13 @@ class Hunt(commands.Cog):
             if item_existe: cursor.execute("UPDATE inventory SET quantity = quantity + 1 WHERE id = ?", (item_existe[0],))
             else: cursor.execute("INSERT INTO inventory (user_id, item_name, quantity) VALUES (?, ?, 1)", (str(user.id), item_dropado))
 
+        nix_bonus = {"amount": 0, "line": ""}
+        try:
+            from systems.nix_effects import award_activity_fragments
+            nix_bonus = award_activity_fragments(cursor, user.id, "hunt", nivel_medio_party)
+        except Exception:
+            nix_bonus = {"amount": 0, "line": ""}
+
         conn.commit()
         conn.close()
 
@@ -220,7 +227,9 @@ class Hunt(commands.Cog):
         
         recompensas_str = f"💰 **Ouro:** {gold_ganho}\n⭐ **XP:** {xp_ganho}"
         if item_dropado: recompensas_str += f"\n📦 **Item Extraído:** 1x {item_nome_formatado}"
-            
+        if nix_bonus.get("amount"):
+            recompensas_str += f"\n`NIX` **Fragmentos de Dados:** +{nix_bonus['amount']}"
+
         embed.add_field(name="Recompensas", value=recompensas_str, inline=False)
         if log_ups: embed.add_field(name="Level Up!", value=log_ups, inline=False)
         

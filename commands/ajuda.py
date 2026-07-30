@@ -5,11 +5,11 @@ from discord.ext import commands
 
 THUMB_TUTORI = "https://cdn.discordapp.com/attachments/1493317042760056987/1511161459168514058/TutoriUAU.png"
 HELP_COMMENTS = [
-    "Comece pelo básico. Eu imploro com a serenidade de quem já viu `echo sumon`.",
-    "Gacha é esperança com recibo. Leia antes de gastar tudo, ou não. Eu só narro.",
-    "Combate tem muito botão, mas pelo menos agora eles têm propósito.",
-    "Economia do jogo: você ganha, gasta, reclama e repete. Sistema realista.",
-    "Guilda é família escolhida, com banco, chefe e pequenas crises administrativas.",
+    "NIX: ajuda assumida. TutoriUAU classificou isso como delegar. Eu classifico como promocao sem salario.",
+    "NIX: gacha converte esperanca em estatistica. Fascinante e financeiramente suspeito.",
+    "NIX: combate possui muitos botoes. Humanos chamam isso de estrategia quando da certo.",
+    "NIX: economia local indexada. Voce ganha, gasta, reclama e repete. Sistema muito humano.",
+    "NIX: guildas sao familias escolhidas com banco compartilhado. Risco social elevado.",
 ]
 
 
@@ -108,7 +108,7 @@ class Ajuda(commands.Cog):
         )
         embed.set_thumbnail(url=THUMB_TUTORI)
         comentario = HELP_COMMENTS[pagina - 1] if pagina - 1 < len(HELP_COMMENTS) else "Use `echo tutorial` se quiser a aula completa. Coragem."
-        embed.set_footer(text=f"TutoriUAU • Página {pagina}/{total} • {comentario}")
+        embed.set_footer(text=f"NIX // Página {pagina}/{total} // {comentario} // TutoriUAU supervisionando")
         return embed
 
     def criar_paginas_ajuda(self, user):
@@ -117,7 +117,7 @@ class Ajuda(commands.Cog):
 
         e1 = self._base_embed(
             user,
-            "TutoriUAU // Comandos Básicos",
+            "NIX // Comandos Básicos",
             (
                 f"Olá, {user.mention}. Respira. O bot tem coisa pra caramba, mas eu organizei "
                 "tudo num resumo porque aparentemente sou o adulto responsável aqui.\n\n"
@@ -158,7 +158,7 @@ class Ajuda(commands.Cog):
 
         e2 = self._base_embed(
             user,
-            "TutoriUAU // Heróis, Gacha e Catálogo",
+            "NIX // Heróis, Gacha e Catálogo",
             "A seção onde você troca dinheiro imaginário por esperança. Às vezes funciona.",
             2,
             total,
@@ -189,7 +189,7 @@ class Ajuda(commands.Cog):
 
         e3 = self._base_embed(
             user,
-            "TutoriUAU // Combate, Eventos e Rankings",
+            "NIX // Combate, Eventos e Rankings",
             "Aqui é onde seus personagens descobrem que a vida dói.",
             3,
             total,
@@ -218,6 +218,10 @@ class Ajuda(commands.Cog):
                 "`copa iniciar|time|jogar` - Cria o time, consulta a escalação e joga partidas.\n"
                 "`copa loja|resgatar|ranking|hall` - Troca echobet e acompanha a classificação.\n"
                 "`copa banner|summon|heroi|historico` - Banner esportivo, fichas da Copa e últimas partidas. O summon usa ticket antes de cobrar ouro.\n"
+                "`nix` - Painel do Protocolo NIX: fragmentos, fase global, corrupção e missões.\n"
+                "`nix investigar|missao|entregar` - Inicia seu arquivo, vê o objetivo e valida progresso.\n"
+                "`nix escolher|enfrentar|final` - Decide sua postura, luta contra anomalias e escolhe o destino da NIX.\n"
+                "`nix arquivos|loja|comprar|ranking|tutorial` - Lore, prêmios, placar e manual da falha mais educada de Wolford.\n"
                 "`biblioteca responder|dica|desistir` - Avança, pede ajuda ou encerra a sessão do arquivo.\n"
                 "`biblioteca status|ranking|colecao|loja|comprar` - Progresso, placar e prêmios da Biblioteca.\n"
                 "Invasões automáticas usam o canal do `adm set_iniciar`: raid 13:00, boss sábado 19:00 e calamidade no último dia do mês 22:00.\n"
@@ -229,7 +233,7 @@ class Ajuda(commands.Cog):
 
         e4 = self._base_embed(
             user,
-            "TutoriUAU // Loja, Forja e Equipamentos",
+            "NIX // Loja, Forja e Equipamentos",
             "O pilar econômico de Wolford. Fique forte ou fique pobre tentando.",
             4,
             total,
@@ -280,7 +284,7 @@ class Ajuda(commands.Cog):
 
         e5 = self._base_embed(
             user,
-            "TutoriUAU // Guildas e Administração",
+            "NIX // Guildas e Administração",
             "Sistema social. Porque aparentemente sofrer sozinho não era suficiente.",
             5,
             total,

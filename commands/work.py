@@ -18,6 +18,7 @@ from utils.adventure_catalog import (
     load_adventure_catalog,
     select_daily_contracts,
 )
+from data.nix_dialogues import NIX_WORK_INTRO
 
 
 def carregar_chaves_aventuras():
@@ -85,11 +86,18 @@ class GuildBoardView(discord.ui.View):
                 return await interaction.response.send_message("❌ **TutoriUAU:** Você já pegou um contrato! Termina a sua `echo adventure` ativa antes de vir me encher o saco por mais papéis.", ephemeral=True)
             
             cursor.execute("UPDATE daily_quests SET active_mission = ? WHERE user_id = ?", (mission_id, self.uid))
+            nix_bonus = {"amount": 0}
+            try:
+                from systems.nix_effects import award_activity_fragments
+                nix_bonus = award_activity_fragments(cursor, self.uid, "work")
+            except Exception:
+                nix_bonus = {"amount": 0}
             conn.commit()
             conn.close()
             
             nome = carregar_chaves_aventuras()[1].get(mission_id, {}).get("nome", mission_id)
-            await interaction.response.edit_message(content=f"📜 **Contrato Assinado:** **{nome}** entrou no diário da party. Use `echo adventure` para sair da cidade e resolver o problema.", view=None, embed=None)
+            extra = f"\n`NIX` Fragmentos de Dados encontrados no contrato: **+{nix_bonus['amount']}**." if nix_bonus.get("amount") else ""
+            return await interaction.response.edit_message(content=f"Contrato assinado: **{nome}** entrou no diario da party. Use `echo adventure` para sair da cidade e resolver o problema.{extra}", view=None, embed=None)
         return callback
 
 
@@ -169,6 +177,11 @@ class Work(commands.Cog):
             ),
             color=discord.Color.orange()
         )
+        embed.description = (
+            f"**{NIX_WORK_INTRO}**\n"
+            f"Nivel detectado: **{player_level}**. Contratos filtrados para nao transformar novato em estatistica triste.\n"
+            f"Contratos concluidos hoje: **{concluidas}/3**"
+        )
         
         # Adicionando a miniatura da Tutori-chan
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1493317042760056987/1513198454300606674/Tutori-chan.png?ex=6a26db61&is=6a2589e1&hm=d1fc19e4ac97c020cc6be2b440f928ae3e1b186c0d5afe7e46609f6d89146df1&")
@@ -186,7 +199,7 @@ class Work(commands.Cog):
             embed.set_footer(text="Você já tem um contrato ativo. Use `echo adventure` para entrar na cena e resolver essa péssima decisão.")
             await ctx.send(embed=embed)
         else:
-            embed.set_footer(text="Botões curtos para celular, textos longos para quem ainda sabe ler. TutoriUAU equilibrou o caos.")
+            embed.set_footer(text="NIX: botoes curtos para celular. TutoriUAU: textos longos para testar alfabetizacao heroica.")
             view = GuildBoardView(ctx, m1, m2, m3, m1_st, m2_st, m3_st, all_advs)
             await ctx.send(embed=embed, view=view)
 

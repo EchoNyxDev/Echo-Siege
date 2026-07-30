@@ -40,11 +40,19 @@ def cosmetic_label(cosmetic_id):
         "token_moldura_gramado_noturno": "Tema Gramado Noturno",
         "token_moldura_sala_de_imprensa": "Tema Sala de Imprensa",
         "token_moldura_taca_mundial": "Tema Taça Mundial",
+        "token_moldura_glitch": "Tema Glitch NIX",
+        "token_moldura_firewall_carmesim": "Tema Firewall Carmesim",
+        "token_moldura_interface_corrompida": "Tema Interface Corrompida",
         "token_titulo_campeao_de_lugnica": "Campeão de Wolford",
         "token_titulo_lenda_echo_cup": "Lenda da Echo Cup",
         "token_titulo_rei_dos_ecos": "Rei dos Ecos",
         "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Wolford",
         "token_titulo_campeao_do_mundo": "Campeão do Mundo",
+        "token_titulo_investigador": "Investigador",
+        "token_titulo_exterminador_anomalias": "Exterminador de Anomalias",
+        "token_titulo_libertador_codigo": "Libertador do Codigo",
+        "token_titulo_mediador_digital": "Mediador Digital",
+        "token_titulo_voce_viu_demais": "Voce Viu Demais",
     }
     return labels.get(cosmetic_id, str(cosmetic_id or "").replace("token_", "").replace("_", " ").title())
 
@@ -103,9 +111,17 @@ def consumir_item_inventario(cursor, user_id, item_name, qty=1):
     else: cursor.execute("UPDATE inventory SET quantity = quantity - ? WHERE id = ?", (qty, item[0]))
     return True
 
+def hero_available_for_tickets(hero_id, hero):
+    return (
+        hero_id != "id-nome"
+        and not hero.get("divino")
+        and not hero.get("secreto")
+        and not hero.get("evento_exclusivo")
+    )
+
 def escolher_heroi_raro():
-    pool = [(hero_id, hero) for hero_id, hero in HEROES.items() if hero_id != "id-nome" and hero.get("raridade", 1) >= 4]
-    if not pool: pool = [(hero_id, hero) for hero_id, hero in HEROES.items() if hero_id != "id-nome"]
+    pool = [(hero_id, hero) for hero_id, hero in HEROES.items() if hero_available_for_tickets(hero_id, hero) and hero.get("raridade", 1) >= 4]
+    if not pool: pool = [(hero_id, hero) for hero_id, hero in HEROES.items() if hero_available_for_tickets(hero_id, hero)]
     pesos = [1 if hero.get("raridade", 1) >= 5 else 4 for _, hero in pool]
     return random.choices(pool, weights=pesos, k=1)[0]
 
@@ -244,7 +260,7 @@ class Mochila(commands.Cog):
         query_norm = (query or "").strip().lower()
         heroes = []
         for hero_id, hero in HEROES.items():
-            if hero_id == "id-nome": continue
+            if not hero_available_for_tickets(hero_id, hero): continue
             nome = hero.get("nome", hero_id)
             if query_norm and query_norm not in nome.lower() and query_norm not in hero_id.lower(): continue
             heroes.append((hero_id, hero))
@@ -264,7 +280,7 @@ class Mochila(commands.Cog):
 
     async def _finalizar_escolha_heroi(self, interaction, hero_id):
         user_id = str(interaction.user.id)
-        if hero_id not in HEROES or hero_id == "id-nome":
+        if hero_id not in HEROES or not hero_available_for_tickets(hero_id, HEROES[hero_id]):
             return await interaction.response.send_message("Herói inválido. O catálogo tossiu.", ephemeral=True)
             
         conn = sqlite3.connect("players.db")
@@ -402,7 +418,7 @@ class Mochila(commands.Cog):
             msg_sucesso = f"🎟️ Ticket de Herói Raro usado! Você recebeu {h_data.get('emoji', '✨')} **{h_data.get('nome', h_id)}** ({'⭐' * raridade})."
 
         elif db_name == "bilhete_dourado":
-            herois_validos = [h_id for h_id, h_data in HEROES.items() if h_data.get("raridade", 1) >= 3 and h_id != "id-nome"]
+            herois_validos = [h_id for h_id, h_data in HEROES.items() if hero_available_for_tickets(h_id, h_data) and h_data.get("raridade", 1) >= 3]
             if herois_validos:
                 h_id = random.choice(herois_validos)
                 h_data = HEROES[h_id]
@@ -414,7 +430,7 @@ class Mochila(commands.Cog):
                 msg_sucesso = "🎟️ O Bilhete Dourado brilhou... Mas o catálogo de heróis falhou em responder."
 
         elif db_name == "amuleto_hibrido_eterno":
-            herois_miticos = [hid for hid, h in HEROES.items() if h.get("raridade", 1) >= 5 and hid != "id-nome"]
+            herois_miticos = [hid for hid, h in HEROES.items() if hero_available_for_tickets(hid, h) and h.get("raridade", 1) >= 5]
             if herois_miticos:
                 h_id = random.choice(herois_miticos)
                 h_data = HEROES[h_id]

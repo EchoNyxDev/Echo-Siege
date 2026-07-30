@@ -81,7 +81,7 @@ class BibliotecaLinesPaginator(discord.ui.View):
         start = self.page * self.per_page
         chunk = self.lines[start:start + self.per_page]
         embed = discord.Embed(title=self.title, description=short("\n".join(chunk), 3900), color=self.color)
-        embed.set_footer(text=f"TutoriUAU • Página {self.page + 1}/{total_pages} • A prateleira é grande porque alguém achou 2.098 perguntas uma boa ideia.")
+        embed.set_footer(text=f"NIX // Página {self.page + 1}/{total_pages} // A prateleira e grande porque alguem achou 2.098 perguntas uma boa ideia.")
         return embed
 
     async def interaction_check(self, interaction):
@@ -120,7 +120,7 @@ class Biblioteca(commands.Cog):
 
     def _basic_embed(self, title, description, color=discord.Color.dark_teal()):
         embed = discord.Embed(title=title, description=description, color=color)
-        embed.set_footer(text="TutoriUAU: a Biblioteca Perdida recompensa cérebro, teimosia e chute com estilo.")
+        embed.set_footer(text="NIX: Biblioteca sob minha curadoria. TutoriUAU supervisiona e finge que nao esta orgulhoso.")
         return embed
 
     def _panel_embed(self, user, player, active=None):
@@ -202,7 +202,7 @@ class Biblioteca(commands.Cog):
             embed.add_field(name="Responder", value="Use `echo biblioteca responder <sua resposta>`.", inline=False)
 
         hint = "Use `echo biblioteca dica` se aceitar metade das páginas desta pergunta."
-        embed.set_footer(text=f"TutoriUAU: {hint}")
+        embed.set_footer(text=f"NIX: {hint}")
         return embed
 
     async def _send_question(self, ctx, session, question, result_text=None):
@@ -312,6 +312,9 @@ class Biblioteca(commands.Cog):
             if explanation:
                 result_text += f"\n{explanation}"
 
+        if result.get("nix_fragments"):
+            result_text += f"\n`NIX` Fragmentos de Dados: **+{result['nix_fragments']}**."
+
         if result.get("finished"):
             reward = result.get("final_reward") or {}
             total = int(result["session"].get("total_questions") or 1)
@@ -333,7 +336,7 @@ class Biblioteca(commands.Cog):
             embed.add_field(name="Bônus de conclusão", value=reward_to_text(reward), inline=False)
             if perfect:
                 embed.add_field(name="Perfeito", value=PERFEITO_LINE, inline=False)
-            embed.set_footer(text=f"TutoriUAU: {random.choice(NIX_LINES)}")
+            embed.set_footer(text=f"NIX: {random.choice(NIX_LINES)}")
             return await ctx.send(embed=embed)
 
         return await self._send_question(ctx, result["session"], result["next_question"], result_text)

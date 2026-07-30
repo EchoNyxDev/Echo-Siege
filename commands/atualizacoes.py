@@ -106,7 +106,7 @@ class Atualizacoes(commands.Cog):
         notes = PATCH_NOTES or [{
             "id": "patch_0",
             "title": "Patch Notes",
-            "subtitle": "TutoriUAU: ainda não escreveram as notas. Clássico.",
+            "subtitle": "NIX: ainda não escreveram as notas. Registro ausente, drama presente.",
             "rows": [("Sem dados", "Edite `data/patch_notes.py` para adicionar páginas.")],
         }]
         return sorted(notes, key=patch_number, reverse=True)
@@ -117,16 +117,17 @@ class Atualizacoes(commands.Cog):
         for idx, patch in enumerate(notes, start=1):
             lines = [f"**{name}** | {text}" for name, text in patch.get("rows", [])]
             comment = patch.get("footer") or patch.get("comment") or "Edite data/patch_notes.py para adicionar novos patches."
+            speaker = patch.get("speaker", "NIX")
             number = patch_number(patch)
             embed = discord.Embed(
                 title=patch.get("title", f"Patch {idx}"),
-                description=patch.get("subtitle", "Resumo do TutoriUAU, com 30% mais julgamento do que o necessário."),
+                description=patch.get("subtitle", f"{speaker}: resumo de atualizacao indexado. TutoriUAU supervisiona e reclama em silencio."),
                 color=discord.Color.blurple(),
             )
             embed.add_field(name="Tabela do Patch", value="\n".join(lines)[:1024] or "Nada listado.", inline=False)
             embed.set_thumbnail(url=thumb)
             patch_label = f"Patch {number}" if number else "Patch sem número"
-            embed.set_footer(text=f"TutoriUAU • Página {idx}/{len(notes)} • {patch_label} • {comment}")
+            embed.set_footer(text=f"{speaker} // Página {idx}/{len(notes)} // {patch_label} // {comment}")
             embeds.append(embed)
         return embeds
 
@@ -141,7 +142,7 @@ class Atualizacoes(commands.Cog):
             if not selected:
                 return await ctx.send(
                     f"Não encontrei o **Patch {numero_patch}**. "
-                    "TutoriUAU: ou ele ainda não existe, ou foi levado pelo temido departamento de documentação."
+                    "NIX: ou ele ainda nao existe, ou foi arquivado em uma gaveta que ate o TutoriUAU tem medo de abrir."
                 )
             embed = self._embeds([selected])[0]
             return await ctx.send(embed=embed)
@@ -154,7 +155,7 @@ class Atualizacoes(commands.Cog):
     @commands.command(name="atualiza_thumb", aliases=["atualizacao_thumb", "atualização_thumb", "patchthumb", "updatethumb"])
     async def atualizacao_thumb_cmd(self, ctx, *, url: str = None):
         if ctx.author.id not in ADM_USERS:
-            return await ctx.send("Apenas ADM pode trocar a thumb das atualizações. O TutoriUAU protege a decoração.")
+            return await ctx.send("Apenas ADM pode trocar a thumb das atualizacoes. A NIX protege a decoracao; o TutoriUAU critica a moldura.")
         if not url or not (url.startswith("http://") or url.startswith("https://")):
             return await ctx.send("Use `echo atualiza_thumb <url da imagem>`.")
         conn = sqlite3.connect("players.db")
@@ -162,7 +163,7 @@ class Atualizacoes(commands.Cog):
         set_setting(cursor, "updates_thumb", url.strip()[:500])
         conn.commit()
         conn.close()
-        await ctx.send("Thumb das atualizações atualizada. O mural de patch agora tem roupa nova.")
+        await ctx.send("Thumb das atualizacoes atualizada. NIX: identidade visual recalculada.")
 
 
 async def setup(bot):

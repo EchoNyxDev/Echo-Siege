@@ -42,3 +42,7 @@ NIX_LINES = [
     "NIX: resposta registrada. TutoriUAU: obrigado, impressora com autoestima.",
     "NIX: categoria fraca detectada. TutoriUAU: todas, se formos honestos.",
 ]
+TUTORI_BIBLIOTECA_INTRO = (
+    "NIX: Biblioteca Perdida sincronizada. Perguntas, imagens e estatisticas foram indexadas. "
+    "TutoriUAU supervisiona e pediu para eu nao chamar jogadores de amostras. Estou tentando."
+)

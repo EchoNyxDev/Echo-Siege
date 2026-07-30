@@ -16,6 +16,14 @@ try:
 except ModuleNotFoundError:
     HEROES = {}
 
+def is_playable_hero(hero):
+    return (
+        bool(hero)
+        and not hero.get("evento_exclusivo")
+        and not hero.get("npc_only")
+        and hero.get("jogavel", True) is not False
+    )
+
 # ==========================================
 # FUNÇÕES DE APOIO
 # ==========================================
@@ -34,6 +42,8 @@ def formatar_heroi_texto(hero_db_id):
         
     h_id, rarity, level = hero
     hero_data = HEROES.get(h_id, {})
+    if not is_playable_hero(hero_data):
+        return "Registro narrativo (nao jogavel)"
     nome = hero_data.get("nome", "Bugado")
     emoji = hero_data.get("emoji", "❓")
     estrelas = "⭐" * rarity
@@ -123,6 +133,9 @@ async def equipar_heroi(interaction: discord.Interaction, user_id: int, slot_num
     if not hero:
         conn.close()
         return False, f"❌ Você não tem nenhum herói com o ID `{hero_db_id}`."
+    if not is_playable_hero(HEROES.get(hero[0], {})):
+        conn.close()
+        return False, "Esse registro nao e um personagem jogavel."
 
     # Verifica se já não está equipado (clonagem)
     cursor.execute("SELECT main_hero FROM players WHERE user_id = ?", (str(user_id),))
@@ -228,6 +241,8 @@ class HeroSelectDropdown(discord.ui.Select):
 
         for db_id, h_id, rarity, level in herois:
             h_data = HEROES.get(h_id, {})
+            if not is_playable_hero(h_data):
+                continue
             nome = h_data.get("nome", "Bugado")
             emoji = h_data.get("emoji", "❓")
             

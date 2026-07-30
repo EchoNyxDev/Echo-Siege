@@ -215,8 +215,15 @@ class AdventureSession(discord.ui.View):
                     cursor.execute("INSERT INTO inventory (user_id, item_name, quantity) VALUES (?, ?, 1)", (uid, item))
                 
         self.fechar_contrato_na_guilda(cursor, uid)
+        nix_bonus = {"amount": 0}
+        try:
+            from systems.nix_effects import award_activity_fragments
+            nix_bonus = award_activity_fragments(cursor, uid, "adventure", self.tier)
+        except Exception:
+            nix_bonus = {"amount": 0}
         conn.commit()
         conn.close()
+        return nix_bonus
 
     async def resolver_combate(self, interaction: discord.Interaction):
         nodo_atual = self.nodos[self.nodo_atual_id]
@@ -308,10 +315,13 @@ class AdventureSession(discord.ui.View):
                 
             if not recompensas_str: recompensas_str = "Apenas poeira e o alívio de estar vivo."
             
+            nix_bonus = self.salvar_cooldown_e_loot(ouro, xp, drops_obtidos)
+            if nix_bonus.get("amount"):
+                recompensas_str += f"\n`NIX` **Fragmentos de Dados:** +{nix_bonus['amount']}"
             embed.add_field(name="Loot Obtido", value=recompensas_str, inline=False)
             embed.set_footer(text="Contrato fechado! Volte ao quadro da guilda (echo work) ou espere o cooldown (echo cd).")
             
-            self.salvar_cooldown_e_loot(ouro, xp, drops_obtidos)
+            # Recompensas ja foram salvas antes de montar o campo de loot.
 
         try: await interaction.response.edit_message(embed=embed, view=self if tipo != "recompensa" else None)
         except: await interaction.message.edit(embed=embed, view=self if tipo != "recompensa" else None)

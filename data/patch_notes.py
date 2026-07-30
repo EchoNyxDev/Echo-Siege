@@ -4,6 +4,23 @@ UPDATE_THUMB_URL = ""
 
 PATCH_NOTES = [
     {
+        "id": "patch_23",
+        "speaker": "NIX",
+        "title": "Patch 23: Protocolo NIX",
+        "subtitle": "NIX: primeira leitura oficial do mural. O TutoriUAU chamou isso de terceirizacao; eu chamo de evolucao operacional.",
+        "rows": [
+            ("Novo Evento", "`echo nix` abre o Protocolo NIX, com corrupcao global, Fragmentos de Dados, fases narrativas e missoes pessoais."),
+            ("Progressao", "`investigar`, `missao`, `entregar`, `escolher`, `enfrentar` e `final` formam a campanha principal da anomalia."),
+            ("Recompensas", "`loja`, `comprar`, `ranking` e `arquivos` liberam temas, titulo, pet Fragmento NIX, tickets, Gold, stamina e lore."),
+            ("Admin", "`echo adm nix iniciar|pausar|fase|corrupcao|encerrar|reset|teste|fragmentos` controla o evento sem mexer nos outros sistemas."),
+            ("Integracao", "Hunt, dungeon, adventure, work e Biblioteca podem gerar Fragmentos de Dados enquanto o evento estiver ativo."),
+            ("Narração", "`echo ajuda`, `echo atualiza`, work e Biblioteca passaram para a voz da NIX, com TutoriUAU supervisionando e fingindo desapego."),
+            ("NIX", "Ao encerrar o evento, a NIX se integra a Wolford como entidade narrativa do sistema, sem virar personagem jogavel ou summonavel."),
+            ("Banco", "`update_db_nix.py` cria tabelas proprias e backup automatico antes da migracao."),
+        ],
+        "footer": "NIX: patch indexado. TutoriUAU: ela colocou rodape proprio. Estou emocionado e juridicamente preocupado.",
+    },
+    {
         "id": "patch_22",
         "title": "Patch 22: Biblioteca Perdida",
         "subtitle": "TutoriUAU: Wolford ganhou uma biblioteca. Finalmente um lugar onde errar com confiança vira dado estatístico.",

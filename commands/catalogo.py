@@ -136,7 +136,11 @@ def _catalog_heroes(include_divine=True):
     return {
         str(hero_id): hero
         for hero_id, hero in HEROES.items()
-        if hero_id != "id-nome" and (include_divine or not hero.get("divino"))
+        if hero_id != "id-nome"
+        and not hero.get("evento_exclusivo")
+        and not hero.get("npc_only")
+        and hero.get("jogavel", True) is not False
+        and (include_divine or not hero.get("divino"))
     }
 
 

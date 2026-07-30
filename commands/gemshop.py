@@ -53,6 +53,9 @@ COSMETIC_LABELS = {
     "token_moldura_fallen_angel": "Tema Fallen Angel",
     "token_moldura_biblioteca_perdida": "Tema Biblioteca Perdida",
     "token_moldura_arquivo_antigo": "Tema Arquivo Antigo",
+    "token_moldura_glitch": "Tema Glitch NIX",
+    "token_moldura_firewall_carmesim": "Tema Firewall Carmesim",
+    "token_moldura_interface_corrompida": "Tema Interface Corrompida",
     "token_titulo_pontual": "Pontual",
     "token_titulo_pontual_demais": "Pontual Demais",
     "token_titulo_bug_ambulante": "Bug Ambulante",
@@ -70,6 +73,11 @@ COSMETIC_LABELS = {
     "token_titulo_sabio_dos_ecos": "Sábio dos Ecos",
     "token_titulo_enciclopedia_ambulante": "Enciclopédia Ambulante",
     "token_titulo_mestre_do_quiz": "Mestre do Quiz",
+    "token_titulo_investigador": "Investigador",
+    "token_titulo_exterminador_anomalias": "Exterminador de Anomalias",
+    "token_titulo_libertador_codigo": "Libertador do Codigo",
+    "token_titulo_mediador_digital": "Mediador Digital",
+    "token_titulo_voce_viu_demais": "Voce Viu Demais",
 }
 
 LEGACY_FRAME_MIGRATIONS = {
@@ -181,10 +189,18 @@ def normalize_cosmetic_arg(raw, cosmetic_type):
     prefix = "token_moldura_" if cosmetic_type == "frame" else "token_titulo_"
     return prefix + token
 
+def hero_available_for_tickets(hero_id, data):
+    return (
+        hero_id != "id-nome"
+        and not data.get("divino")
+        and not data.get("secreto")
+        and not data.get("evento_exclusivo")
+    )
+
 def choose_rare_hero():
-    pool = [(hero_id, data) for hero_id, data in HEROES.items() if hero_id != "id-nome" and data.get("raridade", 1) >= 4]
+    pool = [(hero_id, data) for hero_id, data in HEROES.items() if hero_available_for_tickets(hero_id, data) and data.get("raridade", 1) >= 4]
     if not pool:
-        pool = [(hero_id, data) for hero_id, data in HEROES.items() if hero_id != "id-nome"]
+        pool = [(hero_id, data) for hero_id, data in HEROES.items() if hero_available_for_tickets(hero_id, data)]
     weights = [1 if data.get("raridade", 1) >= 5 else 4 for _, data in pool]
     return random.choices(pool, weights=weights, k=1)[0]
 
@@ -375,11 +391,11 @@ class GemShop(commands.Cog):
         
         # Flexibilidade para digitar o nome com espaços ou buscar no dict
         encontrado_id = None
-        if hero_id in HEROES and hero_id != "id-nome":
+        if hero_id in HEROES and hero_available_for_tickets(hero_id, HEROES[hero_id]):
             encontrado_id = hero_id
         else:
             for k, v in HEROES.items():
-                if k == "id-nome": continue
+                if not hero_available_for_tickets(k, v): continue
                 if v.get("nome", "").lower().replace(" ", "_") == hero_id:
                     encontrado_id = k
                     break

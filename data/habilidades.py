@@ -1189,6 +1189,16 @@ SKILLS.update({
     "shizuka_marikawa__evo_5": {"nome": "Tratamento Médico Total", "tipo": "cura", "alvo": "todos_aliados", "efeito": {"multiplicador_matk": 0.15, "buff_def": 20, "turnos": 2}},
     "nanao_ise__base": {"nome": "Barreira Hakudan Keikai", "tipo": "escudo", "alvo": "todos_aliados", "efeito": {"escudo_hp_max": 0.30, "ignora_dano_magico": True, "turnos": 1}},
     "nanao_ise__evo_5": {"nome": "Corte de Kido Espiritual", "tipo": "cura", "alvo": "aliado_menor_hp", "efeito": {"multiplicador_matk": 0.30, "silence_turnos": 1}},
+    "nix__base": {"nome": "Reescrever Codigo", "tipo": "cura", "alvo": "todos_aliados", "efeito": {"multiplicador_matk": 0.30, "escudo_hp_max": 0.12, "remove_todos_debuffs": True}},
+    "nix__evo_3": {"nome": "Firewall Afetivo", "tipo": "escudo", "alvo": "todos_aliados", "efeito": {"buff_def": 25, "reduz_dano_recebido": 20, "escudo_hp_max": 0.16, "turnos": 3}},
+    "nix__evo_5": {"nome": "Hack de Esperanca", "tipo": "buff", "alvo": "todos_aliados", "efeito": {"buff_atk": 25, "buff_matk": 25, "cura_turnos": 12, "reduz_cooldown": 1, "turnos": 3}},
+    "nix_ruido_binario": {"nome": "Ruido Binario", "tipo": "debuff", "alvo": "unico_inimigo", "efeito": {"debuff_acc": 20, "chance_stun": 0.20, "stun_turnos": 1, "turnos": 1}},
+    "nix_ping_corrompido": {"nome": "Ping Corrompido", "tipo": "dano", "alvo": "unico_inimigo", "efeito": {"multiplicador_matk": 1.25, "debuff_spd": 15, "turnos": 2}},
+    "nix_firewall_instavel": {"nome": "Firewall Instavel", "tipo": "escudo", "alvo": "self", "efeito": {"escudo_hp_max": 0.25, "reduz_dano_recebido": 15, "turnos": 2}},
+    "nix_corte_de_memoria": {"nome": "Corte de Memoria", "tipo": "dano", "alvo": "unico_inimigo", "efeito": {"multiplicador_atk": 1.35, "dot": {"tipo": "sangramento", "base": "atk", "mult": 0.18, "turnos": 2}}},
+    "nix_trava_de_pacote": {"nome": "Trava de Pacote", "tipo": "debuff", "alvo": "inimigo_maior_atk", "efeito": {"stun_turnos": 1, "debuff_spd": 25, "turnos": 1}},
+    "nix_fome_de_arquivo": {"nome": "Fome de Arquivo", "tipo": "dano", "alvo": "todos_inimigos", "efeito": {"multiplicador_matk": 1.10, "lifesteal": 0.20}},
+    "nix_reescrever_codigo_hostil": {"nome": "Reescrever Codigo Hostil", "tipo": "especial", "alvo": "todos_inimigos", "efeito": {"multiplicador_matk": 1.30, "debuff_atk": 15, "debuff_matk": 15, "debuff_def": 15, "chance_stun": 0.25, "stun_turnos": 1, "turnos": 2}},
 })
 
 

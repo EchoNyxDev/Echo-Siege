@@ -45,6 +45,8 @@ DIVINE_ANNOUNCEMENT_ROLE_ID = 1515443815362854963
 for hero_id, data in HEROES.items():
     if hero_id == "id-nome":
         continue
+    if data.get("evento_exclusivo") or data.get("secreto"):
+        continue
     rarity = data.get("raridade", 1)
     if data.get("divino") or rarity >= 7:
         DIVINE_POOL.append(hero_id)

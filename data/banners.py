@@ -27,6 +27,7 @@ def rarity_ids(heroes, rarity):
         and data.get("raridade", 1) == rarity
         and not data.get("divino")
         and not data.get("secreto")
+        and not data.get("evento_exclusivo")
     ]
 
 
@@ -71,6 +72,7 @@ def _validate_featured(heroes, hero_ids, rarity, required):
             or int(hero.get("raridade", 0) or 0) != rarity
             or hero.get("divino")
             or hero.get("secreto")
+            or hero.get("evento_exclusivo")
         ):
             invalid.append(hero_id)
     if invalid:

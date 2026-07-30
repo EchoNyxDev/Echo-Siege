@@ -111,7 +111,17 @@ class Eventos(commands.Cog):
             ),
             inline=False,
         )
-        embed.set_footer(text="Use echo evento lutar, echo evento boss, echo evento dungeon, echo evento resgatar, echo copa ou echo biblioteca.")
+        embed.add_field(
+            name="Protocolo NIX",
+            value=(
+                "`echo nix` - painel do evento, corrupcao global, fragmentos e missao atual.\n"
+                "`echo nix investigar|missao|entregar` - abre seu arquivo, ve o objetivo e valida progresso.\n"
+                "`echo nix escolher|enfrentar|final` - altera o destino da NIX e combate anomalias.\n"
+                "`echo nix loja|comprar|ranking|arquivos|tutorial` - recompensas, placar, lore e manual completo."
+            ),
+            inline=False,
+        )
+        embed.set_footer(text="Use echo evento, echo copa, echo biblioteca ou echo nix. NIX: instrucoes indexadas; TutoriUAU: finalmente.")
         return embed
 
     def _progress(self, cursor, user_id, event_id):

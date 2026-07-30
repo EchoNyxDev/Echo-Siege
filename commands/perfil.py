@@ -98,6 +98,9 @@ PROFILE_BACKGROUND_FILES = {
     "token_moldura_fallen_angel": os.path.join(root_dir, "assets", "profile_themes", "fallen_angel.png"),
     "token_moldura_biblioteca_perdida": os.path.join(root_dir, "assets", "profile_themes", "biblioteca_perdida.png"),
     "token_moldura_arquivo_antigo": os.path.join(root_dir, "assets", "profile_themes", "arquivo_antigo.png"),
+    "token_moldura_glitch": os.path.join(root_dir, "assets", "profile_themes", "nix_glitch.png"),
+    "token_moldura_firewall_carmesim": os.path.join(root_dir, "assets", "profile_themes", "nix_firewall_carmesim.png"),
+    "token_moldura_interface_corrompida": os.path.join(root_dir, "assets", "profile_themes", "nix_interface_corrompida.png"),
 }
 
 # ===================================================
@@ -243,6 +246,36 @@ THEMES = {
         "value": (255, 255, 245, 255),
         "small": (245, 225, 190, 255),
         "font_file": "Cinzel-Bold.ttf"
+    },
+    "token_moldura_glitch": {
+        "panel_fill": (4, 10, 14, 172),
+        "panel_outline": (45, 235, 210, 185),
+        "title": (120, 255, 235, 255),
+        "sub": (255, 95, 180, 255),
+        "label": (95, 220, 255, 255),
+        "value": (255, 255, 255, 255),
+        "small": (205, 250, 245, 255),
+        "font_file": "Orbitron-Bold.ttf"
+    },
+    "token_moldura_firewall_carmesim": {
+        "panel_fill": (20, 4, 8, 176),
+        "panel_outline": (255, 70, 95, 190),
+        "title": (255, 225, 225, 255),
+        "sub": (255, 130, 150, 255),
+        "label": (255, 170, 90, 255),
+        "value": (255, 255, 255, 255),
+        "small": (255, 230, 220, 255),
+        "font_file": "Orbitron-Bold.ttf"
+    },
+    "token_moldura_interface_corrompida": {
+        "panel_fill": (7, 5, 20, 176),
+        "panel_outline": (150, 95, 255, 180),
+        "title": (230, 225, 255, 255),
+        "sub": (90, 240, 220, 255),
+        "label": (190, 155, 255, 255),
+        "value": (255, 255, 255, 255),
+        "small": (220, 235, 255, 255),
+        "font_file": "Orbitron-Bold.ttf"
     }
 }
 
@@ -263,6 +296,15 @@ def estrelas(rarity, stars=1):
     rarity = int(rarity or 1)
     stars = int(stars or 1)
     return ("⭐" * rarity) + ("✦" * max(0, stars - 1))
+
+def is_playable_hero(hero):
+    return (
+        bool(hero)
+        and not hero.get("evento_exclusivo")
+        and not hero.get("npc_only")
+        and hero.get("jogavel", True) is not False
+    )
+
 
 def chunk_lines(lines, limit=950):
     chunks = []
@@ -292,6 +334,9 @@ def cosmetic_label(cosmetic_id):
         "token_moldura_fallen_angel": "Fallen Angel",
         "token_moldura_biblioteca_perdida": "Biblioteca Perdida",
         "token_moldura_arquivo_antigo": "Arquivo Antigo",
+        "token_moldura_glitch": "Glitch NIX",
+        "token_moldura_firewall_carmesim": "Firewall Carmesim",
+        "token_moldura_interface_corrompida": "Interface Corrompida",
         "token_titulo_pontual": "Pontual",
         "token_titulo_pontual_demais": "Pontual Demais",
         "token_titulo_bug_ambulante": "Bug Ambulante",
@@ -308,6 +353,11 @@ def cosmetic_label(cosmetic_id):
         "token_titulo_sabio_dos_ecos": "Sábio dos Ecos",
         "token_titulo_enciclopedia_ambulante": "Enciclopédia Ambulante",
         "token_titulo_mestre_do_quiz": "Mestre do Quiz",
+        "token_titulo_investigador": "Investigador",
+        "token_titulo_exterminador_anomalias": "Exterminador de Anomalias",
+        "token_titulo_libertador_codigo": "Libertador do Codigo",
+        "token_titulo_mediador_digital": "Mediador Digital",
+        "token_titulo_voce_viu_demais": "Voce Viu Demais",
     }
     return labels.get(cosmetic_id, str(cosmetic_id or "").replace("token_", "").replace("_", " ").title())
 
@@ -695,11 +745,12 @@ class Perfil(commands.Cog):
                 if hero_row:
                     h_id, rarity, h_lvl, h_stars = hero_row
                     hero_base = HEROES.get(h_id, {})
-                    hero_id_clean = h_id
-                    hero_name_clean = clean_text(hero_base.get('nome', h_id))
-                    hero_origem_clean = clean_text(hero_base.get('origem', 'Desconhecida'))
-                    hero_rarity = rarity
-                    hero_level = h_lvl
+                    if is_playable_hero(hero_base):
+                        hero_id_clean = h_id
+                        hero_name_clean = clean_text(hero_base.get('nome', h_id))
+                        hero_origem_clean = clean_text(hero_base.get('origem', 'Desconhecida'))
+                        hero_rarity = rarity
+                        hero_level = h_lvl
             except: pass
 
         pet_text_clean = "Nenhum Pet."
@@ -772,6 +823,8 @@ class Perfil(commands.Cog):
 
         grouped_by_hero = {}
         for db_id, hero_id, rarity, level, hero_stars in rows:
+            if not is_playable_hero(HEROES.get(hero_id, {})):
+                continue
             entry = grouped_by_hero.setdefault(
                 hero_id,
                 {
@@ -793,6 +846,8 @@ class Perfil(commands.Cog):
             (*entry["best"], entry["count"])
             for entry in grouped_by_hero.values()
         ]
+        if not grouped:
+            return await ctx.send(f"{ctx.author.mention}, voce ainda nao tem herois jogaveis. Use `echo summon`.")
         grouped.sort(key=lambda row: (row[2], row[3], row[4], -row[0]), reverse=True)
 
         embeds = []
@@ -821,6 +876,9 @@ class Perfil(commands.Cog):
         if not hero:
             conn.close()
             return await ctx.send("Herói não encontrado.")
+        if not is_playable_hero(HEROES.get(hero[0], {})):
+            conn.close()
+            return await ctx.send("Esse registro nao e um personagem jogavel.")
 
         cursor.execute("UPDATE players SET main_hero = ? WHERE user_id = ?", (str(hero_id), str(ctx.author.id)))
         conn.commit()
@@ -1279,7 +1337,7 @@ class Perfil(commands.Cog):
 
         candidates = []
         for hero_id, hero in HEROES.items():
-            if hero_id == "id-nome":
+            if hero_id == "id-nome" or not is_playable_hero(hero):
                 continue
             hero_name = hero.get("nome", hero_id)
             lookup_names = {
@@ -1482,7 +1540,7 @@ class Perfil(commands.Cog):
         matches = []
         exact_origin = None
         for hero_id, hero in HEROES.items():
-            if hero_id == "id-nome":
+            if hero_id == "id-nome" or not is_playable_hero(hero):
                 continue
             origin = hero.get("origem", "Desconhecida")
             origin_norm = normalize_lookup(origin)

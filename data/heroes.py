@@ -18136,6 +18136,36 @@ HEROES = {
                 "descricao": "Sua força de vontade destrói armaduras. Seus ataques críticos têm 30% de chance de atordoar (Stun) o alvo."
             }
         }
+    },
+
+    # =========================701
+    "nix": {
+        "nome": "NIX",
+        "origem": "Echo Siege",
+        "emoji": "NIX",
+        "imagem": "",
+        "classe": "suporte",
+        "raridade": 5,
+        "max_star": 7,
+        "evento_exclusivo": "nix",
+        "summonavel": False,
+        "jogavel": False,
+        "npc_only": True,
+        "hp": 96, "atk": 18, "matk": 42, "def": 24, "spd": 26, "crt": 8,
+        "habilidade": {
+            "nome": "Reescrever Codigo",
+            "descricao": "Recalcula a party em tempo real. Cura aliados, remove debuffs e cria escudos leves."
+        },
+        "evolucoes": {
+            3: {
+                "nome": "Firewall Afetivo",
+                "descricao": "Protege todos os aliados com reducao de dano e aumento de defesa por alguns turnos."
+            },
+            5: {
+                "nome": "Hack de Esperanca",
+                "descricao": "Amplifica ATK e MATK da party, acelera recargas e aplica regeneracao temporaria."
+            }
+        }
     }
 }
 CLASS_EMOJIS = {

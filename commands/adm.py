@@ -68,6 +68,14 @@ ADM_USERS = [
     768671545790693437
 ]
 
+def is_playable_hero(hero):
+    return (
+        bool(hero)
+        and not hero.get("evento_exclusivo")
+        and not hero.get("npc_only")
+        and hero.get("jogavel", True) is not False
+    )
+
 def normalize_hero_name(value):
     text = unicodedata.normalize("NFKD", str(value or ""))
     text = "".join(char for char in text if not unicodedata.combining(char))
@@ -230,6 +238,7 @@ class BannerBuilderView(discord.ui.View):
                     and int(hero.get("raridade", 0) or 0) == rarity
                     and not hero.get("divino")
                     and not hero.get("secreto")
+                    and is_playable_hero(hero)
                 ),
                 key=lambda hero_id: HEROES[hero_id].get("nome", hero_id).casefold(),
             )
@@ -533,13 +542,13 @@ class AdminCombatTestSetupView(discord.ui.View):
             return None, None
 
         for hero_id, hero in HEROES.items():
-            if hero_id == "id-nome":
+            if hero_id == "id-nome" or not is_playable_hero(hero):
                 continue
             if query_norm in {normalize_hero_name(hero_id), normalize_hero_name(hero.get("nome", hero_id))}:
                 return hero_id, hero
 
         for hero_id, hero in HEROES.items():
-            if hero_id == "id-nome":
+            if hero_id == "id-nome" or not is_playable_hero(hero):
                 continue
             name_norm = normalize_hero_name(hero.get("nome", hero_id))
             if query_norm in name_norm or query_norm in normalize_hero_name(hero_id):
@@ -944,6 +953,8 @@ class Adm(commands.Cog):
             return None, "Use `G1000`, `T10`, ou um ID com letras/numeros/underscore, tipo `levi_ackerman`."
 
         if recompensa_id in HEROES:
+            if not is_playable_hero(HEROES[recompensa_id]):
+                return None, "Esse personagem nao esta disponivel como recompensa jogavel."
             nome = HEROES[recompensa_id].get("nome", recompensa_id)
             return recompensa_id, f"Herói: {nome}"
 
@@ -1646,6 +1657,7 @@ class Adm(commands.Cog):
                            "`echo adm copa iniciar|encerrar|reset @user|echobet @user <qtd>` (Controle da Echo Cup)\n"
                            "`echo adm cassino abrir|fechar|jackpot|dar_fichas|remover_fichas` (Controle do Fallen Angel)\n"
                            "`echo adm biblioteca ativar|desativar|listar|testar|adicionar|remover|temporada` (Controle da Biblioteca Perdida)\n"
+                           "`echo adm nix iniciar|pausar|fase|corrupcao|encerrar|reset|teste|fragmentos` (Controle do Protocolo NIX)\n"
                            "`echo adm melhorar loja` (Sobe a loja em 1 nível para testes)\n"
                            "`echo adm reset cidade` (Reseta Wolford)\n"
                            "`echo adm hack @usuário <id_do_heroi>` (Nível Max + 7 Estrelas)\n"
@@ -1680,6 +1692,12 @@ class Adm(commands.Cog):
             if not biblioteca_cog or not hasattr(biblioteca_cog, "admin_dispatch"):
                 return await ctx.send("O sistema da Biblioteca Perdida ainda não carregou.")
             return await biblioteca_cog.admin_dispatch(ctx, arg1, arg2)
+
+        if action == "nix":
+            nix_cog = self.bot.get_cog("NixEvent")
+            if not nix_cog or not hasattr(nix_cog, "admin_dispatch"):
+                return await ctx.send("O Protocolo NIX ainda nao carregou. A falha falhou. Poetico, mas ruim.")
+            return await nix_cog.admin_dispatch(ctx, arg1, arg2)
 
         if (
             action in ["criarbanner", "bannercriar"]
@@ -1950,6 +1968,9 @@ class Adm(commands.Cog):
             cursor = conn.cursor()
             
             if codigo_id in HEROES:
+                if not is_playable_hero(HEROES[codigo_id]):
+                    conn.close()
+                    return await ctx.send("Esse personagem nao esta disponivel como heroi jogavel.")
                 cursor.execute("INSERT INTO heroes (user_id, hero_id, rarity, stars, level, xp) VALUES (?, ?, ?, 1, 1, 0)", (target_id, codigo_id, HEROES[codigo_id].get("raridade", 1)))
                 nome_formatado = HEROES[codigo_id].get('nome')
                 tipo = "Herói"

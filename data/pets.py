@@ -288,5 +288,13 @@ PETS = {
         "emoji": "🦉",
         "hp": 170, "atk": 30, "matk": 90, "def": 58, "spd": 40, "crt": 14,
         "passiva": "Shhh Tático: concede bônus de XP de combate e um pequeno escudo inicial para suportes e magos."
+    },
+    "fragmento_nix": {
+        "nome": "Fragmento NIX",
+        "raridade": 5,
+        "is_gacha": False,
+        "emoji": "NIX",
+        "hp": 145, "atk": 20, "matk": 85, "def": 45, "spd": 46, "crt": 12,
+        "passiva": "Cache Consciente: aumenta levemente MATK e XP da party. Tambem julga suas escolhas em silencio."
     }
 }

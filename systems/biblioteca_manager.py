@@ -645,10 +645,18 @@ def answer_session(cursor, user_id, answer):
         (points, 1 if correct else 0, 0 if correct else 1, new_combo, new_combo, now_ts(), user_id),
     )
     add_stat(cursor, user_id, "biblioteca_answers", 1)
+    nix_fragments = 0
     if correct:
         add_stat(cursor, user_id, "biblioteca_correct", 1)
         add_stat(cursor, user_id, "biblioteca_pages", points)
         max_stat(cursor, user_id, "biblioteca_best_combo", new_combo)
+        if difficulty >= 3:
+            try:
+                from systems.nix_effects import award_activity_fragments
+                nix_bonus = award_activity_fragments(cursor, user_id, "biblioteca_correct", difficulty)
+                nix_fragments += int(nix_bonus.get("amount") or 0)
+            except Exception:
+                pass
         if difficulty >= 5 and response_time <= 30:
             add_stat(cursor, user_id, "biblioteca_legendary_fast", 1)
     else:
@@ -667,6 +675,12 @@ def answer_session(cursor, user_id, answer):
         ).fetchone())
         final_reward = completion_reward(session.get("mode"), acertos, erros, total_questions, perfect, no_hint)
         grant_reward(cursor, user_id, final_reward)
+        try:
+            from systems.nix_effects import award_activity_fragments
+            nix_bonus = award_activity_fragments(cursor, user_id, "biblioteca_finish", total_questions, force=True)
+            nix_fragments += int(nix_bonus.get("amount") or 0)
+        except Exception:
+            pass
         add_stat(cursor, user_id, "biblioteca_sessions_done", 1)
         if perfect and session.get("mode") == "diaria":
             add_stat(cursor, user_id, "biblioteca_daily_perfect", 1)
@@ -692,6 +706,7 @@ def answer_session(cursor, user_id, answer):
         "next_question": next_question,
         "next_question_id": next_question_id,
         "final_reward": final_reward,
+        "nix_fragments": nix_fragments,
     }
 
 

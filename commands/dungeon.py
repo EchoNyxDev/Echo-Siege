@@ -790,8 +790,20 @@ class Dungeon(commands.Cog):
                     nova_dg += 1
                 cursor.execute("UPDATE dungeon_progress SET highest_dungeon = ?, highest_area = ? WHERE user_id = ?", (nova_dg, nova_area, str(user_id)))
 
+        nix_bonus = {"amount": 0}
+        try:
+            from systems.nix_effects import award_activity_fragments
+            nix_bonus = award_activity_fragments(cursor, user_id, "dungeon", progress, force=True)
+        except Exception:
+            nix_bonus = {"amount": 0}
+
         conn.commit()
         conn.close()
+
+        resultado = f"AREA CONCLUIDA!\n+{final_gold} Gold\n+{final_xp_main} XP (Lider)"
+        if nix_bonus.get("amount"):
+            resultado += f"\n`NIX` +{nix_bonus['amount']} Fragmentos de Dados"
+        return resultado, lvl_up_log
 
         return f"🏆 **ÁREA CONCLUÍDA!**\n💰 **+{final_gold} Gold**\n⭐ **+{final_xp_main} XP (Líder)**", lvl_up_log
 

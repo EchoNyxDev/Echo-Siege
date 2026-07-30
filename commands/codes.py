@@ -33,6 +33,14 @@ CODES_COMMENTS = [
     "TutoriUAU: se o code falhar, confira as letras antes de abrir uma investigação internacional.",
 ]
 
+def is_playable_hero(hero):
+    return (
+        bool(hero)
+        and not hero.get("evento_exclusivo")
+        and not hero.get("npc_only")
+        and hero.get("jogavel", True) is not False
+    )
+
 class CodesView(discord.ui.View):
     def __init__(self, user, embeds, start_page=0):
         super().__init__(timeout=180)
@@ -117,6 +125,8 @@ class Codes(commands.Cog):
 
         recompensa_id = recompensa.lower().replace(" ", "_")
         if recompensa_id in HEROES:
+            if not is_playable_hero(HEROES[recompensa_id]):
+                return f"{HEROES[recompensa_id].get('nome', recompensa_id)} (indisponivel)"
             return HEROES[recompensa_id].get("nome", recompensa_id)
 
         return EQUIPAMENTOS.get(recompensa_id, {}).get("nome", recompensa_id.replace("_", " ").title())
@@ -228,6 +238,8 @@ class Codes(commands.Cog):
                     )
 
                 elif recompensa_id in HEROES:
+                    if not is_playable_hero(HEROES[recompensa_id]):
+                        raise ValueError("Esse code tenta entregar um personagem que nao esta disponivel como jogavel.")
                     cursor.execute(
                         "INSERT INTO heroes (user_id, hero_id, rarity, stars, level, xp) VALUES (?, ?, ?, 1, 1, 0)",
                         (user_id, recompensa_id, HEROES[recompensa_id].get("raridade", 1)),
