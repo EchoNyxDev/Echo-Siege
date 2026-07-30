@@ -4,6 +4,21 @@ UPDATE_THUMB_URL = ""
 
 PATCH_NOTES = [
     {
+        "id": "patch_21",
+        "title": "Patch 21: Cassino Fallen Angel",
+        "subtitle": "TutoriUAU: Wolford ganhou um cassino. A estatistica agora usa gravata e cobra entrada em fichas.",
+        "rows": [
+            ("Novo Modo", "`echo cassino` abre o Fallen Angel, com Ficha do Cassino separada do Gold normal."),
+            ("Carteira", "`cassino saldo`, `comprar` e `vender` controlam fichas, limite diario e conversao segura."),
+            ("Jogos", "Cara ou coroa, slot com jackpot, roleta completa e blackjack persistente com pedir/parar/dobrar/desistir."),
+            ("Loja", "Premios exclusivos: titulos, temas de perfil, tickets, gems, itens e pets Dado Vivo/Mini Dealer."),
+            ("Admin", "`echo adm cassino abrir|fechar|jackpot|dar_fichas|remover_fichas` controla a banca."),
+            ("Banco", "Criado `update_db_casino.py` com backup automatico e tabelas proprias, sem misturar com Gold, Copa ou arena."),
+            ("Conquistas", "Novas conquistas para apostas, jackpot, blackjack natural, roleta e azar documentado pelo TutoriUAU."),
+        ],
+        "footer": "TutoriUAU: jogue com moderacao. Ou nao jogue. Eu sou tutorial, nao contador.",
+    },
+    {
         "id": "patch_20",
         "title": "Patch 20: Echo Cup com chuteira nova",
         "subtitle": "TutoriUAU: futebol de anime, agora com menos bug de vestiario e mais ficha funcionando.",

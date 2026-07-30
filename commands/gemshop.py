@@ -48,6 +48,9 @@ COSMETIC_LABELS = {
     "token_moldura_gramado_noturno": "Tema Gramado Noturno",
     "token_moldura_sala_de_imprensa": "Tema Sala de Imprensa",
     "token_moldura_taca_mundial": "Tema Taça Mundial",
+    "token_moldura_neon": "Tema Neon do Cassino",
+    "token_moldura_mesa_verde": "Tema Mesa Verde",
+    "token_moldura_fallen_angel": "Tema Fallen Angel",
     "token_titulo_pontual": "Pontual",
     "token_titulo_pontual_demais": "Pontual Demais",
     "token_titulo_bug_ambulante": "Bug Ambulante",
@@ -59,6 +62,9 @@ COSMETIC_LABELS = {
     "token_titulo_rei_dos_ecos": "Rei dos Ecos",
     "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Wolford",
     "token_titulo_campeao_do_mundo": "Campeão do Mundo",
+    "token_titulo_o_apostador": "O Apostador",
+    "token_titulo_filho_do_rng": "Filho do RNG",
+    "token_titulo_quebrou_a_banca": "Quebrou a Banca",
 }
 
 LEGACY_FRAME_MIGRATIONS = {

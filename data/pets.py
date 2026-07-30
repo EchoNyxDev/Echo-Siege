@@ -248,5 +248,25 @@ PETS = {
         "emoji": "🦅",
         "hp": 130, "atk": 70, "matk": 40, "def": 30, "spd": 48, "crt": 25,
         "passiva": "Olhar do Falcão: Seus voos rasantes limpam os desvios de projéteis e aumentam a precisão de passes em 30%."
+    },
+
+    # ========================================================
+    # PETS EXCLUSIVOS DO CASSINO FALLEN ANGEL
+    # ========================================================
+    "dado_vivo": {
+        "nome": "Dado Vivo",
+        "raridade": 4,
+        "is_gacha": False,
+        "emoji": "🎲",
+        "hp": 120, "atk": 45, "matk": 45, "def": 35, "spd": 38, "crt": 18,
+        "passiva": "Sorte Viciada: aumenta levemente o crítico da party e dá um pequeno bônus de Gold em vitórias de combate."
+    },
+    "mini_dealer": {
+        "nome": "Mini Dealer",
+        "raridade": 5,
+        "is_gacha": False,
+        "emoji": "🎩",
+        "hp": 165, "atk": 55, "matk": 70, "def": 50, "spd": 42, "crt": 16,
+        "passiva": "Banca Fria: reduz dano crítico recebido e concede um escudo inicial pequeno para o líder da party."
     }
 }

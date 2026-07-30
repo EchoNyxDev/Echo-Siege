@@ -115,6 +115,16 @@ class Tutorial(commands.Cog):
             ),
             2, total, discord.Color.gold()
         )
+        e2.add_field(
+            name="Cassino Fallen Angel",
+            value=(
+                "`echo cassino` abre o balcão do cassino de Wolford. A moeda dele é a **Ficha do Cassino**, separada do Gold normal.\n"
+                "`echo cassino comprar <fichas>` troca Gold por fichas; `vender <fichas>` devolve metade em Gold. Sim, a banca leu o contrato antes de você.\n"
+                "Jogos: `cara`, `coroa`, `slot`, `roleta` e `blackjack`. No blackjack, use `pedir`, `parar`, `dobrar` ou `desistir`.\n"
+                "`echo cassino loja`, `historico` e `ranking` mostram prêmios, recibos e quem está financiando o carpete novo."
+            ),
+            inline=False,
+        )
         pages.append(e2)
 
         # ========================================================
@@ -236,6 +246,7 @@ class Tutorial(commands.Cog):
                     "`echo adm logs abertos` - Verifica as queixas dos plebeus.\n"
                     "`echo adm resolver <ID> <msg>` - Avisa o jogador na DM e fecha o ticket.\n"
                     "`echo adm criarcode <nome> <recompensa>` - Cria promoções (Ex: G1000 T5).\n"
+                    "`echo adm cassino abrir|fechar|jackpot|dar_fichas|remover_fichas` - Controle do Fallen Angel.\n"
                     "`echo adm set_iniciar` - Define o canal das invasões automáticas.\n"
                     "`echo adm iniciar raid/boss/calamidade [time-skip]` - Começa a confusão no servidor; com time-skip, o registro cai para 1 minuto.\n"
                     "`echo adm hack @user <ID>` - Sobe o herói para nível 100 e 7 Estrelas.\n"

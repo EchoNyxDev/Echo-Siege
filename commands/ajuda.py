@@ -247,6 +247,20 @@ class Ajuda(commands.Cog):
             inline=False,
         )
         e4.add_field(
+            name="Cassino Fallen Angel",
+            value=(
+                "`cassino` - Painel geral do cassino e regras rápidas.\n"
+                "`cassino saldo` - Mostra fichas, jackpot e histórico básico.\n"
+                "`cassino comprar|vender <fichas>` - Troca Gold por fichas, ou fichas por Gold pela metade.\n"
+                "`cassino cara|coroa <aposta>` - Moeda 50/50.\n"
+                "`cassino slot <aposta>` - Caça-níquel com jackpot progressivo.\n"
+                "`cassino roleta <tipo> <aposta> [número]` - Vermelho, preto, par, ímpar, baixo, alto ou número.\n"
+                "`cassino blackjack <aposta>` - Depois use `pedir`, `parar`, `dobrar` ou `desistir`.\n"
+                "`cassino loja|comprar_item|historico|ranking` - Prêmios, recibos e placar da vergonha estatística."
+            ),
+            inline=False,
+        )
+        e4.add_field(
             name="Gestão de Armamentos",
             value=(
                 "`equipar <ID herói> <item>` - Veste seu personagem.\n"

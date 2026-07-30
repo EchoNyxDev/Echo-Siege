@@ -93,6 +93,9 @@ PROFILE_BACKGROUND_FILES = {
     "token_moldura_gramado_noturno": os.path.join(root_dir, "assets", "profile_themes", "gramado_noturno.png"),
     "token_moldura_sala_de_imprensa": os.path.join(root_dir, "assets", "profile_themes", "sala_de_imprensa.png"),
     "token_moldura_taca_mundial": os.path.join(root_dir, "assets", "profile_themes", "taça_2026.png"),
+    "token_moldura_neon": os.path.join(root_dir, "assets", "profile_themes", "casino_neon.png"),
+    "token_moldura_mesa_verde": os.path.join(root_dir, "assets", "profile_themes", "mesa_verde.png"),
+    "token_moldura_fallen_angel": os.path.join(root_dir, "assets", "profile_themes", "fallen_angel.png"),
 }
 
 # ===================================================
@@ -188,6 +191,36 @@ THEMES = {
         "value": (255, 255, 255, 255),
         "small": (255, 238, 190, 255),
         "font_file": "Cinzel-Bold.ttf"
+    },
+    "token_moldura_neon": {
+        "panel_fill": (8, 2, 18, 155),
+        "panel_outline": (0, 240, 255, 180),
+        "title": (80, 255, 255, 255),
+        "sub": (255, 105, 220, 255),
+        "label": (255, 210, 95, 255),
+        "value": (255, 255, 255, 255),
+        "small": (220, 250, 255, 255),
+        "font_file": "Orbitron-Bold.ttf"
+    },
+    "token_moldura_mesa_verde": {
+        "panel_fill": (2, 24, 14, 160),
+        "panel_outline": (225, 185, 90, 170),
+        "title": (235, 255, 220, 255),
+        "sub": (220, 190, 105, 255),
+        "label": (100, 235, 165, 255),
+        "value": (255, 255, 255, 255),
+        "small": (230, 245, 220, 255),
+        "font_file": "Roboto-Bold.ttf"
+    },
+    "token_moldura_fallen_angel": {
+        "panel_fill": (18, 8, 8, 165),
+        "panel_outline": (185, 40, 70, 180),
+        "title": (255, 225, 180, 255),
+        "sub": (235, 120, 145, 255),
+        "label": (255, 195, 90, 255),
+        "value": (255, 255, 255, 255),
+        "small": (245, 225, 210, 255),
+        "font_file": "Cinzel-Bold.ttf"
     }
 }
 
@@ -232,6 +265,9 @@ def cosmetic_label(cosmetic_id):
         "token_moldura_gramado_noturno": "Gramado Noturno",
         "token_moldura_sala_de_imprensa": "Sala de Imprensa",
         "token_moldura_taca_mundial": "Taça Mundial",
+        "token_moldura_neon": "Neon do Cassino",
+        "token_moldura_mesa_verde": "Mesa Verde",
+        "token_moldura_fallen_angel": "Fallen Angel",
         "token_titulo_pontual": "Pontual",
         "token_titulo_pontual_demais": "Pontual Demais",
         "token_titulo_bug_ambulante": "Bug Ambulante",
@@ -242,6 +278,9 @@ def cosmetic_label(cosmetic_id):
         "token_titulo_rei_dos_ecos": "Rei dos Ecos",
         "token_titulo_maior_tecnico_de_lugnica": "Maior Técnico de Wolford",
         "token_titulo_campeao_do_mundo": "Campeão do Mundo",
+        "token_titulo_o_apostador": "O Apostador",
+        "token_titulo_filho_do_rng": "Filho do RNG",
+        "token_titulo_quebrou_a_banca": "Quebrou a Banca",
     }
     return labels.get(cosmetic_id, str(cosmetic_id or "").replace("token_", "").replace("_", " ").title())
 

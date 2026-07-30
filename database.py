@@ -1,6 +1,7 @@
 import sqlite3
 
 from utils.db import configure_sqlite_paths
+from systems.casino_manager import ensure_casino_schema
 
 
 configure_sqlite_paths()
@@ -520,6 +521,8 @@ CREATE TABLE IF NOT EXISTS player_guild_hunt_actions(
     PRIMARY KEY (guild_id, user_id)
 )
 """)
+
+ensure_casino_schema(cursor)
 
 conn.commit()
 conn.close()
