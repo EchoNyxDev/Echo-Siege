@@ -1645,6 +1645,7 @@ class Adm(commands.Cog):
                            "`echo adm criar banner` (Editor do banner especial por 7 dias)\n"
                            "`echo adm copa iniciar|encerrar|reset @user|echobet @user <qtd>` (Controle da Echo Cup)\n"
                            "`echo adm cassino abrir|fechar|jackpot|dar_fichas|remover_fichas` (Controle do Fallen Angel)\n"
+                           "`echo adm biblioteca ativar|desativar|listar|testar|adicionar|remover|temporada` (Controle da Biblioteca Perdida)\n"
                            "`echo adm melhorar loja` (Sobe a loja em 1 nível para testes)\n"
                            "`echo adm reset cidade` (Reseta Wolford)\n"
                            "`echo adm hack @usuário <id_do_heroi>` (Nível Max + 7 Estrelas)\n"
@@ -1673,6 +1674,12 @@ class Adm(commands.Cog):
             if not casino_cog or not hasattr(casino_cog, "admin_dispatch"):
                 return await ctx.send("O sistema do Fallen Angel ainda não carregou.")
             return await casino_cog.admin_dispatch(ctx, arg1, arg2)
+
+        if action == "biblioteca":
+            biblioteca_cog = self.bot.get_cog("Biblioteca")
+            if not biblioteca_cog or not hasattr(biblioteca_cog, "admin_dispatch"):
+                return await ctx.send("O sistema da Biblioteca Perdida ainda não carregou.")
+            return await biblioteca_cog.admin_dispatch(ctx, arg1, arg2)
 
         if (
             action in ["criarbanner", "bannercriar"]

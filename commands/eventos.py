@@ -102,7 +102,16 @@ class Eventos(commands.Cog):
             ),
             inline=False,
         )
-        embed.set_footer(text="Use echo evento lutar, echo evento boss, echo evento dungeon, echo evento resgatar ou echo copa.")
+        embed.add_field(
+            name="Biblioteca Perdida",
+            value=(
+                "`echo biblioteca` - abre o painel do quiz de Wolford.\n"
+                "`echo biblioteca diaria|explorar|expedicao` - inicia sessões com perguntas, imagens e enigmas.\n"
+                "`echo biblioteca loja` - troca Páginas Perdidas por temas, títulos, tickets, Gems e pets."
+            ),
+            inline=False,
+        )
+        embed.set_footer(text="Use echo evento lutar, echo evento boss, echo evento dungeon, echo evento resgatar, echo copa ou echo biblioteca.")
         return embed
 
     def _progress(self, cursor, user_id, event_id):

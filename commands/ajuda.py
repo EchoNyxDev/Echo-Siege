@@ -204,7 +204,8 @@ class Ajuda(commands.Cog):
                 "`expedicao <2|4|8|12>` - Manda heróis AFK voltarem com loot.\n"
                 "`labirinto` / `labirinto sair` - Desce nas salas RNG infinitas.\n"
                 "`campeoes` / `campeoes defesa` / `campeoes ranking` - Duelos PvE Assíncronos.\n"
-                "`work` - Pega os contratos diários na guilda."
+                "`work` - Pega os contratos diários na guilda.\n"
+                "`biblioteca diaria|explorar|expedicao` - Quiz da Biblioteca Perdida com imagens, perguntas e Páginas Perdidas."
             ),
             inline=False,
         )
@@ -217,6 +218,8 @@ class Ajuda(commands.Cog):
                 "`copa iniciar|time|jogar` - Cria o time, consulta a escalação e joga partidas.\n"
                 "`copa loja|resgatar|ranking|hall` - Troca echobet e acompanha a classificação.\n"
                 "`copa banner|summon|heroi|historico` - Banner esportivo, fichas da Copa e últimas partidas. O summon usa ticket antes de cobrar ouro.\n"
+                "`biblioteca responder|dica|desistir` - Avança, pede ajuda ou encerra a sessão do arquivo.\n"
+                "`biblioteca status|ranking|colecao|loja|comprar` - Progresso, placar e prêmios da Biblioteca.\n"
                 "Invasões automáticas usam o canal do `adm set_iniciar`: raid 13:00, boss sábado 19:00 e calamidade no último dia do mês 22:00.\n"
                 "`rank` / `rank global` - Mostra a nata dos jogadores e quem tem mais dinheiro/poder."
             ),

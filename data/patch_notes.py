@@ -4,6 +4,24 @@ UPDATE_THUMB_URL = ""
 
 PATCH_NOTES = [
     {
+        "id": "patch_22",
+        "title": "Patch 22: Biblioteca Perdida",
+        "subtitle": "TutoriUAU: Wolford ganhou uma biblioteca. Finalmente um lugar onde errar com confiança vira dado estatístico.",
+        "rows": [
+            ("Novo Modo", "`echo biblioteca` abre o painel da Biblioteca Perdida, com quiz, enigmas e imagens dos heróis locais."),
+            ("Sessões", "`diaria`, `explorar` e `expedicao` iniciam leituras com perguntas variadas. Na expedição, três erros encerram o passeio intelectual."),
+            ("Respostas", "`responder <texto|A/B/C/D>` aceita alternativas, verdadeiro/falso e respostas abertas sem exigir acento perfeito."),
+            ("Dicas", "`dica` ajuda na pergunta atual, mas corta parte das Páginas Perdidas daquela resposta. Cola gourmet, mas registrada."),
+            ("Loja", "`loja` e `comprar <id>` trocam Páginas Perdidas por temas, títulos, tickets, Gems, itens e pets exclusivos."),
+            ("Perfil", "Entraram os temas Biblioteca Perdida e Arquivo Antigo, com fundo real no card de perfil."),
+            ("Ranking", "`biblioteca ranking` e o `rank` geral agora mostram progresso, acertos, combo e Páginas Perdidas."),
+            ("Admin", "`echo adm biblioteca ativar|desativar|listar|testar|adicionar|remover|temporada` controla a curadoria do arquivo."),
+            ("Banco", "`update_db_biblioteca.py` cria tabelas próprias com backup automático, sem misturar com Copa, cassino ou arena."),
+            ("Conquistas", "Novas conquistas para acertos, combo, diária perfeita, loja e resposta lendária rápida."),
+        ],
+        "footer": "TutoriUAU: ler nunca foi tão lucrativo. Ou tão auditável.",
+    },
+    {
         "id": "patch_21",
         "title": "Patch 21: Cassino Fallen Angel",
         "subtitle": "TutoriUAU: Wolford ganhou um cassino. A estatistica agora usa gravata e cobra entrada em fichas.",

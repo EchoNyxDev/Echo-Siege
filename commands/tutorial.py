@@ -212,6 +212,9 @@ class Tutorial(commands.Cog):
                 "`echo rank local` ou `global` - Para medir ego. Veja quem tem mais ELO no PvP, andares na Torre ou quem roubou mais Ouro.\n\n"
                 "`echo eventos` - Quando é feriado, eu solto eventos sazonais. Use `evento lutar` e `evento resgatar` para farmar cosméticos e itens que nunca mais voltam.\n"
                 "`echo copa` - Evento da Echo Cup: monte 11 heróis, jogue fase de grupos/mata-mata e use `echo copa summon` com ticket ou ouro reduzido.\n\n"
+                "`echo biblioteca` - A Biblioteca Perdida de Wolford. Você responde quiz, identifica personagens por imagem, usa `responder`, `dica` e ganha **Páginas Perdidas**.\n"
+                "`echo biblioteca diaria` é a rotina diária; `explorar` é sessão curta; `expedicao` é a prova longa onde três erros te expulsam com educação teatral.\n"
+                "`echo biblioteca loja` troca páginas por temas, títulos, tickets, Gems e pets. Sim, até conhecimento virou moeda. Eu não inventei capitalismo, só documento.\n\n"
                 "`echo conquistas` - Um tapinha nas costas por jogar demais. Tem botão de resgate que dá Gems e Ouro.\n\n"
                 "`echo codes` - Lista os códigos promocionais que o Dev soltou. Se achar um ativo, digite `echo code <código>` e corra para o abraço."
             ),
@@ -248,6 +251,7 @@ class Tutorial(commands.Cog):
                     "`echo adm resolver <ID> <msg>` - Avisa o jogador na DM e fecha o ticket.\n"
                     "`echo adm criarcode <nome> <recompensa>` - Cria promoções (Ex: G1000 T5).\n"
                     "`echo adm cassino abrir|fechar|jackpot|dar_fichas|remover_fichas` - Controle do Fallen Angel.\n"
+                    "`echo adm biblioteca ativar|desativar|listar|testar|adicionar|remover|temporada` - Curadoria da Biblioteca Perdida.\n"
                     "`echo adm set_iniciar` - Define o canal das invasões automáticas.\n"
                     "`echo adm iniciar raid/boss/calamidade [time-skip]` - Começa a confusão no servidor; com time-skip, o registro cai para 1 minuto.\n"
                     "`echo adm hack @user <ID>` - Sobe o herói para nível 100 e 7 Estrelas.\n"

@@ -268,5 +268,25 @@ PETS = {
         "emoji": "🎩",
         "hp": 165, "atk": 55, "matk": 70, "def": 50, "spd": 42, "crt": 16,
         "passiva": "Banca Fria: reduz dano crítico recebido e concede um escudo inicial pequeno para o líder da party."
+    },
+
+    # ========================================================
+    # PETS EXCLUSIVOS DA BIBLIOTECA PERDIDA
+    # ========================================================
+    "livro_voador": {
+        "nome": "Livro Voador",
+        "raridade": 4,
+        "is_gacha": False,
+        "emoji": "📖",
+        "hp": 130, "atk": 25, "matk": 75, "def": 38, "spd": 36, "crt": 10,
+        "passiva": "Páginas Agitadas: aumenta levemente o MATK da party e reduz a chance de falhar contra inimigos com debuffs."
+    },
+    "mini_bibliotecario": {
+        "nome": "Mini Bibliotecário",
+        "raridade": 5,
+        "is_gacha": False,
+        "emoji": "🦉",
+        "hp": 170, "atk": 30, "matk": 90, "def": 58, "spd": 40, "crt": 14,
+        "passiva": "Shhh Tático: concede bônus de XP de combate e um pequeno escudo inicial para suportes e magos."
     }
 }

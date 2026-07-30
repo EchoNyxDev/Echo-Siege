@@ -70,6 +70,7 @@ async def load_commands():
     await bot.load_extension("commands.eventos")
     await bot.load_extension("commands.copa")
     await bot.load_extension("commands.casino")
+    await bot.load_extension("commands.biblioteca")
     await bot.load_extension("commands.logs")
     await bot.load_extension("commands.rank")
     await bot.load_extension("commands.daily")

@@ -51,6 +51,8 @@ COSMETIC_LABELS = {
     "token_moldura_neon": "Tema Neon do Cassino",
     "token_moldura_mesa_verde": "Tema Mesa Verde",
     "token_moldura_fallen_angel": "Tema Fallen Angel",
+    "token_moldura_biblioteca_perdida": "Tema Biblioteca Perdida",
+    "token_moldura_arquivo_antigo": "Tema Arquivo Antigo",
     "token_titulo_pontual": "Pontual",
     "token_titulo_pontual_demais": "Pontual Demais",
     "token_titulo_bug_ambulante": "Bug Ambulante",
@@ -65,6 +67,9 @@ COSMETIC_LABELS = {
     "token_titulo_o_apostador": "O Apostador",
     "token_titulo_filho_do_rng": "Filho do RNG",
     "token_titulo_quebrou_a_banca": "Quebrou a Banca",
+    "token_titulo_sabio_dos_ecos": "Sábio dos Ecos",
+    "token_titulo_enciclopedia_ambulante": "Enciclopédia Ambulante",
+    "token_titulo_mestre_do_quiz": "Mestre do Quiz",
 }
 
 LEGACY_FRAME_MIGRATIONS = {

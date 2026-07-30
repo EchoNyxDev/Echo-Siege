@@ -38,6 +38,7 @@ class RankPaginator(discord.ui.View):
         "colecao": "Coleção",
         "guildas": "Guildas",
         "campeoes": "Campeões",
+        "biblioteca": "Biblioteca",
     }
 
     def __init__(self, ctx, is_global=False):
@@ -95,6 +96,15 @@ class RankPaginator(discord.ui.View):
                 SELECT user_id, rating, wins, weekly_score
                 FROM champion_tower
                 ORDER BY rating DESC, wins DESC, weekly_score DESC
+                LIMIT 200
+                """
+            )
+        elif self.category == "biblioteca":
+            cursor.execute(
+                """
+                SELECT user_id, paginas, total_acertos, maior_combo
+                FROM biblioteca_players
+                ORDER BY paginas DESC, total_acertos DESC, maior_combo DESC
                 LIMIT 200
                 """
             )
@@ -157,6 +167,8 @@ class RankPaginator(discord.ui.View):
                 lines.append(f"**{pos}** `{row[0]}` **{row[1]}** - Lv {row[2]} | Score {row[3]:,} | Banco {row[4]:,}")
             elif self.category == "campeoes":
                 lines.append(f"**{pos}** <@{row[0]}> - **{row[1]} Prestígio** ({row[2]} vitórias | {row[3]:,} pts semanais)")
+            elif self.category == "biblioteca":
+                lines.append(f"**{pos}** <@{row[0]}> - **{row[1]:,} Páginas** ({row[2]} acertos | combo {row[3]})")
 
         embed.add_field(
             name=categoria,
@@ -178,6 +190,7 @@ class RankPaginator(discord.ui.View):
             discord.SelectOption(label="Coleção", value="colecao", description="Mais heróis na conta."),
             discord.SelectOption(label="Guildas", value="guildas", description="Guildas mais competitivas."),
             discord.SelectOption(label="Campeões", value="campeoes", description="Maior prestígio na Torre dos Campeões."),
+            discord.SelectOption(label="Biblioteca", value="biblioteca", description="Mais Páginas Perdidas e acertos."),
         ],
         custom_id="select_category",
     )

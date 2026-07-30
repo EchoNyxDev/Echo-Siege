@@ -96,6 +96,8 @@ PROFILE_BACKGROUND_FILES = {
     "token_moldura_neon": os.path.join(root_dir, "assets", "profile_themes", "casino_neon.png"),
     "token_moldura_mesa_verde": os.path.join(root_dir, "assets", "profile_themes", "mesa_verde.png"),
     "token_moldura_fallen_angel": os.path.join(root_dir, "assets", "profile_themes", "fallen_angel.png"),
+    "token_moldura_biblioteca_perdida": os.path.join(root_dir, "assets", "profile_themes", "biblioteca_perdida.png"),
+    "token_moldura_arquivo_antigo": os.path.join(root_dir, "assets", "profile_themes", "arquivo_antigo.png"),
 }
 
 # ===================================================
@@ -221,6 +223,26 @@ THEMES = {
         "value": (255, 255, 255, 255),
         "small": (245, 225, 210, 255),
         "font_file": "Cinzel-Bold.ttf"
+    },
+    "token_moldura_biblioteca_perdida": {
+        "panel_fill": (10, 12, 24, 168),
+        "panel_outline": (118, 92, 220, 175),
+        "title": (238, 232, 255, 255),
+        "sub": (170, 205, 255, 255),
+        "label": (210, 170, 255, 255),
+        "value": (255, 255, 255, 255),
+        "small": (225, 232, 255, 255),
+        "font_file": "Cinzel-Bold.ttf"
+    },
+    "token_moldura_arquivo_antigo": {
+        "panel_fill": (24, 16, 8, 170),
+        "panel_outline": (210, 170, 95, 175),
+        "title": (255, 235, 190, 255),
+        "sub": (235, 200, 145, 255),
+        "label": (255, 210, 120, 255),
+        "value": (255, 255, 245, 255),
+        "small": (245, 225, 190, 255),
+        "font_file": "Cinzel-Bold.ttf"
     }
 }
 
@@ -268,6 +290,8 @@ def cosmetic_label(cosmetic_id):
         "token_moldura_neon": "Neon do Cassino",
         "token_moldura_mesa_verde": "Mesa Verde",
         "token_moldura_fallen_angel": "Fallen Angel",
+        "token_moldura_biblioteca_perdida": "Biblioteca Perdida",
+        "token_moldura_arquivo_antigo": "Arquivo Antigo",
         "token_titulo_pontual": "Pontual",
         "token_titulo_pontual_demais": "Pontual Demais",
         "token_titulo_bug_ambulante": "Bug Ambulante",
@@ -281,6 +305,9 @@ def cosmetic_label(cosmetic_id):
         "token_titulo_o_apostador": "O Apostador",
         "token_titulo_filho_do_rng": "Filho do RNG",
         "token_titulo_quebrou_a_banca": "Quebrou a Banca",
+        "token_titulo_sabio_dos_ecos": "Sábio dos Ecos",
+        "token_titulo_enciclopedia_ambulante": "Enciclopédia Ambulante",
+        "token_titulo_mestre_do_quiz": "Mestre do Quiz",
     }
     return labels.get(cosmetic_id, str(cosmetic_id or "").replace("token_", "").replace("_", " ").title())
 
