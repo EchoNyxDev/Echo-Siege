@@ -252,12 +252,13 @@ class Ajuda(commands.Cog):
                 "`cassino` - Painel geral do cassino e regras rápidas.\n"
                 "`cassino tutorial` - Aula completa do TutoriUAU sobre fichas, jogos, loja e blackjack.\n"
                 "`cassino saldo` - Mostra fichas, jackpot e histórico básico.\n"
-                "`cassino comprar|vender <fichas>` - Troca Gold por fichas, ou fichas por Gold pela metade.\n"
+                "`cassino comprar fichas <qtd>` / `vender <fichas>` - Troca Gold por fichas, ou fichas por Gold pela metade.\n"
                 "`cassino cara|coroa <aposta>` - Moeda 50/50.\n"
                 "`cassino slot <aposta>` - Caça-níquel com jackpot progressivo.\n"
                 "`cassino roleta <tipo> <aposta> [número]` - Vermelho, preto, par, ímpar, baixo, alto ou número.\n"
                 "`cassino blackjack <aposta>` - Depois use `pedir`, `parar`, `dobrar` ou `desistir`.\n"
-                "`cassino loja|comprar_item|historico|ranking` - Prêmios, recibos e placar da vergonha estatística."
+                "`cassino loja` / `cassino comprar <id>` / `comprar_item` - Prêmios da loja.\n"
+                "`cassino historico|ranking` - Recibos e placar da vergonha estatística."
             ),
             inline=False,
         )

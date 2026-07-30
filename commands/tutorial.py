@@ -119,7 +119,8 @@ class Tutorial(commands.Cog):
             name="Cassino Fallen Angel",
             value=(
                 "`echo cassino` abre o balcão do cassino de Wolford. A moeda dele é a **Ficha do Cassino**, separada do Gold normal.\n"
-                "`echo cassino comprar <fichas>` troca Gold por fichas; `vender <fichas>` devolve metade em Gold. Sim, a banca leu o contrato antes de você.\n"
+                "`echo cassino comprar fichas <qtd>` troca Gold por fichas; `vender <fichas>` devolve metade em Gold. Sim, a banca leu o contrato antes de você.\n"
+                "`echo cassino comprar <id da loja>` compra item pelo número/id mostrado em `echo cassino loja`.\n"
                 "Jogos: `cara`, `coroa`, `slot`, `roleta` e `blackjack`. No blackjack, use `pedir`, `parar`, `dobrar` ou `desistir`.\n"
                 "`echo cassino loja`, `historico` e `ranking` mostram prêmios, recibos e quem está financiando o carpete novo."
             ),

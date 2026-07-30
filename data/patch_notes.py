@@ -10,11 +10,11 @@ PATCH_NOTES = [
         "rows": [
             ("Novo Modo", "`echo cassino` abre o Fallen Angel, com Ficha do Cassino separada do Gold."),
             ("Tutorial", "`echo cassino tutorial` ensina fichas, jogos, loja, ranking e blackjack."),
-            ("Carteira", "`saldo`, `comprar` e `vender` controlam fichas e limite diario."),
+            ("Carteira", "`comprar fichas <qtd>` compra fichas; `vender` converte de volta."),
             ("Jogos", "Cara/coroa, slot com jackpot, roleta 0-36 e blackjack persistente."),
             ("Balanceamento", "Slot ficou menos punitivo; blackjack ganhou desistência parcial e regra de 5 cartas."),
             ("Visual", "Slot e blackjack agora usam embeds, emojis e cartas com naipes."),
-            ("Loja", "Titulos, temas, tickets, gems, itens e pets Dado Vivo/Mini Dealer."),
+            ("Loja", "`comprar <id>` compra item; titulos, temas, tickets, gems e pets especiais."),
             ("Admin", "`echo adm cassino abrir|fechar|jackpot|dar_fichas|remover_fichas` controla a banca."),
             ("Banco", "Criado `update_db_casino.py` com backup automatico e tabelas proprias, sem misturar com Gold, Copa ou arena."),
             ("Conquistas", "Novas conquistas para apostas, jackpot, blackjack natural, roleta e azar documentado pelo TutoriUAU."),

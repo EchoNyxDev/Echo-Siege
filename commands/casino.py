@@ -268,7 +268,8 @@ class Casino(commands.Cog):
             name="Comandos básicos",
             value=(
                 "`echo cassino saldo` - Mostra fichas, jackpot e estatísticas.\n"
-                "`echo cassino comprar <fichas>` - Compra fichas com Gold.\n"
+                "`echo cassino comprar fichas <quantidade>` - Compra fichas com Gold.\n"
+                "`echo cassino comprar <id da loja>` - Compra itens da loja do cassino.\n"
                 "`echo cassino vender <fichas>` - Vende fichas por Gold.\n"
                 "`echo cassino historico` - Mostra suas últimas apostas.\n"
                 "`echo cassino ranking [categoria]` - Ranking da banca."
@@ -298,8 +299,8 @@ class Casino(commands.Cog):
         e2.add_field(
             name="Exemplos",
             value=(
-                "`echo cassino comprar 10` - compra 10 fichas por 1.000 Gold.\n"
-                "`echo cassino comprar 110` - compra pacote de 110 fichas por 10.000 Gold.\n"
+                "`echo cassino comprar fichas 10` - compra 10 fichas por 1.000 Gold.\n"
+                "`echo cassino comprar fichas 110` - compra pacote de 110 fichas por 10.000 Gold.\n"
                 "`echo cassino vender 20` - vende 20 fichas por 1.000 Gold."
             ),
             inline=False,
@@ -382,7 +383,8 @@ class Casino(commands.Cog):
             name="Loja do Cassino",
             value=(
                 "`echo cassino loja` mostra os prêmios.\n"
-                "`echo cassino comprar_item <id> [quantidade]` compra um item.\n"
+                "`echo cassino comprar <id> [quantidade]` compra um item pelo número/id da loja.\n"
+                "`echo cassino comprar_item <id> [quantidade]` também funciona, caso você goste do caminho explícito.\n"
                 "Tem títulos, temas de perfil, tickets, Gems, itens e pets exclusivos como **Dado Vivo** e **Mini Dealer**.\n"
                 "Itens únicos só podem ser comprados uma vez; alguns itens têm limite semanal."
             ),
@@ -478,7 +480,7 @@ class Casino(commands.Cog):
             name="Carteira",
             value=(
                 "`echo cassino saldo`\n"
-                "`echo cassino comprar <fichas>`\n"
+                "`echo cassino comprar fichas <qtd>`\n"
                 "`echo cassino vender <fichas>`"
             ),
             inline=True,
@@ -535,15 +537,31 @@ class Casino(commands.Cog):
         embed.add_field(name="Resultado", value=f"Lucro bruto: **{fmt(total_won)}**\nPerdas: **{fmt(total_lost)}**\nMaior vitória: **{fmt(biggest_win)}**", inline=False)
         await ctx.send(embed=embed)
 
-    @cassino_group.command(name="comprar", aliases=["comprarfichas", "buy"])
-    async def comprar_fichas_cmd(self, ctx, fichas: int = None):
+    def _purchase_help_text(self):
+        linhas = [f"`{chips}` fichas - **{fmt(cost)} Gold**" for chips, cost in CHIP_PACKAGES.items()]
+        return (
+            "**Comprar fichas:**\n"
+            "`echo cassino comprar fichas <quantidade>`\n"
+            + "\n".join(linhas)
+            + "\n\n**Comprar item da loja:**\n"
+            "`echo cassino comprar <id da loja> [quantidade]`\n"
+            "`echo cassino comprar item <id da loja> [quantidade]`\n"
+            "`echo cassino comprar_item <id da loja> [quantidade]`\n\n"
+            "TutoriUAU: agora a palavra `fichas` existe para impedir o clássico 'comprei moeda quando queria um chapéu'."
+        )
+
+    async def _buy_chips(self, ctx, fichas):
         if fichas is None:
             linhas = [f"`{chips}` fichas - **{fmt(cost)} Gold**" for chips, cost in CHIP_PACKAGES.items()]
             return await ctx.send(
                 "**Pacotes de fichas do Fallen Angel:**\n"
                 + "\n".join(linhas)
-                + "\n\nTambém dá para comprar qualquer quantidade: `echo cassino comprar <fichas>`.\nTutoriUAU: pacote maior dá desconto, não sabedoria."
+                + "\n\nUse `echo cassino comprar fichas <quantidade>`.\nTutoriUAU: pacote maior dá desconto, não sabedoria."
             )
+        try:
+            fichas = int(fichas)
+        except (TypeError, ValueError):
+            return await ctx.send("A quantidade de fichas precisa ser um número. Exemplo: `echo cassino comprar fichas 110`.")
         if fichas <= 0:
             return await ctx.send("Compre uma quantidade positiva de fichas. Dívida emocional não conta.")
 
@@ -579,6 +597,40 @@ class Casino(commands.Cog):
         finally:
             conn.close()
             self._unlock(user_id)
+
+    @cassino_group.command(name="comprar", aliases=["comprarfichas", "buy"])
+    async def comprar_cmd(self, ctx, *, entrada: str = None):
+        if not entrada:
+            return await ctx.send(self._purchase_help_text())
+
+        parts = str(entrada).split()
+        first = normalize_id(parts[0]) if parts else ""
+
+        if normalize_id(ctx.invoked_with) == "comprarfichas":
+            return await self._buy_chips(ctx, parts[0] if parts else None)
+
+        if first in {"ficha", "fichas", "chip", "chips", "moeda", "moedas"}:
+            amount = parts[1] if len(parts) >= 2 else None
+            return await self._buy_chips(ctx, amount)
+
+        if first in {"item", "itens", "loja", "shop", "resgatar"}:
+            if len(parts) < 2:
+                return await ctx.send("Use `echo cassino comprar item <id da loja> [quantidade]`.")
+            quantity = int(parts[2]) if len(parts) >= 3 and str(parts[2]).isdigit() else 1
+            return await self._buy_shop_item(ctx, parts[1], quantity)
+
+        item_id, item = self._shop_item_by_key(parts[0])
+        if item:
+            quantity = int(parts[1]) if len(parts) >= 2 and str(parts[1]).isdigit() else 1
+            return await self._buy_shop_item(ctx, parts[0], quantity)
+
+        if str(parts[0]).isdigit():
+            return await self._buy_chips(ctx, parts[0])
+
+        return await ctx.send(
+            "Não entendi a compra. Use `echo cassino comprar fichas <qtd>` para fichas ou "
+            "`echo cassino comprar <id da loja>` para item."
+        )
 
     @cassino_group.command(name="vender", aliases=["sell", "sacar"])
     async def vender_fichas_cmd(self, ctx, fichas: int = None):
@@ -995,7 +1047,7 @@ class Casino(commands.Cog):
         chunks = ["\n".join(lines[i:i + 8]) for i in range(0, len(lines), 8)]
         for idx, chunk in enumerate(chunks, start=1):
             embed.add_field(name="Itens" if idx == 1 else f"Itens {idx}", value=chunk, inline=False)
-        embed.set_footer(text="Use `echo cassino comprar_item <id> [quantidade]`. TutoriUAU: não vendemos bom senso.")
+        embed.set_footer(text="Use `echo cassino comprar <id> [quantidade]` ou `echo cassino comprar_item <id> [quantidade]`. TutoriUAU: não vendemos bom senso.")
         await ctx.send(embed=embed)
 
     def _grant_shop_item(self, cursor, user_id, item):
@@ -1035,8 +1087,7 @@ class Casino(commands.Cog):
             else:
                 cursor.execute("INSERT INTO inventory (user_id, item_name, quantity) VALUES (?, ?, ?)", (user_id, item_id, quantity))
 
-    @cassino_group.command(name="comprar_item", aliases=["resgatar", "compraritem", "buyitem"])
-    async def comprar_item_cmd(self, ctx, item_ref: str = None, quantidade: int = 1):
+    async def _buy_shop_item(self, ctx, item_ref: str = None, quantidade: int = 1):
         item_id, item = self._shop_item_by_key(item_ref)
         if not item:
             return await ctx.send("Item inválido. Use `echo cassino loja` para ver a lista.")
@@ -1075,6 +1126,10 @@ class Casino(commands.Cog):
         finally:
             conn.close()
             self._unlock(user_id)
+
+    @cassino_group.command(name="comprar_item", aliases=["resgatar", "compraritem", "buyitem"])
+    async def comprar_item_cmd(self, ctx, item_ref: str = None, quantidade: int = 1):
+        await self._buy_shop_item(ctx, item_ref, quantidade)
 
     @cassino_group.command(name="historico", aliases=["histórico"])
     async def historico_cmd(self, ctx, limite: int = 10):
