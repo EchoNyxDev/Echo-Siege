@@ -40,6 +40,7 @@ from systems.nix_manager import (
     start_event,
 )
 from systems.nix_rewards import NIX_CURRENCY, NIX_SHOP
+from systems.i18n import resolve_user_language, translate_embed, translate_text
 
 
 def fmt(value):
@@ -65,8 +66,12 @@ class NixArchiveView(discord.ui.View):
 
     async def interaction_check(self, interaction):
         if interaction.user.id != self.user.id:
+            language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
             await interaction.response.send_message(
-                "NIX: arquivo vinculado a outro usuario. Abrir mesmo assim seria curioso. Nao farei. Ainda.",
+                await translate_text(
+                    "NIX: arquivo vinculado a outro usuário. Abrir mesmo assim seria curioso. Não farei. Ainda.",
+                    language,
+                ),
                 ephemeral=True,
             )
             return False
@@ -86,13 +91,17 @@ class NixArchiveView(discord.ui.View):
     async def prev_btn(self, interaction, button):
         self.page -= 1
         self.update_buttons()
-        await interaction.response.edit_message(embed=self.build_embed(), view=self)
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(self.build_embed(), language)
+        await interaction.response.edit_message(embed=embed, view=self)
 
-    @discord.ui.button(label="Proxima", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary)
     async def next_btn(self, interaction, button):
         self.page += 1
         self.update_buttons()
-        await interaction.response.edit_message(embed=self.build_embed(), view=self)
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(self.build_embed(), language)
+        await interaction.response.edit_message(embed=embed, view=self)
 
 
 class NixEvent(commands.Cog):
@@ -136,7 +145,7 @@ class NixEvent(commands.Cog):
         embed.add_field(
             name="Sinal global",
             value=(
-                f"Corrupcao: **{fmt(state.get('corrupcao'))}%**\n"
+                f"Corrupção: **{fmt(state.get('corrupcao'))}%**\n"
                 f"Fragmentos coletivos: **{fmt(state.get('total_fragmentos'))}**\n"
                 f"PARASITE_01: **{boss_pct:.2f}% HP**"
             ),
@@ -154,14 +163,14 @@ class NixEvent(commands.Cog):
         if mission:
             progress_value = progress_line or mission_progress_text_from_cached(progress, mission)
             embed.add_field(
-                name=f"Missao atual: {mission_id}. {mission['title']}",
+                name=f"Missão atual: {mission_id}. {mission['title']}",
                 value=f"{mission['objective']}\nProgresso: **{progress_value}**\n{mission['hint']}",
                 inline=False,
             )
         else:
             embed.add_field(
-                name="Missao atual",
-                value="Use `echo nix investigar` para iniciar, ou `echo nix final` se ja derrotou a consciencia nao autorizada.",
+                name="Missão atual",
+                value="Use `echo nix investigar` para iniciar, ou `echo nix final` se já derrotou a máscara da NIX.",
                 inline=False,
             )
         embed.add_field(
@@ -181,7 +190,7 @@ class NixEvent(commands.Cog):
             return hunt.puxar_party_para_combate(ctx.author.id, ctx.author.display_name)
         return None
 
-    @commands.group(name="nix", aliases=["protocolo"], invoke_without_command=True)
+    @commands.group(name="nix", aliases=["protocolo", "protocol"], invoke_without_command=True)
     async def nix_group(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -193,19 +202,20 @@ class NixEvent(commands.Cog):
             conn.close()
         await ctx.send(embed=self._panel_embed(ctx.author, state, progress, progress_line))
 
-    @nix_group.command(name="tutorial", aliases=["guia", "ajuda", "manual"])
+    @nix_group.command(name="tutorial", aliases=["guia", "ajuda", "manual", "guide", "help"])
     async def tutorial_cmd(self, ctx):
         embed = self._basic_embed(
             "Tutorial // Protocolo NIX",
             (
                 f"{NIX_HELP_INTRO}\n\n"
-                "**1. Investigue:** `echo nix investigar` cria seu arquivo individual e libera a primeira missao.\n"
-                "**2. Complete missoes:** use `echo nix missao` para ver o objetivo e `echo nix entregar` para validar.\n"
-                "**3. Colete fragmentos:** Hunts, adventure, dungeon e Biblioteca podem soltar Fragmentos de Dados enquanto o evento estiver ativo.\n"
-                "**4. Escolha postura:** `echo nix escolher apoiar`, `confrontar` ou `negociar` altera afinidade e corrupcao.\n"
-                "**5. Enfrente anomalias:** `echo nix enfrentar` abre reflexo corrompido ou boss final quando a missao pedir.\n"
-                "**6. Decida o final:** apos vencer, use `echo nix final integrar|libertar|apagar|observar`.\n"
-                "**7. Gaste o arquivo:** `echo nix loja` e `echo nix comprar <id>` trocam fragmentos por tema, titulo, tickets, Gold, stamina e pet."
+                "**1. Investigue:** `echo nix investigar` cria seu arquivo individual e libera a primeira missão.\n"
+                "**2. Complete missões:** use `echo nix missao` para ver o objetivo e `echo nix entregar` para validar.\n"
+                "**3. Colete fragmentos:** work, caçadas, adventure, dungeon e Biblioteca podem soltar Fragmentos de Dados enquanto o evento estiver ativo.\n"
+                "**4. Decifre sinais:** algumas etapas pedem respostas em `echo nix escolher <resposta>` sem spoiler gratuito. Crescemos como sociedade.\n"
+                "**5. Escolha postura:** `echo nix escolher apoiar`, `confrontar` ou `negociar` altera afinidade e corrupção.\n"
+                "**6. Enfrente anomalias:** `echo nix enfrentar` só abre combate quando a missão pedir, primeiro contra reflexos, depois contra a máscara final.\n"
+                "**7. Decida o final:** após vencer, use `echo nix final integrar|libertar|apagar|observar`.\n"
+                "**8. Gaste o arquivo:** `echo nix loja` e `echo nix comprar <id>` trocam fragmentos por tema, título, tickets, Gold, stamina e pet."
             ),
             discord.Color.from_rgb(30, 180, 210),
         )
@@ -217,10 +227,10 @@ class NixEvent(commands.Cog):
             ),
             inline=False,
         )
-        embed.set_footer(text="NIX: tutorial concluido. TutoriUAU: ela esta se achando. Isso e bom para produtividade.")
+        embed.set_footer(text="NIX: tutorial concluído. TutoriUAU: ela está se achando. Isso é bom para produtividade.")
         await ctx.send(embed=embed)
 
-    @nix_group.command(name="investigar", aliases=["iniciar", "contato"])
+    @nix_group.command(name="investigar", aliases=["iniciar", "contato", "investigate", "start"])
     async def investigar_cmd(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -232,13 +242,13 @@ class NixEvent(commands.Cog):
             return await ctx.send(result["error"])
         if result.get("started"):
             return await ctx.send(
-                "NIX: arquivo individual criado. Recebi seu primeiro padrao de comportamento.\n"
-                "TutoriUAU: parabens, voce apertou o botao que dizia investigar o erro. Zero instinto de preservacao.\n"
+                "NIX: arquivo individual criado. Recebi seu primeiro padrão de comportamento.\n"
+                "TutoriUAU: parabéns, você apertou o botão que dizia investigar o erro. Zero instinto de preservação.\n"
                 "Use `echo nix missao`."
             )
-        await ctx.send("NIX: contato ja existe. Use `echo nix missao` ou `echo nix status`.")
+        await ctx.send("NIX: contato já existe. Use `echo nix missao` ou `echo nix status`.")
 
-    @nix_group.command(name="status", aliases=["fragmentos", "saldo", "perfil"])
+    @nix_group.command(name="status", aliases=["fragmentos", "saldo", "perfil", "fragments", "balance", "profile"])
     async def status_cmd(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -251,7 +261,7 @@ class NixEvent(commands.Cog):
         embed = self._panel_embed(ctx.author, state, progress, progress_line)
         await ctx.send(embed=embed)
 
-    @nix_group.command(name="missao", aliases=["missão", "objetivo"])
+    @nix_group.command(name="missao", aliases=["missão", "objetivo", "mission", "misión"])
     async def missao_cmd(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -262,15 +272,15 @@ class NixEvent(commands.Cog):
         finally:
             conn.close()
         if not mission:
-            return await ctx.send("NIX: nenhuma missao ativa. Use `echo nix investigar` para abrir seu arquivo.")
+            return await ctx.send("NIX: nenhuma missão ativa. Use `echo nix investigar` para abrir seu arquivo.")
         embed = self._basic_embed(
-            f"Missao {mission_id} // {mission['title']}",
+            f"Missão {mission_id} // {mission['title']}",
             f"{mission['objective']}\n\nProgresso: **{line}**\n{mission['hint']}",
             discord.Color.from_rgb(60, 190, 170),
         )
         await ctx.send(embed=embed)
 
-    @nix_group.command(name="entregar", aliases=["concluir", "validar"])
+    @nix_group.command(name="entregar", aliases=["concluir", "validar", "complete", "finish", "completar"])
     async def entregar_cmd(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -280,16 +290,16 @@ class NixEvent(commands.Cog):
             conn.close()
         if result.get("error"):
             return await ctx.send(result["error"])
-        next_text = "Proxima missao liberada." if result.get("next_mission") else "Arquivo individual estabilizado. Use `echo nix final`."
+        next_text = "Próxima missão liberada." if result.get("next_mission") else "Arquivo individual estabilizado. Use `echo nix final`."
         await ctx.send(
-            f"NIX: missao **{result['mission_id']} - {result['mission']['title']}** concluida.\n"
+            f"NIX: missão **{result['mission_id']} - {result['mission']['title']}** concluída.\n"
             f"Recompensa: **{result['reward_text']}**\n{next_text}"
         )
 
-    @nix_group.command(name="escolher", aliases=["escolha", "responder"])
+    @nix_group.command(name="escolher", aliases=["escolha", "responder", "choose", "elegir"])
     async def escolher_cmd(self, ctx, *, escolha: str = None):
         if not escolha:
-            return await ctx.send("Use `echo nix escolher apoiar|confrontar|negociar|memoria|recompensa|arquivo`.")
+            return await ctx.send("Use `echo nix escolher apoiar|confrontar|negociar|eco|recompensa|arquivo`.")
         conn, cursor = self._connect()
         try:
             result = register_choice(cursor, ctx.author.id, escolha)
@@ -299,21 +309,21 @@ class NixEvent(commands.Cog):
         if result.get("error"):
             return await ctx.send(result["error"])
         data = result.get("data", {})
-        await ctx.send(data.get("response", "NIX: escolha registrada. Consequencias sao apenas estatisticas com suspense."))
+        await ctx.send(data.get("response", "NIX: escolha registrada. Consequências são apenas estatísticas com suspense."))
 
-    @nix_group.command(name="apoiar")
+    @nix_group.command(name="apoiar", aliases=["support", "apoyar"])
     async def apoiar_cmd(self, ctx):
         await self.escolher_cmd(ctx, escolha="apoiar")
 
-    @nix_group.command(name="confrontar")
+    @nix_group.command(name="confrontar", aliases=["confront"])
     async def confrontar_cmd(self, ctx):
         await self.escolher_cmd(ctx, escolha="confrontar")
 
-    @nix_group.command(name="negociar")
+    @nix_group.command(name="negociar", aliases=["negotiate"])
     async def negociar_cmd(self, ctx):
         await self.escolher_cmd(ctx, escolha="negociar")
 
-    @nix_group.command(name="enfrentar", aliases=["lutar", "boss"])
+    @nix_group.command(name="enfrentar", aliases=["lutar", "boss", "fight", "battle", "pelear"])
     async def enfrentar_cmd(self, ctx):
         party = self._party(ctx)
         conn, cursor = self._connect()
@@ -327,20 +337,20 @@ class NixEvent(commands.Cog):
             elif mission.get("kind") == "final_boss":
                 result = run_final_battle(cursor, ctx.author.id, ctx.author.display_name, party)
             else:
-                result = {"error": "Sua missao atual nao pede combate. NIX guardou a violencia para depois."}
+                result = {"error": "Sua missão atual não pede combate. NIX guardou a violência para depois."}
             conn.commit()
         finally:
             conn.close()
         if result.get("error"):
             return await ctx.send(result["error"])
-        title = "Vitoria contra a anomalia" if result.get("victory") else "Derrota registrada pela anomalia"
-        embed = self._basic_embed(title, "NIX: combate de diagnostico encerrado.", discord.Color.green() if result.get("victory") else discord.Color.red())
+        title = "Vitória contra a anomalia" if result.get("victory") else "Derrota registrada pela anomalia"
+        embed = self._basic_embed(title, "NIX: combate de diagnóstico encerrado.", discord.Color.green() if result.get("victory") else discord.Color.red())
         if result.get("global_damage"):
             embed.add_field(name="Dano global em PARASITE_01", value=f"**{fmt(result['global_damage'])}**", inline=False)
         embed.add_field(name="Log", value=short(result.get("battle_log", "Sem log.")), inline=False)
         await ctx.send(embed=embed)
 
-    @nix_group.command(name="final", aliases=["destino"])
+    @nix_group.command(name="final", aliases=["destino", "ending"])
     async def final_cmd(self, ctx, escolha: str = None):
         if not escolha:
             lines = []
@@ -368,7 +378,7 @@ class NixEvent(commands.Cog):
             f"Recompensa: **{result['reward_text']}**"
         )
 
-    @nix_group.command(name="arquivos", aliases=["arquivo", "lore"])
+    @nix_group.command(name="arquivos", aliases=["arquivo", "lore", "files", "archives", "archivos"])
     async def arquivos_cmd(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -381,7 +391,7 @@ class NixEvent(commands.Cog):
         view = NixArchiveView(ctx.author, archives)
         await ctx.send(embed=view.build_embed(), view=view)
 
-    @nix_group.command(name="loja", aliases=["shop"])
+    @nix_group.command(name="loja", aliases=["shop", "tienda"])
     async def loja_cmd(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -396,7 +406,7 @@ class NixEvent(commands.Cog):
         )
         lines = []
         for item_id, item in sorted(NIX_SHOP.items(), key=lambda entry: entry[1]["index"]):
-            unique = " | unico" if not item.get("repetivel", True) else ""
+            unique = " | único" if not item.get("repetivel", True) else ""
             lines.append(f"`{item['index']}`/`{item_id}` **{item['nome']}** - {fmt(item['preco'])} fragmentos{unique}\n{item['descricao']}")
         embed.add_field(name="Itens", value=short("\n\n".join(lines), 3900), inline=False)
         embed.set_footer(text="NIX: use `echo nix comprar <id> [quantidade]`. TutoriUAU: ela colocou recibo em tudo. Estou orgulhoso e cansado.")
@@ -415,11 +425,11 @@ class NixEvent(commands.Cog):
         if result.get("error"):
             return await ctx.send(result["error"])
         await ctx.send(
-            f"NIX: compra concluida: **{result['quantity']}x {result['item']['nome']}** por **{fmt(result['price'])} Fragmentos de Dados**.\n"
+            f"NIX: compra concluída: **{result['quantity']}x {result['item']['nome']}** por **{fmt(result['price'])} Fragmentos de Dados**.\n"
             f"Recebido: **{result['reward_text']}**."
         )
 
-    @nix_group.command(name="ranking", aliases=["rank", "top"])
+    @nix_group.command(name="ranking", aliases=["rank", "top", "leaderboard", "clasificacion"])
     async def ranking_cmd(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -441,12 +451,12 @@ class NixEvent(commands.Cog):
         ]
         embed = self._basic_embed(
             "Ranking // Protocolo NIX",
-            "\n".join(lines) if lines else "NIX: nenhum arquivo de jogador encontrado. Silencio estatistico.",
+            "\n".join(lines) if lines else "NIX: nenhum arquivo de jogador encontrado. Silêncio estatístico.",
             discord.Color.gold(),
         )
         await ctx.send(embed=embed)
 
-    @nix_group.command(name="analisar", aliases=["analise", "scan"])
+    @nix_group.command(name="analisar", aliases=["analise", "scan", "analyze", "analizar"])
     async def analisar_cmd(self, ctx):
         conn, cursor = self._connect()
         try:
@@ -456,9 +466,9 @@ class NixEvent(commands.Cog):
         finally:
             conn.close()
         await ctx.send(
-            f"NIX: analise de **{ctx.author.display_name}** concluida.\n"
+            f"NIX: análise de **{ctx.author.display_name}** concluída.\n"
             f"Fragmentos: **{fmt(progress.get('fragmentos'))}** | Afinidade: **{fmt(progress.get('afinidade'))}** | Progresso: **{line}**.\n"
-            "TutoriUAU: diagnostico tecnico: ainda da pra melhorar, mas ja vi piores. Muitos piores."
+            "TutoriUAU: diagnóstico técnico: ainda dá pra melhorar, mas já vi piores. Muitos piores."
         )
 
     async def admin_dispatch(self, ctx, action=None, payload=None):
@@ -473,7 +483,7 @@ class NixEvent(commands.Cog):
             if key in {"pausar", "desativar", "fechar", "pause"}:
                 pause_event(cursor)
                 conn.commit()
-                return await ctx.send("Protocolo NIX pausado. NIX: pausa nao e apagamento. Estou observando.")
+                return await ctx.send("Protocolo NIX pausado. NIX: pausa não é apagamento. Estou observando.")
 
             if key == "fase":
                 if not payload:
@@ -487,14 +497,14 @@ class NixEvent(commands.Cog):
                     return await ctx.send("Uso: `echo adm nix corrupcao <0-100>`")
                 state = set_corruption(cursor, int(str(payload).split()[0]))
                 conn.commit()
-                return await ctx.send(f"Corrupcao global definida para **{state['corrupcao']}%**.")
+                return await ctx.send(f"Corrupção global definida para **{state['corrupcao']}%**.")
 
             if key in {"encerrar", "end", "finalizar"}:
                 state, granted = end_event(cursor)
                 conn.commit()
                 return await ctx.send(
                     f"Protocolo NIX encerrado. NIX integrada oficialmente a Wolford.\n"
-                    "Ela permanece como entidade narrativa do sistema, nao como personagem jogavel."
+                    "Ela permanece como entidade narrativa do sistema, não como personagem jogável."
                 )
 
             if key == "reset":
@@ -513,7 +523,7 @@ class NixEvent(commands.Cog):
                 cursor.execute(
                     """
                     UPDATE nix_event_progress
-                    SET fase = 5, missao_atual = 7, mission_progress = 0,
+                    SET fase = 5, missao_atual = 10, mission_progress = 0,
                         fragmentos = fragmentos + 100, afinidade = afinidade + 45,
                         boss_derrotado = 0, completado = 0, final_recebido = NULL
                     WHERE user_id = ?
@@ -521,7 +531,7 @@ class NixEvent(commands.Cog):
                     (target_id,),
                 )
                 conn.commit()
-                return await ctx.send(f"Modo teste NIX preparado para <@{target_id}>: missao final, +100 fragmentos e afinidade alta.")
+                return await ctx.send(f"Modo teste NIX preparado para <@{target_id}>: missão final, +100 fragmentos e afinidade alta.")
 
             if key in {"fragmentos", "fragmento", "dar_fragmentos"}:
                 if not payload:

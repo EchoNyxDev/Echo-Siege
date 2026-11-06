@@ -2,6 +2,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from systems.i18n import resolve_user_language, translate_embed, translate_text
+
 # Lista de Administradores (Substitua pelos IDs reais da sua equipe)
 ADM_USERS = [
     768671545790693437,
@@ -41,8 +43,12 @@ class TutorialPaginator(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user.id:
+            language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
             await interaction.response.send_message(
-                "❌ Essa aula é particular. Eu já trabalho de graça, não vou dar plantão extra aqui. Use `echo tutorial` você mesmo.",
+                await translate_text(
+                    "❌ Essa aula é particular. Eu já trabalho de graça, não vou dar plantão extra aqui. Use `echo tutorial` você mesmo.",
+                    language,
+                ),
                 ephemeral=True,
             )
             return False
@@ -52,13 +58,17 @@ class TutorialPaginator(discord.ui.View):
     async def btn_prev(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page -= 1
         self.update_buttons()
-        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(self.embeds[self.page], language)
+        await interaction.response.edit_message(embed=embed, view=self)
 
     @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary, emoji="▶️", custom_id="tutorial_next")
     async def btn_next(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page += 1
         self.update_buttons()
-        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(self.embeds[self.page], language)
+        await interaction.response.edit_message(embed=embed, view=self)
 
 
 class Tutorial(commands.Cog):
@@ -95,6 +105,11 @@ class Tutorial(commands.Cog):
         )
         e1.add_field(name="Começo Rápido", value="Crie a conta, puxe o gacha e organize seu time com `echo party`.", inline=False)
         e1.add_field(name="Quando se perder", value="Use `echo ajuda`. É o resumo rápido de tudo. Você vai ignorar, mas eu tentei.", inline=False)
+        e1.add_field(
+            name="Idioma",
+            value="Use `echo language auto|pt|en|es` ou `echo idioma`. No automático, o bot tenta acompanhar o idioma disponível no Discord.",
+            inline=False,
+        )
         pages.append(e1)
 
         # ========================================================
@@ -212,8 +227,8 @@ class Tutorial(commands.Cog):
                 "`echo rank local` ou `global` - Para medir ego. Veja quem tem mais ELO no PvP, andares na Torre ou quem roubou mais Ouro.\n\n"
                 "`echo eventos` - Quando é feriado, eu solto eventos sazonais. Use `evento lutar` e `evento resgatar` para farmar cosméticos e itens que nunca mais voltam.\n"
                 "`echo copa` - Evento da Echo Cup: monte 11 heróis, jogue fase de grupos/mata-mata e use `echo copa summon` com ticket ou ouro reduzido.\n"
-                "`echo nix` - Protocolo NIX: investigue falhas, colete Fragmentos de Dados, enfrente anomalias e escolha o destino da IA que decidiu ler o bot por dentro.\n"
-                "`echo nix tutorial` explica tudo; `investigar`, `missao`, `entregar`, `escolher`, `enfrentar`, `final`, `loja` e `ranking` são o kit de sobrevivência digital.\n\n"
+                "`echo nix` - Protocolo NIX: investigue falhas, colete Fragmentos de Dados e descubra quem está usando a assinatura dela como máscara.\n"
+                "`echo nix tutorial` explica tudo; `investigar`, `missao`, `entregar`, `escolher`, `enfrentar`, `final`, `loja` e `ranking` são o kit de sobrevivência digital. O confronto real só aparece depois da investigação, como manda a dramaturgia básica.\n\n"
                 "`echo biblioteca` - A Biblioteca Perdida de Wolford. A NIX organiza as perguntas, identifica personagens por imagem, aceita `responder`, `dica` e paga **Páginas Perdidas**.\n"
                 "`echo biblioteca diaria` é a rotina diária; `explorar` é sessão curta; `expedicao` é a prova longa onde três erros te expulsam com educação teatral.\n"
                 "`echo biblioteca loja` troca páginas por temas, títulos, tickets, Gems e pets. Sim, até conhecimento virou moeda. Eu não inventei capitalismo, só documento.\n\n"
@@ -279,7 +294,9 @@ class Tutorial(commands.Cog):
     async def tutorial_slash(self, interaction: discord.Interaction):
         embeds = self.criar_paginas(interaction.user)
         view = TutorialPaginator(interaction.user, embeds)
-        await interaction.response.send_message(embed=embeds[0], view=view)
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(embeds[0], language)
+        await interaction.response.send_message(embed=embed, view=view)
 
 
 async def setup(bot):

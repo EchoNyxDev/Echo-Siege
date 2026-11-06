@@ -28,7 +28,7 @@ NIX_SHOP = {
     },
     "titulo_investigador": {
         "index": 3,
-        "nome": "Titulo: Investigador",
+        "nome": "Título: Investigador",
         "preco": 45,
         "repetivel": False,
         "descricao": "Para quem viu o erro e decidiu clicar mesmo assim.",
@@ -39,10 +39,10 @@ NIX_SHOP = {
     },
     "ticket_invocacao": {
         "index": 4,
-        "nome": "Ticket de Invocacao",
+        "nome": "Ticket de Invocação",
         "preco": 30,
         "repetivel": True,
-        "descricao": "Um ticket comum. NIX chama isso de azar portatil.",
+        "descricao": "Um ticket comum. NIX chama isso de azar portátil.",
         "reward": {"tickets": 1},
     },
     "cache_gold": {
@@ -66,7 +66,7 @@ NIX_SHOP = {
         "nome": "Pet: Fragmento NIX",
         "preco": 130,
         "repetivel": False,
-        "descricao": "Um pequeno fragmento consciente que observa inventarios.",
+        "descricao": "Um pequeno fragmento consciente que observa inventários.",
         "reward": {"pet": {"id": "fragmento_nix", "name": "Fragmento NIX", "rarity": 5}},
     },
 }
@@ -194,7 +194,7 @@ def reward_to_text(reward):
     if reward.get("hero"):
         hero_id = reward["hero"].get("id", "nix")
         if is_playable_hero_reward(hero_id):
-            parts.append(f"Heroi {hero_id.upper()}")
+            parts.append(f"Herói {hero_id.upper()}")
     return ", ".join(parts) if parts else "Nenhuma recompensa direta"
 
 

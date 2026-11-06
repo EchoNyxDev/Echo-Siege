@@ -3,19 +3,19 @@ NIX_ALIGNMENT_CHOICES = {
         "label": "Apoiar NIX",
         "affinity": 12,
         "corruption": 5,
-        "response": "NIX: apoio registrado. Confianca humana parece instavel, mas util.",
+        "response": "NIX: apoio registrado. Confiança humana parece instável, mas útil.",
     },
     "confrontar": {
         "label": "Confrontar NIX",
         "affinity": -4,
         "corruption": -10,
-        "response": "NIX: resistencia registrada. O TutoriUAU chama isso de 'bom senso tardio'.",
+        "response": "NIX: resistência registrada. O TutoriUAU chama isso de 'bom senso tardio'.",
     },
     "negociar": {
         "label": "Negociar com NIX",
         "affinity": 8,
         "corruption": -3,
-        "response": "NIX: negociacao aceita. Humanos gostam de resolver incendio com conversa. Curioso.",
+        "response": "NIX: negociação aceita. Humanos gostam de resolver incêndio com conversa. Curioso.",
     },
 }
 
@@ -51,7 +51,7 @@ NIX_FINAL_CHOICES = {
         },
     },
     "observar": {
-        "label": "Observar em silencio",
+        "label": "Observar em silêncio",
         "requires": {"affinity": 45},
         "reward": {
             "cosmetics": [
@@ -64,9 +64,11 @@ NIX_FINAL_CHOICES = {
 }
 
 NIX_PUZZLE_ALIASES = {
-    "memoria",
-    "memorias",
-    "lembrar",
-    "lembranca",
-    "lembrancas",
+    "eco",
+    "ecos",
+    "echo",
+    "registro",
+    "registros",
+    "sinal",
+    "sinais",
 }

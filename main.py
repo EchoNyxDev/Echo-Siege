@@ -4,6 +4,7 @@ import os
 
 from dotenv import load_dotenv
 from utils.db import backup_databases, configure_sqlite_paths
+from systems.i18n import localize_send_payload
 
 configure_sqlite_paths()
 import database
@@ -20,7 +21,18 @@ if TOKEN is None:
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(
+class EchoContext(commands.Context):
+    async def send(self, content=None, *args, **kwargs):
+        content, kwargs = await localize_send_payload(self, content, kwargs)
+        return await super().send(content, *args, **kwargs)
+
+
+class EchoBot(commands.Bot):
+    async def get_context(self, message, *, cls=EchoContext):
+        return await super().get_context(message, cls=cls)
+
+
+bot = EchoBot(
     command_prefix="echo ",
     intents=intents
 )
@@ -42,6 +54,7 @@ async def automatic_database_backup():
         print("Backup automatico de banco:", ", ".join(str(path) for path in created))
 
 async def load_commands():
+    await bot.load_extension("commands.language")
     await bot.load_extension("commands.iniciar")
     await bot.load_extension("commands.summon")
     await bot.load_extension("commands.perfil")

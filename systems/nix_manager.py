@@ -78,6 +78,48 @@ def _purge_nonplayable_nix_heroes(cursor):
     return len(ids)
 
 
+def _migrate_mission_revision(cursor):
+    cursor.execute("SELECT value FROM bot_settings WHERE key = 'nix_mission_revision'")
+    row = cursor.fetchone()
+    if row and str(row[0]) == "2":
+        return
+
+    cursor.execute(
+        """
+        UPDATE nix_event_progress
+        SET missao_atual = CASE missao_atual
+                WHEN 1 THEN 2
+                WHEN 2 THEN 3
+                WHEN 3 THEN 7
+                WHEN 4 THEN 5
+                WHEN 5 THEN 8
+                WHEN 6 THEN 6
+                WHEN 7 THEN 10
+                ELSE missao_atual
+            END,
+            fase = CASE missao_atual
+                WHEN 1 THEN 1
+                WHEN 2 THEN 2
+                WHEN 3 THEN 4
+                WHEN 4 THEN 3
+                WHEN 5 THEN 4
+                WHEN 6 THEN 3
+                WHEN 7 THEN 5
+                ELSE fase
+            END,
+            updated_at = ?
+        WHERE missao_atual BETWEEN 1 AND 7
+        """,
+        (now_ts(),),
+    )
+    cursor.execute(
+        "UPDATE nix_event_progress SET escolha = 'enigma_eco' WHERE escolha = 'enigma_memoria'"
+    )
+    cursor.execute(
+        "INSERT OR REPLACE INTO bot_settings(key, value) VALUES ('nix_mission_revision', '2')"
+    )
+
+
 def ensure_nix_schema(cursor):
     cursor.execute(
         """
@@ -280,6 +322,7 @@ def ensure_nix_schema(cursor):
         """,
         (EVENT_ID, int(NIX_GLOBAL_BOSS["max_hp"]), int(NIX_GLOBAL_BOSS["max_hp"])),
     )
+    _migrate_mission_revision(cursor)
     _purge_nonplayable_nix_heroes(cursor)
 
 
@@ -430,7 +473,7 @@ def spend_fragments(cursor, user_id, amount):
 def start_investigation(cursor, user_id):
     state = get_global_state(cursor)
     if not is_event_active(cursor) and not is_nix_integrated(cursor):
-        return {"error": "O Protocolo NIX ainda nao esta ativo. Use `echo adm nix iniciar` para abrir a falha."}
+        return {"error": "O Protocolo NIX ainda não está ativo. Use `echo adm nix iniciar` para abrir a falha."}
 
     progress = ensure_player_progress(cursor, user_id)
     if int(progress.get("missao_atual") or 0) <= 0:
@@ -472,16 +515,41 @@ def _player_completed_dungeon_after(cursor, user_id, timestamp):
         return False
 
 
+def register_activity_progress(cursor, user_id, activity, amount=1):
+    progress = ensure_player_progress(cursor, user_id)
+    mission_id, mission = current_mission(progress)
+    if not mission or mission.get("kind") != "activity":
+        return progress
+    if normalize_key(mission.get("activity")) != normalize_key(activity):
+        return progress
+
+    target = max(1, int(mission.get("target") or 1))
+    current = int(progress.get("mission_progress") or 0)
+    updated = min(target, current + max(1, int(amount or 1)))
+    cursor.execute(
+        """
+        UPDATE nix_event_progress
+        SET mission_progress = ?, updated_at = ?
+        WHERE user_id = ?
+        """,
+        (updated, now_ts(), str(user_id)),
+    )
+    log_event(cursor, user_id, "activity_progress", f"mission={mission_id};activity={activity};progress={updated}/{target}")
+    return refresh_player_progress(cursor, user_id)
+
+
 def mission_progress_text(cursor, user_id):
     progress = ensure_player_progress(cursor, user_id)
     mission_id, mission = current_mission(progress)
     if not mission:
         if int(progress.get("completado") or 0):
-            return "Protocolo individual concluido. Use `echo nix final` para rever sua decisao."
+            return "Protocolo individual concluído. Use `echo nix final` para rever sua decisão."
         return "Use `echo nix investigar` para iniciar o contato."
 
     kind = mission["kind"]
-    if kind == "hunts":
+    if kind == "activity":
+        done = min(int(progress.get("mission_progress") or 0), mission["target"])
+    elif kind == "hunts":
         done = min(_player_total_hunts(cursor, user_id), mission["target"])
     elif kind == "fragmentos":
         done = min(int(progress.get("fragmentos") or 0), mission["target"])
@@ -496,18 +564,20 @@ def complete_current_mission(cursor, user_id):
     progress = ensure_player_progress(cursor, user_id)
     mission_id, mission = current_mission(progress)
     if not mission:
-        return {"error": "Nenhuma missao ativa. Use `echo nix investigar` ou `echo nix status`."}
+        return {"error": "Nenhuma missão ativa. Use `echo nix investigar` ou `echo nix status`."}
 
     kind = mission["kind"]
     ok = False
-    if kind == "hunts":
+    if kind == "activity":
+        ok = int(progress.get("mission_progress") or 0) >= int(mission["target"])
+    elif kind == "hunts":
         ok = _player_total_hunts(cursor, user_id) >= int(mission["target"])
     elif kind == "fragmentos":
         ok = int(progress.get("fragmentos") or 0) >= int(mission["target"])
     elif kind == "reflection":
         ok = int(progress.get("mission_progress") or 0) >= 1
     elif kind == "puzzle":
-        ok = progress.get("escolha") == "enigma_memoria"
+        ok = progress.get("escolha") == "enigma_eco"
     elif kind == "moral_choice":
         ok = progress.get("escolha") in {"recompensa", "arquivo"}
     elif kind == "dungeon":
@@ -536,7 +606,7 @@ def complete_current_mission(cursor, user_id):
         (
             new_phase,
             next_id if next_mission else 0,
-            1 if mission_id in {4, 5} else 0,
+            1 if mission_id in {5, 8} else 0,
             now_ts(),
             str(user_id),
         ),
@@ -585,7 +655,7 @@ def register_choice(cursor, user_id, raw_choice):
     if mission and mission["kind"] == "puzzle":
         if choice in NIX_PUZZLE_ALIASES:
             cursor.execute(
-                "UPDATE nix_event_progress SET escolha = 'enigma_memoria', mission_progress = 1, afinidade = afinidade + 6, updated_at = ? WHERE user_id = ?",
+                "UPDATE nix_event_progress SET escolha = 'enigma_eco', mission_progress = 1, afinidade = afinidade + 6, updated_at = ? WHERE user_id = ?",
                 (now_ts(), str(user_id)),
             )
             cursor.execute(
@@ -593,7 +663,7 @@ def register_choice(cursor, user_id, raw_choice):
                 (str(user_id), "enigma", choice, now_ts()),
             )
             log_event(cursor, user_id, "choice_puzzle", choice)
-            return {"choice": choice, "data": {"response": "NIX: correto. Memoria e o que resta quando o sistema tenta apagar significado."}}
+            return {"choice": choice, "data": {"response": "NIX: correto. Um eco é memória sem corpo. Meio dramático. Funciona."}}
         return {"error": "Resposta incorreta. NIX: interessante. Errado, mas interessante."}
 
     if mission and mission["kind"] == "moral_choice" and choice in {"recompensa", "arquivo"}:
@@ -612,10 +682,10 @@ def register_choice(cursor, user_id, raw_choice):
         )
         log_event(cursor, user_id, "choice_moral", choice)
         if choice == "arquivo":
-            return {"choice": choice, "data": {"response": "NIX: arquivo liberado. Voce escolheu memoria no lugar de lucro. Resultado raro."}}
-        return {"choice": choice, "data": {"response": "NIX: recompensa protegida. Escolha eficiente. TutoriUAU chamou de 'honestamente previsivel'."}}
+            return {"choice": choice, "data": {"response": "NIX: arquivo liberado. Você escolheu memória no lugar de lucro. Resultado raro."}}
+        return {"choice": choice, "data": {"response": "NIX: recompensa protegida. Escolha eficiente. TutoriUAU chamou de 'honestamente previsível'."}}
 
-    return {"error": "Escolha nao reconhecida agora. Use `apoiar`, `confrontar`, `negociar`, ou siga a missao atual."}
+    return {"error": "Escolha não reconhecida agora. Use `apoiar`, `confrontar`, `negociar`, ou siga a missão atual."}
 
 
 def _party_power(member):
@@ -653,7 +723,7 @@ def run_reflection_battle(cursor, user_id, user_name, party):
     progress = ensure_player_progress(cursor, user_id)
     mission_id, mission = current_mission(progress)
     if not mission or mission["kind"] != "reflection":
-        return {"error": "Nenhum reflexo corrompido esta ativo agora."}
+        return {"error": "Nenhum reflexo corrompido está ativo agora."}
     if not party:
         return {"error": "Monte uma party primeiro com `echo main` e `echo party`."}
 
@@ -661,11 +731,11 @@ def run_reflection_battle(cursor, user_id, user_name, party):
     row = cursor.fetchone()
     main_db_id = row[0] if row else None
     if not main_db_id:
-        return {"error": "Defina um heroi principal com `echo main <ID>` antes de enfrentar seu reflexo."}
+        return {"error": "Defina um herói principal com `echo main <ID>` antes de enfrentar seu reflexo."}
     cursor.execute("SELECT hero_id, stars, level FROM heroes WHERE id = ? AND user_id = ?", (str(main_db_id), str(user_id)))
     hero_row = cursor.fetchone()
     if not hero_row:
-        return {"error": "Nao encontrei o heroi principal no banco. NIX odeia referencias quebradas."}
+        return {"error": "Não encontrei o herói principal no banco. NIX odeia referências quebradas."}
     hero_id, stars, level = hero_row
     hero = HEROES.get(hero_id, {})
     stats = calculate_hero_stats(hero, stars, level)
@@ -703,11 +773,11 @@ def run_final_battle(cursor, user_id, user_name, party):
     progress = ensure_player_progress(cursor, user_id)
     mission_id, mission = current_mission(progress)
     if not mission or mission["kind"] != "final_boss":
-        return {"error": "NIX ainda nao esta pronta para o confronto final. Siga `echo nix missao`."}
+        return {"error": "A máscara da NIX ainda não está pronta para o confronto final. Siga `echo nix missao`."}
     if not party:
         return {"error": "Monte uma party primeiro com `echo main` e `echo party`."}
     if int(progress.get("boss_derrotado") or 0):
-        return {"error": "Voce ja derrotou a manifestacao da NIX. Use `echo nix final`."}
+        return {"error": "Você já derrotou a manifestação final. Use `echo nix final`."}
 
     affinity = int(progress.get("afinidade") or 0)
     ratio = 1.05 - min(0.18, max(0, affinity) / 400)
@@ -745,15 +815,15 @@ def claim_final(cursor, user_id, raw_choice):
     choice = normalize_key(raw_choice or "integrar")
     progress = ensure_player_progress(cursor, user_id)
     if not int(progress.get("boss_derrotado") or 0):
-        return {"error": "Derrote NIX primeiro com `echo nix enfrentar`."}
+        return {"error": "Derrote a máscara da NIX primeiro com `echo nix enfrentar`."}
     if progress.get("final_recebido"):
-        return {"error": f"Final ja recebido: **{progress['final_recebido']}**."}
+        return {"error": f"Final já recebido: **{progress['final_recebido']}**."}
     data = NIX_FINAL_CHOICES.get(choice)
     if not data:
-        return {"error": "Final invalido. Use `apagar`, `libertar`, `integrar` ou `observar`."}
+        return {"error": "Final inválido. Use `apagar`, `libertar`, `integrar` ou `observar`."}
     requires = data.get("requires") or {}
     if requires.get("affinity") and int(progress.get("afinidade") or 0) < int(requires["affinity"]):
-        return {"error": "O final `observar` exige afinidade alta com NIX. Ela ainda nao confia nesse silencio."}
+        return {"error": "O final `observar` exige afinidade alta com NIX. Ela ainda não confia nesse silêncio."}
 
     reward = data.get("reward") or {}
     text = grant_reward(cursor, user_id, reward)
@@ -778,7 +848,7 @@ def buy_shop_item(cursor, user_id, item_ref, quantity=1):
 
     item_id, item = resolve_shop_item(item_ref)
     if not item:
-        return {"error": "Item invalido. Use `echo nix loja` para ver os itens do arquivo."}
+        return {"error": "Item inválido. Use `echo nix loja` para ver os itens do arquivo."}
     quantity = max(1, min(20, int(quantity or 1)))
     if not item.get("repetivel", True):
         quantity = 1
@@ -787,13 +857,13 @@ def buy_shop_item(cursor, user_id, item_ref, quantity=1):
             (str(user_id), item_id),
         )
         if cursor.fetchone():
-            return {"error": "Voce ja resgatou esse item unico. NIX nao duplica lembrancas permanentes."}
+            return {"error": "Você já resgatou esse item único. NIX não duplica lembranças permanentes."}
     total_price = int(item["preco"]) * quantity
     progress = ensure_player_progress(cursor, user_id)
     if int(progress.get("fragmentos") or 0) < total_price:
-        return {"error": f"Fragmentos insuficientes. Voce tem **{progress.get('fragmentos', 0)}** e precisa de **{total_price}**."}
+        return {"error": f"Fragmentos insuficientes. Você tem **{progress.get('fragmentos', 0)}** e precisa de **{total_price}**."}
     if not spend_fragments(cursor, user_id, total_price):
-        return {"error": "Nao consegui debitar os fragmentos. O arquivo piscou vermelho. Isso raramente e bom."}
+        return {"error": "Não consegui debitar os fragmentos. O arquivo piscou vermelho. Isso raramente é bom."}
 
     total_reward_text = []
     for _ in range(quantity):

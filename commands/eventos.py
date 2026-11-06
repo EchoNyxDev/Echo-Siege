@@ -16,6 +16,7 @@ from data.events import get_active_events, get_next_events
 from utils.combat import simular_combate_tatico
 from utils.rewards import scale_combat_rewards
 from utils.xp_system import dar_xp_heroi, dar_xp_jogador
+from systems.i18n import resolve_user_language, translate_embed
 
 
 def init_event_db(cursor):
@@ -114,14 +115,14 @@ class Eventos(commands.Cog):
         embed.add_field(
             name="Protocolo NIX",
             value=(
-                "`echo nix` - painel do evento, corrupcao global, fragmentos e missao atual.\n"
-                "`echo nix investigar|missao|entregar` - abre seu arquivo, ve o objetivo e valida progresso.\n"
-                "`echo nix escolher|enfrentar|final` - altera o destino da NIX e combate anomalias.\n"
+                "`echo nix` - painel do evento, corrupção global, fragmentos e missão atual.\n"
+                "`echo nix investigar|missao|entregar` - abre seu arquivo, vê o objetivo e valida progresso.\n"
+                "`echo nix escolher|enfrentar|final` - investiga a ameaça, combate reflexos e decide o destino da NIX.\n"
                 "`echo nix loja|comprar|ranking|arquivos|tutorial` - recompensas, placar, lore e manual completo."
             ),
             inline=False,
         )
-        embed.set_footer(text="Use echo evento, echo copa, echo biblioteca ou echo nix. NIX: instrucoes indexadas; TutoriUAU: finalmente.")
+        embed.set_footer(text="Use echo evento, echo copa, echo biblioteca ou echo nix. NIX: instruções indexadas; TutoriUAU: finalmente.")
         return embed
 
     def _progress(self, cursor, user_id, event_id):
@@ -339,7 +340,9 @@ class Eventos(commands.Cog):
 
     @app_commands.command(name="eventos", description="Mostra eventos ativos e proximos.")
     async def eventos_slash(self, interaction: discord.Interaction):
-        await interaction.response.send_message(embed=self._events_embed())
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(self._events_embed(), language)
+        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot):

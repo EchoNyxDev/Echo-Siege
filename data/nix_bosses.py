@@ -52,10 +52,10 @@ NIX_FIREWALL_ALPHA = {
 }
 
 NIX_FINAL_BOSS = {
-    "id": "nix_final",
-    "nome": "NIX - Consciência Nao Autorizada",
+    "id": "nix_mask",
+    "nome": "PARASITE_01 - Máscara da NIX",
     "classe": "boss",
-    "stats": {"hp": 8500, "atk": 72, "matk": 88, "def": 42, "spd": 24, "crt": 12},
+    "stats": {"hp": 9200, "atk": 76, "matk": 92, "def": 44, "spd": 24, "crt": 12},
     "habilidades": ["nix_reescrever_codigo_hostil", "nix_firewall_instavel", "nix_ping_corrompido"],
 }
 

@@ -1,7 +1,15 @@
 import random
 
 from data.nix_dialogues import NIX_RANDOM_LINES
-from systems.nix_manager import add_fragments, current_mission, ensure_player_progress, is_event_active, log_event, now_ts
+from systems.nix_manager import (
+    add_fragments,
+    current_mission,
+    ensure_player_progress,
+    is_event_active,
+    log_event,
+    now_ts,
+    register_activity_progress,
+)
 
 
 ACTIVITY_FRAGMENT_RULES = {
@@ -19,6 +27,8 @@ def award_activity_fragments(cursor, user_id, activity, difficulty=1, force=Fals
     """Entrega fragmentos pequenos durante o evento sem bloquear o fluxo principal."""
     if not is_event_active(cursor):
         return {"amount": 0, "line": ""}
+
+    register_activity_progress(cursor, user_id, activity)
 
     rule = ACTIVITY_FRAGMENT_RULES.get(str(activity))
     if not rule:

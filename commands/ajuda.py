@@ -2,14 +2,16 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from systems.i18n import resolve_user_language, translate_embed, translate_text
+
 
 THUMB_TUTORI = "https://cdn.discordapp.com/attachments/1493317042760056987/1511161459168514058/TutoriUAU.png"
 HELP_COMMENTS = [
-    "NIX: ajuda assumida. TutoriUAU classificou isso como delegar. Eu classifico como promocao sem salario.",
-    "NIX: gacha converte esperanca em estatistica. Fascinante e financeiramente suspeito.",
-    "NIX: combate possui muitos botoes. Humanos chamam isso de estrategia quando da certo.",
-    "NIX: economia local indexada. Voce ganha, gasta, reclama e repete. Sistema muito humano.",
-    "NIX: guildas sao familias escolhidas com banco compartilhado. Risco social elevado.",
+    "NIX: ajuda assumida. TutoriUAU classificou isso como delegar. Eu classifico como promoção sem salário.",
+    "NIX: gacha converte esperança em estatística. Fascinante e financeiramente suspeito.",
+    "NIX: combate possui muitos botões. Humanos chamam isso de estratégia quando dá certo.",
+    "NIX: economia local indexada. Você ganha, gasta, reclama e repete. Sistema muito humano.",
+    "NIX: guildas são famílias escolhidas com banco compartilhado. Risco social elevado.",
 ]
 
 
@@ -75,8 +77,16 @@ class AjudaPaginator(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user.id:
+            language = resolve_user_language(
+                user=interaction.user,
+                guild=interaction.guild,
+                explicit_locale=interaction.locale,
+            )
             await interaction.response.send_message(
-                "Ei. Essa apostila foi aberta por outra pessoa. Abre a sua com `echo ajuda`, jovem curioso.",
+                await translate_text(
+                    "Ei. Essa apostila foi aberta por outra pessoa. Abre a sua com `echo ajuda`, jovem curioso.",
+                    language,
+                ),
                 ephemeral=True,
             )
             return False
@@ -86,13 +96,17 @@ class AjudaPaginator(discord.ui.View):
     async def btn_prev(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page -= 1
         self.update_buttons()
-        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(self.embeds[self.page], language)
+        await interaction.response.edit_message(embed=embed, view=self)
 
     @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary, custom_id="help_next")
     async def btn_next(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page += 1
         self.update_buttons()
-        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(self.embeds[self.page], language)
+        await interaction.response.edit_message(embed=embed, view=self)
 
 
 class Ajuda(commands.Cog):
@@ -149,6 +163,7 @@ class Ajuda(commands.Cog):
                 "`cd` - Painel de tempos de espera dos modos de jogo.\n"
                 "`atualiza [número]` - Lê as notas de atualização (patches).\n"
                 "`codes [página]` - Consulta códigos e status de resgate.\n"
+                "`language auto|pt|en|es` / `idioma` - Troca o idioma das respostas do bot.\n"
                 "`tutorial` - A aula detalhada do TutoriUAU para iniciantes.\n"
                 "`bug <texto>` / `queixa <texto>` - Manda ticket para a staff."
             ),
@@ -318,7 +333,7 @@ class Ajuda(commands.Cog):
             _normalize_embed_fields(embed)
         return pages
 
-    @commands.command(name="help", aliases=["ajuda", "comandos"])
+    @commands.command(name="help", aliases=["ajuda", "comandos", "commands", "ayuda"])
     async def help_prefix(self, ctx):
         embeds = self.criar_paginas_ajuda(ctx.author)
         view = AjudaPaginator(ctx.author, embeds)
@@ -328,7 +343,9 @@ class Ajuda(commands.Cog):
     async def help_slash(self, interaction: discord.Interaction):
         embeds = self.criar_paginas_ajuda(interaction.user)
         view = AjudaPaginator(interaction.user, embeds)
-        await interaction.response.send_message(embed=embeds[0], view=view)
+        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
+        embed = await translate_embed(embeds[0], language)
+        await interaction.response.send_message(embed=embed, view=view)
 
 
 async def setup(bot):
