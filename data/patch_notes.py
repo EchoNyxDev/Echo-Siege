@@ -4,6 +4,19 @@ UPDATE_THUMB_URL = ""
 
 PATCH_NOTES = [
     {
+        "id": "patch_26",
+        "speaker": "NIX",
+        "title": "Patch 26: TutoriUAU Sem Fronteiras",
+        "subtitle": "NIX: os manuais agora falam três idiomas. TutoriUAU já pediu adicional de tradução simultânea.",
+        "rows": [
+            ("Ajuda", "`echo ajuda`, `echo help` e `echo ayuda` ganharam páginas com o catálogo completo de comandos em inglês e espanhol."),
+            ("Tutorial", "A apostila do TutoriUAU também mostra os gatilhos EN/ES e explica como trocar o idioma."),
+            ("Catálogo Vivo", "As páginas são montadas a partir dos comandos realmente carregados, então novos recursos entram no índice automaticamente."),
+            ("Revisão", "Português, inglês e espanhol foram verificados em mensagens, embeds, botões, menus, aliases e subcomandos."),
+        ],
+        "footer": "TutoriUAU: agora você pode digitar errado em três idiomas. Globalização é linda.",
+    },
+    {
         "id": "patch_25",
         "speaker": "NIX",
         "title": "Patch 25: Tradução que Agora Traduz",

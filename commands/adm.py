@@ -14,7 +14,7 @@ root_dir = os.path.abspath(os.path.join(current_dir, '..'))
 if root_dir not in sys.path:
     sys.path.append(root_dir)
 
-from systems.i18n import canonical_command_token
+from systems.i18n import canonical_command_token, localize_send_payload
 
 try:
     from data.heroes import HEROES
@@ -1607,7 +1607,8 @@ class Adm(commands.Cog):
             )
             notice.add_field(name="Solicitação", value=(value or action or "Sem descrição.")[:1024], inline=False)
             notice.set_footer(text=f"Resposta enviada por {ctx.author.display_name}. TutoriUAU arquivou a papelada com surpreendente competência.")
-            await player.send(embed=notice)
+            _, payload = await localize_send_payload(player, None, {"embed": notice})
+            await player.send(**payload)
             notified = True
         except (discord.Forbidden, discord.NotFound, discord.HTTPException, ValueError):
             notified = False

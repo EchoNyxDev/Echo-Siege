@@ -2,6 +2,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from systems.i18n import build_command_alias_catalog, paginate_command_alias_catalog
+
 
 THUMB_TUTORI = "https://cdn.discordapp.com/attachments/1493317042760056987/1511161459168514058/TutoriUAU.png"
 HELP_COMMENTS = [
@@ -100,19 +102,27 @@ class Ajuda(commands.Cog):
         self.bot = bot
         self.bot.remove_command("help")
 
-    def _base_embed(self, user, titulo, descricao, pagina, total):
+    def _base_embed(self, user, titulo, descricao, pagina, total, comentario=None):
         embed = discord.Embed(
             title=titulo,
             description=descricao,
             color=discord.Color.brand_green(),
         )
         embed.set_thumbnail(url=THUMB_TUTORI)
-        comentario = HELP_COMMENTS[pagina - 1] if pagina - 1 < len(HELP_COMMENTS) else "Use `echo tutorial` se quiser a aula completa. Coragem."
+        if comentario is None:
+            comentario = HELP_COMMENTS[pagina - 1] if pagina - 1 < len(HELP_COMMENTS) else "Use `echo tutorial` se quiser a aula completa. Coragem."
         embed.set_footer(text=f"NIX // Página {pagina}/{total} // {comentario} // TutoriUAU supervisionando")
         return embed
 
     def criar_paginas_ajuda(self, user):
-        total = 5
+        language_catalogs = []
+        for language, label in (("en", "English"), ("es", "Español")):
+            catalog = build_command_alias_catalog(self.bot, language)
+            catalog_pages = paginate_command_alias_catalog(catalog)
+            for page_index, fields in enumerate(catalog_pages, start=1):
+                language_catalogs.append((language, label, page_index, len(catalog_pages), fields))
+
+        total = 5 + len(language_catalogs)
         pages = []
 
         e1 = self._base_embed(
@@ -314,6 +324,33 @@ class Ajuda(commands.Cog):
             inline=False,
         )
         pages.append(e5)
+
+        for language, label, part, parts, fields in language_catalogs:
+            page_number = len(pages) + 1
+            catalog_embed = self._base_embed(
+                user,
+                f"NIX // Command Catalog: {label}",
+                (
+                    f"Comandos disponíveis em **{label}**. À esquerda fica o nome original; "
+                    "à direita, o gatilho localizado que você pode digitar. "
+                    f"Catálogo {part}/{parts}."
+                ),
+                page_number,
+                total,
+                comentario=(
+                    f"NIX: {label} index {part}/{parts}. TutoriUAU chamou isso de intercâmbio por comando."
+                    if language == "en"
+                    else f"NIX: índice en español {part}/{parts}. TutoriUAU ainda negocia a pronúncia."
+                ),
+            )
+            for field_index, lines in enumerate(fields, start=1):
+                value = "```text\n" + "\n".join(lines) + "\n```"
+                catalog_embed.add_field(
+                    name=f"{label} // Bloco {field_index}",
+                    value=value,
+                    inline=False,
+                )
+            pages.append(catalog_embed)
 
         for embed in pages:
             _normalize_embed_fields(embed)

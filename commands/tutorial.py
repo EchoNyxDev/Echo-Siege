@@ -2,6 +2,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from systems.i18n import build_command_alias_catalog, paginate_command_alias_catalog
+
 # Lista de Administradores (Substitua pelos IDs reais da sua equipe)
 ADM_USERS = [
     768671545790693437,
@@ -65,18 +67,28 @@ class Tutorial(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def _page(self, title, description, page, total, color=discord.Color.blurple(), image=None):
+    def _page(self, title, description, page, total, color=discord.Color.blurple(), image=None, comment=None):
         embed = discord.Embed(title=title, description=description, color=color)
         embed.set_thumbnail(url=THUMB_TUTORI)
         if image:
             embed.set_image(url=image)
-        comentario = TUTORIAL_COMMENTS[page - 1] if page - 1 < len(TUTORIAL_COMMENTS) else "Sim, isso cai na prova."
+        comentario = comment
+        if comentario is None:
+            comentario = TUTORIAL_COMMENTS[page - 1] if page - 1 < len(TUTORIAL_COMMENTS) else "Sim, isso cai na prova."
         embed.set_footer(text=f"TutoriUAU • Aula {page}/{total} • {comentario}")
         return embed
 
     def criar_paginas(self, user):
         is_admin = user.id in ADM_USERS
-        total = 8 if is_admin else 7
+        language_catalogs = []
+        for language, label in (("en", "English"), ("es", "Español")):
+            catalog = build_command_alias_catalog(self.bot, language)
+            catalog_pages = paginate_command_alias_catalog(catalog)
+            for page_index, fields in enumerate(catalog_pages, start=1):
+                language_catalogs.append((language, label, page_index, len(catalog_pages), fields))
+
+        base_total = 8 if is_admin else 7
+        total = base_total + len(language_catalogs)
         pages = []
 
         # ========================================================
@@ -271,6 +283,33 @@ class Tutorial(commands.Cog):
                 8, total, discord.Color.dark_theme()
             )
             pages.append(e8)
+
+        for language, label, part, parts, fields in language_catalogs:
+            page_number = len(pages) + 1
+            catalog_page = self._page(
+                f"Aula {page_number} // Comandos em {label}",
+                (
+                    f"Aqui está o vocabulário de comandos em **{label}**, gerado diretamente "
+                    "do que o bot possui carregado. Use `echo language "
+                    f"{language}` para trocar as respostas. Catálogo {part}/{parts}."
+                ),
+                page_number,
+                total,
+                discord.Color.green() if language == "en" else discord.Color.orange(),
+                comment=(
+                    f"English lesson {part}/{parts}: TutoriUAU discovered that cooldown needs no translation."
+                    if language == "en"
+                    else f"Lección en español {part}/{parts}: TutoriUAU promete no evaluar el acento."
+                ),
+            )
+            for field_index, lines in enumerate(fields, start=1):
+                value = "```text\n" + "\n".join(lines) + "\n```"
+                catalog_page.add_field(
+                    name=f"{label} // Bloco {field_index}",
+                    value=value,
+                    inline=False,
+                )
+            pages.append(catalog_page)
 
         return pages
 

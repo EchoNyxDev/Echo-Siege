@@ -7,7 +7,9 @@ from utils.db import backup_databases, configure_sqlite_paths
 from systems.i18n import (
     install_discord_i18n_hooks,
     localize_send_payload,
+    remember_message_language,
     register_multilingual_command_aliases,
+    resolve_user_language,
 )
 
 configure_sqlite_paths()
@@ -23,8 +25,10 @@ install_discord_i18n_hooks()
 
 class EchoContext(commands.Context):
     async def send(self, content=None, *args, **kwargs):
+        language = resolve_user_language(user=self.author, guild=self.guild)
         content, kwargs = await localize_send_payload(self, content, kwargs)
-        return await super().send(content, *args, **kwargs)
+        message = await super().send(content, *args, **kwargs)
+        return remember_message_language(message, language)
 
 
 class EchoBot(commands.Bot):

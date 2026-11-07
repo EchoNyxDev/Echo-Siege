@@ -12,7 +12,7 @@ from urllib.request import Request, urlopen
 
 
 DEFAULT_LANGUAGE = "pt"
-CACHE_VERSION = "2"
+CACHE_VERSION = "3"
 SUPPORTED_LANGUAGES = {
     "auto": "Automático",
     "pt": "Português (Brasil)",
@@ -483,6 +483,54 @@ def preferred_command_alias(value, target_lang):
     return aliases[0] if aliases else str(value)
 
 
+def localized_command_path(command_or_name, target_lang):
+    """Return a complete prefix-command path using the preferred locale aliases."""
+    qualified_name = getattr(command_or_name, "qualified_name", command_or_name)
+    tokens = str(qualified_name or "").strip().split()
+    return " ".join(preferred_command_alias(token, target_lang) for token in tokens)
+
+
+def build_command_alias_catalog(bot, target_lang):
+    """Build a stable catalog from the commands that are actually loaded by the bot."""
+    target_lang = normalize_language(target_lang) or DEFAULT_LANGUAGE
+    entries = []
+    seen = set()
+    for command in bot.walk_commands():
+        if getattr(command, "hidden", False):
+            continue
+        canonical = str(getattr(command, "qualified_name", "") or "").strip()
+        if not canonical or canonical in seen:
+            continue
+        seen.add(canonical)
+        localized = localized_command_path(command, target_lang)
+        if localized == canonical:
+            entries.append(f"echo {canonical}")
+        else:
+            entries.append(f"echo {canonical} -> echo {localized}")
+    return sorted(entries, key=normalize_key)
+
+
+def paginate_command_alias_catalog(lines, max_field_chars=880, fields_per_page=4):
+    """Split command lines into Discord-safe fields and pages."""
+    fields = []
+    current = []
+    current_size = 0
+    for raw_line in lines:
+        line = str(raw_line).strip()
+        if not line:
+            continue
+        added_size = len(line) + (1 if current else 0)
+        if current and current_size + added_size > max_field_chars:
+            fields.append(current)
+            current = []
+            current_size = 0
+        current.append(line)
+        current_size += len(line) + (1 if len(current) > 1 else 0)
+    if current:
+        fields.append(current)
+    return [fields[index:index + fields_per_page] for index in range(0, len(fields), fields_per_page)]
+
+
 def _translate_command_snippet(piece, target_lang):
     if not (piece.startswith("`") and piece.endswith("`")):
         return piece
@@ -501,20 +549,32 @@ def _translate_command_snippet(piece, target_lang):
 
 
 def _translate_uncached(text, target_lang, source_lang="pt"):
-    pieces = BLOCK_RE.split(str(text))
-    translated_pieces = []
-    for piece in pieces:
-        if not piece:
-            continue
-        if BLOCK_RE.fullmatch(piece) or not piece.strip():
-            translated_pieces.append(_translate_command_snippet(piece, target_lang))
-            continue
-        leading = piece[: len(piece) - len(piece.lstrip())]
-        trailing = piece[len(piece.rstrip()) :]
-        core = piece.strip()
-        translated = _provider_translate(core, target_lang, source_lang)
-        translated_pieces.append(f"{leading}{translated}{trailing}" if translated else piece)
-    return "".join(translated_pieces)
+    original = str(text)
+    protected_blocks = []
+
+    def protect(match):
+        index = len(protected_blocks)
+        protected_blocks.append(match.group(0))
+        return f"__ECHOI18NBLOCK{index}__"
+
+    masked = BLOCK_RE.sub(protect, original)
+    translated = _provider_translate(masked, target_lang, source_lang)
+    if not translated:
+        return original
+
+    for index, block in enumerate(protected_blocks):
+        marker = f"__ECHOI18NBLOCK{index}__"
+        replacement = _translate_command_snippet(block, target_lang)
+        translated, replacements = re.subn(
+            re.escape(marker),
+            lambda _: replacement,
+            translated,
+            count=1,
+            flags=re.IGNORECASE,
+        )
+        if replacements == 0:
+            return original
+    return translated
 
 
 def translate_text_sync(text, target_lang, source_lang="pt"):
@@ -700,6 +760,31 @@ def register_multilingual_command_aliases(bot):
 
 
 _INTERACTION_HOOKS_INSTALLED = False
+_MESSAGE_LANGUAGES = {}
+
+
+def remember_message_language(message, language):
+    message_id = getattr(message, "id", None)
+    language = normalize_language(language)
+    if message_id is None or language is None:
+        return message
+    if len(_MESSAGE_LANGUAGES) >= 4096:
+        oldest = next(iter(_MESSAGE_LANGUAGES), None)
+        if oldest is not None:
+            _MESSAGE_LANGUAGES.pop(oldest, None)
+    _MESSAGE_LANGUAGES[int(message_id)] = language
+    return message
+
+
+def _language_for_message(message):
+    message_id = getattr(message, "id", None)
+    if message_id is not None and int(message_id) in _MESSAGE_LANGUAGES:
+        return _MESSAGE_LANGUAGES[int(message_id)]
+
+    metadata = getattr(message, "interaction_metadata", None) or getattr(message, "_interaction", None)
+    user = getattr(metadata, "user", None)
+    guild = getattr(message, "guild", None)
+    return resolve_user_language(user=user, guild=guild)
 
 
 def install_discord_i18n_hooks():
@@ -712,6 +797,8 @@ def install_discord_i18n_hooks():
     response_cls = discord.InteractionResponse
     original_send = response_cls.send_message
     original_edit = response_cls.edit_message
+    original_message_edit = discord.Message.edit
+    original_interaction_message_edit = discord.InteractionMessage.edit
 
     async def localize_call(response, args, kwargs):
         interaction = getattr(response, "_parent", None)
@@ -735,8 +822,26 @@ def install_discord_i18n_hooks():
         args, kwargs = await localize_call(response, args, kwargs)
         return await original_edit(response, *args, **kwargs)
 
+    async def localize_message_edit(message, original, args, kwargs):
+        language = _language_for_message(message)
+        had_content = "content" in kwargs
+        content = kwargs.pop("content", None) if had_content else None
+        content, kwargs = await _localize_payload_for_language(language, content, kwargs)
+        if had_content:
+            kwargs["content"] = content
+        edited = await original(message, *args, **kwargs)
+        return remember_message_language(edited, language)
+
+    async def message_edit(message, *args, **kwargs):
+        return await localize_message_edit(message, original_message_edit, args, kwargs)
+
+    async def interaction_message_edit(message, *args, **kwargs):
+        return await localize_message_edit(message, original_interaction_message_edit, args, kwargs)
+
     response_cls.send_message = send_message
     response_cls.edit_message = edit_message
+    discord.Message.edit = message_edit
+    discord.InteractionMessage.edit = interaction_message_edit
     _INTERACTION_HOOKS_INSTALLED = True
 
 
