@@ -14,6 +14,8 @@ root_dir = os.path.abspath(os.path.join(current_dir, '..'))
 if root_dir not in sys.path:
     sys.path.append(root_dir)
 
+from systems.i18n import canonical_command_token
+
 try:
     from data.heroes import HEROES
     from data.equipamentos import EQUIPAMENTOS
@@ -1672,7 +1674,12 @@ class Adm(commands.Cog):
                            "`echo adm work [@usuário]` | `echo adm arena [@usuário]`")
             return
 
-        action = action.lower()
+        action = canonical_command_token(action)
+        if arg1 and action in {
+            "backup", "biblioteca", "cassino", "combate", "copa", "criar",
+            "deletar", "iniciar", "melhorar", "nix", "remover", "reset",
+        }:
+            arg1 = canonical_command_token(arg1)
         target_id = re.sub(r'\D', '', arg1) if arg1 else None
 
         if action == "copa":

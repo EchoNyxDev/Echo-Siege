@@ -4,6 +4,23 @@ UPDATE_THUMB_URL = ""
 
 PATCH_NOTES = [
     {
+        "id": "patch_25",
+        "speaker": "NIX",
+        "title": "Patch 25: Tradução que Agora Traduz",
+        "subtitle": "NIX: preferência sem execução era apenas decoração de banco. A decoração foi demitida.",
+        "rows": [
+            ("Motor Nativo", "Inglês e espanhol agora usam tradução HTTP nativa com provedores alternativos; o bot não depende mais de uma biblioteca opcional para funcionar."),
+            ("Cobertura Global", "Mensagens, embeds, títulos, descrições, botões, selects, slash commands e follow-ups passam pela mesma camada de idioma."),
+            ("Aliases", "Os 116 comandos e subcomandos declarados receberam vocabulário EN/ES registrado automaticamente ao iniciar o bot."),
+            ("Ajuda Localizada", "Comandos dentro de crases também mudam para aliases válidos, como `echo profile`, `echo shop buy` e `echo tienda comprar`."),
+            ("Admin", "Ações administrativas como start/comenzar, boss/jefe e calamity/calamidad são convertidas para os gatilhos internos corretos."),
+            ("Cache", "O cache antigo foi versionado para não reaproveitar textos em português gravados durante a falha anterior."),
+            ("Diagnóstico", "`echo language status` mostra o provedor; `echo language test` permite verificar a tradução escolhida na hora."),
+            ("Testes", "A cobertura automática impede que um novo comando seja adicionado sem vocabulário multilíngue."),
+        ],
+        "footer": "TutoriUAU: antes o botão dizia inglês e falava português. Bilíngue por intenção não conta.",
+    },
+    {
         "id": "patch_24",
         "speaker": "NIX",
         "title": "Patch 24: NIX Reescrita e Wolford Multilíngue",

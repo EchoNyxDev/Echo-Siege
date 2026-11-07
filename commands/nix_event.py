@@ -40,7 +40,6 @@ from systems.nix_manager import (
     start_event,
 )
 from systems.nix_rewards import NIX_CURRENCY, NIX_SHOP
-from systems.i18n import resolve_user_language, translate_embed, translate_text
 
 
 def fmt(value):
@@ -66,12 +65,8 @@ class NixArchiveView(discord.ui.View):
 
     async def interaction_check(self, interaction):
         if interaction.user.id != self.user.id:
-            language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
             await interaction.response.send_message(
-                await translate_text(
-                    "NIX: arquivo vinculado a outro usuário. Abrir mesmo assim seria curioso. Não farei. Ainda.",
-                    language,
-                ),
+                "NIX: arquivo vinculado a outro usuário. Abrir mesmo assim seria curioso. Não farei. Ainda.",
                 ephemeral=True,
             )
             return False
@@ -91,17 +86,13 @@ class NixArchiveView(discord.ui.View):
     async def prev_btn(self, interaction, button):
         self.page -= 1
         self.update_buttons()
-        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
-        embed = await translate_embed(self.build_embed(), language)
-        await interaction.response.edit_message(embed=embed, view=self)
+        await interaction.response.edit_message(embed=self.build_embed(), view=self)
 
     @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary)
     async def next_btn(self, interaction, button):
         self.page += 1
         self.update_buttons()
-        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
-        embed = await translate_embed(self.build_embed(), language)
-        await interaction.response.edit_message(embed=embed, view=self)
+        await interaction.response.edit_message(embed=self.build_embed(), view=self)
 
 
 class NixEvent(commands.Cog):

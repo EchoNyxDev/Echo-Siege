@@ -12,6 +12,8 @@ root_dir = os.path.abspath(os.path.join(current_dir, ".."))
 if root_dir not in sys.path:
     sys.path.append(root_dir)
 
+from systems.i18n import localize_interaction_payload
+
 try:
     from data.heroes import HEROES
     from data.banners import get_banner, get_common_banner, get_special_banner
@@ -448,8 +450,13 @@ class Summon(commands.Cog):
                 await interaction.response.send_message(embed=embed, file=hero_file)
             else:
                 await interaction.response.send_message(embed=embed)
+
+            async def localized_followup(content=None, **kwargs):
+                content, kwargs = await localize_interaction_payload(interaction, content, kwargs)
+                return await interaction.followup.send(content, **kwargs)
+
             await self._send_divine_announcements(
-                interaction.followup.send,
+                localized_followup,
                 interaction.user,
                 divine_results,
             )

@@ -5,6 +5,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from systems.i18n import localize_interaction_payload
+
 
 ACHIEVEMENTS = [
     {"id": "primeiros_passos", "name": "Primeiros Passos", "desc": "Use `echo iniciar` e vire oficialmente problema do servidor.", "metric": "started", "target": 1, "reward": {"gold": 300}},
@@ -251,7 +253,8 @@ class AchievementView(discord.ui.View):
         self.page = min(self.page, len(self.embeds) - 1)
         self.update_buttons()
         await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
-        await interaction.followup.send(msg, ephemeral=True)
+        msg, kwargs = await localize_interaction_payload(interaction, msg, {"ephemeral": True})
+        await interaction.followup.send(msg, **kwargs)
 
     @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary)
     async def next_btn(self, interaction: discord.Interaction, button: discord.ui.Button):

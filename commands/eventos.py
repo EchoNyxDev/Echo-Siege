@@ -16,7 +16,6 @@ from data.events import get_active_events, get_next_events
 from utils.combat import simular_combate_tatico
 from utils.rewards import scale_combat_rewards
 from utils.xp_system import dar_xp_heroi, dar_xp_jogador
-from systems.i18n import resolve_user_language, translate_embed
 
 
 def init_event_db(cursor):
@@ -340,9 +339,7 @@ class Eventos(commands.Cog):
 
     @app_commands.command(name="eventos", description="Mostra eventos ativos e proximos.")
     async def eventos_slash(self, interaction: discord.Interaction):
-        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
-        embed = await translate_embed(self._events_embed(), language)
-        await interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=self._events_embed())
 
 
 async def setup(bot):

@@ -4,7 +4,11 @@ import os
 
 from dotenv import load_dotenv
 from utils.db import backup_databases, configure_sqlite_paths
-from systems.i18n import localize_send_payload
+from systems.i18n import (
+    install_discord_i18n_hooks,
+    localize_send_payload,
+    register_multilingual_command_aliases,
+)
 
 configure_sqlite_paths()
 import database
@@ -13,13 +17,9 @@ load_dotenv()
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-if TOKEN is None:
-    raise ValueError(
-        "DISCORD_TOKEN não foi encontrado no arquivo .env"
-    )
-
 intents = discord.Intents.default()
 intents.message_content = True
+install_discord_i18n_hooks()
 
 class EchoContext(commands.Context):
     async def send(self, content=None, *args, **kwargs):
@@ -97,6 +97,16 @@ async def load_commands():
 @bot.event
 async def setup_hook():
     await load_commands()
+    alias_stats = register_multilingual_command_aliases(bot)
+    print(
+        "Aliases multilíngues registrados:",
+        f"EN={alias_stats['en']}",
+        f"ES={alias_stats['es']}",
+        f"ignorados={alias_stats['skipped']}",
+    )
     await bot.tree.sync()
 
-bot.run(TOKEN)
+if __name__ == "__main__":
+    if TOKEN is None:
+        raise ValueError("DISCORD_TOKEN não foi encontrado no arquivo .env")
+    bot.run(TOKEN)

@@ -2,8 +2,6 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from systems.i18n import resolve_user_language, translate_embed, translate_text
-
 # Lista de Administradores (Substitua pelos IDs reais da sua equipe)
 ADM_USERS = [
     768671545790693437,
@@ -43,12 +41,8 @@ class TutorialPaginator(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.user.id:
-            language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
             await interaction.response.send_message(
-                await translate_text(
-                    "❌ Essa aula é particular. Eu já trabalho de graça, não vou dar plantão extra aqui. Use `echo tutorial` você mesmo.",
-                    language,
-                ),
+                "❌ Essa aula é particular. Eu já trabalho de graça, não vou dar plantão extra aqui. Use `echo tutorial` você mesmo.",
                 ephemeral=True,
             )
             return False
@@ -58,17 +52,13 @@ class TutorialPaginator(discord.ui.View):
     async def btn_prev(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page -= 1
         self.update_buttons()
-        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
-        embed = await translate_embed(self.embeds[self.page], language)
-        await interaction.response.edit_message(embed=embed, view=self)
+        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
 
     @discord.ui.button(label="Próxima", style=discord.ButtonStyle.primary, emoji="▶️", custom_id="tutorial_next")
     async def btn_next(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.page += 1
         self.update_buttons()
-        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
-        embed = await translate_embed(self.embeds[self.page], language)
-        await interaction.response.edit_message(embed=embed, view=self)
+        await interaction.response.edit_message(embed=self.embeds[self.page], view=self)
 
 
 class Tutorial(commands.Cog):
@@ -294,9 +284,7 @@ class Tutorial(commands.Cog):
     async def tutorial_slash(self, interaction: discord.Interaction):
         embeds = self.criar_paginas(interaction.user)
         view = TutorialPaginator(interaction.user, embeds)
-        language = resolve_user_language(user=interaction.user, guild=interaction.guild, explicit_locale=interaction.locale)
-        embed = await translate_embed(embeds[0], language)
-        await interaction.response.send_message(embed=embed, view=view)
+        await interaction.response.send_message(embed=embeds[0], view=view)
 
 
 async def setup(bot):

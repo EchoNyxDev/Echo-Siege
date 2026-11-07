@@ -5,10 +5,10 @@ from discord.ext import commands
 from systems.i18n import (
     SUPPORTED_LANGUAGES,
     get_stored_language,
+    normalize_key,
     normalize_language,
     resolve_user_language,
     set_user_language,
-    translate_text,
     translation_backend_status,
 )
 
@@ -57,10 +57,16 @@ class Language(commands.Cog):
         )
         return embed
 
-    @commands.command(name="language", aliases=["idioma", "linguagem", "lang"])
+    @commands.command(name="language", aliases=["idioma", "linguagem", "lang", "lenguaje"])
     async def language_prefix(self, ctx, idioma: str = None):
-        if idioma is None:
+        action = normalize_key(idioma)
+        if idioma is None or action in {"status", "estado", "info"}:
             return await ctx.send(embed=self._status_embed(ctx.author, ctx.guild))
+
+        if action in {"test", "teste", "prueba"}:
+            return await ctx.send(
+                "A tradução está funcionando. Comandos, botões, títulos, descrições e mensagens devem acompanhar seu idioma."
+            )
 
         normalized = normalize_language(idioma)
         if not normalized:
@@ -84,17 +90,8 @@ class Language(commands.Cog):
                 ephemeral=True,
             )
         set_user_language(interaction.user.id, normalized)
-        language = resolve_user_language(
-            user=interaction.user,
-            guild=interaction.guild,
-            explicit_locale=interaction.locale,
-        )
-        message = await translate_text(
-            f"Idioma atualizado para **{SUPPORTED_LANGUAGES[normalized]}**.",
-            language,
-        )
         await interaction.response.send_message(
-            message,
+            f"Idioma atualizado para **{SUPPORTED_LANGUAGES[normalized]}**.",
             ephemeral=True,
         )
 
